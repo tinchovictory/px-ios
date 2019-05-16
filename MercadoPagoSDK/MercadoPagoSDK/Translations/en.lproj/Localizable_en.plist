@@ -275,6 +275,13 @@
 		<key>value</key>
 		<string>Your purchase</string>
 	</dict>
+	<key>onetap_purchase_summary_charges</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Charges</string>
+	</dict>
 	<key>onetap_purchase_summary_total</key>
 	<dict>
 		<key>comment</key>

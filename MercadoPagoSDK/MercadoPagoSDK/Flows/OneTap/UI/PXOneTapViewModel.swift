@@ -150,62 +150,30 @@ extension PXOneTapViewModel {
     }
 
     func getHeaderViewModel(selectedCard: PXCardSliderViewModel?) -> PXOneTapHeaderViewModel {
-        let isDefaultStatusBarStyle = ThemeManager.shared.statusBarStyle() == .default
-        let summaryColor = isDefaultStatusBarStyle ? UIColor.black : ThemeManager.shared.whiteColor()
-        let summaryAlpha: CGFloat = 0.45
-        let discountColor = isDefaultStatusBarStyle ? ThemeManager.shared.noTaxAndDiscountLabelTintColor() : ThemeManager.shared.whiteColor()
-        let discountAlpha: CGFloat = 1
-        let discountDisclaimerAlpha: CGFloat = isDefaultStatusBarStyle ? 0.45 : 1.0
-        let totalColor = isDefaultStatusBarStyle ? UIColor.black : ThemeManager.shared.whiteColor()
-        let totalAlpha: CGFloat = 1
 
         let splitConfiguration = selectedCard?.amountConfiguration?.splitConfiguration
-        let currency = SiteManager.shared.getCurrency()
-        var totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
-        var yourPurchaseToShow = Utils.getAmountFormated(amount: amountHelper.preferenceAmount, forCurrency: currency)
-        var customData: [OneTapHeaderSummaryData] = [OneTapHeaderSummaryData]()
-
-        if let discountConfiguration = amountHelper.paymentConfigurationService.getDiscountConfigurationForPaymentMethodOrDefault(selectedCard?.cardId), let campaign = discountConfiguration.getDiscountConfiguration().campaign {
-
-            let discount = discountConfiguration.getDiscountConfiguration().discount
-            let consumedDiscount = discountConfiguration.getDiscountConfiguration().isNotAvailable
-
-            amountHelper.getPaymentData().setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
-
-            var yourPurchaseSummaryTitle: String = "onetap_purchase_summary_title".localized_beta
-            if let customPurposeSummaryTitle = additionalInfoSummary?.purpose {
-                yourPurchaseSummaryTitle = customPurposeSummaryTitle
-            }
-
-            if consumedDiscount {
-                customData.append(OneTapHeaderSummaryData(yourPurchaseSummaryTitle, yourPurchaseToShow, summaryColor, summaryAlpha, false, nil))
-                let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico_gray") : ResourceManager.shared.getImage("helper_ico_light")
-                customData.append(OneTapHeaderSummaryData("total_row_consumed_discount".localized_beta, "", summaryColor, discountDisclaimerAlpha, false, helperImage))
-
-                totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
-                yourPurchaseToShow = Utils.getAmountFormated(amount: amountHelper.preferenceAmount, forCurrency: currency)
-            } else if let discount = discount {
-                customData.append(OneTapHeaderSummaryData(yourPurchaseSummaryTitle, yourPurchaseToShow, summaryColor, summaryAlpha, false, nil))
-                let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
-                let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico") : ResourceManager.shared.getImage("helper_ico_light")
-                customData.append(OneTapHeaderSummaryData(discount.getDiscountDescription(), "- \(discountToShow)", discountColor, discountAlpha, false, helperImage))
-
-                totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
-                yourPurchaseToShow = Utils.getAmountFormated(amount: amountHelper.preferenceAmount, forCurrency: currency)
-            }
-        } else {
-            amountHelper.getPaymentData().clearDiscount()
-            totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
-            yourPurchaseToShow = Utils.getAmountFormated(amount: amountHelper.preferenceAmount, forCurrency: currency)
-        }
-
-        customData.append(OneTapHeaderSummaryData("onetap_purchase_summary_total".localized_beta, totalAmountToShow, totalColor, totalAlpha, true, nil))
-
+        let composer = PXSummaryComposer(amountHelper: amountHelper,
+                                           additionalInfoSummary: additionalInfoSummary,
+                                           selectedCard: selectedCard)
+        updatePaymentData(composer: composer)
+        let summaryData = composer.summaryItems
         // Populate header display data. From SP pref AdditionalInfo or instore retrocompatibility.
         let (headerTitle, headerSubtitle, headerImage) = getSummaryHeader(item: items.first, additionalInfoSummaryData: additionalInfoSummary)
 
-        let headerVM = PXOneTapHeaderViewModel(icon: headerImage, title: headerTitle, subTitle: headerSubtitle, data: customData, splitConfiguration: splitConfiguration)
+        let headerVM = PXOneTapHeaderViewModel(icon: headerImage, title: headerTitle, subTitle: headerSubtitle, data: summaryData, splitConfiguration: splitConfiguration)
         return headerVM
+    }
+
+    func updatePaymentData(composer: PXSummaryComposer) {
+        if let discountData = composer.getDiscountData() {
+            let discountConfiguration = discountData.discountConfiguration
+            let campaign = discountData.campaign
+            let discount = discountConfiguration.getDiscountConfiguration().discount
+            let consumedDiscount = discountConfiguration.getDiscountConfiguration().isNotAvailable
+            amountHelper.getPaymentData().setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
+        } else {
+            amountHelper.getPaymentData().clearDiscount()
+        }
     }
 
     func getSummaryHeader(item: PXItem?, additionalInfoSummaryData: PXAdditionalInfoSummary?) -> (title: String, subtitle: String?, image: UIImage) {

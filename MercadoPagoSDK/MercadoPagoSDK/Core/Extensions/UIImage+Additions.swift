@@ -60,4 +60,36 @@ internal extension UIImage {
             return tintedImage!
         }
     }
+
+    func mask(color: UIColor) -> UIImage? {
+
+        UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+
+        let rect = CGRect(origin: CGPoint.zero, size: size)
+
+        color.setFill()
+        self.draw(in: rect)
+
+        context.setBlendMode(.sourceIn)
+        context.fill(rect)
+
+        if let resultImage = UIGraphicsGetImageFromCurrentImageContext() {
+            UIGraphicsEndImageContext()
+            return resultImage
+        } else {
+            UIGraphicsEndImageContext()
+            return nil
+        }
+    }
+
+    func alpha(_ value:CGFloat) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(at: CGPoint.zero, blendMode: .normal, alpha: value)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+    }
 }
