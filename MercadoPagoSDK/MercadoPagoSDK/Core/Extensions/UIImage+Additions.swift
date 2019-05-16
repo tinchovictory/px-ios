@@ -64,7 +64,9 @@ internal extension UIImage {
     func mask(color: UIColor) -> UIImage? {
 
         UIGraphicsBeginImageContextWithOptions(self.size, false, self.scale)
-        let context = UIGraphicsGetCurrentContext()!
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
 
         let rect = CGRect(origin: CGPoint.zero, size: size)
 
@@ -74,9 +76,13 @@ internal extension UIImage {
         context.setBlendMode(.sourceIn)
         context.fill(rect)
 
-        let resultImage = UIGraphicsGetImageFromCurrentImageContext()!
-        UIGraphicsEndImageContext()
-        return resultImage
+        if let resultImage = UIGraphicsGetImageFromCurrentImageContext() {
+            UIGraphicsEndImageContext()
+            return resultImage
+        } else {
+            UIGraphicsEndImageContext()
+            return nil
+        }
     }
 
     func alpha(_ value:CGFloat) -> UIImage {
