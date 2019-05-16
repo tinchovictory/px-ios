@@ -10,8 +10,7 @@ import Foundation
 extension PXSummaryComposer {
     func chargesRow() -> OneTapHeaderSummaryData {
         let amount = getChargesAmount()
-        let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico_gray") : ResourceManager.shared.getImage("helper_ico_light")
-
+        let helperImage = helpIcon(color: summaryColor())
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
         let chargeText = "onetap_purchase_summary_charges".localized_beta
         let row = OneTapHeaderSummaryData(chargeText, amountToShow, summaryColor(), 1, false, helperImage)
@@ -19,7 +18,8 @@ extension PXSummaryComposer {
     }
 
     func consumedDiscountRow() -> OneTapHeaderSummaryData {
-        let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico_gray") : ResourceManager.shared.getImage("helper_ico_light")
+        let helperImage = helpIcon(color: summaryColor(),
+                                   alpha: discountDisclaimerAlpha())
         let row = OneTapHeaderSummaryData("total_row_consumed_discount".localized_beta, "", summaryColor(), discountDisclaimerAlpha(), false, helperImage)
         return row
     }
@@ -31,7 +31,7 @@ extension PXSummaryComposer {
         }
 
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
-        let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico") : ResourceManager.shared.getImage("helper_ico_light")
+        let helperImage = helpIcon(color: discountColor())
         let row = OneTapHeaderSummaryData(discount.getDiscountDescription(),
                                           "- \(discountToShow)",
             discountColor(),
