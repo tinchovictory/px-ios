@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PXSummaryComposer {
+struct PXSummaryComposer {
 
     //returns the composed summary items
     var summaryItems: [OneTapHeaderSummaryData] {
@@ -24,7 +24,6 @@ class PXSummaryComposer {
     let amountHelper: PXAmountHelper
     let additionalInfoSummary: PXAdditionalInfoSummary?
     let selectedCard: PXCardSliderViewModel?
-    var internalSummary: [OneTapHeaderSummaryData] = []
 
     init(amountHelper: PXAmountHelper,
          additionalInfoSummary: PXAdditionalInfoSummary?,
@@ -40,23 +39,23 @@ class PXSummaryComposer {
     }
 
     private func generateSummaryItems() -> [OneTapHeaderSummaryData] {
-        internalSummary = [OneTapHeaderSummaryData]()
+        var internalSummary = [OneTapHeaderSummaryData]()
         if shouldDisplayCharges() || shouldDisplayDiscount() {
-            addPurchaseRow()
+            internalSummary.append(purchaseRow())
         }
 
         if shouldDisplayCharges() {
-            addChargesRow()
+            internalSummary.append(chargesRow())
         }
 
         if shouldDisplayDiscount() {
             if isConsumedDiscount() {
-                addConsumedDiscountRow()
-            } else {
-                addDiscountRow()
+                internalSummary.append(consumedDiscountRow())
+            } else if let discRow = discountRow() {
+                internalSummary.append(discRow)
             }
         }
-        addTotalToPayRow()
+        internalSummary.append(totalToPayRow())
         return internalSummary
     }
 }

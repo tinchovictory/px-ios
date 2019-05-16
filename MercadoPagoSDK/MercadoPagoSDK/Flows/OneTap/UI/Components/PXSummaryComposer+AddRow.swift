@@ -8,26 +8,26 @@
 import Foundation
 
 extension PXSummaryComposer {
-    func addChargesRow(){
+    func chargesRow() -> OneTapHeaderSummaryData {
         let amount = getChargesAmount()
         let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico_gray") : ResourceManager.shared.getImage("helper_ico_light")
 
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
         let chargeText = "onetap_purchase_summary_charges".localized_beta
         let row = OneTapHeaderSummaryData(chargeText, amountToShow, summaryColor(), 1, false, helperImage)
-        internalSummary.append(row)
+        return row
     }
 
-    func addConsumedDiscountRow() {
+    func consumedDiscountRow() -> OneTapHeaderSummaryData {
         let helperImage: UIImage? = isDefaultStatusBarStyle ? ResourceManager.shared.getImage("helper_ico_gray") : ResourceManager.shared.getImage("helper_ico_light")
         let row = OneTapHeaderSummaryData("total_row_consumed_discount".localized_beta, "", summaryColor(), discountDisclaimerAlpha(), false, helperImage)
-        internalSummary.append(row)
+        return row
     }
 
-    func addDiscountRow() {
+    func discountRow() -> OneTapHeaderSummaryData? {
         guard let discount = getDiscount() else {
             printError("Discount is required to add the discount row")
-            return
+            return nil
         }
 
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
@@ -38,33 +38,33 @@ extension PXSummaryComposer {
             discountAlpha,
             false,
             helperImage)
-        internalSummary.append(row)
+        return row
     }
 
-    func addPurchaseRow(){
+    func purchaseRow() -> OneTapHeaderSummaryData {
         let isTransparent = shouldDisplayDiscount() && !shouldDisplayCharges()
         let alpha = isTransparent ? summaryAlpha : 1
-        let oneTapHeader = OneTapHeaderSummaryData(yourPurchaseSummaryTitle(),
-                                                   yourPurchaseToShow(),
-                                                   summaryColor(),
-                                                   alpha,
-                                                   false,
-                                                   nil)
-        internalSummary.append(oneTapHeader)
+        let row = OneTapHeaderSummaryData( yourPurchaseSummaryTitle(),
+                                           yourPurchaseToShow(),
+                                           summaryColor(),
+                                           alpha,
+                                           false,
+                                           nil)
+        return row
     }
 
-    func addTotalToPayRow(){
+    func totalToPayRow() -> OneTapHeaderSummaryData {
         let totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
         let totalAlpha: CGFloat = 1
         let totalColor = isDefaultStatusBarStyle ? UIColor.black : ThemeManager.shared.whiteColor()
         let text = "onetap_purchase_summary_total".localized_beta
-        let oneTapHeaderSummaryData = OneTapHeaderSummaryData(text,
-                                                              totalAmountToShow,
-                                                              totalColor,
-                                                              totalAlpha,
-                                                              true,
-                                                              nil)
-        internalSummary.append(oneTapHeaderSummaryData)
+        let row = OneTapHeaderSummaryData(text,
+                                          totalAmountToShow,
+                                          totalColor,
+                                          totalAlpha,
+                                          true,
+                                          nil)
+        return row
     }
 
 }
