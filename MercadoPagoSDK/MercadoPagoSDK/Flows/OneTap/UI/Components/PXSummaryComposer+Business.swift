@@ -60,10 +60,6 @@ extension PXSummaryComposer {
         return isDefaultStatusBarStyle ? ThemeManager.shared.noTaxAndDiscountLabelTintColor() : ThemeManager.shared.whiteColor()
     }
 
-    func discountDisclaimerAlpha() -> CGFloat {
-        return isDefaultStatusBarStyle ? 0.45 : 1.0
-    }
-
     func helpIcon(color: UIColor, alpha: CGFloat = 1) -> UIImage? {
         var helperImage: UIImage? =  ResourceManager.shared.getImage("helper_ico_light")
         helperImage = helperImage?.mask(color: color)?.alpha(alpha)
