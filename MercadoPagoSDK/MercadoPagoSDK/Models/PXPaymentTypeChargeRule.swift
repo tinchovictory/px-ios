@@ -9,22 +9,47 @@
 import UIKit
 
 /**
-Use this object to make a charge related to any payment method. The relationship is by `paymentMethodId`. You can especify a default `amountCharge` for each payment method.
+Use this object to make a charge related to any payment type. The relationship is by `paymentTypeId`. You can especify a default `amountCharge` for each payment method.
  */ 
 @objc
 public final class PXPaymentTypeChargeRule: NSObject, Codable {
-    let paymentMethdodId: String
+    let paymentTypeId: String
     let amountCharge: Double
+    let detailModal: UIViewController?
 
     // MARK: Init.
     /**
-     - parameter paymentMethdodId: Payment method id.
-     - parameter amountCharge: Amount charge for the current payment method.
+     - parameter paymentMethdodId: paymentTypeId for which the currrent charge applies.
+     - parameter amountCharge: Amount charge for the assigned payment type.
      */
-   @objc public init(paymentMethdodId: String, amountCharge: Double) {
-        self.paymentMethdodId = paymentMethdodId
+    // To deprecate post v4. SP integration.
+    @available(*, deprecated, message: "Property paymentMethdodId has been renamed to paymentTypeId")
+    @objc public convenience init(paymentMethdodId: String, amountCharge: Double) {
+        self.init(paymentTypeId: paymentMethdodId, amountCharge: amountCharge)
+    }
+
+    /**
+     - parameter paymentTypeId: paymentTypeId for which the currrent charge applies.
+     - parameter amountCharge: Amount charge for the assigned payment type.
+     - parameter detailModal: Optional screen intended to be shown modally in order to give further details on why this charge applies to the current payment. This screen will pop up when the charges row is pressed.
+     */
+   @objc public init(paymentTypeId: String, amountCharge: Double, detailModal: UIViewController? = nil) {
+        self.paymentTypeId = paymentTypeId
         self.amountCharge = amountCharge
+        self.detailModal = detailModal
         super.init()
+    }
+
+    required public init(from decoder:Decoder) throws {
+        let values = try decoder.container(keyedBy: PXPaymentTypeChargeRuleKeys.self)
+        paymentTypeId = try values.decode(String.self, forKey: .paymentTypeId)
+        amountCharge = try values.decode(Double.self, forKey: .amountCharge)
+        detailModal = nil
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case paymentTypeId
+        case amountCharge
     }
 
     public enum PXPaymentTypeChargeRuleKeys: String, CodingKey {
@@ -34,7 +59,7 @@ public final class PXPaymentTypeChargeRule: NSObject, Codable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: PXPaymentTypeChargeRuleKeys.self)
-        try container.encodeIfPresent(self.paymentMethdodId, forKey: .paymentTypeId)
+        try container.encodeIfPresent(self.paymentTypeId, forKey: .paymentTypeId)
         try container.encodeIfPresent(self.amountCharge, forKey: .amountCharge)
     }
 
