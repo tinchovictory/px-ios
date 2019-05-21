@@ -13,9 +13,18 @@ Use this object to make a charge related to any payment type. The relationship i
  */ 
 @objc
 public final class PXPaymentTypeChargeRule: NSObject, Codable {
-    let paymentTypeId: String
+    // To deprecate post v4. SP integration.
+    public var paymentMethodId: String {
+        get {
+            return paymentTypeId
+        }
+        set {
+            paymentTypeId = paymentMethodId
+        }
+    }
+    internal var paymentTypeId: String
     let amountCharge: Double
-    let detailModal: UIViewController?
+    internal let detailModal: UIViewController?
 
     // MARK: Init.
     /**
