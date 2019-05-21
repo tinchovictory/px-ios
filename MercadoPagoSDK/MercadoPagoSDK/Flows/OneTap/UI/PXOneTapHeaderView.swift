@@ -269,7 +269,7 @@ extension PXOneTapHeaderView {
         self.removeMargins()
         backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
-        let summaryView = PXOneTapSummaryView(data: model.data)
+        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self)
         self.summaryView = summaryView
 
         addSubview(summaryView)
@@ -321,18 +321,16 @@ extension PXOneTapHeaderView {
 }
 
 // MARK: Publics.
-extension PXOneTapHeaderView {
-    // TODO: Patito will implement in PXN-750
-    @objc func handleDiscountTap() {
-        delegate?.didTapDiscount()
-    }
-
-    // TODO: Patito will implement in PXN-750
-    @objc func handleChargesTap() {
+extension PXOneTapHeaderView: PXOneTapSummaryProtocol {
+    func didTapCharges() {
         delegate?.didTapCharges()
     }
 
-    @objc func handleHeaderTap() {
+    func didTapDiscount() {
+        delegate?.didTapDiscount()
+    }
+
+    func handleHeaderTap() {
         delegate?.didTapMerchantHeader()
     }
 }

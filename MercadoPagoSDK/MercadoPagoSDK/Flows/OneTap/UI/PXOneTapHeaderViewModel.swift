@@ -7,7 +7,14 @@
 
 import UIKit
 
-typealias OneTapHeaderSummaryData = (title: String, value: String, highlightedColor: UIColor, alpha: CGFloat, isTotal: Bool, image: UIImage?)
+typealias OneTapSummaryRowHandler = () -> Void
+typealias OneTapHeaderSummaryData = (title: String, value: String, highlightedColor: UIColor, alpha: CGFloat, isTotal: Bool, image: UIImage?, type: OneTapSummaryRowType?)
+
+enum OneTapSummaryRowType {
+    case discount
+    case charges
+    case generic
+}
 
 class PXOneTapHeaderViewModel {
     let icon: UIImage
