@@ -315,7 +315,7 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
     }
 
     func didTapCharges() {
-        if let vc = viewModel.amountHelper.chargeRuleViewController {
+        if let vc = viewModel.getChargeRuleViewController() {
             let title = "onetap_purchase_summary_charges".localized_beta
             PXComponentFactory.Modal.show(viewController: vc, title: title) {
                 if UIDevice.isSmallDevice() {

@@ -17,7 +17,7 @@ extension PXSummaryComposer {
     }
 
     func shouldDisplayChargeHelpIcon() -> Bool {
-        return amountHelper.chargeRuleViewController != nil
+        return shouldDisplayChargesHelp
     }
 
     func getDiscount() -> PXDiscount? {

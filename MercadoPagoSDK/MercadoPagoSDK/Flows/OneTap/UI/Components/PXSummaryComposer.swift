@@ -23,13 +23,16 @@ struct PXSummaryComposer {
     let amountHelper: PXAmountHelper
     let additionalInfoSummary: PXAdditionalInfoSummary?
     let selectedCard: PXCardSliderViewModel?
+    let shouldDisplayChargesHelp: Bool
 
     init(amountHelper: PXAmountHelper,
          additionalInfoSummary: PXAdditionalInfoSummary?,
-         selectedCard: PXCardSliderViewModel?) {
+         selectedCard: PXCardSliderViewModel?,
+         shouldDisplayChargesHelp: Bool = false) {
         self.amountHelper = amountHelper
         self.additionalInfoSummary = additionalInfoSummary
         self.selectedCard = selectedCard
+        self.shouldDisplayChargesHelp = shouldDisplayChargesHelp
     }
 
     private func getSummaryItems() -> [OneTapHeaderSummaryData] {
