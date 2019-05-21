@@ -56,11 +56,6 @@ public final class PXPaymentTypeChargeRule: NSObject, Codable {
         detailModal = nil
     }
 
-    private enum CodingKeys: String, CodingKey {
-        case paymentTypeId
-        case amountCharge
-    }
-
     public enum PXPaymentTypeChargeRuleKeys: String, CodingKey {
         case paymentTypeId = "payment_type_id"
         case amountCharge = "charge"
