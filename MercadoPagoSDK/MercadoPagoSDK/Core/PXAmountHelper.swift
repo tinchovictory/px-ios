@@ -114,7 +114,7 @@ internal struct PXAmountHelper {
                 return 0
             }
             for rule in rules {
-                if rule.paymentMethdodId == paymentData.paymentMethod?.paymentTypeId {
+                if rule.paymentTypeId == paymentData.paymentMethod?.paymentTypeId {
                     return rule.amountCharge
                 }
             }
