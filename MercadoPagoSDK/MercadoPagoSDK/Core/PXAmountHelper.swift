@@ -122,6 +122,20 @@ internal struct PXAmountHelper {
         }
     }
 
+    internal var chargeRuleViewController: UIViewController? {
+        get {
+            guard let rules = chargeRules else {
+                return nil
+            }
+            for rule in rules {
+                if rule.paymentTypeId == paymentData.paymentMethod?.paymentTypeId {
+                    return rule.detailModal
+                }
+            }
+            return nil
+        }
+    }
+
     internal func getPaymentData() -> PXPaymentData {
 
         // Set total card amount with charges without discount

@@ -315,7 +315,14 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
     }
 
     func didTapCharges() {
-        // TODO: Patito will implement in PXN-750
+        if let vc = viewModel.amountHelper.chargeRuleViewController {
+            let title = "onetap_purchase_summary_charges".localized_beta
+            PXComponentFactory.Modal.show(viewController: vc, title: title) {
+                if UIDevice.isSmallDevice() {
+                    self.setupNavigationBar()
+                }
+            }
+        }
     }
 
     func didTapDiscount() {
