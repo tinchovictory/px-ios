@@ -17,8 +17,7 @@ struct PXSummaryComposer {
     //MARK: constants
     let isDefaultStatusBarStyle = ThemeManager.shared.statusBarStyle() == .default
     let currency = SiteManager.shared.getCurrency()
-    let summaryAlpha: CGFloat = 0.45
-    let discountAlpha: CGFloat = 1
+    let textTransparency: CGFloat = 1
 
     //MARK: initialization properties
     let amountHelper: PXAmountHelper
@@ -44,16 +43,16 @@ struct PXSummaryComposer {
             internalSummary.append(purchaseRow())
         }
 
+        if shouldDisplayCharges() {
+            internalSummary.append(chargesRow())
+        }
+
         if shouldDisplayDiscount() {
             if isConsumedDiscount() {
                 internalSummary.append(consumedDiscountRow())
             } else if let discRow = discountRow() {
                 internalSummary.append(discRow)
             }
-        }
-
-        if shouldDisplayCharges() {
-            internalSummary.append(chargesRow())
         }
 
         internalSummary.append(totalToPayRow())
