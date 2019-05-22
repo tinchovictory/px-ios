@@ -7,7 +7,17 @@
 
 import UIKit
 
+
+
 class PXOneTapSummaryRowView: UIView {
+
+    typealias Handler = () -> Void
+
+    enum RowType {
+        case discount
+        case charges
+        case generic
+    }
 
     let data: OneTapHeaderSummaryData
 

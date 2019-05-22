@@ -14,7 +14,7 @@ class PXOneTapHeaderView: PXComponentView {
         }
     }
 
-    private weak var delegate: PXOneTapHeaderProtocol?
+    internal weak var delegate: PXOneTapHeaderProtocol?
     private var isShowingHorizontally: Bool = false
     private var verticalLayoutConstraints: [NSLayoutConstraint] = []
     private var horizontalLayoutConstraints: [NSLayoutConstraint] = []
@@ -269,7 +269,7 @@ extension PXOneTapHeaderView {
         self.removeMargins()
         backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
-        let summaryView = PXOneTapSummaryView(data: model.data)
+        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self)
         self.summaryView = summaryView
 
         addSubview(summaryView)
@@ -317,22 +317,5 @@ extension PXOneTapHeaderView {
         } else {
             animateToVertical()
         }
-    }
-}
-
-// MARK: Publics.
-extension PXOneTapHeaderView {
-    // TODO: Patito will implement in PXN-750
-    @objc func handleDiscountTap() {
-        delegate?.didTapDiscount()
-    }
-
-    // TODO: Patito will implement in PXN-750
-    @objc func handleChargesTap() {
-        delegate?.didTapCharges()
-    }
-
-    @objc func handleHeaderTap() {
-        delegate?.didTapMerchantHeader()
     }
 }
