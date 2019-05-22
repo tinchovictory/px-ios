@@ -154,7 +154,8 @@ extension PXOneTapViewModel {
         let splitConfiguration = selectedCard?.amountConfiguration?.splitConfiguration
         let composer = PXSummaryComposer(amountHelper: amountHelper,
                                            additionalInfoSummary: additionalInfoSummary,
-                                           selectedCard: selectedCard)
+                                           selectedCard: selectedCard,
+                                           shouldDisplayChargesHelp: shouldDisplayChargesHelp())
         updatePaymentData(composer: composer)
         let summaryData = composer.summaryItems
         // Populate header display data. From SP pref AdditionalInfo or instore retrocompatibility.
@@ -264,6 +265,22 @@ extension PXOneTapViewModel {
             return pluginsPms.toPaymentMethod()
         }
         return paymentMethods.filter({ return $0.id == targetId }).first
+    }
+
+    func shouldDisplayChargesHelp() -> Bool {
+        return getChargeRuleViewController() != nil
+    }
+
+    func getChargeRuleViewController() -> UIViewController? {
+        guard let rules = amountHelper.chargeRules else {
+            return nil
+        }
+        let paymentTypeId = amountHelper.getPaymentData().paymentMethod?.paymentTypeId
+        let filterRules = rules.filter({
+            $0.paymentTypeId == paymentTypeId
+        })
+        let vc = filterRules.first?.detailModal
+        return vc
     }
 }
 
