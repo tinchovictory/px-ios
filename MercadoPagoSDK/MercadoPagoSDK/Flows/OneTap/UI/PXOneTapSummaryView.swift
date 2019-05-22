@@ -64,7 +64,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func rowAction(for type: OneTapSummaryRowType) -> OneTapSummaryRowHandler? {
+    private func rowAction(for type: PXOneTapSummaryRowView.RowType) -> PXOneTapSummaryRowView.Handler? {
         switch type {
         case .charges:
             return self.delegate?.didTapCharges

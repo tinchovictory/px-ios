@@ -14,7 +14,7 @@ class PXOneTapHeaderView: PXComponentView {
         }
     }
 
-    private weak var delegate: PXOneTapHeaderProtocol?
+    internal weak var delegate: PXOneTapHeaderProtocol?
     private var isShowingHorizontally: Bool = false
     private var verticalLayoutConstraints: [NSLayoutConstraint] = []
     private var horizontalLayoutConstraints: [NSLayoutConstraint] = []
@@ -317,20 +317,5 @@ extension PXOneTapHeaderView {
         } else {
             animateToVertical()
         }
-    }
-}
-
-// MARK: Publics.
-extension PXOneTapHeaderView: PXOneTapSummaryProtocol {
-    func didTapCharges() {
-        delegate?.didTapCharges()
-    }
-
-    func didTapDiscount() {
-        delegate?.didTapDiscount()
-    }
-
-    func handleHeaderTap() {
-        delegate?.didTapMerchantHeader()
     }
 }
