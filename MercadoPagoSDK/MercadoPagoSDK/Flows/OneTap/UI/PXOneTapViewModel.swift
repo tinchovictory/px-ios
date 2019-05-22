@@ -276,12 +276,11 @@ extension PXOneTapViewModel {
             return nil
         }
         let paymentTypeId = amountHelper.getPaymentData().paymentMethod?.paymentTypeId
-        for rule in rules {
-            if rule.paymentTypeId == paymentTypeId {
-                return rule.detailModal
-            }
-        }
-        return nil
+        let filterRules = rules.filter({
+            $0.paymentTypeId == paymentTypeId
+        })
+        let vc = filterRules.first?.detailModal
+        return vc
     }
 }
 
