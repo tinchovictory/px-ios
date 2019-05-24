@@ -325,7 +325,8 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
     func didTapCharges() {
         if let vc = viewModel.getChargeRuleViewController() {
-            let title = "onetap_purchase_summary_charges".localized_beta
+            let defaultTitle = "onetap_purchase_summary_charges".localized_beta
+            let title = vc.title ?? defaultTitle
             PXComponentFactory.Modal.show(viewController: vc, title: title) {
                 if UIDevice.isSmallDevice() {
                     self.setupNavigationBar()
