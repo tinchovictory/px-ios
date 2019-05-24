@@ -13,6 +13,17 @@ class PXOneTapHeaderMerchantView: PXComponentView {
     private var subTitle: String?
     private var showHorizontally: Bool
     private var layout: PXOneTapHeaderMerchantLayout
+    private var imageView: PXUIImageView?
+    internal let IMAGE_NAV_SIZE: CGFloat = 40
+    internal var IMAGE_SIZE: CGFloat {
+        if UIDevice.isSmallDevice() {
+            return IMAGE_NAV_SIZE
+        } else if UIDevice.isLargeDevice() || UIDevice.isExtraLargeDevice() {
+            return 65
+        } else {
+            return 55
+        }
+    }
 
     init(image: UIImage, title: String, subTitle: String? = nil, showHorizontally: Bool) {
         self.image = image
@@ -28,21 +39,13 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private var IMAGE_SIZE: CGFloat {
-        if UIDevice.isSmallDevice() {
-            return 40
-        } else if UIDevice.isLargeDevice() || UIDevice.isExtraLargeDevice() {
-            return 65
-        } else {
-            return 55
-        }
-    }
-
     private func render() {
         let containerView = UIView()
         let imageContainerView = UIView()
         imageContainerView.translatesAutoresizingMaskIntoConstraints = false
         imageContainerView.dropShadow(radius: 2, opacity: 0.15)
+
+        PXLayout.setHeight(owner: self, height: IMAGE_SIZE, relation: .greaterThanOrEqual).isActive = true
 
         let imageView = PXUIImageView()
         imageView.layer.masksToBounds = false
@@ -53,15 +56,13 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         imageView.backgroundColor = .white
         imageView.image = image
         imageContainerView.addSubview(imageView)
-
-        PXLayout.pinTop(view: imageView).isActive = true
         PXLayout.pinBottom(view: imageView).isActive = true
         PXLayout.pinLeft(view: imageView).isActive = true
         PXLayout.pinRight(view: imageView).isActive = true
-
+        PXLayout.pinTop(view: imageView).isActive = true
+        self.imageView = imageView
         containerView.addSubview(imageContainerView)
-        PXLayout.setHeight(owner: imageContainerView, height: IMAGE_SIZE).isActive = true
-        PXLayout.setWidth(owner: imageContainerView, width: IMAGE_SIZE).isActive = true
+
 
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -70,6 +71,7 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         titleLabel.font = Utils.getSemiBoldFont(size: PXLayout.M_FONT)
         titleLabel.textColor = ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
         titleLabel.textAlignment = .center
+        titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         containerView.addSubview(titleLabel)
 
         addSubviewToBottom(containerView)
@@ -84,6 +86,7 @@ class PXOneTapHeaderMerchantView: PXComponentView {
             subTitleLabel.numberOfLines = 1
             subTitleLabel.alpha = subTitleAlpha
             subTitleLabel.lineBreakMode = .byTruncatingTail
+            subTitleLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
             subTitleLabel.font = Utils.getFont(size: PXLayout.XXXS_FONT)
             subTitleLabel.textColor = ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
             subTitleLabel.textAlignment = .center
@@ -129,6 +132,7 @@ extension PXOneTapHeaderMerchantView {
             for constraint in strongSelf.layout.getVerticalContrainsts() {
                 constraint.isActive = true
             }
+            strongSelf.imageView?.layer.cornerRadius = strongSelf.layout.IMAGE_SIZE / 2
             strongSelf.layoutIfNeeded()
         })
 
@@ -152,6 +156,7 @@ extension PXOneTapHeaderMerchantView {
             for constraint in strongSelf.layout.getVerticalContrainsts() {
                 constraint.isActive = false
             }
+            strongSelf.imageView?.layer.cornerRadius = strongSelf.layout.IMAGE_NAV_SIZE / 2
             strongSelf.layoutIfNeeded()
         })
 

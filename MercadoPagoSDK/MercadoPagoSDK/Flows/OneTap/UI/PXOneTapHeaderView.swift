@@ -88,12 +88,25 @@ class PXOneTapHeaderView: PXComponentView {
 extension PXOneTapHeaderView {
 
     private func shouldShowHorizontally(model: PXOneTapHeaderViewModel) -> Bool {
-        let data = model.data
-        if UIDevice.isSmallDevice() && model.splitConfiguration != nil {
-            return true
-        } else {
-            return UIDevice.isSmallDevice() && data.count != 1 && !data[0].isTotal
+
+        if UIDevice.isExtraLargeDevice() {
+            //an extra large device will always be able to accomodate al view in vertical mode
+            return false
         }
+
+        if UIDevice.isSmallDevice() {
+            //a small device will never be able to accomodate al view in vertical mode
+            return true
+        }
+
+        if UIDevice.isLargeDevice() {
+            // a large device will only collapse if it has medium summary and split cell or larger
+            return model.hasLargeHeaderOrLarger()
+        }
+
+        // a regular device will collapse if combined rows result in a medium sized header or larger
+        return model.hasMediumHeaderOrLarger()
+
     }
 
     private func removeAnimations() {
@@ -298,8 +311,14 @@ extension PXOneTapHeaderView {
         self.merchantView = merchantView
         self.addSubview(merchantView)
 
+        let bestRelation = PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.M_MARGIN)
+        bestRelation.priority = UILayoutPriority(rawValue: 900)
+        let minimalRelation = PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.XXS_MARGIN, relation: .greaterThanOrEqual)
+        minimalRelation.priority = UILayoutPriority(rawValue: 1000)
+
+
         let horizontalConstraints = [PXLayout.pinTop(view: merchantView, withMargin: -PXLayout.XXL_MARGIN),
-                                     PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.M_MARGIN),
+                                     bestRelation, minimalRelation,
                                      PXLayout.centerHorizontally(view: merchantView),
                                      PXLayout.matchWidth(ofView: merchantView)]
 

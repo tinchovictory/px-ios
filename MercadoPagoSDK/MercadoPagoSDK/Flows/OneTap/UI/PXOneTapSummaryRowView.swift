@@ -32,7 +32,7 @@ class PXOneTapSummaryRowView: UIView {
     }
 
     private func render() {
-        let rowHeight: CGFloat = data.isTotal ? 20 : 16
+        let rowHeight: CGFloat = data.isTotal && !UIDevice.isSmallDevice() ? 20 : 16
         let titleFont = data.isTotal ? Utils.getFont(size: PXLayout.S_FONT) : Utils.getFont(size: PXLayout.XXS_FONT)
         let valueFont = data.isTotal ? Utils.getSemiBoldFont(size: PXLayout.S_FONT) : Utils.getFont(size: PXLayout.XXS_FONT)
         let shouldAnimate = data.isTotal ? false : true

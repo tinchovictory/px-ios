@@ -110,7 +110,6 @@ extension PXOneTapViewController {
 
     private func renderViews() {
         contentView.prepareForRender()
-        let safeAreaBottomHeight = PXLayout.getSafeAreaBottomInset()
 
         // Add header view.
         let headerView = getHeaderView(selectedCard: selectedCard)
@@ -156,11 +155,8 @@ extension PXOneTapViewController {
             PXLayout.pinRight(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
             PXLayout.setHeight(owner: footerView, height: PXLayout.XXL_MARGIN).isActive = true
 
-            if safeAreaBottomHeight > 0 {
-                PXLayout.pinBottom(view: footerView, withMargin: PXLayout.XXS_MARGIN + safeAreaBottomHeight).isActive = true
-            } else {
-                PXLayout.pinBottom(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
-            }
+            let bottomMargin = getBottomPayButtonMargin()
+            PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
 
         if let selectedCard = selectedCard, selectedCard.isDisabled {
@@ -173,6 +169,19 @@ extension PXOneTapViewController {
         scrollView.showsVerticalScrollIndicator = false
 
         addCardSlider(inContainerView: cardSliderContentView)
+    }
+
+    private func getBottomPayButtonMargin() -> CGFloat {
+        let safeAreaBottomHeight = PXLayout.getSafeAreaBottomInset()
+        if safeAreaBottomHeight > 0 {
+            return PXLayout.XXS_MARGIN + safeAreaBottomHeight
+        }
+
+        if UIDevice.isSmallDevice() {
+            return PXLayout.XS_MARGIN
+        }
+
+        return PXLayout.M_MARGIN
     }
 
     private func removeNavigationTapGesture() {
