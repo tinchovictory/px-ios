@@ -339,16 +339,11 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
         if let discount = viewModel.amountHelper.discount {
             PXComponentFactory.Modal.show(viewController: discountViewController, title: discount.getDiscountDescription()) {
-
-                if UIDevice.isSmallDevice() {
-                    self.setupNavigationBar()
-                }
+                self.setupNavigationBar()
             }
         } else if viewModel.amountHelper.consumedDiscount {
             PXComponentFactory.Modal.show(viewController: discountViewController, title: "modal_title_consumed_discount".localized_beta) {
-                if UIDevice.isSmallDevice() {
-                    self.setupNavigationBar()
-                }
+                self.setupNavigationBar()
             }
         }
     }

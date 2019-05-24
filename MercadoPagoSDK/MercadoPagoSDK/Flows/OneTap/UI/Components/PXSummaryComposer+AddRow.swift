@@ -13,7 +13,8 @@ extension PXSummaryComposer {
         let shouldDisplayHelper = shouldDisplayChargesHelp
         let helperImage = shouldDisplayHelper ? helpIcon(color: summaryColor()) : nil
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
-        let chargeText = "onetap_purchase_summary_charges".localized_beta
+        let defaultChargeText = "onetap_purchase_summary_charges".localized_beta
+        let chargeText = additionalInfoSummary?.charges ?? defaultChargeText
         let row = OneTapHeaderSummaryData(chargeText, amountToShow, summaryColor(), textTransparency, false, helperImage, .charges)
         return row
     }
