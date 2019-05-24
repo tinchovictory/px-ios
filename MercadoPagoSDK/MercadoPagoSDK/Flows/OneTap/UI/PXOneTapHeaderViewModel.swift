@@ -23,4 +23,39 @@ class PXOneTapHeaderViewModel {
         self.data = data
         self.splitConfiguration = splitConfiguration
     }
+
+    internal func hasLargeHeaderOrLarger() -> Bool {
+        return self.splitConfiguration != nil && self.isLargeSummaryOrLarger()
+    }
+
+    internal func hasMediumHeaderOrLarger() -> Bool {
+        let splitCondition = self.splitConfiguration != nil && self.isMediumSummaryOrLarger()
+        let noSplitCondition = self.isLargeSummaryOrLarger()
+        let hasMediumHeader = splitCondition || noSplitCondition
+        return hasMediumHeader
+    }
+
+    private func isLargeSummaryOrLarger() -> Bool {
+        var chargeFound = false
+        var discountFound = false
+        for item in data {
+            if item.type == .charges {
+                chargeFound = true
+            }
+
+            if item.type == .discount {
+                discountFound = true
+            }
+        }
+        return chargeFound && discountFound
+    }
+
+    private func isMediumSummaryOrLarger() -> Bool {
+        for item in data {
+            if item.type == .charges || item.type == .discount  {
+                return true
+            }
+        }
+        return false
+    }
 }

@@ -15,6 +15,10 @@ internal extension UIDevice {
         return devices.contains(modelName)
     }
 
+    static func isLargeOrExtraLargeDevice() -> Bool {
+        return self.isLargeDevice() || self.isExtraLargeDevice()
+    }
+
     static func isLargeDevice() -> Bool {
         let devices = ["iPhone X", "iPhone XS"]
         let modelName = self.modelName.replacingOccurrences(of: "Simulator ", with: "")
