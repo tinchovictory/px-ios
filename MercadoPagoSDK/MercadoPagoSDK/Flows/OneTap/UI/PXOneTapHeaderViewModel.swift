@@ -25,7 +25,7 @@ class PXOneTapHeaderViewModel {
     }
 
     internal func hasLargeHeaderOrLarger() -> Bool {
-        return self.splitConfiguration != nil && self.isMediumSummaryOrLarger()
+        return self.splitConfiguration != nil && self.isLargeSummaryOrLarger()
     }
 
     internal func hasMediumHeaderOrLarger() -> Bool {
