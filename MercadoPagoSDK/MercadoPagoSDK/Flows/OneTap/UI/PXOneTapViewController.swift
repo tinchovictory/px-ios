@@ -325,7 +325,8 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
     func didTapCharges() {
         if let vc = viewModel.getChargeRuleViewController() {
-            let title = "onetap_purchase_summary_charges".localized_beta
+            let defaultTitle = "onetap_purchase_summary_charges".localized_beta
+            let title = vc.title ?? defaultTitle
             PXComponentFactory.Modal.show(viewController: vc, title: title) {
                 if UIDevice.isSmallDevice() {
                     self.setupNavigationBar()
@@ -339,16 +340,11 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
         if let discount = viewModel.amountHelper.discount {
             PXComponentFactory.Modal.show(viewController: discountViewController, title: discount.getDiscountDescription()) {
-
-                if UIDevice.isSmallDevice() {
-                    self.setupNavigationBar()
-                }
+                self.setupNavigationBar()
             }
         } else if viewModel.amountHelper.consumedDiscount {
             PXComponentFactory.Modal.show(viewController: discountViewController, title: "modal_title_consumed_discount".localized_beta) {
-                if UIDevice.isSmallDevice() {
-                    self.setupNavigationBar()
-                }
+                self.setupNavigationBar()
             }
         }
     }

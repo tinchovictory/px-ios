@@ -12,12 +12,14 @@ final class PXAdditionalInfoSummary: NSObject, Codable {
     var subtitle: String?
     var purpose: String?
     var imageUrl: String?
+    var charges: String?
 
-    init(title: String?, subtitle: String?, purpose: String?, imageUrl: String?) {
+    init(title: String?, subtitle: String?, purpose: String?, imageUrl: String?, charges: String?) {
         self.title = title
         self.subtitle = subtitle
         self.purpose = purpose
         self.imageUrl = imageUrl
+        self.charges = charges
     }
 
     enum PXAdditionalInfoSummaryKeys: String, CodingKey {
@@ -25,6 +27,7 @@ final class PXAdditionalInfoSummary: NSObject, Codable {
         case subtitle
         case purpose
         case imageUrl = "image_url"
+        case charges
     }
 
     required convenience init(from decoder: Decoder) throws {
@@ -33,7 +36,8 @@ final class PXAdditionalInfoSummary: NSObject, Codable {
         let subtitle: String? = try container.decodeIfPresent(String.self, forKey: .subtitle)
         let purpose: String? = try container.decodeIfPresent(String.self, forKey: .purpose)
         let imageUrl: String? = try container.decodeIfPresent(String.self, forKey: .imageUrl)
-        self.init(title: title, subtitle: subtitle, purpose: purpose, imageUrl: imageUrl)
+        let charges: String? = try container.decodeIfPresent(String.self, forKey: .charges)
+        self.init(title: title, subtitle: subtitle, purpose: purpose, imageUrl: imageUrl, charges: charges)
     }
 
     func encode(to encoder: Encoder) throws {
@@ -42,6 +46,7 @@ final class PXAdditionalInfoSummary: NSObject, Codable {
         try container.encodeIfPresent(self.subtitle, forKey: .subtitle)
         try container.encodeIfPresent(self.purpose, forKey: .purpose)
         try container.encodeIfPresent(self.imageUrl, forKey: .imageUrl)
+        try container.encodeIfPresent(self.charges, forKey: .charges)
     }
 
     func toJSONString() throws -> String? {
