@@ -88,8 +88,7 @@ class PXOneTapHeaderView: PXComponentView {
 extension PXOneTapHeaderView {
 
     private func shouldShowHorizontally(model: PXOneTapHeaderViewModel) -> Bool {
-
-        if UIDevice.isExtraLargeDevice() {
+        if UIDevice.isLargeOrExtraLargeDevice() {
             //an extra large device will always be able to accomodate al view in vertical mode
             return false
         }
@@ -99,14 +98,8 @@ extension PXOneTapHeaderView {
             return true
         }
 
-        if UIDevice.isLargeDevice() {
-            // a large device will only collapse if it has medium summary and split cell or larger
-            return model.hasLargeHeaderOrLarger()
-        }
-
         // a regular device will collapse if combined rows result in a medium sized header or larger
         return model.hasMediumHeaderOrLarger()
-
     }
 
     private func removeAnimations() {

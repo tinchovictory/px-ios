@@ -26,7 +26,7 @@ internal extension UIDevice {
     }
 
     static func isExtraLargeDevice() -> Bool {
-        let devices = ["iPhone 6 Plus", "iPhone 6s Plus", "iPhone 7 Plus", "iPhone 8 Plus", "iPhone XS Max", "iPhone XR"]
+        let devices = ["iPhone XS Max", "iPhone XR"]
         let modelName = self.modelName.replacingOccurrences(of: "Simulator ", with: "")
         return devices.contains(modelName)
     }
