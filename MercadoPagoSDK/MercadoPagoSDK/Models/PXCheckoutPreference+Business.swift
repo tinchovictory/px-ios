@@ -302,7 +302,7 @@ extension PXCheckoutPreference {
             itemsDic.append(item.getItemForTracking())
         }
         checkoutPrefDic["items"] = itemsDic
-        checkoutPrefDic["payment_preference"] = paymentPreference.getPaymentPreferenceForTracking()
+        checkoutPrefDic["payment_methods"] = paymentPreference.getPaymentPreferenceForTracking()
 
         return checkoutPrefDic
     }

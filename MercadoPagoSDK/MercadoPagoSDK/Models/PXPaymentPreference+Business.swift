@@ -119,11 +119,11 @@ extension PXPaymentPreference {
 extension PXPaymentPreference {
     func getPaymentPreferenceForTracking() -> [String: Any] {
         var paymentPrefDic: [String: Any] = [:]
-        paymentPrefDic["max_installments"] = maxAcceptedInstallments
+        paymentPrefDic["installments"] = maxAcceptedInstallments
         paymentPrefDic["default_installments"] = defaultInstallments
-        paymentPrefDic["excluded_payment_methdos_ids"] = excludedPaymentMethodIds
-        paymentPrefDic["excluded_payment_types_ids"] = excludedPaymentTypeIds
-        paymentPrefDic["card_id"] = cardId
+        paymentPrefDic["excluded_payment_methods"] = excludedPaymentMethodIds
+        paymentPrefDic["excluded_payment_types"] = excludedPaymentTypeIds
+        paymentPrefDic["default_card_id"] = cardId
         return paymentPrefDic
     }
 }
