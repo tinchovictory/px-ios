@@ -41,7 +41,7 @@ open class MercadoPagoCheckout: NSObject {
             fatalError("CheckoutPreference or preferenceId must be mandatory.")
         }
 
-        viewModel = MercadoPagoCheckoutViewModel(checkoutPreference: choPref, publicKey: builder.publicKey, privateKey: builder.privateKey, advancedConfig: builder.advancedConfig)
+        viewModel = MercadoPagoCheckoutViewModel(checkoutPreference: choPref, publicKey: builder.publicKey, privateKey: builder.privateKey, advancedConfig: builder.advancedConfig, trackingConfig: builder.trackingConfig)
 
         // Set Theme.
         if let customTheme = builder.advancedConfig?.theme {
