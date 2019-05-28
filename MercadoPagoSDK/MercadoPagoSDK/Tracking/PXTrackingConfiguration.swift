@@ -7,6 +7,7 @@
 
 import UIKit
 
+@objcMembers
 open class PXTrackingConfiguration {
     let trackListener: PXTrackerListener?
     let flowName: String?
@@ -23,15 +24,15 @@ open class PXTrackingConfiguration {
         self.sessionId = sessionId
     }
 
-    func updateTracker() {
+    internal func updateTracker() {
         //TODO: replace PXTracker internally with a better solution based on this class
         if let trackListener = trackListener {
-            PXTracker.setListener(trackListener,
-                                  flowName: flowName,
-                                  flowDetails: flowDetails)
+            MPXTracker.sharedInstance.setTrack(listener: trackListener)
+            MPXTracker.sharedInstance.setFlowName(name: flowName)
+            MPXTracker.sharedInstance.setFlowDetails(flowDetails: flowDetails)
         }
         if let sessionId = sessionId {
-            PXTracker.setCustomSessionId(customSessionId: sessionId)
+            MPXTracker.sharedInstance.setCustomSessionId(customSessionId)
         }
     }
 }

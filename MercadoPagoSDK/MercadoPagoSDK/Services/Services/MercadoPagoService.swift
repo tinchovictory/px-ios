@@ -11,8 +11,10 @@ import Foundation
 internal class MercadoPagoService: NSObject {
 
     let MP_DEFAULT_TIME_OUT = 15.0
+    let MP_DEFAULT_PRODUCT_ID = "BJEO9TFBF6RG01IIIOU0"
 
     var baseURL: String
+
 
     init (baseURL: String) {
         self.baseURL = baseURL
@@ -53,7 +55,7 @@ internal class MercadoPagoService: NSObject {
         // Add session id
         request.setValue(MPXTracker.sharedInstance.getRequestId(), forHTTPHeaderField: "X-Request-Id")
         request.setValue(MPXTracker.sharedInstance.getSessionID(), forHTTPHeaderField: "X-Session-Id")
-        request.setValue("BJEO9TFBF6RG01IIIOU0", forHTTPHeaderField: "X-Product-Id")
+        request.setValue(MP_DEFAULT_PRODUCT_ID, forHTTPHeaderField: "X-Product-Id")
 
         if let headers = headers {
             for header in headers {

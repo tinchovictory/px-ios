@@ -26,8 +26,4 @@ open class PXTracker: NSObject {
         MPXTracker.sharedInstance.setFlowDetails(flowDetails: flowDetails)
         MPXTracker.sharedInstance.setFlowName(name: flowName)
     }
-
-    internal static func setCustomSessionId(customSessionId: String?) {
-        MPXTracker.sharedInstance.setCustomSessionId(customSessionId: customSessionId)
-    }
 }

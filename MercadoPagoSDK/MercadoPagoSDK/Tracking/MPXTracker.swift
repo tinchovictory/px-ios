@@ -37,7 +37,7 @@ internal extension MPXTracker {
         self.flowName = name
     }
 
-    func setCustomSessionId(customSessionId: String?) {
+    func setCustomSessionId(_ customSessionId: String?) {
         self.customSessionId = customSessionId
     }
 
