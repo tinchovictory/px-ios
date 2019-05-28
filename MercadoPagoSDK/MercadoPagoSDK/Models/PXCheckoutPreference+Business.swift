@@ -295,6 +295,7 @@ extension PXCheckoutPreference {
 // MARK: Tracking
 extension PXCheckoutPreference {
     func getCheckoutPrefForTracking() -> [String: Any] {
+        //TODO: improve using a new struct codable compliant to avoid the manual creation of this dictionary
         var checkoutPrefDic: [String: Any] = [:]
 
         var itemsDic: [Any] = []
@@ -302,7 +303,7 @@ extension PXCheckoutPreference {
             itemsDic.append(item.getItemForTracking())
         }
         checkoutPrefDic["items"] = itemsDic
-        checkoutPrefDic["payment_preference"] = paymentPreference.getPaymentPreferenceForTracking()
+        checkoutPrefDic["payment_methods"] = paymentPreference.getPaymentPreferenceForTracking()
 
         return checkoutPrefDic
     }
