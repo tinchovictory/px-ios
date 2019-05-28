@@ -295,6 +295,7 @@ extension PXCheckoutPreference {
 // MARK: Tracking
 extension PXCheckoutPreference {
     func getCheckoutPrefForTracking() -> [String: Any] {
+        //TODO: improve using a new struct codable compliant to avoid the manual creation of this dictionary
         var checkoutPrefDic: [String: Any] = [:]
 
         var itemsDic: [Any] = []

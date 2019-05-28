@@ -118,6 +118,7 @@ extension PXPaymentPreference {
 // MARK: Tracking
 extension PXPaymentPreference {
     func getPaymentPreferenceForTracking() -> [String: Any] {
+        //TODO: improve using a new struct codable compliant to avoid the manual creation of this dictionary
         var paymentPrefDic: [String: Any] = [:]
         paymentPrefDic["installments"] = maxAcceptedInstallments
         paymentPrefDic["default_installments"] = defaultInstallments
