@@ -21,6 +21,7 @@ open class MercadoPagoCheckoutBuilder: NSObject {
 
     internal var paymentConfig: PXPaymentConfiguration?
     internal var advancedConfig: PXAdvancedConfiguration?
+    internal var trackingConfig: PXTrackingConfiguration?
 
     internal var defaultUIColor: UIColor?
 
@@ -80,6 +81,16 @@ extension MercadoPagoCheckoutBuilder {
     @discardableResult
     open func setAdvancedConfiguration(config: PXAdvancedConfiguration) -> MercadoPagoCheckoutBuilder {
         self.advancedConfig = config
+        return self
+    }
+
+    /**
+     It provides support for tracking related functionalities.
+     - parameter config: `PXTrackingConfiguration` object.
+     */
+    @discardableResult
+    open func setTrackingConfiguration(config: PXTrackingConfiguration) -> MercadoPagoCheckoutBuilder {
+        self.trackingConfig = config
         return self
     }
 

@@ -18,6 +18,7 @@ import UIKit
     private var trackListener: PXTrackerListener?
     private var flowDetails: [String: Any]?
     private var flowName: String?
+    private var customSessionId: String?
     private var sessionService: SessionService = SessionService()
 }
 
@@ -36,6 +37,10 @@ internal extension MPXTracker {
         self.flowName = name
     }
 
+    func setCustomSessionId(_ customSessionId: String?) {
+        self.customSessionId = customSessionId
+    }
+
     func startNewSession() {
         sessionService.startNewSession()
     }
@@ -45,7 +50,11 @@ internal extension MPXTracker {
     }
 
     func getSessionID() -> String {
-        return sessionService.getSessionId()
+        return customSessionId ?? sessionService.getSessionId()
+    }
+
+    func getRequestId() -> String {
+        return sessionService.getRequestId()
     }
 
     func clean() {

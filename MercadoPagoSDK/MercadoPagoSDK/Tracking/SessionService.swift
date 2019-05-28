@@ -21,6 +21,10 @@ final internal class SessionService {
         return sessionId
     }
 
+    func getRequestId() -> String {
+        return SessionService.getUUID()
+    }
+
     func startNewSession() {
         sessionId = SessionService.getUUID()
     }
