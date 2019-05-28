@@ -84,7 +84,7 @@
 
     // AdvancedConfig
     PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
-    [advancedConfig setExpressEnabled:YES];
+    [advancedConfig setExpressEnabled:NO];
 
     PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"test_product_id"];
     [advancedConfig setDiscountParamsConfiguration: disca];

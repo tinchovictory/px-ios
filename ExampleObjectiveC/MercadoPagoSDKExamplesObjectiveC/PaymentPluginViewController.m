@@ -53,7 +53,7 @@
 }
 
 - (BOOL)shouldSkipUserConfirmation {
-    return NO;
+    return YES;
 }
 
 -(void)startPaymentWithCheckoutStore:(PXCheckoutStore *)checkoutStore errorHandler:(id<PXPaymentProcessorErrorHandler>)errorHandler successWithBasePayment:(void (^)(id<PXBasePayment> _Nonnull))successWithBasePayment {
