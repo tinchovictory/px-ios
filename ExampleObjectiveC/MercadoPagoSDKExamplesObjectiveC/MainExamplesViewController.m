@@ -141,7 +141,7 @@
     [self.checkoutBuilder setLanguage:@"es"];
 
     // Add custom translation objc-compatible example.
-    [self.checkoutBuilder addCustomTranslationWithKey:PXCustomTranslationKeyHow_to_pay translation:@"¿Qué pagás?"];
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyHow_to_pay withTranslation:@"¿Qué pagás?"];
 
     MercadoPagoCheckout *mpCheckout = [[MercadoPagoCheckout alloc] initWithBuilder:self.checkoutBuilder];
 
