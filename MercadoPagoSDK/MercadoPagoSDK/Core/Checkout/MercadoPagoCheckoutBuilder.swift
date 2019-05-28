@@ -114,8 +114,8 @@ extension MercadoPagoCheckoutBuilder {
     // Only for Loyalty custom verb support (objc)
     /// :nodoc:
     @discardableResult
-    open func addCustomTranslation(key: PXCustomTranslation, translation: String) -> MercadoPagoCheckoutBuilder {
-        Localizator.sharedInstance.addCustomTranslation(key.getValue, translation)
+    open func addCustomTranslation(key: PXCustomTranslationKey, translation: String) -> MercadoPagoCheckoutBuilder {
+        Localizator.sharedInstance.addCustomTranslation(key, translation)
         return self
     }
 }
