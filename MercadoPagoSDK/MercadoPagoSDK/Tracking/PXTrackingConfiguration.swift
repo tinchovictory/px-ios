@@ -32,7 +32,7 @@ open class PXTrackingConfiguration {
             MPXTracker.sharedInstance.setFlowDetails(flowDetails: flowDetails)
         }
         if let sessionId = sessionId {
-            MPXTracker.sharedInstance.setCustomSessionId(customSessionId)
+            MPXTracker.sharedInstance.setCustomSessionId(sessionId)
         }
     }
 }
