@@ -121,9 +121,22 @@ extension PXPaymentPreference {
         var paymentPrefDic: [String: Any] = [:]
         paymentPrefDic["installments"] = maxAcceptedInstallments
         paymentPrefDic["default_installments"] = defaultInstallments
-        paymentPrefDic["excluded_payment_methods"] = excludedPaymentMethodIds
-        paymentPrefDic["excluded_payment_types"] = excludedPaymentTypeIds
+        paymentPrefDic["excluded_payment_methods"] = transformTrackingArray(excludedPaymentMethodIds)
+        paymentPrefDic["excluded_payment_types"] = transformTrackingArray(excludedPaymentTypeIds)
         paymentPrefDic["default_card_id"] = cardId
         return paymentPrefDic
+    }
+
+    private func transformTrackingArray(_ items: [String]) -> [[String:String]] {
+        var newArray = [[String:String]]()
+        for item in items {
+            let newItem = transformTrackingItem(item)
+            newArray.append(newItem)
+        }
+        return newArray
+    }
+
+    private func transformTrackingItem(_ item: String) -> [String:String] {
+        return ["id":item]
     }
 }
