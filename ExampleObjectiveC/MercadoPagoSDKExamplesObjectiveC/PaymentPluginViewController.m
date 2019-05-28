@@ -45,11 +45,11 @@
 
 #pragma mark - Payment Plugin implementation.
 - (UIViewController * _Nullable)paymentProcessorViewController {
-    return nil;
+    return self;
 }
 
 - (BOOL)support {
-    return YES;
+    return NO;
 }
 
 - (BOOL)shouldSkipUserConfirmation {

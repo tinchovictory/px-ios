@@ -139,7 +139,10 @@
     // [self.mpCheckout discountNotAvailable];
 
     [self.checkoutBuilder setLanguage:@"es"];
-  
+
+    // Add custom translation objc-compatible example.
+    [self.checkoutBuilder addCustomTranslationWithKey:PXCustomTranslationHow_to_pay translation:@"¿Qué pagas?"];
+
     MercadoPagoCheckout *mpCheckout = [[MercadoPagoCheckout alloc] initWithBuilder:self.checkoutBuilder];
 
     //[mpCheckout startWithLazyInitProtocol:self];

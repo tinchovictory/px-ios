@@ -8,14 +8,6 @@
 
 import Foundation
 
-// Only for MoneyIn custom verb support.
-/// :nodoc
-public enum PXCustomTranslationKey: String {
-    case total_to_pay = "total_row_title_default"
-    case total_to_pay_onetap = "onetap_purchase_summary_total"
-    case how_to_pay = "¿Cómo quieres pagar?"
-}
-
 internal class Localizator {
     static let sharedInstance = Localizator()
     private var language: String = NSLocale.preferredLanguages[0]
@@ -67,6 +59,15 @@ internal extension Localizator {
     func setLanguage(_ string: String, _ customTranslations: [PXCustomTranslationKey: String]) {
         self.language = string
         self.customTrans = customTranslations
+    }
+
+    func addCustomTranslation(_ key: PXCustomTranslationKey, _ translation: String) {
+        if customTrans != nil {
+            customTrans?[key] = translation
+        } else {
+            customTrans = [PXCustomTranslationKey: String]()
+            customTrans?[key] = translation
+        }
     }
 }
 
