@@ -41,6 +41,10 @@ struct PXSummaryComposer {
     }
 
     private func generateSummaryItems() -> [OneTapHeaderSummaryData] {
+        if selectedCard == nil {
+            return getMinimalSummary()
+        }
+
         var internalSummary = [OneTapHeaderSummaryData]()
 
         if shouldDisplayCharges() || shouldDisplayDiscount() {
@@ -61,5 +65,9 @@ struct PXSummaryComposer {
 
         internalSummary.append(totalToPayRow())
         return internalSummary
+    }
+
+    private func getMinimalSummary() -> [OneTapHeaderSummaryData] {
+        return [totalToPayRow()]
     }
 }
