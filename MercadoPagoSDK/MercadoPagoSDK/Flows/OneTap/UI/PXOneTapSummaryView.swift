@@ -9,9 +9,11 @@ import UIKit
 
 class PXOneTapSummaryView: PXComponentView {
     private var data: [OneTapHeaderSummaryData] = []
+    private weak var delegate: PXOneTapSummaryProtocol?
 
-    init(data: [OneTapHeaderSummaryData] = []) {
+    init(data: [OneTapHeaderSummaryData] = [], delegate: PXOneTapSummaryProtocol) {
         self.data = data
+        self.delegate = delegate
         super.init()
         render()
     }
@@ -45,9 +47,32 @@ class PXOneTapSummaryView: PXComponentView {
             PXLayout.centerHorizontally(view: rowView).isActive = true
             PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
+
+            let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
+            rowView.addGestureRecognizer(tap)
+            rowView.isUserInteractionEnabled = true
         }
 
         self.pinLastSubviewToBottom(withMargin: PXLayout.S_MARGIN)?.isActive = true
+    }
+
+    func tapRow(_ sender: UITapGestureRecognizer) {
+        if let rowView = sender.view as? PXOneTapSummaryRowView,
+            let type = rowView.data.type,
+            let action = rowAction(for: type) {
+                action()
+        }
+    }
+
+    private func rowAction(for type: PXOneTapSummaryRowView.RowType) -> PXOneTapSummaryRowView.Handler? {
+        switch type {
+        case .charges:
+            return self.delegate?.didTapCharges
+        case .discount:
+            return self.delegate?.didTapDiscount
+        default:
+            return nil
+        }
     }
 
     func update(_ newData: [OneTapHeaderSummaryData], hideAnimatedView: Bool = false) {

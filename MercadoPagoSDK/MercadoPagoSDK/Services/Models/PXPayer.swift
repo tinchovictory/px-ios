@@ -153,8 +153,8 @@ extension PXPayer {
         case type
         case entityType = "entity_type"
         case email = "email"
-        case firstName = "first_name"
-        case lastName = "last_name"
+        case firstName = "name"
+        case lastName = "surname"
         case legalName = "legal_name"
     }
 

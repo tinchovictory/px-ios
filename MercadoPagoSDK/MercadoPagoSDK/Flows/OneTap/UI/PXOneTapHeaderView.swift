@@ -14,7 +14,7 @@ class PXOneTapHeaderView: PXComponentView {
         }
     }
 
-    private weak var delegate: PXOneTapHeaderProtocol?
+    internal weak var delegate: PXOneTapHeaderProtocol?
     private var isShowingHorizontally: Bool = false
     private var verticalLayoutConstraints: [NSLayoutConstraint] = []
     private var horizontalLayoutConstraints: [NSLayoutConstraint] = []
@@ -88,12 +88,18 @@ class PXOneTapHeaderView: PXComponentView {
 extension PXOneTapHeaderView {
 
     private func shouldShowHorizontally(model: PXOneTapHeaderViewModel) -> Bool {
-        let data = model.data
-        if UIDevice.isSmallDevice() && model.splitConfiguration != nil {
-            return true
-        } else {
-            return UIDevice.isSmallDevice() && data.count != 1 && !data[0].isTotal
+        if UIDevice.isLargeOrExtraLargeDevice() {
+            //an extra large device will always be able to accomodate al view in vertical mode
+            return false
         }
+
+        if UIDevice.isSmallDevice() {
+            //a small device will never be able to accomodate al view in vertical mode
+            return true
+        }
+
+        // a regular device will collapse if combined rows result in a medium sized header or larger
+        return model.hasMediumHeaderOrLarger()
     }
 
     private func removeAnimations() {
@@ -269,7 +275,7 @@ extension PXOneTapHeaderView {
         self.removeMargins()
         backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
-        let summaryView = PXOneTapSummaryView(data: model.data)
+        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self)
         self.summaryView = summaryView
 
         addSubview(summaryView)
@@ -291,11 +297,21 @@ extension PXOneTapHeaderView {
 
         let showHorizontally = shouldShowHorizontally(model: model)
         let merchantView = PXOneTapHeaderMerchantView(image: model.icon, title: model.title, subTitle: model.subTitle, showHorizontally: showHorizontally)
+
+        let headerTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleHeaderTap))
+        merchantView.addGestureRecognizer(headerTapGesture)
+
         self.merchantView = merchantView
         self.addSubview(merchantView)
 
+        let bestRelation = PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.M_MARGIN)
+        bestRelation.priority = UILayoutPriority(rawValue: 900)
+        let minimalRelation = PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.XXS_MARGIN, relation: .greaterThanOrEqual)
+        minimalRelation.priority = UILayoutPriority(rawValue: 1000)
+
+
         let horizontalConstraints = [PXLayout.pinTop(view: merchantView, withMargin: -PXLayout.XXL_MARGIN),
-                                     PXLayout.put(view: merchantView, aboveOf: summaryView, withMargin: -PXLayout.M_MARGIN),
+                                     bestRelation, minimalRelation,
                                      PXLayout.centerHorizontally(view: merchantView),
                                      PXLayout.matchWidth(ofView: merchantView)]
 
@@ -308,20 +324,10 @@ extension PXOneTapHeaderView {
 
         self.verticalLayoutConstraints.append(contentsOf: verticalLayoutConstraints)
 
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleSummaryTap))
-        summaryView.addGestureRecognizer(tapGesture)
-
         if showHorizontally {
             animateToHorizontal()
         } else {
             animateToVertical()
         }
-    }
-}
-
-// MARK: Publics.
-extension PXOneTapHeaderView {
-    @objc func handleSummaryTap() {
-        delegate?.didTapSummary()
     }
 }

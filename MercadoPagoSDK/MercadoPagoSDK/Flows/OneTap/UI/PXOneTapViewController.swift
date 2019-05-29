@@ -34,6 +34,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     let timeOutPayButton: TimeInterval
 
     var cardSliderMarginConstraint: NSLayoutConstraint?
+    private var navigationBarTapGesture: UITapGestureRecognizer?
 
     // MARK: Lifecycle/Publics
     init(viewModel: PXOneTapViewModel, timeOutPayButton: TimeInterval = 15, callbackPaymentData : @escaping ((PXPaymentData) -> Void), callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), callbackExit: @escaping (() -> Void), finishButtonAnimation: @escaping (() -> Void)) {
@@ -62,6 +63,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         PXNotificationManager.UnsuscribeTo.animateButton(loadingButtonComponent)
+        removeNavigationTapGesture()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -91,6 +93,7 @@ extension PXOneTapViewController {
         navigationController?.navigationBar.backgroundColor = ThemeManager.shared.highlightBackgroundColor()
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         navigationController?.navigationBar.backgroundColor = .clear
+        addNavigationTapGesture()
     }
 
     private func setupUI() {
@@ -107,7 +110,6 @@ extension PXOneTapViewController {
 
     private func renderViews() {
         contentView.prepareForRender()
-        let safeAreaBottomHeight = PXLayout.getSafeAreaBottomInset()
 
         // Add header view.
         let headerView = getHeaderView(selectedCard: selectedCard)
@@ -153,11 +155,8 @@ extension PXOneTapViewController {
             PXLayout.pinRight(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
             PXLayout.setHeight(owner: footerView, height: PXLayout.XXL_MARGIN).isActive = true
 
-            if safeAreaBottomHeight > 0 {
-                PXLayout.pinBottom(view: footerView, withMargin: PXLayout.XXS_MARGIN + safeAreaBottomHeight).isActive = true
-            } else {
-                PXLayout.pinBottom(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
-            }
+            let bottomMargin = getBottomPayButtonMargin()
+            PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
 
         if let selectedCard = selectedCard, selectedCard.isDisabled {
@@ -170,6 +169,33 @@ extension PXOneTapViewController {
         scrollView.showsVerticalScrollIndicator = false
 
         addCardSlider(inContainerView: cardSliderContentView)
+    }
+
+    private func getBottomPayButtonMargin() -> CGFloat {
+        let safeAreaBottomHeight = PXLayout.getSafeAreaBottomInset()
+        if safeAreaBottomHeight > 0 {
+            return PXLayout.XXS_MARGIN + safeAreaBottomHeight
+        }
+
+        if UIDevice.isSmallDevice() {
+            return PXLayout.XS_MARGIN
+        }
+
+        return PXLayout.M_MARGIN
+    }
+
+    private func removeNavigationTapGesture() {
+        if let targetGesture = navigationBarTapGesture {
+            navigationController?.navigationBar.removeGestureRecognizer(targetGesture)
+        }
+    }
+
+    private func addNavigationTapGesture() {
+        removeNavigationTapGesture()
+        navigationBarTapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapOnNavigationbar))
+        if let navTapGesture = navigationBarTapGesture {
+            navigationController?.navigationBar.addGestureRecognizer(navTapGesture)
+        }
     }
 }
 
@@ -221,6 +247,10 @@ extension PXOneTapViewController {
 
 // MARK: User Actions.
 extension PXOneTapViewController {
+    @objc func didTapOnNavigationbar() {
+        didTapMerchantHeader()
+    }
+
     @objc func shouldChangePaymentMethod() {
         callbackPaymentData(viewModel.getClearPaymentData())
     }
@@ -287,21 +317,34 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
         }
     }
 
-    func didTapSummary() {
-        let discountViewController = PXDiscountDetailViewController(amountHelper: viewModel.amountHelper)
+    func didTapMerchantHeader() {
+        if let externalVC = viewModel.getExternalViewControllerForSubtitle() {
+            PXComponentFactory.Modal.show(viewController: externalVC, title: externalVC.title)
+        }
+    }
 
-        if let discount = viewModel.amountHelper.discount {
-            PXComponentFactory.Modal.show(viewController: discountViewController, title: discount.getDiscountDescription()) {
-
+    func didTapCharges() {
+        if let vc = viewModel.getChargeRuleViewController() {
+            let defaultTitle = "onetap_purchase_summary_charges".localized_beta
+            let title = vc.title ?? defaultTitle
+            PXComponentFactory.Modal.show(viewController: vc, title: title) {
                 if UIDevice.isSmallDevice() {
                     self.setupNavigationBar()
                 }
             }
+        }
+    }
+
+    func didTapDiscount() {
+        let discountViewController = PXDiscountDetailViewController(amountHelper: viewModel.amountHelper)
+
+        if let discount = viewModel.amountHelper.discount {
+            PXComponentFactory.Modal.show(viewController: discountViewController, title: discount.getDiscountDescription()) {
+                self.setupNavigationBar()
+            }
         } else if viewModel.amountHelper.consumedDiscount {
             PXComponentFactory.Modal.show(viewController: discountViewController, title: "modal_title_consumed_discount".localized_beta) {
-                if UIDevice.isSmallDevice() {
-                    self.setupNavigationBar()
-                }
+                self.setupNavigationBar()
             }
         }
     }

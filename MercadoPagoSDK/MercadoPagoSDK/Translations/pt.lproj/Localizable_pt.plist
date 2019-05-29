@@ -591,6 +591,13 @@
 		<key>value</key>
 		<string>Sua compra</string>
 	</dict>
+	<key>onetap_purchase_summary_charges</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Cobranças</string>
+	</dict>
 	<key>onetap_select_installment_title</key>
 	<dict>
 		<key>comment</key>
