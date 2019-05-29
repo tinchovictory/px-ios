@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct PXAgreement: Codable {
+open class PXAgreement: Codable {
     let merchantAccounts: [PXMerchantAccount]
     enum CodingKeys: String, CodingKey {
         case merchantAccounts = "merchant_accounts"

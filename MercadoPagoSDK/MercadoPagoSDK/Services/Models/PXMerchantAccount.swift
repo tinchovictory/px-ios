@@ -7,9 +7,9 @@
 
 import UIKit
 
-public struct PXMerchantAccount: Codable {
+open class PXMerchantAccount: Codable {
     let merchantId: String
-    let branchId: String
+    let branchId: String?
     let paymentMethodOptionId: String
 
     enum CodingKeys: String, CodingKey {
