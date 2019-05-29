@@ -52,6 +52,10 @@ internal extension MPXTracker {
         MPXTracker.sharedInstance.flowDetails = [:]
         MPXTracker.sharedInstance.trackListener = nil
     }
+
+    func getFlowName() -> String? {
+        return flowName
+    }
 }
 
 // MARK: Public interfase.
