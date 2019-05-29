@@ -116,4 +116,12 @@ open class PXPaymentProcessorNavigationHandler: NSObject {
     open func hideLoading() {
         flow?.pxNavigationHandler.dismissLoading()
     }
+
+    /**
+     Close checkout.
+     */
+    /// :nodoc:
+    open func close() {
+        PXNotificationManager.Post.attemptToClose()
+    }
 }
