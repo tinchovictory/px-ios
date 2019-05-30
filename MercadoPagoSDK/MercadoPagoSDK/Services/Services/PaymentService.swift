@@ -12,12 +12,12 @@ internal class PaymentService: MercadoPagoService {
 
     let merchantPublicKey: String!
     let payerAccessToken: String?
-    let processingMode: String!
+    let processingModes: [String]
 
-    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingMode: String) {
+    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingModes: [String]) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
-        self.processingMode = processingMode
+        self.processingModes = processingModes
         super.init(baseURL: baseURL)
     }
     
@@ -25,7 +25,7 @@ internal class PaymentService: MercadoPagoService {
 
         let params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
 
-        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingMode: processingMode, charges: charges)
+        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingModes: processingModes, charges: charges)
         let bodyJSON = try? body.toJSON()
 
         self.request( uri: uri, params: params, body: bodyJSON, method: HTTPMethod.post, cache: false, success: {(data: Data) -> Void in
@@ -56,7 +56,8 @@ internal class PaymentService: MercadoPagoService {
         var params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
         params.paramsAppend(key: ApiParams.PAYMENT_METHOD_ID, value: payment_method_id)
         params.paramsAppend(key: ApiParams.BIN, value: bin)
-        params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingMode)
+        //FIXME: add logic to transform processing modes array into query params
+//        params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingModes)
 
         if bin != nil {
             self.request(uri: uri, params: params, body: nil, method: HTTPMethod.get, success: success, failure: { (error) in
