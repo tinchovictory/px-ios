@@ -65,7 +65,7 @@ import Foundation
     /**
      processing mode
      */
-    open var processingMode: String? = "aggregator"
+    open var processingModes: [String] = ["aggregator"]
 
     /**
      Additional info - json string.
@@ -107,7 +107,7 @@ import Foundation
         self.payer = PXPayer(email: payerEmail)
     }
 
-    internal init(id: String, items: [PXItem], payer: PXPayer, paymentPreference: PXPaymentPreference?, siteId: String, expirationDateTo: Date?, expirationDateFrom: Date?, site: PXSite?, differentialPricing: PXDifferentialPricing?, marketplace: String?, branchId: String?, processingMode: String? = "aggregator") {
+    internal init(id: String, items: [PXItem], payer: PXPayer, paymentPreference: PXPaymentPreference?, siteId: String, expirationDateTo: Date?, expirationDateFrom: Date?, site: PXSite?, differentialPricing: PXDifferentialPricing?, marketplace: String?, branchId: String?, processingModes: [String] = ["aggregator"]) {
         self.id = id
         self.items = items
         self.payer = payer
@@ -119,7 +119,7 @@ import Foundation
         self.expirationDateFrom = expirationDateFrom
         self.site = site
         self.differentialPricing = differentialPricing
-        self.processingMode = processingMode
+        self.processingModes = processingModes
         self.branchId = branchId
         self.marketplace = marketplace
     }
@@ -138,14 +138,14 @@ import Foundation
         case marketplace
         case additionalInfo = "additional_info"
         case branchId = "branch_id"
-        case processingMode = "processing_mode"
+        case processingModes = "processing_modes"
     }
 
     required public convenience init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PXCheckoutPreferenceKeys.self)
         let id: String = try container.decode(String.self, forKey: .id)
         let branchId: String? = try container.decodeIfPresent(String.self, forKey: .branchId)
-        let processingMode: String = try container.decodeIfPresent(String.self, forKey: .processingMode) ?? "aggregator"
+        let processingModes: [String] = try container.decodeIfPresent([String].self, forKey: .processingModes) ?? ["aggregator"]
         let items: [PXItem] = try container.decodeIfPresent([PXItem].self, forKey: .items) ?? []
         let paymentPreference: PXPaymentPreference? = try container.decodeIfPresent(PXPaymentPreference.self, forKey: .paymentPreference)
         let payer: PXPayer = try container.decode(PXPayer.self, forKey: .payer)
@@ -155,7 +155,7 @@ import Foundation
         let site: PXSite? = try container.decodeIfPresent(PXSite.self, forKey: .site)
         let differentialPricing: PXDifferentialPricing? = try container.decodeIfPresent(PXDifferentialPricing.self, forKey: .differentialPricing)
         let marketplace: String? = try container.decodeIfPresent(String.self, forKey: .marketplace)
-        self.init(id: id, items: items, payer: payer, paymentPreference: paymentPreference, siteId: siteId, expirationDateTo: expirationDateTo, expirationDateFrom: expirationDateFrom, site: site, differentialPricing: differentialPricing, marketplace: marketplace, branchId: branchId, processingMode: processingMode)
+        self.init(id: id, items: items, payer: payer, paymentPreference: paymentPreference, siteId: siteId, expirationDateTo: expirationDateTo, expirationDateFrom: expirationDateFrom, site: site, differentialPricing: differentialPricing, marketplace: marketplace, branchId: branchId, processingModes: processingModes)
         self.additionalInfo = try container.decodeIfPresent(String.self, forKey: .additionalInfo)
         populateAdditionalInfoModel()
     }
@@ -173,7 +173,7 @@ import Foundation
         try container.encodeIfPresent(self.marketplace, forKey: .marketplace)
         try container.encodeIfPresent(self.additionalInfo, forKey: .additionalInfo)
         try container.encodeIfPresent(self.branchId, forKey: .branchId)
-        try container.encodeIfPresent(self.processingMode, forKey: .processingMode)
+        try container.encodeIfPresent(self.processingModes, forKey: .processingModes)
     }
 
     /// :nodoc:
