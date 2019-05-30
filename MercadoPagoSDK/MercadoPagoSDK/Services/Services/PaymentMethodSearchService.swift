@@ -32,10 +32,12 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
     let merchantPublicKey: String
     let payerAccessToken: String?
+    let processingMode: String
 
-    init(baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil) {
+    init(baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingMode: String) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
+        self.processingMode = processingMode
         super.init(baseURL: baseURL)
     }
 
@@ -69,6 +71,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
         params.paramsAppend(key: ApiParams.CUSTOMER_ID, value: customerId)
         params.paramsAppend(key: ApiParams.SITE_ID, value: site.id)
         params.paramsAppend(key: ApiParams.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
+        params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingMode)
         params.paramsAppend(key: ApiParams.DIFFERENTIAL_PRICING_ID, value: differentialPricingId)
 
         if let cardsWithEscParams = cardsWithEsc?.map({ $0 }).joined(separator: ",") {
