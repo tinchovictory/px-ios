@@ -21,9 +21,10 @@ class PXSummaryAmountBody: Codable {
     let defaultInstallments: Int?
     let differentialPricingId: String?
     let processingModes: [String]?
+    let branchId: String?
     let charges: [PXPaymentTypeChargeRule]?
 
-    init(siteId: String?, transactionAmount: String?, marketplace: String?, email: String?, productId: String?, paymentMethodId: String?, paymentType: String?, bin: String?, issuerId: String?, labels: [String]?, defaultInstallments: Int?, differentialPricingId: String?, processingModes: [String]?, charges: [PXPaymentTypeChargeRule]?) {
+    init(siteId: String?, transactionAmount: String?, marketplace: String?, email: String?, productId: String?, paymentMethodId: String?, paymentType: String?, bin: String?, issuerId: String?, labels: [String]?, defaultInstallments: Int?, differentialPricingId: String?, processingModes: [String]?, branchId: String?, charges: [PXPaymentTypeChargeRule]?) {
         self.siteId = siteId
         self.transactionAmount = transactionAmount
         self.marketplace = marketplace
@@ -37,6 +38,7 @@ class PXSummaryAmountBody: Codable {
         self.defaultInstallments = defaultInstallments
         self.differentialPricingId = differentialPricingId
         self.processingModes = processingModes
+        self.branchId = branchId
         self.charges = charges
     }
 
@@ -54,6 +56,7 @@ class PXSummaryAmountBody: Codable {
         case defaultInstallments = "default_installments"
         case differentialPricingId = "differential_pricing_id"
         case processingModes = "processing_modes"
+        case branchId = "branch_id"
         case charges
     }
 
@@ -72,6 +75,7 @@ class PXSummaryAmountBody: Codable {
         try container.encodeIfPresent(self.defaultInstallments, forKey: .defaultInstallments)
         try container.encodeIfPresent(self.differentialPricingId, forKey: .differentialPricingId)
         try container.encodeIfPresent(self.processingModes, forKey: .processingModes)
+        try container.encodeIfPresent(self.branchId, forKey: .branchId)
         try container.encodeIfPresent(self.charges, forKey: .charges)
     }
 
