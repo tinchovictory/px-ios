@@ -1,3 +1,14 @@
+# v4.13.0
+🚀Private Release - 4.13.0 🚀
+MercadoPagoSDKV4 - Private Version
+ - Add flow to esc
+ - Congrats fix waiting for payment will be green
+ - SP Support charges
+ - Fix to enable loyalty integration
+ - Session tracking update
+ - Tracking names updated
+ - Fix cache on add card flow
+
 # v4.12.1
 🚀Private Release - 4.12.1 🚀
 MercadoPagoSDKV4 - Private Version
