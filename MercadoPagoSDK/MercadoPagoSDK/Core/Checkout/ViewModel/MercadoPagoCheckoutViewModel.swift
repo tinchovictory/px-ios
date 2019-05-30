@@ -131,7 +131,10 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
         self.trackingConfig = trackingConfig
 
-        mercadoPagoServicesAdapter = MercadoPagoServicesAdapter(publicKey: publicKey, privateKey: privateKey)
+        let processingModes = checkoutPreference.processingModes
+        let branchId = checkoutPreference.branchId
+
+        mercadoPagoServicesAdapter = MercadoPagoServicesAdapter(publicKey: publicKey, privateKey: privateKey, processingModes: processingModes, branchId: branchId)
 
         super.init()
 

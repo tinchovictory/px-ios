@@ -12,14 +12,18 @@ internal class MercadoPagoServices: NSObject {
 
     open var merchantPublicKey: String
     open var payerAccessToken: String
+    open var processingModes: [String]
+    open var branchId: String?
     private var baseURL: String! = PXServicesURLConfigs.MP_API_BASE_URL
     private var gatewayBaseURL: String!
 
     private var language: String = NSLocale.preferredLanguages[0]
 
-    init(merchantPublicKey: String, payerAccessToken: String = "") {
+    init(merchantPublicKey: String, payerAccessToken: String = "", processingModes: [String], branchId: String?) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
+        self.processingModes = processingModes
+        self.branchId = branchId
         super.init()
     }
 
@@ -38,7 +42,7 @@ internal class MercadoPagoServices: NSObject {
     }
 
     func getPaymentMethodSearch(amount: Double, excludedPaymentTypesIds: [String], excludedPaymentMethodsIds: [String], cardsWithEsc: [String]?, supportedPlugins: [String]?, defaultPaymentMethod: String?, payer: PXPayer, site: PXSite, differentialPricingId: String?, defaultInstallments: String?, expressEnabled: String, splitEnabled: String, discountParamsConfiguration: PXDiscountParamsConfiguration?, marketplace: String?, charges: [PXPaymentTypeChargeRule]?, callback : @escaping (PXPaymentMethodSearch) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let paymentMethodSearchService = PaymentMethodSearchService(baseURL: baseURL, merchantPublicKey: merchantPublicKey, payerAccessToken: payerAccessToken)
+        let paymentMethodSearchService = PaymentMethodSearchService(baseURL: baseURL, merchantPublicKey: merchantPublicKey, payerAccessToken: payerAccessToken, processingModes: processingModes, branchId: branchId)
         paymentMethodSearchService.getPaymentMethods(amount, defaultPaymenMethodId: defaultPaymentMethod, excludedPaymentTypeIds: excludedPaymentTypesIds, excludedPaymentMethodIds: excludedPaymentMethodsIds, cardsWithEsc: cardsWithEsc, supportedPlugins: supportedPlugins, site: site, payer: payer, language: language, differentialPricingId: differentialPricingId, defaultInstallments: defaultInstallments, expressEnabled: expressEnabled, splitEnabled: splitEnabled, discountParamsConfiguration: discountParamsConfiguration, marketplace: marketplace, charges: charges, success: callback, failure: failure)
     }
 
