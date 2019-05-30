@@ -5,8 +5,13 @@
 //  Created by Federico Bustos Fierro on 28/05/2019.
 //
 
+/**
+Support for gateway mode
+ */
+
 import UIKit
 
+@objcMembers
 open class PXMerchantAccount: Codable {
     let merchantId: String
     let branchId: String?
