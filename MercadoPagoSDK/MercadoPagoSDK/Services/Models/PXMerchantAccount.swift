@@ -5,11 +5,11 @@
 //  Created by Federico Bustos Fierro on 28/05/2019.
 //
 
-/**
-Support for gateway mode
- */
-
 import UIKit
+
+/**
+ Support for gateway mode
+ */
 
 @objcMembers
 open class PXMerchantAccount: Codable {
