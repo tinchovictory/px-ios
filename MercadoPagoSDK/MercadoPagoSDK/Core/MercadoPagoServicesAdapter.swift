@@ -13,8 +13,8 @@ internal class MercadoPagoServicesAdapter {
 
     let mercadoPagoServices: MercadoPagoServices!
 
-    init(publicKey: String, privateKey: String?) {
-        mercadoPagoServices = MercadoPagoServices(merchantPublicKey: publicKey, payerAccessToken: privateKey ?? "")
+    init(publicKey: String, privateKey: String?, processingModes: [String], branchId: String?) {
+        mercadoPagoServices = MercadoPagoServices(merchantPublicKey: publicKey, payerAccessToken: privateKey ?? "", processingModes: processingModes, branchId: branchId)
         mercadoPagoServices.setLanguage(language: Localizator.sharedInstance.getLanguage())
     }
 
