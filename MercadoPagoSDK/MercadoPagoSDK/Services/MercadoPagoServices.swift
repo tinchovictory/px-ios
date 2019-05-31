@@ -12,8 +12,8 @@ internal class MercadoPagoServices: NSObject {
 
     open var merchantPublicKey: String
     open var payerAccessToken: String
-    open var processingModes: [String]
-    open var branchId: String?
+    private var processingModes: [String]
+    private var branchId: String?
     private var baseURL: String! = PXServicesURLConfigs.MP_API_BASE_URL
     private var gatewayBaseURL: String!
 
