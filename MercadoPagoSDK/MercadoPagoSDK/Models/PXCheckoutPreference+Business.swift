@@ -132,21 +132,6 @@ extension PXCheckoutPreference {
     public func setCardId(cardId: String) {
         self.paymentPreference.cardId = cardId
     }
-
-    // MARK: Gateway mode
-    /**
-     - parameter processingModes: Supported proccesing modes by the preference. On a first instance this field can support aggregator and gateway modes. If this setter is not used aggregator only support will be infered.
-     */
-    public func setGatewayProcessingModes(_ processingModes: [String]) {
-        self.processingModes = processingModes
-    }
-
-    /**
-     - parameter branchId: This field can be used optionally to customize the gateway mode experience.
-     */
-    public func setGatewayBranchId(_ branchId: String) {
-        self.branchId = branchId
-    }
 }
 
 // MARK: BinaryMode
@@ -253,20 +238,6 @@ extension PXCheckoutPreference {
         }
         return amount
     }
-
-    /**
-     getProcessingModes
-     */
-    open func getProcessingModes() -> [String] {
-        return self.processingModes
-    }
-
-    /**
-     getBranchId
-     */
-    open func getBranchId() -> String? {
-        return self.branchId
-    }
 }
 
 // MARK: Payer Setter and Getter
@@ -332,6 +303,11 @@ extension PXCheckoutPreference {
             itemsDic.append(item.getItemForTracking())
         }
         checkoutPrefDic["items"] = itemsDic
+        checkoutPrefDic["binary_mode"] = binaryModeEnabled
+        checkoutPrefDic["marketplace"] = marketplace
+        checkoutPrefDic["site_id"] = siteId
+        checkoutPrefDic["expiration_date_from"] = expirationDateFrom
+        checkoutPrefDic["expiration_date_to"] = expirationDateTo
         checkoutPrefDic["payment_methods"] = paymentPreference.getPaymentPreferenceForTracking()
 
         return checkoutPrefDic

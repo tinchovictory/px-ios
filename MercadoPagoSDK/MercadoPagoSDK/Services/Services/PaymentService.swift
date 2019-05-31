@@ -58,6 +58,8 @@ internal class PaymentService: MercadoPagoService {
         var params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
         params.paramsAppend(key: ApiParams.PAYMENT_METHOD_ID, value: payment_method_id)
         params.paramsAppend(key: ApiParams.BIN, value: bin)
+
+        //FIXME: This is a temporary workaround to start testing instores cases but should never reach a productive environment. The whole "get issuers" service will soon be replaced with a new 'post' endpoint that can receive all 'processing modes' array properly.
         if processingModes.count == 1 {
             params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingModes.first)
         }
