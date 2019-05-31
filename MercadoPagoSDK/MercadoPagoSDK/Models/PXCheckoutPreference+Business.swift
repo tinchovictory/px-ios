@@ -132,6 +132,21 @@ extension PXCheckoutPreference {
     public func setCardId(cardId: String) {
         self.paymentPreference.cardId = cardId
     }
+
+    // MARK: Gateway mode
+    /**
+     - parameter processingModes: Supported proccesing modes by the preference. On a first instance this field can support aggregator and gateway modes. If this setter is not used aggregator only support will be infered.
+     */
+    public func setGatewayProcessingModes(_ processingModes: [String]) {
+        self.processingModes = processingModes
+    }
+
+    /**
+     - parameter branchId: This field can be used optionally to customize the gateway mode experience.
+     */
+    public func setGatewayBranchId(_ branchId: String) {
+        self.branchId = branchId
+    }
 }
 
 // MARK: BinaryMode
@@ -237,6 +252,20 @@ extension PXCheckoutPreference {
             amount += (Double(item.quantity) * item.unitPrice)
         }
         return amount
+    }
+
+    /**
+     getProcessingModes
+     */
+    open func getProcessingModes() -> [String] {
+        return self.processingModes
+    }
+
+    /**
+     getBranchId
+     */
+    open func getBranchId() -> String? {
+        return self.branchId
     }
 }
 
