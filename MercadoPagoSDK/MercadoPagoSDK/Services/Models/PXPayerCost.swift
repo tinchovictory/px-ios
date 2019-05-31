@@ -23,7 +23,7 @@ open class PXPayerCost: NSObject, Codable {
     open var paymentMethodOptionId: String?
     open var agreements: [PXAgreement] = []
 
-    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String = PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODE, paymentMethodOptionId: String?, agreements: [PXAgreement] = []) {
+    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String?, paymentMethodOptionId: String?, agreements: [PXAgreement] = []) {
         self.installmentRate = installmentRate
         self.labels = labels
         self.minAllowedAmount = minAllowedAmount
@@ -32,7 +32,7 @@ open class PXPayerCost: NSObject, Codable {
         self.installmentAmount = installmentAmount
         self.totalAmount = totalAmount
         self.installments = installments
-        self.processingMode = processingMode
+        self.processingMode = processingMode ?? PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODE
         self.paymentMethodOptionId = paymentMethodOptionId
         self.agreements = agreements
     }
