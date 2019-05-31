@@ -13,11 +13,13 @@ internal class PaymentService: MercadoPagoService {
     let merchantPublicKey: String!
     let payerAccessToken: String?
     let processingModes: [String]
+    let branchId: String?
 
-    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingModes: [String]) {
+    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingModes: [String], branchId: String?) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
         self.processingModes = processingModes
+        self.branchId = branchId
         super.init(baseURL: baseURL)
     }
     
@@ -25,7 +27,7 @@ internal class PaymentService: MercadoPagoService {
 
         let params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
 
-        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingModes: processingModes, charges: charges)
+        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingModes: processingModes, branchId: branchId, charges: charges)
         let bodyJSON = try? body.toJSON()
 
         self.request( uri: uri, params: params, body: bodyJSON, method: HTTPMethod.post, cache: false, success: {(data: Data) -> Void in
