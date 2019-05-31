@@ -32,10 +32,14 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
     let merchantPublicKey: String
     let payerAccessToken: String?
+    let processingModes: [String]
+    let branchId: String?
 
-    init(baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil) {
+    init(baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingModes: [String], branchId: String?) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
+        self.processingModes = processingModes
+        self.branchId = branchId
         super.init(baseURL: baseURL)
     }
 
@@ -83,7 +87,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
         params.paramsAppend(key: "split_payment_enabled", value: splitEnabled)
 
-        let body = PXPaymentMethodSearchBody(privateKey: payer.accessToken, email: payer.email, marketplace: marketplace, productId: discountParamsConfiguration?.productId, labels: discountParamsConfiguration?.labels, charges: charges)
+        let body = PXPaymentMethodSearchBody(privateKey: payer.accessToken, email: payer.email, marketplace: marketplace, productId: discountParamsConfiguration?.productId, labels: discountParamsConfiguration?.labels, charges: charges, processingModes: processingModes, branchId: branchId)
         let bodyJSON = try? body.toJSON()
 
         let headers = ["Accept-Language": language]
