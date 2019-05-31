@@ -119,7 +119,8 @@ import Foundation
         self.expirationDateFrom = expirationDateFrom
         self.site = site
         self.differentialPricing = differentialPricing
-        self.processingModes = processingModes
+        let sanitizedProcessingModes = processingModes.isEmpty ? ["aggregator"] : processingModes
+        self.processingModes = sanitizedProcessingModes
         self.branchId = branchId
         self.marketplace = marketplace
     }
