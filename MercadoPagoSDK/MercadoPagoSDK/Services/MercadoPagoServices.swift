@@ -12,19 +12,22 @@ internal class MercadoPagoServices: NSObject {
 
     open var merchantPublicKey: String
     open var payerAccessToken: String
-    open var processingModes: [String]
+    open var processingModes: [String] = ["aggregator"]
     open var branchId: String?
     private var baseURL: String! = PXServicesURLConfigs.MP_API_BASE_URL
     private var gatewayBaseURL: String!
 
     private var language: String = NSLocale.preferredLanguages[0]
 
-    init(merchantPublicKey: String, payerAccessToken: String = "", processingModes: [String], branchId: String?) {
+    init(merchantPublicKey: String, payerAccessToken: String = "", branchId: String?) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
-        self.processingModes = processingModes
         self.branchId = branchId
         super.init()
+    }
+
+    func update(processingModes: [String]) {
+        self.processingModes = processingModes
     }
 
     func getCheckoutPreference(checkoutPreferenceId: String, callback : @escaping (PXCheckoutPreference) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {

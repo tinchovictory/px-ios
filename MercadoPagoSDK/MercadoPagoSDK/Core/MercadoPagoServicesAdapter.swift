@@ -13,9 +13,13 @@ internal class MercadoPagoServicesAdapter {
 
     let mercadoPagoServices: MercadoPagoServices!
 
-    init(publicKey: String, privateKey: String?, processingModes: [String], branchId: String?) {
-        mercadoPagoServices = MercadoPagoServices(merchantPublicKey: publicKey, payerAccessToken: privateKey ?? "", processingModes: processingModes, branchId: branchId)
+    init(publicKey: String, privateKey: String?, branchId: String?) {
+        mercadoPagoServices = MercadoPagoServices(merchantPublicKey: publicKey, payerAccessToken: privateKey ?? "", branchId: branchId)
         mercadoPagoServices.setLanguage(language: Localizator.sharedInstance.getLanguage())
+    }
+
+    func update(processingModes: [String]?) {
+        mercadoPagoServices.update(processingModes: processingModes ?? ["aggregator"])
     }
 
     func getTimeOut() -> TimeInterval {
