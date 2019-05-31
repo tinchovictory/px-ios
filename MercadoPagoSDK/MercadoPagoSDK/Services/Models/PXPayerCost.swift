@@ -23,7 +23,7 @@ open class PXPayerCost: NSObject, Codable {
     open var paymentMethodOptionId: String?
     open var agreements: [PXAgreement] = []
 
-    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String = "aggregator", paymentMethodOptionId: String?, agreements: [PXAgreement] = []) {
+    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String = PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODE, paymentMethodOptionId: String?, agreements: [PXAgreement] = []) {
         self.installmentRate = installmentRate
         self.labels = labels
         self.minAllowedAmount = minAllowedAmount
@@ -61,7 +61,7 @@ open class PXPayerCost: NSObject, Codable {
         let installmentAmount: Double = try container.decodeIfPresent(Double.self, forKey: .installmentAmount) ?? 0
         let totalAmount: Double = try container.decodeIfPresent(Double.self, forKey: .totalAmount) ?? 0
         let installments: Int = try container.decodeIfPresent(Int.self, forKey: .installments) ?? 0
-        let processingMode: String = try container.decodeIfPresent(String.self, forKey: .processingMode) ?? "aggregator"
+        let processingMode: String = try container.decodeIfPresent(String.self, forKey: .processingMode) ?? PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODE
         let paymentMethodOptionId: String? = try container.decodeIfPresent(String.self, forKey: .paymentMethodOptionId)
         let agreements: [PXAgreement] = try container.decodeIfPresent([PXAgreement].self, forKey: .agreements) ?? []
 

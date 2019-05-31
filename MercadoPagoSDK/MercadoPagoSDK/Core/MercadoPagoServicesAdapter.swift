@@ -19,7 +19,7 @@ internal class MercadoPagoServicesAdapter {
     }
 
     func update(processingModes: [String]?) {
-        mercadoPagoServices.update(processingModes: processingModes ?? ["aggregator"])
+        mercadoPagoServices.update(processingModes: processingModes ?? PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODES)
     }
 
     func getTimeOut() -> TimeInterval {
