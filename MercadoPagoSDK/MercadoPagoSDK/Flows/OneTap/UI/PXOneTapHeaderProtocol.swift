@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol PXOneTapHeaderProtocol: NSObjectProtocol {
-    func didTapSummary()
+protocol PXOneTapHeaderProtocol: PXOneTapSummaryProtocol {
+    func didTapMerchantHeader()
     func splitPaymentSwitchChangedValue(isOn: Bool, isUserSelection: Bool)
 }

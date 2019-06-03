@@ -9,6 +9,7 @@ import Foundation
 
 @objc public enum PXDynamicViewControllerPosition: Int {
     case DID_ENTER_REVIEW_AND_CONFIRM
+    case DID_TAP_ONETAP_HEADER
 }
 
 @objc public protocol PXDynamicViewControllerProtocol: NSObjectProtocol {

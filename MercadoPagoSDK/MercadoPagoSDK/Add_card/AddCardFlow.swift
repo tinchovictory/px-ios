@@ -38,7 +38,7 @@ public class AddCardFlow: NSObject, PXFlow {
         self.accessToken = accessToken
         self.navigationHandler = PXNavigationHandler(navigationController: navigationController)
         MPXTracker.sharedInstance.startNewSession()
-        escManager = PXESCManager(enabled: escEnabled, sessionId: MPXTracker.sharedInstance.getSessionID())
+        escManager = PXESCManager(enabled: escEnabled, sessionId: MPXTracker.sharedInstance.getSessionID(), flow: "/card_association")
         super.init()
         Localizator.sharedInstance.setLanguage(string: locale)
         ThemeManager.shared.saveNavBarStyleFor(navigationController: navigationController)

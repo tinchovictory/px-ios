@@ -20,7 +20,11 @@ extension PXPaymentFlow {
 
         if let paymentProcessorVC = paymentProcessor.paymentProcessorViewController() {
             pxNavigationHandler.addDynamicView(viewController: paymentProcessorVC)
-            self.pxNavigationHandler.navigationController.pushViewController(paymentProcessorVC, animated: false)
+
+            if let shouldSkipRyC = paymentProcessor.shouldSkipUserConfirmation?(), shouldSkipRyC, pxNavigationHandler.isLoadingPresented() {
+                pxNavigationHandler.dismissLoading()
+            }
+            pxNavigationHandler.navigationController.pushViewController(paymentProcessorVC, animated: false)
         }
     }
 }

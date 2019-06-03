@@ -22,11 +22,12 @@ internal class PXESCManager: NSObject, MercadoPagoESC {
         var mLESCManager: MLESCManager
     #endif
 
-    init(enabled: Bool, sessionId: String) {
+    init(enabled: Bool, sessionId: String, flow: String) {
         self.isESCEnabled = enabled
         self.sessionId = sessionId
         #if PX_PRIVATE_POD
-            mLESCManager = MLESCManager(sessionId: sessionId)
+        mLESCManager = MLESCManager(sessionId: sessionId)
+        mLESCManager.setFlow(flow: flow)
         #endif
     }
 
