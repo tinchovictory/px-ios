@@ -21,6 +21,8 @@ private func < <T: Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldDelegate {
 
+    typealias CompletionHandler = () -> Void
+
     enum DisplayCardState {
         case frontSide
         case backSide
@@ -365,7 +367,9 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
     fileprivate func prepareCVVLabelForEdit() {
         //this function may be executed along with the showBackCard action
         if !self.viewModel.isAmexCard(self.cardNumberLabel!.text!) {
-            showBackCardSideIfNeeded()
+            showBackCardSideIfNeeded() {
+                self.updateLabelsFontColors()
+            }
             cvvLabel = cardBack?.cardCVV
             cardFront?.cardCVV.text = "•••"
             cardFront?.cardCVV.alpha = 0
@@ -848,6 +852,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
                 if (errorCVV) != nil {
                     markErrorLabel(cvvLabel!)
                     showFrontCardSideIfNeeded(duration: self.viewModel.animationDuration)
+                    return
                 }
             }
         }
@@ -863,22 +868,28 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         self.flip(visibleSide: .frontSide, duration: duration)
     }
 
-    func showBackCardSideIfNeeded() {
+    func showBackCardSideIfNeeded(completion: CompletionHandler?) {
         //sanity check: the card will not be flipped if the back side is already visible
         if self.displayCardState == .backSide {
             return
         }
         self.displayCardState = .backSide
-        self.flip(visibleSide: .backSide, duration: self.viewModel.animationDuration)
+        self.flip(visibleSide: .backSide,
+                  duration: self.viewModel.animationDuration,
+                  completion: completion)
     }
 
-    func flip(visibleSide: DisplayCardState, duration: Double) {
+    func flip(visibleSide: DisplayCardState, duration: Double, completion: CompletionHandler? = nil) {
         //all animations must be executed on main thread
         DispatchQueue.main.async {
             let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft, .showHideTransitionViews]
             UIView.transition(with: self.cardView, duration: duration, options: transitionOptions, animations: {
                 self.cardBack?.isHidden = (visibleSide == .frontSide)
                 self.cardFront?.isHidden = (visibleSide == .backSide)
+            }, completion: { (_) in
+                if let completionBlock = completion {
+                    completionBlock()
+                }
             })
         }
     }
