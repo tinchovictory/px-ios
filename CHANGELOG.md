@@ -2,7 +2,8 @@
 🚀Private Release - 4.14.0 🚀
 MercadoPagoSDKV4 - Private Version
  - Session id fixes
- - Card header lib added
+ - Card drawer lib added
+ - iOS 13 Support for presents
 
 # v4.13.1
 🚀Private Release - 4.13.1 🚀
