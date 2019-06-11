@@ -84,7 +84,7 @@
 
     // AdvancedConfig
     PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
-    [advancedConfig setExpressEnabled:NO];
+    [advancedConfig setExpressEnabled:YES];
 
     PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"test_product_id"];
     [advancedConfig setDiscountParamsConfiguration: disca];
@@ -141,7 +141,12 @@
     [self.checkoutBuilder setLanguage:@"es"];
 
     // Add custom translation objc-compatible example.
-    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyHow_to_pay withTranslation:@"¿Qué pagás?"];
+
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyTotal_to_pay_onetap withTranslation:@"Total row en onetap"];
+
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button withTranslation:@"Enviar dinero"];
+
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button_progress withTranslation:@"Enviado dinero"];
 
     MercadoPagoCheckout *mpCheckout = [[MercadoPagoCheckout alloc] initWithBuilder:self.checkoutBuilder];
 
