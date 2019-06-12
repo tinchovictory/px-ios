@@ -330,7 +330,7 @@ extension PXReviewViewController {
     }
 
     private func getFloatingButtonView() -> PXContainedActionButtonView {
-        let component = PXContainedActionButtonComponent(props: PXContainedActionButtonProps(title: "Confirmar".localized, action: {
+        let component = PXContainedActionButtonComponent(props: PXContainedActionButtonProps(title: "Pagar".localized, action: {
             if self.shouldAnimatePayButton {
                 self.subscribeLoadingButtonToNotifications(loadingButton: self.loadingFloatingButtonComponent)
                 self.loadingFloatingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
@@ -345,7 +345,7 @@ extension PXReviewViewController {
     }
 
     private func getFooterView() -> UIView {
-        let payAction = PXAction(label: "Confirmar".localized) {
+        let payAction = PXAction(label: "Pagar".localized) {
             if self.shouldAnimatePayButton {
                 self.subscribeLoadingButtonToNotifications(loadingButton: self.loadingButtonComponent)
                 self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
