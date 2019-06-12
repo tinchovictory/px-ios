@@ -15,6 +15,7 @@ internal extension PXResultViewModel {
             if let callback = self?.callback {
                 if let url = self?.getBackUrl() {
                     self?.openURL(url: url, success: { (_) in
+                        sleep(1)
                         callback(PaymentResult.CongratsState.cancel_EXIT)
                     })
                 } else {

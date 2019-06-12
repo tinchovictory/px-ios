@@ -82,6 +82,7 @@ internal extension PXResultViewModel {
         return {
             if let url = self.getBackUrl() {
                 self.openURL(url: url, success: { (_) in
+                    sleep(1)
                     self.pressLink()
                 })
             } else {
