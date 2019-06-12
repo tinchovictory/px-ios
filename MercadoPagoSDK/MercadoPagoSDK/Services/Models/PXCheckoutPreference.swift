@@ -66,6 +66,7 @@ import Foundation
         }
     }
 
+    open var backUrls: PXBackUrls?
     internal var binaryModeEnabled: Bool = false
     internal var pxAdditionalInfo: PXAdditionalInfo?
 
@@ -125,6 +126,7 @@ import Foundation
         case site
         case marketplace
         case additionalInfo = "additional_info"
+        case backUrls = "back_urls"
     }
 
     required public convenience init(from decoder: Decoder) throws {
@@ -142,6 +144,7 @@ import Foundation
         self.init(id: id, items: items, payer: payer, paymentPreference: paymentPreference, siteId: siteId, expirationDateTo: expirationDateTo, expirationDateFrom: expirationDateFrom, site: site, differentialPricing: differentialPricing, marketplace: marketplace)
         self.additionalInfo = try container.decodeIfPresent(String.self, forKey: .additionalInfo)
         populateAdditionalInfoModel()
+        self.backUrls = try container.decodeIfPresent(PXBackUrls.self, forKey: .backUrls)
     }
 
     /// :nodoc:
@@ -156,6 +159,7 @@ import Foundation
         try container.encodeIfPresent(self.differentialPricing, forKey: .differentialPricing)
         try container.encodeIfPresent(self.marketplace, forKey: .marketplace)
         try container.encodeIfPresent(self.additionalInfo, forKey: .additionalInfo)
+        try container.encodeIfPresent(self.backUrls, forKey: .backUrls)
     }
 
     /// :nodoc:

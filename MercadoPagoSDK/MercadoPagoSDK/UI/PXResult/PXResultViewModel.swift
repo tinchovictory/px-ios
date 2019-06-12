@@ -135,4 +135,32 @@ extension PXResultViewModel {
         }
         return screenPath
     }
+
+    func getBackUrl() -> URL? {
+        if let status = PXPaymentStatus(rawValue: getPaymentStatus()) {
+            switch status {
+            case .APPROVED:
+                return URL(string: amountHelper.preference.backUrls?.success ?? "")
+            case .PENDING:
+                return URL(string: amountHelper.preference.backUrls?.pending ?? "")
+            case .REJECTED:
+                return URL(string: amountHelper.preference.backUrls?.failure ?? "")
+            default:
+                return nil
+            }
+        }
+        return nil
+    }
+
+    func openURL(url: URL, success: @escaping (Bool) -> Void) {
+        if UIApplication.shared.canOpenURL(url) {
+            if #available(iOS 10.0, *) {
+                UIApplication.shared.open(url, options: [:], completionHandler: success)
+            } else {
+                UIApplication.shared.openURL(url)
+                sleep(1)
+                success(true)
+            }
+        }
+    }
 }
