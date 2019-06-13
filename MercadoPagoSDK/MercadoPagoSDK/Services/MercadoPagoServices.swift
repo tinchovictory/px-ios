@@ -53,7 +53,9 @@ internal class MercadoPagoServices: NSObject {
         } else {
             headers = nil
         }
-        var params = ""
+
+        var params = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
+        params.paramsAppend(key: ApiParams.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
         if let queryParams = query as NSDictionary? {
             params = queryParams.parseToQuery()
         }
