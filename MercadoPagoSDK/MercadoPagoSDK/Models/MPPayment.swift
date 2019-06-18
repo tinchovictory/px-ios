@@ -11,7 +11,6 @@ import UIKit
 internal class MPPayment: Encodable {
 
     open var preferenceId: String!
-    open var publicKey: String!
     open var paymentMethodId: String!
     open var installments: Int = 0
     open var issuerId: String?
@@ -21,9 +20,8 @@ internal class MPPayment: Encodable {
     open var transactionDetails: PXTransactionDetails?
     open var discount: PXDiscount?
 
-    init(preferenceId: String, publicKey: String, paymentMethodId: String, installments: Int = 0, issuerId: String = "", tokenId: String = "", transactionDetails: PXTransactionDetails, payer: PXPayer, binaryMode: Bool, discount: PXDiscount? = nil) {
+    init(preferenceId: String, paymentMethodId: String, installments: Int = 0, issuerId: String = "", tokenId: String = "", transactionDetails: PXTransactionDetails, payer: PXPayer, binaryMode: Bool, discount: PXDiscount? = nil) {
         self.preferenceId = preferenceId
-        self.publicKey = publicKey
         self.paymentMethodId = paymentMethodId
         self.installments = installments
         self.issuerId = issuerId
@@ -35,7 +33,6 @@ internal class MPPayment: Encodable {
     }
 
     public enum PXMPPaymentKeys: String, CodingKey {
-        case publicKey = "public_key"
         case paymentMethodId = "payment_method_id"
         case binaryMode = "binary_mode"
         case prefId = "pref_id"
@@ -48,7 +45,7 @@ internal class MPPayment: Encodable {
         case transactionDetails = "transaction_details"
     }
 
-    init(preferenceId: String, publicKey: String, paymentData: PXPaymentData, binaryMode: Bool) {
+    init(preferenceId: String, paymentData: PXPaymentData, binaryMode: Bool) {
         self.issuerId = paymentData.hasIssuer() ? paymentData.getIssuer()!.id : ""
         self.tokenId = paymentData.hasToken() ? paymentData.getToken()!.id : ""
         self.installments = paymentData.hasPayerCost() ? paymentData.getPayerCost()!.installments : 0
@@ -66,7 +63,6 @@ internal class MPPayment: Encodable {
         self.paymentMethodId = paymentData.getPaymentMethod()?.id ?? ""
 
         self.preferenceId = preferenceId
-        self.publicKey = publicKey
         self.binaryMode = binaryMode
 
     }
@@ -84,7 +80,6 @@ internal class MPPayment: Encodable {
             try container.encodeIfPresent(self.issuerId, forKey: .issuerId)
         }
 
-        try container.encodeIfPresent(self.publicKey, forKey: .publicKey)
         try container.encodeIfPresent(self.paymentMethodId, forKey: .paymentMethodId)
         try container.encodeIfPresent(self.binaryMode, forKey: .binaryMode)
         try container.encodeIfPresent(self.preferenceId, forKey: .prefId)
