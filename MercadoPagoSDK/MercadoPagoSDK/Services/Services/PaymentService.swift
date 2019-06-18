@@ -12,32 +12,22 @@ internal class PaymentService: MercadoPagoService {
 
     let merchantPublicKey: String!
     let payerAccessToken: String?
-    let processingMode: String!
+    let processingModes: [String]
+    let branchId: String?
 
-    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingMode: String) {
+    init (baseURL: String, merchantPublicKey: String, payerAccessToken: String? = nil, processingModes: [String], branchId: String?) {
         self.merchantPublicKey = merchantPublicKey
         self.payerAccessToken = payerAccessToken
-        self.processingMode = processingMode
+        self.processingModes = processingModes
+        self.branchId = branchId
         super.init(baseURL: baseURL)
     }
-
-    internal func getPaymentMethods(uri: String = PXServicesURLConfigs.MP_PAYMENT_METHODS_URI, success: @escaping (_ data: Data) -> Void, failure: ((_ error: PXError) -> Void)?) {
-
-        var params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
-        params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingMode)
-
-        self.request(uri: uri, params: params, body: nil, method: HTTPMethod.get, success: success, failure: { (error) in
-            if let failure = failure {
-                failure(PXError(domain: "mercadopago.sdk.paymentService.getPaymentMethods", code: error.code, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "Verifique su conexión a internet e intente nuevamente"]))
-            }
-        })
-    }
-
+    
     open func getSummaryAmount(uri: String = PXServicesURLConfigs.MP_SUMMARY_AMOUNT_URI, bin: String?, amount: Double, issuerId: String?, payment_method_id: String, payment_type_id: String, differential_pricing_id: String?, siteId: String?, marketplace: String?, discountParamsConfiguration: PXDiscountParamsConfiguration?, payer: PXPayer, defaultInstallments: Int?, charges: [PXPaymentTypeChargeRule]?, success: @escaping (PXSummaryAmount) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
 
         let params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
 
-        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingMode: processingMode, charges: charges)
+        let body = PXSummaryAmountBody(siteId: siteId, transactionAmount: String(format: "%.2f", amount), marketplace: marketplace, email: payer.email, productId: discountParamsConfiguration?.productId, paymentMethodId: payment_method_id, paymentType: payment_type_id, bin: bin, issuerId: issuerId, labels: discountParamsConfiguration?.labels, defaultInstallments: defaultInstallments, differentialPricingId: differential_pricing_id, processingModes: processingModes, branchId: branchId, charges: charges)
         let bodyJSON = try? body.toJSON()
 
         self.request( uri: uri, params: params, body: bodyJSON, method: HTTPMethod.post, cache: false, success: {(data: Data) -> Void in
@@ -68,7 +58,15 @@ internal class PaymentService: MercadoPagoService {
         var params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
         params.paramsAppend(key: ApiParams.PAYMENT_METHOD_ID, value: payment_method_id)
         params.paramsAppend(key: ApiParams.BIN, value: bin)
-        params.paramsAppend(key: ApiParams.PROCESSING_MODE, value: processingMode)
+
+        if processingModes.count > 0 {
+            var commaSeparatedModes = ""
+            for mode in processingModes {
+                let isFirstElement = mode == processingModes.first
+                commaSeparatedModes += isFirstElement ? mode : ",\(mode)"
+            }
+            params.paramsAppend(key: ApiParams.PROCESSING_MODES, value: commaSeparatedModes)
+        }
 
         if bin != nil {
             self.request(uri: uri, params: params, body: nil, method: HTTPMethod.get, success: success, failure: { (error) in
