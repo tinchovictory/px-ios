@@ -118,9 +118,20 @@ extension OneTapFlow {
                     let customOptionsFound = customerPaymentMethods.filter { return $0.getPaymentMethodId() == firstPaymentMethodId }
                     if let customerPaymentMethod = customOptionsFound.first {
                         // Check if one tap response has payer costs
-                        if let expressNode = search.getPaymentMethodInExpressCheckout(targetId: customerPaymentMethod.getId()).expressNode, let expressPaymentMethod = expressNode.oneTapCard, amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(expressPaymentMethod.cardId) != nil {
-                            if expressNode.paymentMethodId == customerPaymentMethod.getPaymentMethodId() && expressNode.paymentTypeId == customerPaymentMethod.getPaymentTypeId() {
-                                selectedPaymentOption = customerPaymentMethod
+                        if let expressNode = search.getPaymentMethodInExpressCheckout(targetId: customerPaymentMethod.getId()).expressNode {
+
+                            //one tap card option
+                            if let expressPaymentMethod = expressNode.oneTapCard, amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(expressPaymentMethod.cardId) != nil {
+                                if expressNode.paymentMethodId == customerPaymentMethod.getPaymentMethodId() && expressNode.paymentTypeId == customerPaymentMethod.getPaymentTypeId() {
+                                    selectedPaymentOption = customerPaymentMethod
+                                }
+                            }
+
+                            //one tap credits option
+                            if expressNode.oneTapCreditsInfo != nil &&
+                                expressNode.paymentMethodId == customerPaymentMethod.getPaymentMethodId() &&
+                                expressNode.paymentTypeId == customerPaymentMethod.getPaymentTypeId() {
+                                    selectedPaymentOption = customerPaymentMethod
                             }
                         }
                     }

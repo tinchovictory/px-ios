@@ -32,6 +32,9 @@ internal extension PXPaymentMethodSearch {
 
                 return (true, expressNode)
             }
+            if expressNode.paymentMethodId == "consumer_credits" {
+                return (true, expressNode)
+            }
         }
         return (false, nil)
     }

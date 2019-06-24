@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>consumer_credits</key>
+	<dict>
+		<key>image_name</key>
+		<string>consumerCredits</string>
+	</dict>
+	<key>consumer_creditsAzul</key>
+	<dict>
+		<key>image_name</key>
+		<string>consumerCredits</string>
+	</dict>
 	<key>account_moneyAzul</key>
 	<dict>
 		<key>image_name</key>
@@ -447,11 +457,11 @@
 		<key>image_name</key>
 		<string>mediosIconoBoletoAzul</string>
 	</dict>
-    <key>pec</key>
-    <dict>
-        <key>image_name</key>
-        <string>mediosIconoPec</string>
-    </dict>
+	<key>pec</key>
+	<dict>
+		<key>image_name</key>
+		<string>mediosIconoPec</string>
+	</dict>
 	<key>pecAzul</key>
 	<dict>
 		<key>image_name</key>
