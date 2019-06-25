@@ -8,5 +8,8 @@
 import UIKit
 
 public struct PXOneTapCreditsDto: Codable {
-    let payment_method_icon: String
+    let paymentMethodIcon: String
+    enum CodingKeys: String, CodingKey {
+        case paymentMethodIcon = "payment_method_icon"
+    }
 }
