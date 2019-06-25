@@ -95,7 +95,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
         self.request(uri: PXServicesURLConfigs.MP_SEARCH_PAYMENTS_URI, params: params, body: bodyJSON, method: HTTPMethod.post, headers: headers, cache: false, success: { (data) -> Void in
             do {
                 //remove all local mock logic when credits feature development has finished
-                let fakeResponse = CreditsMockHelper.express.getFullMock()
+                let fakeResponse = CreditsMockHelper.traditional.getFullMock()
                 let newData = fakeResponse.data(using:.utf8)!
 
             let jsonResult = try JSONSerialization.jsonObject(with: newData, options: JSONSerialization.ReadingOptions.allowFragments)

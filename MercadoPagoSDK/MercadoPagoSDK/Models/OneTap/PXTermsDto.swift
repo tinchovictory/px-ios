@@ -7,6 +7,11 @@
 
 import UIKit
 
-struct PXTermsDto {
-
+public struct PXTermsDto: Codable  {
+    let text: String
+    let linkablePhrases: [PXLinkablePhraseDto]
+    enum CodingKeys: String, CodingKey {
+        case text
+        case linkablePhrases = "linkable_phrases"
+    }
 }

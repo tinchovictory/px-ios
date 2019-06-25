@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct PXLinkablePhraseDto {
+struct PXLinkablePhraseDto: Codable {
     let phrase: String
     let link: String
 }
