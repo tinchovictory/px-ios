@@ -79,10 +79,7 @@ extension PXPaymentPreference {
     }
 
     internal func getMaxAcceptedInstallments() -> Int {
-        if maxAcceptedInstallments > 0 {
-            return maxAcceptedInstallments
-        }
-        return 0
+        return maxAcceptedInstallments > 0 ? maxAcceptedInstallments : 0
     }
 
     internal func getExcludedPaymentMethodsIds() -> [String] {
