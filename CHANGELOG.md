@@ -1,3 +1,8 @@
+# v4.15.2
+🚀Private Release - 4.15.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Environment fix
+
 # v4.15.1
 🚀Private Release - 4.15.1 🚀
 MercadoPagoSDKV4 - Private Version
