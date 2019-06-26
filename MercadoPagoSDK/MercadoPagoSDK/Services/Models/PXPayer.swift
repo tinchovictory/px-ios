@@ -167,10 +167,10 @@ extension PXPayer {
         try container.encodeIfPresent(self.email, forKey: .email)
         try container.encodeIfPresent(self.id, forKey: .id)
         try container.encodeIfPresent(self.entityType, forKey: .entityType)
-        try container.encodeIfPresent(self.firstName, forKey: .firstName)
-        try container.encodeIfPresent(self.lastName, forKey: .lastName)
         //legal name is expected to be sent as "first_name"
-        try container.encodeIfPresent(self.legalName, forKey: .firstName)
+        let name = self.legalName ?? self.firstName
+        try container.encodeIfPresent(name, forKey: .firstName)
+        try container.encodeIfPresent(self.lastName, forKey: .lastName)
         try container.encodeIfPresent(self.identification, forKey: .identification)
     }
 
