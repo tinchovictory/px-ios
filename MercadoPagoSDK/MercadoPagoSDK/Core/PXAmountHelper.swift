@@ -140,6 +140,14 @@ internal extension PXAmountHelper {
         let amountString = String(format: "%\(decimalPlaces / 10)f", amountRounded)
         return NSDecimalNumber(string: amountString)
     }
+
+    static func getRoundedAmountAsDecimalNumber(amount: Double?) -> Decimal? {
+        guard let targetAmount = amount else { return 0 }
+        let decimalPlaces: Double = Double(SiteManager.shared.getCurrency().getDecimalPlacesOrDefault())
+        let amountRounded: Double = Double(round(pow(10, decimalPlaces) * Double(targetAmount)) / pow(10, decimalPlaces))
+        let amountString = String(format: "%\(decimalPlaces / 10)f", amountRounded)
+        return Decimal(string: amountString)
+    }
 }
 
 // MARK: Tracking usage,.

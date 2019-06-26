@@ -25,8 +25,9 @@ internal extension PXPaymentFlow {
         guard let paymentData = model.amountHelper?.getPaymentData(), let checkoutPreference = model.checkoutPreference else {
             return
         }
-        let mpPayment = MPPayment(preferenceId: checkoutPreference.id, paymentData: paymentData, binaryMode: model.checkoutPreference?.isBinaryMode() ?? false)
-        guard let paymentBody = (try? JSONEncoder().encode([mpPayment])) else {
+
+        model.assignToCheckoutStore()
+        guard let paymentBody = (try? JSONEncoder().encode(PXCheckoutStore.sharedInstance)) else {
             fatalError("Cannot make payment json body")
         }
 
