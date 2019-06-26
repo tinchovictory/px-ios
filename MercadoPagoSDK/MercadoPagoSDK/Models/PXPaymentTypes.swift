@@ -37,9 +37,13 @@ public enum PXPaymentTypes: String {
      */
     case ATM = "atm"
     /**
-     BITCOIN - Payment type
+     DIGITAL_CURRENCY - Payment type
      */
-    case BITCOIN = "digital_currency"
+    case DIGITAL_CURRENCY = "digital_currency"
+    /**
+     DIGITAL_CURRENCY - Payment type
+     */
+    case CONSUMER_CREDITS = "consumer_credits"
     /**
      PREPAID_CARD - Payment type
      */
@@ -59,6 +63,10 @@ public enum PXPaymentTypes: String {
 
     internal func isCard() -> Bool {
         return self == PXPaymentTypes.DEBIT_CARD || self == PXPaymentTypes.CREDIT_CARD || self == PXPaymentTypes.PREPAID_CARD
+    }
+
+    internal func isDigitalCurrency() -> Bool {
+        return self == PXPaymentTypes.DIGITAL_CURRENCY
     }
 
     internal func isCreditCard() -> Bool {
