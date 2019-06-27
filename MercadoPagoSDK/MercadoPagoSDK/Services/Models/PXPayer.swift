@@ -167,10 +167,16 @@ extension PXPayer {
         try container.encodeIfPresent(self.email, forKey: .email)
         try container.encodeIfPresent(self.id, forKey: .id)
         try container.encodeIfPresent(self.entityType, forKey: .entityType)
-        try container.encodeIfPresent(self.firstName, forKey: .firstName)
+        var name: String? = nil
+        //if "first name" or "legal name" variable is present, it's expected to be sent using "first_name" as key; in the unexpected case where both fields have an assigned value, "legal name" is prioritized to use the aformentioned key
+        if let firstName = self.firstName, !firstName.isEmpty {
+            name = firstName
+        }
+        if let legalName = self.legalName, !legalName.isEmpty {
+            name = legalName
+        }
+        try container.encodeIfPresent(name, forKey: .firstName)
         try container.encodeIfPresent(self.lastName, forKey: .lastName)
-        //legal name is expected to be sent as "first_name"
-        try container.encodeIfPresent(self.legalName, forKey: .firstName)
         try container.encodeIfPresent(self.identification, forKey: .identification)
     }
 

@@ -211,14 +211,14 @@ extension PXCheckoutPreference {
      getMaxAcceptedInstallments
      */
     open func getMaxAcceptedInstallments() -> Int {
-        return paymentPreference.getMaxAcceptedInstallments() ?? 0
+        return paymentPreference.getMaxAcceptedInstallments()
     }
 
     /**
      getExcludedPaymentMethodsIds
      */
     open func getExcludedPaymentMethodsIds() -> [String] {
-        return paymentPreference.getExcludedPaymentMethodsIds() ?? []
+        return paymentPreference.getExcludedPaymentMethodsIds()
     }
 
     /**
