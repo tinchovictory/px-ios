@@ -130,7 +130,14 @@ extension PXReviewViewModel {
     }
 
     func getFloatingConfirmViewHeight() -> CGFloat {
-        return 82 + PXLayout.getSafeAreaBottomInset() / 2
+        return 82 + getCustomerCreditsViewHeight() + PXLayout.getSafeAreaBottomInset() / 2
+    }
+
+    func getCustomerCreditsViewHeight() -> CGFloat {
+        if PXPaymentTypes(rawValue: paymentOptionSelected.getId()) == PXPaymentTypes.CONSUMER_CREDITS {
+            return 60
+        }
+        return 0
     }
 
     func getSummaryViewModel(amount: Double) -> Summary {

@@ -27,8 +27,9 @@ open class PXPaymentMethod: NSObject, Codable {
     open var externalPaymentPluginImageData: NSData?
     open var paymentMethodDescription: String?
     open var processingModes: [String]?
+    open var creditsDisplayInfo: PXCreditsDisplayInfo?
 
-    public init(additionalInfoNeeded: [String]?, id: String, name: String?, paymentTypeId: String, status: String?, secureThumbnail: String?, thumbnail: String?, deferredCapture: String?, settings: [PXSetting], minAllowedAmount: Double?, maxAllowedAmount: Double?, accreditationTime: Int?, merchantAccountId: String?, financialInstitutions: [PXFinancialInstitution]?, description: String?, processingModes: [String]?) {
+    public init(additionalInfoNeeded: [String]?, id: String, name: String?, paymentTypeId: String, status: String?, secureThumbnail: String?, thumbnail: String?, deferredCapture: String?, settings: [PXSetting], minAllowedAmount: Double?, maxAllowedAmount: Double?, accreditationTime: Int?, merchantAccountId: String?, financialInstitutions: [PXFinancialInstitution]?, description: String?, processingModes: [String]?, creditsDisplayInfo: PXCreditsDisplayInfo? = nil) {
         self.additionalInfoNeeded = additionalInfoNeeded
         self.id = id
         self.name = name
@@ -45,6 +46,7 @@ open class PXPaymentMethod: NSObject, Codable {
         self.financialInstitutions = financialInstitutions
         self.paymentMethodDescription = description
         self.processingModes = processingModes
+        self.creditsDisplayInfo = creditsDisplayInfo
     }
 
     public enum PXPaymentMethodKeys: String, CodingKey {
@@ -64,6 +66,7 @@ open class PXPaymentMethod: NSObject, Codable {
         case financialInstitutions = "financial_institutions"
         case paymentMethodDescription = "description"
         case processingModes = "processing_modes"
+        case creditsDisplayInfo = "display_info"
     }
 
     required public convenience init(from decoder: Decoder) throws {
@@ -84,8 +87,9 @@ open class PXPaymentMethod: NSObject, Codable {
         let financialInstitutions: [PXFinancialInstitution]? = try container.decodeIfPresent([PXFinancialInstitution].self, forKey: .financialInstitutions)
         let description: String? = try container.decodeIfPresent(String.self, forKey: .paymentMethodDescription)
         let processingModes: [String]? = try container.decodeIfPresent([String].self, forKey: .processingModes)
+        let creditsDisplayInfo: PXCreditsDisplayInfo? = try container.decodeIfPresent(PXCreditsDisplayInfo.self, forKey: .creditsDisplayInfo)
 
-        self.init(additionalInfoNeeded: additionalInfoNeeded, id: id, name: name, paymentTypeId: paymentTypeId, status: status, secureThumbnail: secureThumbnail, thumbnail: thumbnail, deferredCapture: deferredCapture, settings: settings, minAllowedAmount: minAllowedAmount, maxAllowedAmount: maxAllowedAmount, accreditationTime: accreditationTime, merchantAccountId: merchantAccountId, financialInstitutions: financialInstitutions, description: description, processingModes: processingModes)
+        self.init(additionalInfoNeeded: additionalInfoNeeded, id: id, name: name, paymentTypeId: paymentTypeId, status: status, secureThumbnail: secureThumbnail, thumbnail: thumbnail, deferredCapture: deferredCapture, settings: settings, minAllowedAmount: minAllowedAmount, maxAllowedAmount: maxAllowedAmount, accreditationTime: accreditationTime, merchantAccountId: merchantAccountId, financialInstitutions: financialInstitutions, description: description, processingModes: processingModes, creditsDisplayInfo: creditsDisplayInfo)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -105,6 +109,7 @@ open class PXPaymentMethod: NSObject, Codable {
         try container.encodeIfPresent(self.merchantAccountId, forKey: .merchantAccountId)
         try container.encodeIfPresent(self.financialInstitutions, forKey: .financialInstitutions)
         try container.encodeIfPresent(self.processingModes, forKey: .processingModes)
+        try container.encodeIfPresent(self.creditsDisplayInfo, forKey: .creditsDisplayInfo)
     }
 
     open func toJSONString() throws -> String? {

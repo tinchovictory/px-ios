@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct PXResultInfo {
+struct PXResultInfo: Codable {
     let title: String
     let subtitle: String
     let mainAction: PXLinkableAction

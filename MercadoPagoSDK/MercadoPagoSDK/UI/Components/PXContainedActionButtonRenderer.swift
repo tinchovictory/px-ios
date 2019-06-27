@@ -29,7 +29,9 @@ class PXContainedActionButtonRenderer: NSObject {
         containedButtonView.layer.shadowRadius = 4
         containedButtonView.layer.shadowOpacity = 0.25
 
-        PXLayout.pinTop(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
+        let distance = CGFloat(containedButton.props.termsInfo != nil ? 60 : 0)
+
+        PXLayout.pinTop(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN + distance).isActive = true
         PXLayout.pinLeft(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
         PXLayout.pinRight(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
 

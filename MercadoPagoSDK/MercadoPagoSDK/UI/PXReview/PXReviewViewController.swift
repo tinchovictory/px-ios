@@ -336,7 +336,7 @@ extension PXReviewViewController {
                 self.loadingFloatingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
             }
             self.confirmPayment()
-        }, animationDelegate: self))
+        }, animationDelegate: self, termsInfo: self.viewModel.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.termsAndConditions))
         let containedButtonView = PXContainedActionButtonRenderer().render(component)
         loadingFloatingButtonComponent = containedButtonView.button
         loadingFloatingButtonComponent?.layer.cornerRadius = 4
@@ -352,7 +352,7 @@ extension PXReviewViewController {
             }
             self.confirmPayment()
         }
-        let footerProps = PXFooterProps(buttonAction: payAction, animationDelegate: self, pinLastSubviewToBottom: false)
+        let footerProps = PXFooterProps(buttonAction: payAction, animationDelegate: self, pinLastSubviewToBottom: false, termsInfo: self.viewModel.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.termsAndConditions)
         let footerComponent = PXFooterComponent(props: footerProps)
         let footerView = PXFooterRenderer().render(footerComponent)
         loadingButtonComponent = footerView.principalButton

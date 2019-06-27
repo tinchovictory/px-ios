@@ -7,7 +7,7 @@
 
 import UIKit
 
-public struct PXCreditsDisplayInfo {
+public struct PXCreditsDisplayInfo: Codable {
     let resultInfo: PXResultInfo
     let termsAndConditions: PXTermsDto
     enum CodingKeys: String, CodingKey {
