@@ -228,7 +228,10 @@ extension PXReviewViewModel {
         let lightLabelColor = ThemeManager.shared.labelTintColor()
         let boldLabelColor = ThemeManager.shared.boldLabelTintColor()
 
-        if pm.isCard {
+        if pm.isDigitalCurrency {
+            title = paymentMethodName.toAttributedString()
+            accreditationTime = nil
+        } else if pm.isCard {
             if let lastFourDigits = (self.amountHelper.getPaymentData().token?.lastFourDigits) {
                 let text = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
                 title = text.toAttributedString()
