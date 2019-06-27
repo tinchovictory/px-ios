@@ -20,6 +20,7 @@ internal final class PXPaymentFlowModel: NSObject {
     var businessResult: PXBusinessResult?
 
     let escManager: MercadoPagoESC?
+    var productId: String?
 
     init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?) {
         self.paymentPlugin = paymentPlugin
