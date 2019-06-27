@@ -58,6 +58,14 @@ extension PXReviewViewModel {
         return false
     }
 
+    func shouldShowCreditsTermsAndConditions() -> Bool {
+        return creditsTermsAndConditions() != nil
+    }
+
+    func creditsTermsAndConditions() -> PXTermsDto? {
+        return self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.termsAndConditions
+    }
+
     func getDiscountTermsAndConditionView(shouldAddMargins: Bool = true) -> PXTermsAndConditionView {
         let discountTermsAndConditionView = PXDiscountTermsAndConditionView(amountHelper: amountHelper, shouldAddMargins: shouldAddMargins)
         return discountTermsAndConditionView
@@ -134,7 +142,7 @@ extension PXReviewViewModel {
     }
 
     func getCustomerCreditsViewHeight() -> CGFloat {
-        if PXPaymentTypes(rawValue: paymentOptionSelected.getId()) == PXPaymentTypes.CONSUMER_CREDITS {
+        if shouldShowCreditsTermsAndConditions() {
             return 60
         }
         return 0
