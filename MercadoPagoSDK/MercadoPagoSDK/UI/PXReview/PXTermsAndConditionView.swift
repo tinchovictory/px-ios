@@ -15,14 +15,17 @@ protocol PXTermsAndConditionViewDelegate: NSObjectProtocol {
 class PXTermsAndConditionView: PXComponentView {
 
     var SCREEN_TITLE = "Términos y Condiciones"
+    internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
     fileprivate let termsAndConditionsText: MPTextView = MPTextView()
+    var termsAndConditionsDto: PXTermsDto?
 
     weak var delegate: PXTermsAndConditionViewDelegate?
 
-    init(shouldAddMargins: Bool = true) {
+    init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil) {
         super.init()
 
+        self.termsAndConditionsDto = termsDto
         self.termsAndConditionsText.backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
 
