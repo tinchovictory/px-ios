@@ -94,7 +94,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
         self.request(uri: PXServicesURLConfigs.MP_SEARCH_PAYMENTS_URI, params: params, body: bodyJSON, method: HTTPMethod.post, headers: headers, cache: false, success: { (data) -> Void in
             do {
-                //remove all local mock logic when credits feature development has finished
+                //FIXME: remove all local mock logic when credits feature development has finished
                 let fakeResponse = CreditsMockHelper.traditional.getFullMock()
                 let newData = fakeResponse.data(using:.utf8)!
 
@@ -124,7 +124,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
 }
 
-//temporary local mock helper - remove when credits feature development has finished
+//FIXME: temporary local mock helper - remove when credits feature development has finished
 enum CreditsMockHelper {
     case express
     case traditional
