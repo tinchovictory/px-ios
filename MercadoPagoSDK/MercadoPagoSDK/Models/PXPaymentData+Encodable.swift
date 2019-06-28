@@ -18,7 +18,7 @@ extension PXPaymentData: Encodable {
         try container.encodeIfPresent(self.payerCost, forKey: .payerCost)
         try container.encodeIfPresent(self.token, forKey: .token)
         try container.encodeIfPresent(self.payer, forKey: .payer)
-        try container.encodeIfPresent(PXAmountHelper.getRoundedAmountAsDecimalNumber(amount: self.transactionAmount?.doubleValue), forKey: .transactionAmount)
+        try container.encodeIfPresent(self.transactionAmount?.decimalValue, forKey: .transactionAmount)
         try container.encodeIfPresent(self.transactionDetails, forKey: .transactionDetails)
         try container.encodeIfPresent(self.discount, forKey: .discount)
         try container.encodeIfPresent(self.campaign, forKey: .campaign)

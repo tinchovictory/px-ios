@@ -16,7 +16,7 @@ extension PXCheckoutStore: Encodable {
     }
 
     enum PXCheckoutStoreCodingKeys: String, CodingKey {
-        case checkoutPreference = "checkout_preference"
+        case checkoutPreference = "pref_id"
         case paymentDatas = "payment_data"
     }
 }
