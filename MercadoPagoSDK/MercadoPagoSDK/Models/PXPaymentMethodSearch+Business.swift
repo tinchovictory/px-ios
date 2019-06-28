@@ -28,11 +28,9 @@ internal extension PXPaymentMethodSearch {
     func getPaymentMethodInExpressCheckout(targetId: String) -> (found: Bool, expressNode: PXOneTapDto?) {
         guard let expressResponse = expressCho else { return (false, nil) }
         for expressNode in expressResponse {
-            if let expressCard = expressNode.oneTapCard, expressCard.cardId == targetId {
-
-                return (true, expressNode)
-            }
-            if expressNode.paymentMethodId == "consumer_credits" {
+            let cardCaseCondition = expressNode.oneTapCard?.cardId == targetId
+            let creditsCaseCondition = PXPaymentTypes(rawValue:expressNode.paymentMethodId) == PXPaymentTypes.CONSUMER_CREDITS
+            if cardCaseCondition || creditsCaseCondition {
                 return (true, expressNode)
             }
         }

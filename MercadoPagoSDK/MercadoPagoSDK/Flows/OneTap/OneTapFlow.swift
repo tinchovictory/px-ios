@@ -118,21 +118,9 @@ extension OneTapFlow {
                     let customOptionsFound = customerPaymentMethods.filter { return $0.getPaymentMethodId() == firstPaymentMethodId }
                     if let customerPaymentMethod = customOptionsFound.first {
                         // Check if one tap response has payer costs
-                        if let expressNode = search.getPaymentMethodInExpressCheckout(targetId: customerPaymentMethod.getId()).expressNode {
-
-                            //one tap card option
-                            if let expressPaymentMethod = expressNode.oneTapCard, amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(expressPaymentMethod.cardId) != nil {
-                                if expressNode.paymentMethodId == customerPaymentMethod.getPaymentMethodId() && expressNode.paymentTypeId == customerPaymentMethod.getPaymentTypeId() {
-                                    selectedPaymentOption = customerPaymentMethod
-                                }
-                            }
-
-                            //one tap credits option
-                            if expressNode.oneTapCreditsInfo != nil &&
-                                expressNode.paymentMethodId == customerPaymentMethod.getPaymentMethodId() &&
-                                expressNode.paymentTypeId == customerPaymentMethod.getPaymentTypeId() {
-                                    selectedPaymentOption = customerPaymentMethod
-                            }
+                        if let expressNode = search.getPaymentMethodInExpressCheckout(targetId: customerPaymentMethod.getId()).expressNode,
+                            let selected = selectPaymentMethod(expressNode: expressNode, customerPaymentMethod: customerPaymentMethod, amountHelper: amountHelper) {
+                            selectedPaymentOption = selected
                         }
                     }
                 }
@@ -140,6 +128,28 @@ extension OneTapFlow {
         }
         return selectedPaymentOption
     }
+
+    static func selectPaymentMethod(expressNode: PXOneTapDto, customerPaymentMethod: CustomerPaymentMethod, amountHelper: PXAmountHelper) -> PaymentMethodOption? {
+
+        // payment method id and payment type id must coincide between the express node and the customer payment method to continue
+        if expressNode.paymentMethodId != customerPaymentMethod.getPaymentMethodId() ||
+            expressNode.paymentTypeId != customerPaymentMethod.getPaymentTypeId() {
+            return nil
+        }
+
+        var selectedPaymentOption: PaymentMethodOption?
+        // the selected payment option is a one tap card, therefore has the required node and has related payer costs
+        if let expressPaymentMethod = expressNode.oneTapCard, amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(expressPaymentMethod.cardId) != nil {
+            selectedPaymentOption = customerPaymentMethod
+        }
+
+        // the selected payment option is the credits option
+        if expressNode.oneTapCreditsInfo != nil {
+            selectedPaymentOption = customerPaymentMethod
+        }
+        return selectedPaymentOption
+    }
+
 
     func getCustomerPaymentOption(forId: String) -> PaymentMethodOption? {
         guard let customerPaymentMethods = model.customerPaymentOptions else {

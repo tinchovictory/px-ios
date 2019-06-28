@@ -41,6 +41,11 @@ public enum PXPaymentTypes: String {
      */
     case BITCOIN = "digital_currency"
     /**
+     CONSUMER_CREDITS - Payment type
+     */
+    case CONSUMER_CREDITS = "consumer_credits"
+
+    /**
      PREPAID_CARD - Payment type
      */
     case PREPAID_CARD = "prepaid_card"
