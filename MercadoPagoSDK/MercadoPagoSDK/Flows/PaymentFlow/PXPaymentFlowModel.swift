@@ -171,3 +171,9 @@ internal extension PXPaymentFlowModel {
         }
     }
 }
+
+extension PXPaymentFlowModel {
+    func generateIdempotecyKey() -> String {
+        return String(arc4random()) + String(Date().timeIntervalSince1970)
+    }
+}

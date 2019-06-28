@@ -34,8 +34,8 @@ internal extension PXPaymentFlow {
         if let productId = model.productId {
             headers["X-Product-Id"] = productId
         }
-        
-        headers["X-Idempotency-Key"] =  String(arc4random()) + String(Date().timeIntervalSince1970)
+
+        headers["X-Idempotency-Key"] =  model.generateIdempotecyKey()
 
         model.mercadoPagoServicesAdapter.createPayment(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_PAYMENTS_URI, paymentDataJSON: paymentBody, query: nil, headers: headers, callback: { (payment) in
             self.handlePayment(payment: payment)
