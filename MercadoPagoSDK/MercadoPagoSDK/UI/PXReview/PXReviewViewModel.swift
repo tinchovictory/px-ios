@@ -143,7 +143,7 @@ extension PXReviewViewModel {
 
     func getCustomerCreditsViewHeight() -> CGFloat {
         if shouldShowCreditsTermsAndConditions() {
-            return 60
+            return PXTermsAndConditionView().DEFAULT_CREDITS_HEIGHT
         }
         return 0
     }

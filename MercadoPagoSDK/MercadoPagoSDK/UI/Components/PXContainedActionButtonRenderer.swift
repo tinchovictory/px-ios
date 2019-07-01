@@ -14,9 +14,13 @@ class PXContainedActionButtonRenderer: NSObject {
 
     func render(_ containedButton: PXContainedActionButtonComponent) -> PXContainedActionButtonView {
 
-        let containedButtonView = PXContainedActionButtonView()
 
+        let containedButtonView = PXContainedActionButtonView()
         containedButtonView.translatesAutoresizingMaskIntoConstraints = false
+        var termsView: PXTermsAndConditionView? = nil
+        if (containedButton.props.termsInfo != nil) {
+            termsView = PXTermsAndConditionView(termsDto: containedButton.props.termsInfo)
+        }
 
         let button = self.buildButton(with: containedButton.props.action, title: containedButton.props.title)
         containedButtonView.button = button
@@ -29,9 +33,16 @@ class PXContainedActionButtonRenderer: NSObject {
         containedButtonView.layer.shadowRadius = 4
         containedButtonView.layer.shadowOpacity = 0.25
 
-        let distance = CGFloat(containedButton.props.termsInfo != nil ? 60 : 0)
-
-        PXLayout.pinTop(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN + distance).isActive = true
+        if let termsView = termsView {
+            containedButtonView.addSubview(termsView)
+            PXLayout.pinTop(view: termsView, to: containedButtonView, withMargin: 0).isActive = true
+            PXLayout.pinLeft(view: termsView, to: containedButtonView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+            PXLayout.pinRight(view: termsView, to: containedButtonView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+            PXLayout.setHeight(owner: termsView, height: termsView.DEFAULT_CREDITS_HEIGHT).isActive = true
+            PXLayout.put(view: button, onBottomOf: termsView, withMargin: PXLayout.S_MARGIN, relation: .equal).isActive = true
+        } else {
+            PXLayout.pinTop(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
+        }
         PXLayout.pinLeft(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
         PXLayout.pinRight(view: button, to: containedButtonView, withMargin: PXLayout.S_MARGIN).isActive = true
 
