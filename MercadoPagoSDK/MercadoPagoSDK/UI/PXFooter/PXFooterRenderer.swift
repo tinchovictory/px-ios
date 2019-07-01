@@ -11,6 +11,11 @@ import UIKit
 final class PXFooterRenderer: NSObject {
 
     let BUTTON_HEIGHT: CGFloat = 50.0
+    weak var termsDelegate: PXTermsAndConditionViewDelegate?
+
+    init(termsDelegate: PXTermsAndConditionViewDelegate? = nil) {
+        self.termsDelegate = termsDelegate
+    }
 
     func render(_ footer: PXFooterComponent) -> PXFooterView {
         let fooView = PXFooterView()
@@ -20,7 +25,7 @@ final class PXFooterRenderer: NSObject {
 
         var termsView: PXTermsAndConditionView? = nil
         if (footer.props.termsInfo != nil) {
-            termsView = PXTermsAndConditionView(termsDto: footer.props.termsInfo)
+            termsView = PXTermsAndConditionView(termsDto: footer.props.termsInfo, delegate: termsDelegate)
         }
 
 
