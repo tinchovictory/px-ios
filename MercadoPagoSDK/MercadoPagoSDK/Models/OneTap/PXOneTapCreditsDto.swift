@@ -8,5 +8,12 @@
 import UIKit
 
 public struct PXOneTapCreditsDto: Codable {
-    let payment_method_icon: String
+    let paymentMethodIcon: String
+    let paymentMethodSideText: String
+    let termsAndConditions: PXTermsDto
+    enum CodingKeys: String, CodingKey {
+        case paymentMethodIcon = "payment_method_icon"
+        case paymentMethodSideText = "payment_method_side_text"
+        case termsAndConditions = "bottom_text"
+    }
 }
