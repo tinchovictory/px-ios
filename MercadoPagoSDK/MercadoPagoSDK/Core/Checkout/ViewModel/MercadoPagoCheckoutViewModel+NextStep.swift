@@ -159,7 +159,7 @@ extension MercadoPagoCheckoutViewModel {
         guard let pm = self.paymentData.getPaymentMethod() else {
             return false
         }
-        if pm.isCard && !paymentData.hasPayerCost() && payerCosts != nil {
+        if (pm.isCard || pm.isDigitalCurrency) && !paymentData.hasPayerCost() && payerCosts != nil {
             return true
         }
         return false
@@ -176,7 +176,7 @@ extension MercadoPagoCheckoutViewModel {
         }
 
         let hasInstallmentsIfNeeded = paymentData.hasPayerCost() || !(pm.isCreditCard || pm.isDebitCard)
-        let isCustomerCard = pmSelected.isCustomerPaymentMethod() && pmSelected.getId() != PXPaymentTypes.ACCOUNT_MONEY.rawValue
+        let isCustomerCard = pmSelected.isCustomerPaymentMethod() && pmSelected.getId() != PXPaymentTypes.ACCOUNT_MONEY.rawValue && pmSelected.getId() != PXPaymentTypes.CONSUMER_CREDITS.rawValue
 
         if  isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded && !hasSavedESC() {
             return true
