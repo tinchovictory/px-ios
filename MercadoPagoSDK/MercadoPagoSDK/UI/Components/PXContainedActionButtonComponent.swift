@@ -25,10 +25,12 @@ internal class PXContainedActionButtonProps {
     let action : (() -> Void)
     let backgroundColor: UIColor
     var animationDelegate: PXAnimatedButtonDelegate?
-    init(title: String, action:  @escaping (() -> Void), animationDelegate: PXAnimatedButtonDelegate? = nil) {
+    let termsInfo: PXTermsDto?
+    init(title: String, action:  @escaping (() -> Void), animationDelegate: PXAnimatedButtonDelegate? = nil, termsInfo: PXTermsDto? = nil) {
         self.title = title
         self.action = action
         self.backgroundColor = .white
         self.animationDelegate = animationDelegate
+        self.termsInfo = termsInfo
     }
 }

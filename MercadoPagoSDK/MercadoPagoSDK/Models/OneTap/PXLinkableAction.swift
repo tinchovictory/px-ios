@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct PXLinkableAction {
+struct PXLinkableAction: Codable {
     let label: String
     let link: String?
 }

@@ -28,7 +28,10 @@ final class PXFooterRenderer: NSObject {
             fooView.principalButton = principalButton
             fooView.principalButton?.animationDelegate = footer.props.animationDelegate
             fooView.addSubview(principalButton)
-            PXLayout.pinTop(view: principalButton, to: topView, withMargin: PXLayout.S_MARGIN).isActive = true
+
+            let distance = CGFloat(footer.props.termsInfo != nil ? 60 : 0)
+
+            PXLayout.pinTop(view: principalButton, to: topView, withMargin: PXLayout.S_MARGIN + distance).isActive = true
             PXLayout.pinLeft(view: principalButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
             PXLayout.pinRight(view: principalButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
             PXLayout.setHeight(owner: principalButton, height: BUTTON_HEIGHT).isActive = true
