@@ -45,15 +45,15 @@
 
 #pragma mark - Payment Plugin implementation.
 - (UIViewController * _Nullable)paymentProcessorViewController {
-    return self;
+    return nil;
 }
 
 - (BOOL)support {
-    return NO;
+    return YES;
 }
 
 - (BOOL)shouldSkipUserConfirmation {
-    return YES;
+    return NO;
 }
 
 -(void)startPaymentWithCheckoutStore:(PXCheckoutStore *)checkoutStore errorHandler:(id<PXPaymentProcessorErrorHandler>)errorHandler successWithBasePayment:(void (^)(id<PXBasePayment> _Nonnull))successWithBasePayment {
