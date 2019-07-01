@@ -40,10 +40,7 @@ public enum PXPaymentTypes: String {
      DIGITAL_CURRENCY - Payment type
      */
     case DIGITAL_CURRENCY = "digital_currency"
-    /**
-     DIGITAL_CURRENCY - Payment type
-     */
-    case CONSUMER_CREDITS = "consumer_credits"
+
     /**
      CONSUMER_CREDITS - Payment type
      */
