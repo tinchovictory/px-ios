@@ -106,8 +106,11 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
     }
 
     func getCreditsExpectationComponent() -> PXCreditsExpectationComponent? {
-        let props = PXCreditsExpectationProps(title: "hola", subtitle: "subtitle")
-        return PXCreditsExpectationComponent(props: props)
+        if let resultInfo = self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo {
+            let props = PXCreditsExpectationProps(title: resultInfo.title, subtitle: resultInfo.subtitle)
+            return PXCreditsExpectationComponent(props: props)
+        }
+        return nil
     }
 
     func getHelpMessageComponent() -> PXErrorComponent? {
