@@ -32,6 +32,11 @@ internal class PXBodyComponent: PXComponentizable {
         return props.instruction != nil
     }
 
+    func getCreditsExpectationComponent() -> PXCreditsExpectationComponent? {
+        let props = PXCreditsExpectationProps(title: "hola", subtitle: "subtitle")
+        return PXCreditsExpectationComponent(props: props)
+    }
+
     func getInstructionsComponent() -> PXInstructionsComponent? {
         if let instruction = props.instruction {
             let instructionsProps = PXInstructionsProps(instruction: instruction)

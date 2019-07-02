@@ -102,7 +102,12 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
             helpComponent = getHelpMessageComponent()
         }
 
-        return PXBusinessResultBodyComponent(paymentMethodComponents: pmComponents, helpMessageComponent: helpComponent)
+        return PXBusinessResultBodyComponent(paymentMethodComponents: pmComponents, helpMessageComponent: helpComponent, creditsExpectationComponent: getCreditsExpectationComponent())
+    }
+
+    func getCreditsExpectationComponent() -> PXCreditsExpectationComponent? {
+        let props = PXCreditsExpectationProps(title: "hola", subtitle: "subtitle")
+        return PXCreditsExpectationComponent(props: props)
     }
 
     func getHelpMessageComponent() -> PXErrorComponent? {
@@ -214,10 +219,12 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 class PXBusinessResultBodyComponent: PXComponentizable {
     var paymentMethodComponents: [PXComponentizable]
     var helpMessageComponent: PXComponentizable?
+    var creditsExpectationComponent: PXComponentizable?
 
-    init(paymentMethodComponents: [PXComponentizable], helpMessageComponent: PXComponentizable?) {
+    init(paymentMethodComponents: [PXComponentizable], helpMessageComponent: PXComponentizable?, creditsExpectationComponent: PXComponentizable?) {
         self.paymentMethodComponents = paymentMethodComponents
         self.helpMessageComponent = helpMessageComponent
+        self.creditsExpectationComponent = creditsExpectationComponent
     }
 
     func render() -> UIView {
@@ -229,6 +236,7 @@ class PXBusinessResultBodyComponent: PXComponentizable {
             PXLayout.pinLeft(view: helpView).isActive = true
             PXLayout.pinRight(view: helpView).isActive = true
         }
+
         for paymentMethodComponent in paymentMethodComponents {
             let pmView = paymentMethodComponent.render()
             pmView.addSeparatorLineToTop(height: 1)
@@ -237,6 +245,15 @@ class PXBusinessResultBodyComponent: PXComponentizable {
             PXLayout.pinLeft(view: pmView).isActive = true
             PXLayout.pinRight(view: pmView).isActive = true
         }
+
+        if let creditsExpectationComponent = self.creditsExpectationComponent {
+            let creditsView = creditsExpectationComponent.render()
+            bodyView.addSubview(creditsView)
+            PXLayout.pinLeft(view: creditsView).isActive = true
+            PXLayout.pinRight(view: creditsView).isActive = true
+            PXLayout.put(view: creditsView, onBottomOfLastViewOf: bodyView)?.isActive = true
+        }
+
         PXLayout.pinFirstSubviewToTop(view: bodyView)?.isActive = true
         PXLayout.pinLastSubviewToBottom(view: bodyView)?.isActive = true
         return bodyView
