@@ -23,6 +23,7 @@ extension MercadoPagoCheckoutViewModel {
         initFlowProperties.advancedConfig = self.getAdvancedConfiguration()
         initFlowProperties.paymentConfigurationService = self.paymentConfigurationService
         initFlowProperties.escManager = escManager
+        initFlowProperties.privateKey = privateKey
 
         // Create init flow.
         initFlow = InitFlow(flowProperties: initFlowProperties, finishCallback: { [weak self] (checkoutPreference, paymentMethodSearchResponse)  in
