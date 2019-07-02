@@ -20,6 +20,7 @@ internal final class PXPaymentFlowModel: NSObject {
     var businessResult: PXBusinessResult?
 
     let escManager: MercadoPagoESC?
+    var productId: String?
 
     init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?) {
         self.paymentPlugin = paymentPlugin
@@ -168,5 +169,11 @@ internal extension PXPaymentFlowModel {
                 escManager?.saveESC(firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits, esc: esc)
             }
         }
+    }
+}
+
+extension PXPaymentFlowModel {
+    func generateIdempotecyKey() -> String {
+        return String(arc4random()) + String(Date().timeIntervalSince1970)
     }
 }
