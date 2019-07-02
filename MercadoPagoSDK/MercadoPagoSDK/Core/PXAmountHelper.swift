@@ -121,7 +121,7 @@ internal struct PXAmountHelper {
             return 0
         }
     }
-    
+
     internal func getPaymentData() -> PXPaymentData {
 
         // Set total card amount with charges without discount
