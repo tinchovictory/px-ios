@@ -22,9 +22,10 @@ class PXTermsAndConditionView: PXComponentView {
 
     weak var delegate: PXTermsAndConditionViewDelegate?
 
-    init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil) {
+    init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil, delegate: PXTermsAndConditionViewDelegate? = nil) {
         super.init()
 
+        self.delegate = delegate
         self.termsAndConditionsDto = termsDto
         self.termsAndConditionsText.backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
@@ -34,14 +35,16 @@ class PXTermsAndConditionView: PXComponentView {
         termsAndConditionsText.delegate = self
         termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
         termsAndConditionsText.attributedText = getTyCText()
-        termsAndConditionsText.isUserInteractionEnabled = false
         termsAndConditionsText.backgroundColor = .clear
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        tap.delegate = self
-        self.addGestureRecognizer(tap)
+        if termsAndConditionsDto != nil {
+            let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+            tap.delegate = self
+            self.addGestureRecognizer(tap)
+        }
 
         addSubview(termsAndConditionsText)
+            
 
         let URLAttribute: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont(name: ResourceManager.shared.DEFAULT_FONT_NAME, size: 12) ?? UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: ThemeManager.shared.secondaryColor()]
 
@@ -73,14 +76,20 @@ extension PXTermsAndConditionView {
 
     func getTyCText() -> NSMutableAttributedString {
 
-        let termsAndConditionsText = "review_terms_and_conditions".localized_beta
+        let termsAndConditionsText = termsAndConditionsDto?.text ?? "review_terms_and_conditions".localized_beta
 
         let normalAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XXXS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.labelTintColor()]
 
-        let mutableAttributedString = NSMutableAttributedString(string: termsAndConditionsText, attributes: normalAttributes)
-        let tycLinkRange = (termsAndConditionsText as NSString).range(of: SCREEN_TITLE.localized)
 
-        mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: SiteManager.shared.getTermsAndConditionsURL(), range: tycLinkRange)
+        let mutableAttributedString = NSMutableAttributedString(string: termsAndConditionsText, attributes: normalAttributes)
+
+        let defaultLinkablePhrase = PXLinkablePhraseDto(phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL())
+        let phrases = termsAndConditionsDto?.linkablePhrases ?? [defaultLinkablePhrase]
+
+        for linkablePhrase in phrases {
+            let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
+            mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: linkablePhrase.link, range: tycLinkRange)
+        }
 
         let style = NSMutableParagraphStyle()
         style.alignment = .center
@@ -99,7 +108,15 @@ extension PXTermsAndConditionView: UITextViewDelegate, UIGestureRecognizerDelega
         }
     }
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if termsAndConditionsDto != nil {
+            if let range = Range(characterRange, in: textView.text),
+                let text = textView.text?[range] {
+                let title = String(text).capitalized
+                delegate?.shouldOpenTermsCondition(title, url: URL)
+            }
+        }
         return false
     }
 }
+

@@ -11,6 +11,11 @@ import UIKit
 class PXContainedActionButtonRenderer: NSObject {
 
     let BUTTON_HEIGHT: CGFloat = 50
+    weak var termsDelegate: PXTermsAndConditionViewDelegate?
+
+    init(termsDelegate: PXTermsAndConditionViewDelegate?) {
+        self.termsDelegate = termsDelegate
+    }
 
     func render(_ containedButton: PXContainedActionButtonComponent) -> PXContainedActionButtonView {
 
@@ -19,7 +24,7 @@ class PXContainedActionButtonRenderer: NSObject {
         containedButtonView.translatesAutoresizingMaskIntoConstraints = false
         var termsView: PXTermsAndConditionView? = nil
         if (containedButton.props.termsInfo != nil) {
-            termsView = PXTermsAndConditionView(termsDto: containedButton.props.termsInfo)
+            termsView = PXTermsAndConditionView(termsDto: containedButton.props.termsInfo, delegate: termsDelegate)
         }
 
         let button = self.buildButton(with: containedButton.props.action, title: containedButton.props.title)

@@ -9,14 +9,18 @@
 import UIKit
 
 internal class PXContainedActionButtonComponent: PXComponentizable {
+    weak var termsDelegate: PXTermsAndConditionViewDelegate?
+
     internal func render() -> UIView {
-        return PXContainedActionButtonRenderer().render(self)
+        return PXContainedActionButtonRenderer(termsDelegate: termsDelegate).render(self)
     }
 
     var props: PXContainedActionButtonProps
 
-    init(props: PXContainedActionButtonProps) {
+    init(props: PXContainedActionButtonProps, termsDelegate: PXTermsAndConditionViewDelegate?) {
         self.props = props
+        self.termsDelegate = termsDelegate
+
     }
 }
 
