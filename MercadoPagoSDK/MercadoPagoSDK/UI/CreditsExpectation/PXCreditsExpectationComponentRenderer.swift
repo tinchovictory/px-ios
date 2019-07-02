@@ -22,29 +22,28 @@ class PXCreditsExpectationComponentRenderer: NSObject {
         title.translatesAutoresizingMaskIntoConstraints = false
         pmBodyView.titleLabel = title
         pmBodyView.addSubview(title)
-        title.font = Utils.getFont(size: TITLE_FONT_SIZE)
+        title.font = Utils.getLightFont(size: TITLE_FONT_SIZE)
         title.text = component.props.title
         title.textColor = .px_grayDark()
         title.textAlignment = .center
         title.numberOfLines = 0
-        pmBodyView.putOnBottomOfLastView(view: title, withMargin: PXLayout.S_MARGIN)?.isActive = true
-        PXLayout.pinLeft(view: title, withMargin: PXLayout.S_MARGIN).isActive = true
-        PXLayout.pinRight(view: title, withMargin: PXLayout.S_MARGIN).isActive = true
+        pmBodyView.pinFirstSubviewToTop(withMargin: PXLayout.L_MARGIN)?.isActive = true
+        PXLayout.matchWidth(ofView: title, toView: pmBodyView, withPercentage: CGFloat(60), relation: .equal).isActive = true
+        PXLayout.centerHorizontally(view: title).isActive = true
 
         //Subtitle
         let detailLabel = UILabel()
-        detailLabel.numberOfLines = 2
+        detailLabel.numberOfLines = 0
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         pmBodyView.addSubview(detailLabel)
         pmBodyView.subtitleLabel = detailLabel
-        detailLabel.font = Utils.getFont(size: SUBTITLE_FONT_SIZE)
+        detailLabel.font = Utils.getLightFont(size: SUBTITLE_FONT_SIZE)
         detailLabel.text = component.props.subtitle
         detailLabel.textColor = .px_grayDark()
         detailLabel.textAlignment = .center
-        pmBodyView.putOnBottomOfLastView(view: detailLabel, withMargin: PXLayout.XXS_MARGIN)?.isActive = true
-        PXLayout.pinLeft(view: detailLabel, withMargin: PXLayout.XXS_MARGIN).isActive = true
-        PXLayout.pinRight(view: detailLabel, withMargin: PXLayout.XXS_MARGIN).isActive = true
-
+        pmBodyView.putOnBottomOfLastView(view: detailLabel, withMargin: PXLayout.S_MARGIN)?.isActive = true
+        PXLayout.matchWidth(ofView: detailLabel, toView: pmBodyView, withPercentage: CGFloat(80), relation: .equal).isActive = true
+        PXLayout.centerHorizontally(view: detailLabel).isActive = true
         pmBodyView.pinLastSubviewToBottom(withMargin: PXLayout.L_MARGIN)?.isActive = true
 
         return pmBodyView
