@@ -118,7 +118,7 @@ internal class AdditionalStepViewModel {
     }
 
     func getCardCellHeight() -> CGFloat {
-        return UIScreen.main.bounds.width * 0.50
+        return 70
     }
 
     func getDefaultRowCellHeight() -> CGFloat {

@@ -160,6 +160,10 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
 
         } else if viewModel.isCardCellFor(indexPath: indexPath) {
 
+            if let pm = viewModel.amountHelper.getPaymentData().getPaymentMethod(), pm.isDigitalCurrency {
+                return createEmptyCell()
+            }
+
             let cardSectionCell = tableView.dequeueReusableCell(withIdentifier: "cardNib", for: indexPath as IndexPath) as! AdditionalStepCardTableViewCell
             cardSectionCell.selectionStyle = .none
             cardSectionCell.backgroundColor = UIColor.primaryColor()
@@ -195,6 +199,12 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
     public func updateDataSource(dataSource: [Cellable]) {
         self.viewModel.dataSource = dataSource
         self.tableView.reloadData()
+    }
+
+    private func createEmptyCell() -> UITableViewCell {
+        let emptyCell = UITableViewCell()
+        emptyCell.backgroundColor = ThemeManager.shared.getMainColor()
+        return emptyCell
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
