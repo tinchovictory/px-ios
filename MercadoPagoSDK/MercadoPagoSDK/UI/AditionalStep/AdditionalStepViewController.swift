@@ -160,7 +160,7 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
 
         } else if viewModel.isCardCellFor(indexPath: indexPath) {
 
-            if let pm = viewModel.amountHelper.getPaymentData().getPaymentMethod(), pm.isDigitalCurrency {
+            if viewModel.isDigitalCurrency() {
                 return createEmptyCell()
             }
 
