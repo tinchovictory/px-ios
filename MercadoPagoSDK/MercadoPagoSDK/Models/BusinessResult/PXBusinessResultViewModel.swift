@@ -102,13 +102,13 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
             helpComponent = getHelpMessageComponent()
         }
 
-        return PXBusinessResultBodyComponent(paymentMethodComponents: pmComponents, helpMessageComponent: helpComponent, creditsExpectationComponent: getCreditsExpectationComponent())
+        return PXBusinessResultBodyComponent(paymentMethodComponents: pmComponents, helpMessageComponent: helpComponent, creditsExpectationView: getCreditsExpectationView())
     }
 
-    func getCreditsExpectationComponent() -> PXCreditsExpectationComponent? {
-        if let resultInfo = self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo {
+    func getCreditsExpectationView() -> PXCreditsExpectationView? {
+        if let resultInfo = self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo, self.businessResult.isApproved() {
             let props = PXCreditsExpectationProps(title: resultInfo.title, subtitle: resultInfo.subtitle)
-            return PXCreditsExpectationComponent(props: props)
+            return PXCreditsExpectationView(props: props)
         }
         return nil
     }
@@ -222,12 +222,12 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 class PXBusinessResultBodyComponent: PXComponentizable {
     var paymentMethodComponents: [PXComponentizable]
     var helpMessageComponent: PXComponentizable?
-    var creditsExpectationComponent: PXComponentizable?
+    var creditsExpectationView: UIView?
 
-    init(paymentMethodComponents: [PXComponentizable], helpMessageComponent: PXComponentizable?, creditsExpectationComponent: PXComponentizable?) {
+    init(paymentMethodComponents: [PXComponentizable], helpMessageComponent: PXComponentizable?, creditsExpectationView: UIView?) {
         self.paymentMethodComponents = paymentMethodComponents
         self.helpMessageComponent = helpMessageComponent
-        self.creditsExpectationComponent = creditsExpectationComponent
+        self.creditsExpectationView = creditsExpectationView
     }
 
     func render() -> UIView {
@@ -249,8 +249,7 @@ class PXBusinessResultBodyComponent: PXComponentizable {
             PXLayout.pinRight(view: pmView).isActive = true
         }
 
-        if let creditsExpectationComponent = self.creditsExpectationComponent {
-            let creditsView = creditsExpectationComponent.render()
+        if let creditsView = self.creditsExpectationView {
             bodyView.addSubview(creditsView)
             PXLayout.pinLeft(view: creditsView).isActive = true
             PXLayout.pinRight(view: creditsView).isActive = true

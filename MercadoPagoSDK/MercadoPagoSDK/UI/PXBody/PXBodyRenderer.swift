@@ -25,8 +25,7 @@ class PXBodyRenderer: NSObject {
                 PXLayout.pinRight(view: pmView).isActive = true
             }
 
-            let creditsComponent = body.getCreditsExpectationComponent()
-            if let creditsView = creditsComponent?.render() {
+            if let creditsView = body.getCreditsExpectationView() {
                 bodyView.addSubviewToBottom(creditsView)
                 PXLayout.pinLeft(view: creditsView).isActive = true
                 PXLayout.pinRight(view: creditsView).isActive = true
