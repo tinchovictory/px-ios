@@ -66,6 +66,18 @@ final internal class OneTapFlowModel: PXFlowModel {
         if let firstCardID = search.expressCho?.first?.oneTapCard?.cardId, let payerCost = amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(firstCardID) {
             updateCheckoutModel(payerCost: payerCost)
         }
+
+        let paymentMethodId = search.expressCho?.first?.paymentMethodId
+        let firstCardID = search.expressCho?.first?.oneTapCard?.cardId
+        let creditsCase = paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
+        let cardCase = firstCardID != nil
+
+        if cardCase || creditsCase {
+            if let pmIdentifier = cardCase ? firstCardID : paymentMethodId,
+                let payerCost = amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(pmIdentifier) {
+                updateCheckoutModel(payerCost: payerCost)
+            }
+        }
     }
     public func nextStep() -> Steps {
         if needReviewAndConfirmForOneTap() {
@@ -156,7 +168,9 @@ internal extension OneTapFlowModel {
     }
 
     func updateCheckoutModel(payerCost: PXPayerCost) {
-        if paymentOptionSelected.isCard() {
+
+        let isCredits = paymentOptionSelected.getId() == PXPaymentTypes.CONSUMER_CREDITS.rawValue
+        if paymentOptionSelected.isCard() || isCredits {
             self.paymentData.updatePaymentDataWith(payerCost: payerCost)
             self.paymentData.cleanToken()
         }
