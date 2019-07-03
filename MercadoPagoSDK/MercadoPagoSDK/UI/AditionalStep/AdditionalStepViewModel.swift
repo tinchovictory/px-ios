@@ -118,7 +118,7 @@ internal class AdditionalStepViewModel {
     }
 
     func getCardCellHeight() -> CGFloat {
-        return UIScreen.main.bounds.width * 0.50
+        return isDigitalCurrency() ? 70 : UIScreen.main.bounds.width * 0.50
     }
 
     func getDefaultRowCellHeight() -> CGFloat {
@@ -164,6 +164,12 @@ internal class AdditionalStepViewModel {
         return [:]
     }
 
+    func isDigitalCurrency() -> Bool {
+        if let pm = amountHelper.getPaymentData().getPaymentMethod(), pm.isDigitalCurrency {
+            return true
+        }
+        return false
+    }
 }
 
 internal class IssuerAdditionalStepViewModel: AdditionalStepViewModel {
