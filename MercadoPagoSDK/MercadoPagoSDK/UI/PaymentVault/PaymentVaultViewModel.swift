@@ -84,7 +84,16 @@ extension PaymentVaultViewModel {
 
     func getDiscountInfo(row: Int) -> String? {
         if let paymentOption = getPaymentMethodOption(row: row) {
-            return amountHelper.paymentConfigurationService.getDiscountInfoForPaymentMethod(paymentOption.getId())
+            let discountInfo = amountHelper.paymentConfigurationService.getDiscountInfoForPaymentMethod(paymentOption.getId())
+            return discountInfo
+        }
+        return nil
+    }
+
+    func getCreditsInfo(row: Int) -> String? {
+        if let paymentOption = getPaymentMethodOption(row: row) {
+            let creditsInfo = amountHelper.paymentConfigurationService.getCreditsInfoForPaymentMethod(paymentOption.getId())
+            return creditsInfo
         }
         return nil
     }
