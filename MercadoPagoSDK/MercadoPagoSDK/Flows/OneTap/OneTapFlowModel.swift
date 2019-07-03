@@ -63,10 +63,6 @@ final internal class OneTapFlowModel: PXFlowModel {
         self.disabledOption = disabledOption
 
         // Payer cost pre selection.
-        if let firstCardID = search.expressCho?.first?.oneTapCard?.cardId, let payerCost = amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(firstCardID) {
-            updateCheckoutModel(payerCost: payerCost)
-        }
-
         let paymentMethodId = search.expressCho?.first?.paymentMethodId
         let firstCardID = search.expressCho?.first?.oneTapCard?.cardId
         let creditsCase = paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
