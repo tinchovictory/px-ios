@@ -10,11 +10,13 @@ import UIKit
 class PXPaymentMethodConfiguration: NSObject {
     let paymentOptionID: String
     let discountInfo: String?
+    let creditsInfo: String?
     let paymentOptionsConfigurations: [PXPaymentOptionConfiguration]
     let selectedAmountConfiguration: String?
-    init(paymentOptionID: String, discountInfo: String?, paymentOptionsConfigurations: [PXPaymentOptionConfiguration], selectedAmountConfiguration: String?) {
+    init(paymentOptionID: String, discountInfo: String?, creditsInfo: String?, paymentOptionsConfigurations: [PXPaymentOptionConfiguration], selectedAmountConfiguration: String?) {
         self.paymentOptionID = paymentOptionID
         self.discountInfo = discountInfo
+        self.creditsInfo = creditsInfo
         self.paymentOptionsConfigurations = paymentOptionsConfigurations
         self.selectedAmountConfiguration = selectedAmountConfiguration
         super.init()
@@ -25,6 +27,13 @@ class PXPaymentMethodConfiguration: NSObject {
             return false
         }
         return paymentOptionID == otherConfiguration.paymentOptionID
+    }
+
+    func getCreditsComment() -> String? {
+        if paymentOptionID == PXPaymentTypes.CONSUMER_CREDITS.rawValue {
+            return creditsInfo
+        }
+        return nil
     }
 }
 

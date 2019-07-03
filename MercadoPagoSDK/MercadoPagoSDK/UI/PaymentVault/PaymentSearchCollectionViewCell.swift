@@ -49,10 +49,11 @@ class PaymentSearchCollectionViewCell: UICollectionViewCell {
         return titleSearch.requiredHeight() + subtitleSearch.requiredHeight() + 112
     }
 
-    func fillCell(drawablePaymentOption: PaymentOptionDrawable, discountInfo: String? = nil) {
+    func fillCell(drawablePaymentOption: PaymentOptionDrawable, discountInfo: String? = nil, creditsInfo: String? = nil) {
         let image = drawablePaymentOption.getImage()
+        let subtitle = creditsInfo ?? drawablePaymentOption.getSubtitle()
 
-        let attributedSubtitle = PaymentSearchCollectionViewCell.getSubtitleAttributedString(subtitle: drawablePaymentOption.getSubtitle(), discountInfo: discountInfo, fontSize: subtitleSearch.font.pointSize, textColor: subtitleSearch.textColor)
+        let attributedSubtitle = PaymentSearchCollectionViewCell.getSubtitleAttributedString(subtitle: subtitle, discountInfo: discountInfo, fontSize: subtitleSearch.font.pointSize, textColor: subtitleSearch.textColor)
 
         self.fillCell(image: image,
                       title: drawablePaymentOption.getTitle(),
@@ -81,10 +82,11 @@ class PaymentSearchCollectionViewCell: UICollectionViewCell {
         return discountAttributedString
     }
 
-    static func totalHeight(drawablePaymentOption: PaymentOptionDrawable, discountInfo: String? = nil) -> CGFloat {
+    static func totalHeight(drawablePaymentOption: PaymentOptionDrawable, discountInfo: String? = nil, creditsInfo: String? = nil) -> CGFloat {
 
-        let subtitle = getSubtitleAttributedString(subtitle: drawablePaymentOption.getSubtitle(), discountInfo: discountInfo)
-        return PaymentSearchCollectionViewCell.totalHeight(title: drawablePaymentOption.getTitle(), subtitle: subtitle.string)
+        let subtitleText = creditsInfo ?? drawablePaymentOption.getSubtitle()
+        let subtitleAttr = getSubtitleAttributedString(subtitle: subtitleText, discountInfo: discountInfo)
+        return PaymentSearchCollectionViewCell.totalHeight(title: drawablePaymentOption.getTitle(), subtitle: subtitleAttr.string)
     }
 
     static func totalHeight(title: String?, subtitle: String?) -> CGFloat {
