@@ -83,6 +83,25 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
+    func renderConsumerCreditsCard(balanceText: String, isDisabled: Bool) {
+        containerView.layer.masksToBounds = false
+        containerView.backgroundColor = .clear
+        containerView.removeAllSubviews()
+        containerView.layer.cornerRadius = cornerRadius
+        cardHeader = MLCardDrawerController(ConsumerCreditsCard(), PXCardDataFactory(), isDisabled)
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.animated(false)
+        cardHeader?.show()
+
+        if let headerView = cardHeader?.view {
+            containerView.addSubview(headerView)
+            ConsumerCreditsCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled)
+            PXLayout.centerHorizontally(view: headerView).isActive = true
+            PXLayout.centerVertically(view: headerView).isActive = true
+        }
+        addWarningBadge(isDisabled)
+    }
+
     func addWarningBadge(_ isDisabled: Bool) {
         if isDisabled {
             let image = ResourceManager.shared.getImage("warning_badge")
