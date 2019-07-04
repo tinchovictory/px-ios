@@ -108,6 +108,7 @@ extension PXTermsAndConditionView: UITextViewDelegate, UIGestureRecognizerDelega
         }
     }
 
+    @available(iOS 10.0, *)
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         if termsAndConditionsDto != nil {
             if let range = Range(characterRange, in: textView.text),
