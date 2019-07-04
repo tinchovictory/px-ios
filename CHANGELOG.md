@@ -1,3 +1,9 @@
+# v4.16.0
+🚀Private Release - 4.16.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Max installments fix
+- Empty issuer fix
+
 # v4.15.2
 🚀Private Release - 4.15.2 🚀
 MercadoPagoSDKV4 - Private Version
