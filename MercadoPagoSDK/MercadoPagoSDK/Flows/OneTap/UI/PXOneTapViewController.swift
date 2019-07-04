@@ -365,35 +365,40 @@ extension PXOneTapViewController: PXCardSliderProtocol {
             installmentInfoRow?.hideArrow()
         }
 
-        // Add card. - CardData nil
-        if targetModel.cardData == nil || targetModel.isDisabled {
+        // Add card. - card o credits payment method selected
+        let validData = targetModel.cardData != nil || targetModel.isCredits
+        let shouldDisplay = validData && !targetModel.isDisabled
+        if shouldDisplay {
+            displayCard(targetModel: targetModel)
+        } else {
             loadingButtonComponent?.setDisabled()
             headerView?.updateModel(viewModel.getHeaderViewModel(selectedCard: nil))
+        }
+    }
+
+    func displayCard(targetModel: PXCardSliderViewModel) {
+        // New payment method selected.
+        let newPaymentMethodId: String = targetModel.paymentMethodId
+        let newPayerCost: PXPayerCost? = targetModel.selectedPayerCost
+
+        if let newPaymentMethod = viewModel.getPaymentMethod(targetId: newPaymentMethodId) {
+            let currentPaymentData: PXPaymentData = viewModel.amountHelper.getPaymentData()
+            currentPaymentData.payerCost = newPayerCost
+            currentPaymentData.paymentMethod = newPaymentMethod
+            currentPaymentData.issuer = PXIssuer(id: targetModel.issuerId, name: nil)
+            callbackUpdatePaymentOption(targetModel)
+            loadingButtonComponent?.setEnabled()
+
         } else {
-            // New payment method selected.
-            let newPaymentMethodId: String = targetModel.paymentMethodId
-            let newPayerCost: PXPayerCost? = targetModel.selectedPayerCost
+            loadingButtonComponent?.setDisabled()
+        }
+        headerView?.updateModel(viewModel.getHeaderViewModel(selectedCard: selectedCard))
 
-            if let newPaymentMethod = viewModel.getPaymentMethod(targetId: newPaymentMethodId) {
-                let currentPaymentData: PXPaymentData = viewModel.amountHelper.getPaymentData()
-                currentPaymentData.payerCost = newPayerCost
-                currentPaymentData.paymentMethod = newPaymentMethod
-                currentPaymentData.issuer = PXIssuer(id: targetModel.issuerId, name: nil)
-                callbackUpdatePaymentOption(targetModel)
-                loadingButtonComponent?.setEnabled()
+        headerView?.updateSplitPaymentView(splitConfiguration: selectedCard?.amountConfiguration?.splitConfiguration)
 
-            } else {
-                loadingButtonComponent?.setDisabled()
-            }
-            headerView?.updateModel(viewModel.getHeaderViewModel(selectedCard: selectedCard))
-
-            headerView?.updateSplitPaymentView(splitConfiguration: selectedCard?.amountConfiguration?.splitConfiguration)
-
-            // If it's debit and has split, update split message
-            if let totalAmount = targetModel.selectedPayerCost?.totalAmount, targetModel.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
-                targetModel.displayMessage = viewModel.getSplitMessageForDebit(amountToPay: totalAmount)
-            }
-
+        // If it's debit and has split, update split message
+        if let totalAmount = targetModel.selectedPayerCost?.totalAmount, targetModel.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
+            targetModel.displayMessage = viewModel.getSplitMessageForDebit(amountToPay: totalAmount)
         }
     }
 
