@@ -83,7 +83,7 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
-    func renderConsumerCreditsCard(balanceText: String, isDisabled: Bool) {
+    func renderConsumerCreditsCard(oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
@@ -95,7 +95,7 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            ConsumerCreditsCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled)
+            ConsumerCreditsCard.render(containerView: containerView, oneTapCreditsInfo: oneTapCreditsInfo, isDisabled: isDisabled)
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
