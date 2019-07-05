@@ -1202,14 +1202,14 @@ enum CreditsMockHelper {
         ],
         "display_info":{
         "terms_and_conditions":{
-        "text":"Al confirmar, aceptás los términos generales y las condiciones particulares de este préstamo.",
+        "text":"Al pagar, aceptás las condiciones generales y particulares de este préstamo.",
         "linkable_phrases":[
         {
-        "phrase":"términos generales",
+        "phrase":"generales",
         "link":"https://www.caatlanta.com.ar/"
         },
         {
-        "phrase":"condiciones particulares",
+        "phrase":"particulares",
         "link":"https://www.caatlanta.com.ar/"
         }
         ]
@@ -1266,14 +1266,14 @@ enum CreditsMockHelper {
         "payment_method_icon":"mercado_creditos",
         "payment_method_side_text":"Pagá en hasta 12 cuotas sin usar tarjeta",
         "bottom_text":{
-        "text":"Al confirmar, aceptás los términos generales y las condiciones particulares de este préstamo.",
+        "text":"Al pagar, aceptás las condiciones generales y particulares de este préstamo.",
         "linkable_phrases":[
         {
-        "phrase":"términos generales",
+        "phrase":"generales",
         "link":"https://www.caatlanta.com.ar/"
         },
         {
-        "phrase":"condiciones particulares",
+        "phrase":"particulares",
         "link":"https://www.caatlanta.com.ar/"
         }
         ]
@@ -2369,7 +2369,7 @@ enum CreditsMockHelper {
         ],
         "display_info":{
         "terms_and_conditions":{
-        "text":"Al confirmar, aceptás los términos generales y las condiciones particulares de este préstamo.",
+        "text":"Al pagar, aceptás los términos generales y las condiciones particulares de este préstamo.",
         "linkable_phrases":[
         {
         "phrase":"términos generales",
