@@ -108,13 +108,13 @@ extension PXOneTapViewModel {
                     viewModelCard.displayMessage = displayMessage
                     sliderModel.append(viewModelCard)
                 }
-            } else if let consumerCredits = targetNode.oneTapCreditsInfo {
+            } else if let consumerCredits = targetNode.oneTapCreditsInfo, let amountConfiguration = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod(targetNode.paymentMethodId) {
 
                 // TODO: ver en otra tarea. (Esteban - Juan)
                 let cardData = PXCardDataFactory().create(cardName: "", cardNumber: "", cardCode: "", cardExpiration: "")
-                let amountConfiguration = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod("prueba-consumerCredits")
 
-                let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(), cardData, [PXPayerCost](), nil, "", false, amountConfiguration: amountConfiguration, isDisabled: false)
+
+                let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, isDisabled: false)
 
                 sliderModel.append(viewModelCard)
             }
