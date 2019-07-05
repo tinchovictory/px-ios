@@ -34,6 +34,9 @@ extension PXCardSlider: FSPagerViewDataSource {
                 if targetModel.cardUI is AccountMoneyCard {
                     // AM card.
                     cell.renderAccountMoneyCard(balanceText: cardData.name, isDisabled: targetModel.isDisabled)
+
+                } else if targetModel.cardUI is ConsumerCreditsCard {
+                    cell.renderConsumerCreditsCard(balanceText: cardData.name, isDisabled: targetModel.isDisabled)
                 } else {
                     // Other cards.
                     cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: targetModel.isDisabled)
