@@ -24,23 +24,24 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 extension ConsumerCreditsCard {
 
-    static func render(containerView: UIView, balanceText: String, isDisabled: Bool) {
-        let amImage = UIImageView()
-        amImage.backgroundColor = .clear
-        amImage.contentMode = .scaleAspectFit
-        let amImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
-        amImage.image = isDisabled ? amImageRaw?.imageGreyScale() : amImageRaw
-        containerView.addSubview(amImage)
+    static func render(containerView: UIView, oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
+        let consumerCreditsImage = UIImageView()
+        consumerCreditsImage.backgroundColor = .clear
+        consumerCreditsImage.contentMode = .scaleAspectFit
+        let consumerCreditsImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
+        consumerCreditsImage.image = isDisabled ? consumerCreditsImageRaw?.imageGreyScale() : consumerCreditsImageRaw
+        containerView.addSubview(consumerCreditsImage)
         NSLayoutConstraint.activate([
-            PXLayout.setWidth(owner: amImage, width: 100),
-            PXLayout.setHeight(owner: amImage, height: 50),
-            PXLayout.centerHorizontally(view: amImage),
-            PXLayout.centerVertically(view: amImage, to: containerView, withMargin: -40)
+            PXLayout.setWidth(owner: consumerCreditsImage, width: 100),
+            PXLayout.setHeight(owner: consumerCreditsImage, height: 50),
+            PXLayout.centerHorizontally(view: consumerCreditsImage),
+            PXLayout.centerVertically(view: consumerCreditsImage, to: containerView, withMargin: -40)
         ])
 
         let titleLabel = UILabel()
         containerView.addSubview(titleLabel)
-        titleLabel.text = "Pagá en hasta 12 cuotas sin usar tarjeta"
+//        titleLabel.text = "Pagá en hasta 12 cuotas sin usar tarjeta"
+        titleLabel.text = oneTapCreditsInfo.paymentMethodSideText
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
@@ -50,22 +51,31 @@ extension ConsumerCreditsCard {
         NSLayoutConstraint.activate([
             PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: 16),
             PXLayout.pinRight(view: titleLabel, to: containerView, withMargin: 16),
-            PXLayout.put(view: titleLabel, onBottomOf: amImage, withMargin: 2)
+            PXLayout.put(view: titleLabel, onBottomOf: consumerCreditsImage, withMargin: 2)
         ])
 
-        let termsLabel = UILabel()
-        containerView.addSubview(termsLabel)
-        termsLabel.text = "Al pagar, aceptás las condiciones generales y particulares de este préstamo."
-        termsLabel.textColor = .white
-        termsLabel.textAlignment = .center
-        termsLabel.font = termsLabel.font.withSize(11)
-        termsLabel.numberOfLines = 3
-        termsLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        termsLabel.translatesAutoresizingMaskIntoConstraints = false
+        let termsAndCondLabel = UILabel()
+        containerView.addSubview(termsAndCondLabel)
+        termsAndCondLabel.textColor = .white
+        termsAndCondLabel.textAlignment = .center
+        termsAndCondLabel.font = termsAndCondLabel.font.withSize(11)
+        termsAndCondLabel.numberOfLines = 3
+        termsAndCondLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        termsAndCondLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            PXLayout.pinBottom(view: termsLabel, to: containerView, withMargin: 27),
-            PXLayout.pinLeft(view: termsLabel, to: containerView, withMargin: 16),
-            PXLayout.pinRight(view: termsLabel, to: containerView, withMargin: 16)
+            PXLayout.pinBottom(view: termsAndCondLabel, to: containerView, withMargin: 27),
+            PXLayout.pinLeft(view: termsAndCondLabel, to: containerView, withMargin: 16),
+            PXLayout.pinRight(view: termsAndCondLabel, to: containerView, withMargin: 16)
         ])
+
+        let tycText = oneTapCreditsInfo.termsAndConditions.text
+        let phrases = oneTapCreditsInfo.termsAndConditions.linkablePhrases
+        let attributedString = NSMutableAttributedString(string: tycText)
+
+        for linkablePhrase in phrases {
+            let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
+            attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
+        }
+        termsAndCondLabel.attributedText = attributedString
     }
 }
