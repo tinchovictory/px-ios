@@ -19,6 +19,7 @@ final class PXCardSlider: NSObject {
     private weak var delegate: PXCardSliderProtocol?
     private var selectedIndex: Int = 0
     private let cardSliderCornerRadius: CGFloat = 11
+    weak var termsAndCondDelegate: PXTermsAndConditionViewDelegate?
 }
 
 // MARK: DataSource
@@ -36,6 +37,7 @@ extension PXCardSlider: FSPagerViewDataSource {
                     cell.renderAccountMoneyCard(balanceText: cardData.name, isDisabled: targetModel.isDisabled)
 
                   } else if let oneTapCreditsInfo = targetModel.oneTapCreditsInfo, targetModel.cardUI is ConsumerCreditsCard {
+                    cell.delegate = self
                     cell.renderConsumerCreditsCard(oneTapCreditsInfo: oneTapCreditsInfo, isDisabled: targetModel.isDisabled)
                 } else {
                     // Other cards.
@@ -155,5 +157,11 @@ extension PXCardSlider {
         PXLayout.pinBottom(view: pageControl, withMargin: -pagerYMargin).isActive = true
         PXLayout.setHeight(owner: pageControl, height: pagerHeight).isActive = true
         pageControl.layoutIfNeeded()
+    }
+}
+
+extension PXCardSlider: PXTermsAndConditionViewDelegate {
+    func shouldOpenTermsCondition(_ title: String, url: URL) {
+        termsAndCondDelegate?.shouldOpenTermsCondition(title, url: url)
     }
 }

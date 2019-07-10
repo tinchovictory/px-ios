@@ -20,6 +20,7 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var defaultUI = false
     var securityCodePattern = 3
     var fontType: String = "light"
+    weak var delegate: PXTermsAndConditionViewDelegate?
 }
 
 extension ConsumerCreditsCard {
@@ -110,6 +111,7 @@ extension ConsumerCreditsCard: UITextViewDelegate {
             if let range = Range(characterRange, in: textView.text),
                 let text = textView.text?[range] {
                 let title = String(text).capitalized
+                delegate?.shouldOpenTermsCondition(title, url: URL)
             }
         return false
     }
