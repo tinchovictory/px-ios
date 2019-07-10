@@ -16,4 +16,10 @@ internal extension Date {
         let timeInterval: TimeInterval = Double(millis) / 1000
         return Date(timeIntervalSince1970: timeInterval)
     }
+
+    internal func stringDate() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return dateFormatter.string(from: self)
+    }
 }
