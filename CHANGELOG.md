@@ -1,3 +1,9 @@
+# v4.16.1
+🚀Private Release - 4.16.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Tracking expiration_date_from crash fix
+
+
 # v4.16.0
 🚀Private Release - 4.16.0 🚀
 MercadoPagoSDKV4 - Private Version
