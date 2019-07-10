@@ -24,50 +24,38 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 extension ConsumerCreditsCard {
 
-    static func render(containerView: UIView, oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
-        let consumerCreditsImage = UIImageView()
-        consumerCreditsImage.backgroundColor = .clear
-        consumerCreditsImage.contentMode = .scaleAspectFit
-        let consumerCreditsImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
-        consumerCreditsImage.image = isDisabled ? consumerCreditsImageRaw?.imageGreyScale() : consumerCreditsImageRaw
+    func render(containerView: UIView, oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
+        let creditsImageHeight: CGFloat = 50
+        let creditsImageWidth: CGFloat = 100
+        let margins: CGFloat = 16
+        let termsAndConditionsTextHeight: CGFloat = 40
+
+        let consumerCreditsImage = getConsumerCreditsImageView(isDisabled: isDisabled)
         containerView.addSubview(consumerCreditsImage)
         NSLayoutConstraint.activate([
-            PXLayout.setWidth(owner: consumerCreditsImage, width: 100),
-            PXLayout.setHeight(owner: consumerCreditsImage, height: 50),
+            PXLayout.setWidth(owner: consumerCreditsImage, width: creditsImageWidth),
+            PXLayout.setHeight(owner: consumerCreditsImage, height: creditsImageHeight),
             PXLayout.centerHorizontally(view: consumerCreditsImage),
-            PXLayout.centerVertically(view: consumerCreditsImage, to: containerView, withMargin: -40)
+            PXLayout.centerVertically(view: consumerCreditsImage, to: containerView, withMargin: -creditsImageHeight/2)
         ])
 
-        let titleLabel = UILabel()
+        let titleLabel = getTitleLabel(oneTapCreditsInfo: oneTapCreditsInfo)
         containerView.addSubview(titleLabel)
-//        titleLabel.text = "Pagá en hasta 12 cuotas sin usar tarjeta"
-        titleLabel.text = oneTapCreditsInfo.paymentMethodSideText
-        titleLabel.textColor = .white
-        titleLabel.textAlignment = .center
-        titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
-        titleLabel.numberOfLines = 2
-        titleLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: 16),
-            PXLayout.pinRight(view: titleLabel, to: containerView, withMargin: 16),
-            PXLayout.put(view: titleLabel, onBottomOf: consumerCreditsImage, withMargin: 2)
+            PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: margins),
+            PXLayout.pinRight(view: titleLabel, to: containerView, withMargin: margins),
+            PXLayout.put(view: titleLabel, onBottomOf: consumerCreditsImage)
         ])
 
-        let termsAndCondLabel = UILabel()
-        containerView.addSubview(termsAndCondLabel)
-        termsAndCondLabel.textColor = .white
-        termsAndCondLabel.textAlignment = .center
-        termsAndCondLabel.font = termsAndCondLabel.font.withSize(11)
-        termsAndCondLabel.numberOfLines = 3
-        termsAndCondLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        termsAndCondLabel.translatesAutoresizingMaskIntoConstraints = false
+        let termsAndConditionsText = getTermsAndConditionsTextView()
+        containerView.addSubview(termsAndConditionsText)
         NSLayoutConstraint.activate([
-            PXLayout.pinBottom(view: termsAndCondLabel, to: containerView, withMargin: 27),
-            PXLayout.pinLeft(view: termsAndCondLabel, to: containerView, withMargin: 16),
-            PXLayout.pinRight(view: termsAndCondLabel, to: containerView, withMargin: 16)
+            PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins),
+            PXLayout.pinLeft(view: termsAndConditionsText, to: containerView, withMargin: margins),
+            PXLayout.pinRight(view: termsAndConditionsText, to: containerView, withMargin: margins)
         ])
 
+        PXLayout.setHeight(owner: termsAndConditionsText, height: termsAndConditionsTextHeight).isActive = true
         let tycText = oneTapCreditsInfo.termsAndConditions.text
         let phrases = oneTapCreditsInfo.termsAndConditions.linkablePhrases
         let attributedString = NSMutableAttributedString(string: tycText)
@@ -75,7 +63,54 @@ extension ConsumerCreditsCard {
         for linkablePhrase in phrases {
             let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
             attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
+            attributedString.addAttribute(NSAttributedString.Key.link, value: linkablePhrase.link, range: tycLinkRange)
         }
-        termsAndCondLabel.attributedText = attributedString
+        termsAndConditionsText.attributedText = attributedString
+        termsAndConditionsText.textAlignment = .center
+        termsAndConditionsText.textColor = .white
+    }
+
+    private func getConsumerCreditsImageView(isDisabled: Bool) -> UIImageView {
+        let consumerCreditsImage = UIImageView()
+        consumerCreditsImage.backgroundColor = .clear
+        consumerCreditsImage.contentMode = .scaleAspectFit
+        let consumerCreditsImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
+        consumerCreditsImage.image = isDisabled ? consumerCreditsImageRaw?.imageGreyScale() : consumerCreditsImageRaw
+        return consumerCreditsImage
+    }
+
+    private func getTitleLabel(oneTapCreditsInfo: PXOneTapCreditsDto) -> UILabel {
+        let titleLabel = UILabel()
+        titleLabel.text = oneTapCreditsInfo.paymentMethodSideText
+        titleLabel.textColor = .white
+        titleLabel.textAlignment = .center
+        titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
+        titleLabel.numberOfLines = 2
+        titleLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        return titleLabel
+    }
+
+    private func getTermsAndConditionsTextView() -> UITextView {
+        let termsAndConditionsText = UITextView()
+        termsAndConditionsText.linkTextAttributes = [.foregroundColor: UIColor.white]
+        termsAndConditionsText.delegate = self
+        termsAndConditionsText.isUserInteractionEnabled = true
+        termsAndConditionsText.isEditable = false
+        termsAndConditionsText.backgroundColor = .clear
+        termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
+        return termsAndConditionsText
+    }
+}
+
+extension ConsumerCreditsCard: UITextViewDelegate {
+
+    @available(iOS 10.0, *)
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            if let range = Range(characterRange, in: textView.text),
+                let text = textView.text?[range] {
+                let title = String(text).capitalized
+            }
+        return false
     }
 }

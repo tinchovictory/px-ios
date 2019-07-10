@@ -19,6 +19,8 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
     @IBOutlet weak var containerView: UIView!
 
+    private var card: ConsumerCreditsCard = ConsumerCreditsCard()
+
     override func prepareForReuse() {
         super.prepareForReuse()
         cardHeader?.view.removeFromSuperview()
@@ -95,7 +97,7 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            ConsumerCreditsCard.render(containerView: containerView, oneTapCreditsInfo: oneTapCreditsInfo, isDisabled: isDisabled)
+            card.render(containerView: containerView, oneTapCreditsInfo: oneTapCreditsInfo, isDisabled: isDisabled)
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
