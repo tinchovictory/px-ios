@@ -70,6 +70,23 @@ extension ConsumerCreditsCard {
         termsAndConditionsText.textAlignment = .center
         termsAndConditionsText.textColor = .white
     }
+}
+
+extension ConsumerCreditsCard: UITextViewDelegate {
+
+    @available(iOS 10.0, *)
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            if let range = Range(characterRange, in: textView.text),
+                let text = textView.text?[range] {
+                let title = String(text).capitalized
+                delegate?.shouldOpenTermsCondition(title, url: URL)
+            }
+        return false
+    }
+}
+
+//MARK: Privates
+extension ConsumerCreditsCard {
 
     private func getConsumerCreditsImageView(isDisabled: Bool) -> UIImageView {
         let consumerCreditsImage = UIImageView()
@@ -101,18 +118,5 @@ extension ConsumerCreditsCard {
         termsAndConditionsText.backgroundColor = .clear
         termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
         return termsAndConditionsText
-    }
-}
-
-extension ConsumerCreditsCard: UITextViewDelegate {
-
-    @available(iOS 10.0, *)
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-            if let range = Range(characterRange, in: textView.text),
-                let text = textView.text?[range] {
-                let title = String(text).capitalized
-                delegate?.shouldOpenTermsCondition(title, url: URL)
-            }
-        return false
     }
 }
