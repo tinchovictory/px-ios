@@ -38,6 +38,7 @@ class PXTermsAndConditionView: PXComponentView {
         termsAndConditionsText.backgroundColor = .clear
 
         if termsAndConditionsDto == nil {
+            //generic terms and conditions case, the whole cell will react presenting the generic tyc webview
             let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
             tap.delegate = self
             self.addGestureRecognizer(tap)
