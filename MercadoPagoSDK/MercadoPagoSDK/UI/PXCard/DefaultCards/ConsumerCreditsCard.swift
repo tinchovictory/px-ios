@@ -25,7 +25,7 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 extension ConsumerCreditsCard {
 
-    func render(containerView: UIView, oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
+    func render(containerView: UIView, creditsViewModel: CreditsViewModel, isDisabled: Bool) {
         let creditsImageHeight: CGFloat = 50
         let creditsImageWidth: CGFloat = 100
         let margins: CGFloat = 16
@@ -40,7 +40,7 @@ extension ConsumerCreditsCard {
             PXLayout.centerVertically(view: consumerCreditsImage, to: containerView, withMargin: -creditsImageHeight/2)
         ])
 
-        let titleLabel = getTitleLabel(oneTapCreditsInfo: oneTapCreditsInfo)
+        let titleLabel = getTitleLabel(creditsViewModel: creditsViewModel)
         containerView.addSubview(titleLabel)
         NSLayoutConstraint.activate([
             PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: margins),
@@ -57,8 +57,8 @@ extension ConsumerCreditsCard {
         ])
 
         PXLayout.setHeight(owner: termsAndConditionsText, height: termsAndConditionsTextHeight).isActive = true
-        let tycText = oneTapCreditsInfo.termsAndConditions.text
-        let phrases = oneTapCreditsInfo.termsAndConditions.linkablePhrases
+        let tycText = creditsViewModel.text
+        let phrases = creditsViewModel.linkablePhrases
         let attributedString = NSMutableAttributedString(string: tycText)
 
         for linkablePhrase in phrases {
@@ -97,9 +97,9 @@ extension ConsumerCreditsCard {
         return consumerCreditsImage
     }
 
-    private func getTitleLabel(oneTapCreditsInfo: PXOneTapCreditsDto) -> UILabel {
+    private func getTitleLabel(creditsViewModel: CreditsViewModel) -> UILabel {
         let titleLabel = UILabel()
-        titleLabel.text = oneTapCreditsInfo.paymentMethodSideText
+        titleLabel.text = creditsViewModel.paymentMethodSideText
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
