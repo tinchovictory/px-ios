@@ -241,6 +241,7 @@ extension PXOneTapViewController {
 
     private func addCardSlider(inContainerView: UIView) {
         slider.render(containerView: inContainerView, cardSliderProtocol: self)
+        slider.termsAndCondDelegate = self
         slider.update(viewModel.getCardSliderViewModel())
     }
 }
@@ -543,5 +544,14 @@ extension PXOneTapViewController {
 
     func unsubscribeFromNotifications() {
         PXNotificationManager.UnsuscribeTo.animateButton(loadingButtonComponent)
+    }
+}
+
+// MARK: Terms and Conditions
+extension PXOneTapViewController: PXTermsAndConditionViewDelegate {
+    func shouldOpenTermsCondition(_ title: String, url: URL) {
+        let webVC = WebViewController(url: url, navigationBarTitle: title)
+        webVC.title = title
+        self.navigationController?.pushViewController(webVC, animated: true)
     }
 }

@@ -20,52 +20,103 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var defaultUI = false
     var securityCodePattern = 3
     var fontType: String = "light"
+    weak var delegate: PXTermsAndConditionViewDelegate?
 }
 
 extension ConsumerCreditsCard {
 
-    static func render(containerView: UIView, balanceText: String, isDisabled: Bool) {
-        let amImage = UIImageView()
-        amImage.backgroundColor = .clear
-        amImage.contentMode = .scaleAspectFit
-        let amImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
-        amImage.image = isDisabled ? amImageRaw?.imageGreyScale() : amImageRaw
-        containerView.addSubview(amImage)
+    func render(containerView: UIView, oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
+        let creditsImageHeight: CGFloat = 50
+        let creditsImageWidth: CGFloat = 100
+        let margins: CGFloat = 16
+        let termsAndConditionsTextHeight: CGFloat = 40
+
+        let consumerCreditsImage = getConsumerCreditsImageView(isDisabled: isDisabled)
+        containerView.addSubview(consumerCreditsImage)
         NSLayoutConstraint.activate([
-            PXLayout.setWidth(owner: amImage, width: 100),
-            PXLayout.setHeight(owner: amImage, height: 50),
-            PXLayout.centerHorizontally(view: amImage),
-            PXLayout.centerVertically(view: amImage, to: containerView, withMargin: -40)
+            PXLayout.setWidth(owner: consumerCreditsImage, width: creditsImageWidth),
+            PXLayout.setHeight(owner: consumerCreditsImage, height: creditsImageHeight),
+            PXLayout.centerHorizontally(view: consumerCreditsImage),
+            PXLayout.centerVertically(view: consumerCreditsImage, to: containerView, withMargin: -creditsImageHeight/2)
         ])
 
-        let titleLabel = UILabel()
+        let titleLabel = getTitleLabel(oneTapCreditsInfo: oneTapCreditsInfo)
         containerView.addSubview(titleLabel)
-        titleLabel.text = "Pagá en hasta 12 cuotas sin usar tarjeta"
+        NSLayoutConstraint.activate([
+            PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: margins),
+            PXLayout.pinRight(view: titleLabel, to: containerView, withMargin: margins),
+            PXLayout.put(view: titleLabel, onBottomOf: consumerCreditsImage)
+        ])
+
+        let termsAndConditionsText = getTermsAndConditionsTextView()
+        containerView.addSubview(termsAndConditionsText)
+        NSLayoutConstraint.activate([
+            PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins),
+            PXLayout.pinLeft(view: termsAndConditionsText, to: containerView, withMargin: margins),
+            PXLayout.pinRight(view: termsAndConditionsText, to: containerView, withMargin: margins)
+        ])
+
+        PXLayout.setHeight(owner: termsAndConditionsText, height: termsAndConditionsTextHeight).isActive = true
+        let tycText = oneTapCreditsInfo.termsAndConditions.text
+        let phrases = oneTapCreditsInfo.termsAndConditions.linkablePhrases
+        let attributedString = NSMutableAttributedString(string: tycText)
+
+        for linkablePhrase in phrases {
+            let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
+            attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
+            attributedString.addAttribute(NSAttributedString.Key.link, value: linkablePhrase.link, range: tycLinkRange)
+        }
+        termsAndConditionsText.attributedText = attributedString
+        termsAndConditionsText.textAlignment = .center
+        termsAndConditionsText.textColor = .white
+    }
+}
+
+extension ConsumerCreditsCard: UITextViewDelegate {
+
+    @available(iOS 10.0, *)
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+            if let range = Range(characterRange, in: textView.text),
+                let text = textView.text?[range] {
+                let title = String(text).capitalized
+                delegate?.shouldOpenTermsCondition(title, url: URL)
+            }
+        return false
+    }
+}
+
+//MARK: Privates
+extension ConsumerCreditsCard {
+
+    private func getConsumerCreditsImageView(isDisabled: Bool) -> UIImageView {
+        let consumerCreditsImage = UIImageView()
+        consumerCreditsImage.backgroundColor = .clear
+        consumerCreditsImage.contentMode = .scaleAspectFit
+        let consumerCreditsImageRaw = ResourceManager.shared.getImage("consumerCreditsOneTap")
+        consumerCreditsImage.image = isDisabled ? consumerCreditsImageRaw?.imageGreyScale() : consumerCreditsImageRaw
+        return consumerCreditsImage
+    }
+
+    private func getTitleLabel(oneTapCreditsInfo: PXOneTapCreditsDto) -> UILabel {
+        let titleLabel = UILabel()
+        titleLabel.text = oneTapCreditsInfo.paymentMethodSideText
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
         titleLabel.numberOfLines = 2
         titleLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            PXLayout.pinLeft(view: titleLabel, to: containerView, withMargin: 16),
-            PXLayout.pinRight(view: titleLabel, to: containerView, withMargin: 16),
-            PXLayout.put(view: titleLabel, onBottomOf: amImage, withMargin: 2)
-        ])
+        return titleLabel
+    }
 
-        let termsLabel = UILabel()
-        containerView.addSubview(termsLabel)
-        termsLabel.text = "Al pagar, aceptás las condiciones generales y particulares de este préstamo."
-        termsLabel.textColor = .white
-        termsLabel.textAlignment = .center
-        termsLabel.font = termsLabel.font.withSize(11)
-        termsLabel.numberOfLines = 3
-        termsLabel.lineBreakMode = NSLineBreakMode.byWordWrapping
-        termsLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            PXLayout.pinBottom(view: termsLabel, to: containerView, withMargin: 27),
-            PXLayout.pinLeft(view: termsLabel, to: containerView, withMargin: 16),
-            PXLayout.pinRight(view: termsLabel, to: containerView, withMargin: 16)
-        ])
+    private func getTermsAndConditionsTextView() -> UITextView {
+        let termsAndConditionsText = UITextView()
+        termsAndConditionsText.linkTextAttributes = [.foregroundColor: UIColor.white]
+        termsAndConditionsText.delegate = self
+        termsAndConditionsText.isUserInteractionEnabled = true
+        termsAndConditionsText.isEditable = false
+        termsAndConditionsText.backgroundColor = .clear
+        termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
+        return termsAndConditionsText
     }
 }

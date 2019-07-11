@@ -19,6 +19,9 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
     @IBOutlet weak var containerView: UIView!
 
+    private var card: ConsumerCreditsCard = ConsumerCreditsCard()
+    weak var delegate: PXTermsAndConditionViewDelegate?
+
     override func prepareForReuse() {
         super.prepareForReuse()
         cardHeader?.view.removeFromSuperview()
@@ -83,7 +86,7 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
-    func renderConsumerCreditsCard(balanceText: String, isDisabled: Bool) {
+    func renderConsumerCreditsCard(oneTapCreditsInfo: PXOneTapCreditsDto, isDisabled: Bool) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
@@ -95,7 +98,8 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            ConsumerCreditsCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled)
+            card.render(containerView: containerView, oneTapCreditsInfo: oneTapCreditsInfo, isDisabled: isDisabled)
+            card.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
@@ -124,5 +128,11 @@ extension PXCardSliderPagerCell {
         cardHeader?.animated(true)
         cardHeader?.show()
         cardHeader?.animated(false)
+    }
+}
+
+extension PXCardSliderPagerCell: PXTermsAndConditionViewDelegate {
+    func shouldOpenTermsCondition(_ title: String, url: URL) {
+        delegate?.shouldOpenTermsCondition(title, url: url)
     }
 }

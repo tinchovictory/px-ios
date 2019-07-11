@@ -17,7 +17,7 @@ class PXTermsAndConditionView: PXComponentView {
     var SCREEN_TITLE = "Términos y Condiciones"
     internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
-    fileprivate let termsAndConditionsText: MPTextView = MPTextView()
+    private let termsAndConditionsText: MPTextView = MPTextView()
     var termsAndConditionsDto: PXTermsDto?
 
     weak var delegate: PXTermsAndConditionViewDelegate?
@@ -37,7 +37,7 @@ class PXTermsAndConditionView: PXComponentView {
         termsAndConditionsText.attributedText = getTyCText()
         termsAndConditionsText.backgroundColor = .clear
 
-        if termsAndConditionsDto != nil {
+        if termsAndConditionsDto == nil {
             let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
             tap.delegate = self
             self.addGestureRecognizer(tap)
