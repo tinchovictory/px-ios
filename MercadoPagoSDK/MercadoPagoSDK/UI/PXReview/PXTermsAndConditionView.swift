@@ -17,7 +17,7 @@ class PXTermsAndConditionView: PXComponentView {
     var SCREEN_TITLE = "Términos y Condiciones"
     internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
-    fileprivate let termsAndConditionsText: MPTextView = MPTextView()
+    private let termsAndConditionsText: MPTextView = MPTextView()
     var termsAndConditionsDto: PXTermsDto?
 
     weak var delegate: PXTermsAndConditionViewDelegate?
@@ -37,7 +37,8 @@ class PXTermsAndConditionView: PXComponentView {
         termsAndConditionsText.attributedText = getTyCText()
         termsAndConditionsText.backgroundColor = .clear
 
-        if termsAndConditionsDto != nil {
+        if termsAndConditionsDto == nil {
+            //generic terms and conditions case, the whole cell will react presenting the generic tyc webview
             let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
             tap.delegate = self
             self.addGestureRecognizer(tap)
@@ -108,6 +109,7 @@ extension PXTermsAndConditionView: UITextViewDelegate, UIGestureRecognizerDelega
         }
     }
 
+    @available(iOS 10.0, *)
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         if termsAndConditionsDto != nil {
             if let range = Range(characterRange, in: textView.text),
