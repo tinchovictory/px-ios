@@ -35,6 +35,10 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
         }
     }
 
+    func setProductIdForPayment(_ productId: String) {
+        model.productId = productId
+    }
+
     deinit {
         #if DEBUG
             print("DEINIT FLOW - \(self)")

@@ -253,7 +253,7 @@ extension PXCheckoutPreference {
 
 // MARK: Validation
 extension PXCheckoutPreference {
-    internal func validate() -> String? {
+    internal func validate(privateKey: String?) -> String? {
         if let itemError = itemsValid() {
             return itemError
         }
@@ -261,7 +261,7 @@ extension PXCheckoutPreference {
             return "No hay información de payer".localized
         }
 
-        if String.isNullOrEmpty(payer.email) {
+        if String.isNullOrEmpty(payer.email) && String.isNullOrEmpty(privateKey) {
             return "Se requiere email de comprador".localized
         }
 

@@ -30,7 +30,7 @@ extension InitFlow {
     }
 
     func validatePreference() {
-        let errorMessage = model.properties.checkoutPreference.validate()
+        let errorMessage = model.properties.checkoutPreference.validate(privateKey: model.properties.privateKey)
         if errorMessage != nil {
             let customError = InitFlowError(errorStep: .ACTION_VALIDATE_PREFERENCE, shouldRetry: false, requestOrigin: nil, apiException: nil)
             model.setError(error: customError)
