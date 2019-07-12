@@ -22,10 +22,19 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var fontType: String = "light"
     weak var delegate: PXTermsAndConditionViewDelegate?
     var ownOverlayImage: UIImage? = ResourceManager.shared.getImage("creditsOverlayMask")
+    var ownGradient: CAGradientLayer = getCustomGradient()
+
+    static func getCustomGradient() -> CAGradientLayer {
+        let gradient = CAGradientLayer()
+        gradient.colors = [#colorLiteral(red: 0.03361242613, green: 0.7578604493, blue: 0.6721206227, alpha: 1).cgColor, #colorLiteral(red: 0.0431372549, green: 0.5382275298, blue: 0.7933213932, alpha: 1).cgColor]
+        gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradient.endPoint = CGPoint(x: 1.6, y: 0.5)
+        return gradient
+    }
 }
 
+// MARK: Render
 extension ConsumerCreditsCard {
-
     func render(containerView: UIView, creditsViewModel: CreditsViewModel, isDisabled: Bool) {
         let creditsImageHeight: CGFloat = 50
         let creditsImageWidth: CGFloat = 100
@@ -73,8 +82,8 @@ extension ConsumerCreditsCard {
     }
 }
 
+// MARK: UITextViewDelegate
 extension ConsumerCreditsCard: UITextViewDelegate {
-
     @available(iOS 10.0, *)
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
             if let range = Range(characterRange, in: textView.text),
@@ -86,7 +95,7 @@ extension ConsumerCreditsCard: UITextViewDelegate {
     }
 }
 
-//MARK: Privates
+// MARK: Privates
 extension ConsumerCreditsCard {
 
     private func getConsumerCreditsImageView(isDisabled: Bool) -> UIImageView {
