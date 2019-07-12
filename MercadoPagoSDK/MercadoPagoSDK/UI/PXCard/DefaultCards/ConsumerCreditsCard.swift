@@ -15,12 +15,13 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var cardPattern = [0]
     var cardFontColor: UIColor = .white
     var cardLogoImage: UIImage?
-    var cardBackgroundColor: UIColor = #colorLiteral(red: 0.0431372549, green: 0.7231055264, blue: 0.6548635593, alpha: 1)
+    var cardBackgroundColor: UIColor = #colorLiteral(red: 0.0431372549, green: 0.7065708517, blue: 0.7140994326, alpha: 1)
     var securityCodeLocation: MLCardSecurityCodeLocation = .back
     var defaultUI = false
     var securityCodePattern = 3
     var fontType: String = "light"
     weak var delegate: PXTermsAndConditionViewDelegate?
+    var ownOverlayImage: UIImage? = ResourceManager.shared.getImage("creditsOverlayMask")
 }
 
 extension ConsumerCreditsCard {
