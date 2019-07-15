@@ -13,7 +13,11 @@ import UIKit
  */
 @objcMembers public class PXPaymentData: NSObject, NSCopying {
     internal var paymentMethod: PXPaymentMethod?
-    internal var issuer: PXIssuer?
+    internal var issuer: PXIssuer? {
+        didSet {
+            processIssuer()
+        }
+    }
     internal var payerCost: PXPayerCost?
     internal var token: PXToken?
     internal var payer: PXPayer?
@@ -271,5 +275,14 @@ extension PXPaymentData {
         self.discount = nil
         self.campaign = nil
         self.consumedDiscount = nil
+    }
+}
+
+// MARK: Private
+extension PXPaymentData {
+    private func processIssuer() {
+        if let newIssuer = issuer, newIssuer.id.isEmpty {
+            cleanIssuer()
+        }
     }
 }

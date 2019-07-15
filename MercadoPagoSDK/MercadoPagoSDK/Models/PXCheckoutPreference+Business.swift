@@ -211,14 +211,14 @@ extension PXCheckoutPreference {
      getMaxAcceptedInstallments
      */
     open func getMaxAcceptedInstallments() -> Int {
-        return paymentPreference.getMaxAcceptedInstallments() ?? 0
+        return paymentPreference.getMaxAcceptedInstallments()
     }
 
     /**
      getExcludedPaymentMethodsIds
      */
     open func getExcludedPaymentMethodsIds() -> [String] {
-        return paymentPreference.getExcludedPaymentMethodsIds() ?? []
+        return paymentPreference.getExcludedPaymentMethodsIds()
     }
 
     /**
@@ -253,7 +253,7 @@ extension PXCheckoutPreference {
 
 // MARK: Validation
 extension PXCheckoutPreference {
-    internal func validate() -> String? {
+    internal func validate(privateKey: String?) -> String? {
         if let itemError = itemsValid() {
             return itemError
         }
@@ -261,7 +261,7 @@ extension PXCheckoutPreference {
             return "No hay información de payer".localized
         }
 
-        if String.isNullOrEmpty(payer.email) {
+        if String.isNullOrEmpty(payer.email) && String.isNullOrEmpty(privateKey) {
             return "Se requiere email de comprador".localized
         }
 
@@ -306,8 +306,8 @@ extension PXCheckoutPreference {
         checkoutPrefDic["binary_mode"] = binaryModeEnabled
         checkoutPrefDic["marketplace"] = marketplace
         checkoutPrefDic["site_id"] = siteId
-        checkoutPrefDic["expiration_date_from"] = expirationDateFrom
-        checkoutPrefDic["expiration_date_to"] = expirationDateTo
+        checkoutPrefDic["expiration_date_from"] = expirationDateFrom?.stringDate()
+        checkoutPrefDic["expiration_date_to"] = expirationDateTo?.stringDate()
         checkoutPrefDic["payment_methods"] = paymentPreference.getPaymentPreferenceForTracking()
 
         return checkoutPrefDic

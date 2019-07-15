@@ -14,6 +14,8 @@ import Foundation
 @objcMembers
 open class PXAdvancedConfiguration: NSObject {
 
+    internal var productId: String?
+
     // MARK: Public accessors.
     /**
      Advanced UI color customization. Use this config to create your custom UI colors based on PXTheme protocol. Also you can use this protocol to customize your fonts.
@@ -66,4 +68,11 @@ open class PXAdvancedConfiguration: NSObject {
      Set additional data to get discounts
      */
     open var discountParamsConfiguration: PXDiscountParamsConfiguration?
+
+    /**
+     Set product id
+     */
+    open func setProductId(id: String) {
+        self.productId = id
+    }
 }

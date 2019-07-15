@@ -79,7 +79,15 @@ internal extension PXResultViewModel {
     }
 
     private func getLinkAction() -> (() -> Void)? {
-        return { self.pressLink() }
+        return { [weak self] in
+            if let url = self?.getBackUrl() {
+                self?.openURL(url: url, success: { [weak self] (_) in
+                    self?.pressLink()
+                })
+            } else {
+                self?.pressLink()
+            }
+        }
     }
 
     private func pressButton() {

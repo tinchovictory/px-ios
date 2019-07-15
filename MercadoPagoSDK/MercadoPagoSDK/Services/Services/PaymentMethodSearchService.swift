@@ -43,11 +43,12 @@ internal class PaymentMethodSearchService: MercadoPagoService {
         super.init(baseURL: baseURL)
     }
 
-    internal func getPaymentMethods(_ amount: Double, customerEmail: String? = nil, customerId: String? = nil, defaultPaymenMethodId: String?, excludedPaymentTypeIds: [String], excludedPaymentMethodIds: [String], cardsWithEsc: [String]?, supportedPlugins: [String]?, site: PXSite, payer: PXPayer, language: String, differentialPricingId: String?, defaultInstallments: String?, expressEnabled: String, splitEnabled: String, discountParamsConfiguration: PXDiscountParamsConfiguration?, marketplace: String?, charges: [PXPaymentTypeChargeRule]?, success: @escaping (_ paymentMethodSearch: PXPaymentMethodSearch) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
+    internal func getPaymentMethods(_ amount: Double, customerEmail: String? = nil, customerId: String? = nil, defaultPaymenMethodId: String?, excludedPaymentTypeIds: [String], excludedPaymentMethodIds: [String], cardsWithEsc: [String]?, supportedPlugins: [String]?, site: PXSite, payer: PXPayer, language: String, differentialPricingId: String?, defaultInstallments: String?, expressEnabled: String, splitEnabled: String, discountParamsConfiguration: PXDiscountParamsConfiguration?, marketplace: String?, charges: [PXPaymentTypeChargeRule]?, maxInstallments: String?, success: @escaping (_ paymentMethodSearch: PXPaymentMethodSearch) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
 
         var params = MercadoPagoServices.getParamsPublicKey(merchantPublicKey)
+        let roundedAmount = PXAmountHelper.getRoundedAmountAsNsDecimalNumber(amount: amount)
 
-        params.paramsAppend(key: ApiParams.AMOUNT, value: String(amount))
+        params.paramsAppend(key: ApiParams.AMOUNT, value: roundedAmount.stringValue)
 
         let newExcludedPaymentTypesIds = excludedPaymentTypeIds
 
@@ -67,6 +68,10 @@ internal class PaymentMethodSearchService: MercadoPagoService {
 
         if let customDefaultInstallments = defaultInstallments {
             params.paramsAppend(key: ApiParams.DEFAULT_INSTALLMENTS, value: customDefaultInstallments)
+        }
+
+        if let customMaxInstallments = maxInstallments {
+            params.paramsAppend(key: ApiParams.MAX_INSTALLMENTS, value: customMaxInstallments)
         }
 
         params.paramsAppend(key: ApiParams.EMAIL, value: customerEmail)
