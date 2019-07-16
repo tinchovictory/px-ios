@@ -8,12 +8,17 @@
 import Foundation
 
 struct LinkablePhraseViewModel {
+
+    let textColor: String
     let phrase: String
-    let link: String
+    let link: String?
+    let html: String?
 
     init(_ withModel: PXLinkablePhraseDto) {
+        self.textColor = withModel.textColor
         self.phrase = withModel.phrase
         self.link = withModel.link
+        self.html = withModel.html
     }
 
     static func create(_ withArray: [PXLinkablePhraseDto]) -> [LinkablePhraseViewModel] {

@@ -27,7 +27,7 @@ open class PXOneTapDto: NSObject, Codable {
         case paymentMethodId = "payment_method_id"
         case paymentTypeId = "payment_type_id"
         case oneTapCard = "card"
-        case oneTapCreditsInfo = "customer_credits"
+        case oneTapCreditsInfo = "consumer_credits"
         case accountMoney = "account_money"
     }
 

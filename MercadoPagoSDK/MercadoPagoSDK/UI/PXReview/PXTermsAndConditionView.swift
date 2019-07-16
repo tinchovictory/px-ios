@@ -25,6 +25,8 @@ class PXTermsAndConditionView: PXComponentView {
     init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil, delegate: PXTermsAndConditionViewDelegate? = nil) {
         super.init()
 
+        //HtmlStorage.shared.clean()
+
         self.delegate = delegate
         self.termsAndConditionsDto = termsDto
         self.termsAndConditionsText.backgroundColor = .clear
@@ -76,20 +78,25 @@ class PXTermsAndConditionView: PXComponentView {
 extension PXTermsAndConditionView {
 
     func getTyCText() -> NSMutableAttributedString {
-
         let termsAndConditionsText = termsAndConditionsDto?.text ?? "review_terms_and_conditions".localized_beta
 
         let normalAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XXXS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.labelTintColor()]
 
-
         let mutableAttributedString = NSMutableAttributedString(string: termsAndConditionsText, attributes: normalAttributes)
 
-        let defaultLinkablePhrase = PXLinkablePhraseDto(phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL())
+        let defaultLinkablePhrase = PXLinkablePhraseDto(textColor: "", phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL(), html: "")
+
         let phrases = termsAndConditionsDto?.linkablePhrases ?? [defaultLinkablePhrase]
 
         for linkablePhrase in phrases {
-            let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
-            mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: linkablePhrase.link, range: tycLinkRange)
+            if let customLink = linkablePhrase.link {
+                let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
+                mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
+            } else if let customHtml = linkablePhrase.html {
+                let htmlUrl = HtmlStorage.shared.set(customHtml)
+                let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
+                mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: htmlUrl, range: tycLinkRange)
+            }
         }
 
         let style = NSMutableParagraphStyle()

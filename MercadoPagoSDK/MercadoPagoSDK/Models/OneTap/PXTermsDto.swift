@@ -7,11 +7,15 @@
 
 import UIKit
 
-public struct PXTermsDto: Codable  {
+/// :nodoc:
+public struct PXTermsDto: Codable {
     let text: String
-    let linkablePhrases: [PXLinkablePhraseDto]
+    let textColor: String?
+    let linkablePhrases: [PXLinkablePhraseDto]?
+
     enum CodingKeys: String, CodingKey {
         case text
+        case textColor = "text_color"
         case linkablePhrases = "linkable_phrases"
     }
 }

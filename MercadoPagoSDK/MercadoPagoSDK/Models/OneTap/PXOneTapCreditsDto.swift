@@ -7,13 +7,10 @@
 
 import UIKit
 
+/// :nodoc:
 public struct PXOneTapCreditsDto: Codable {
-    let paymentMethodIcon: String
-    let paymentMethodSideText: String
-    let termsAndConditions: PXTermsDto
+    let displayInfo: PXDisplayInfoDto
     enum CodingKeys: String, CodingKey {
-        case paymentMethodIcon = "payment_method_icon"
-        case paymentMethodSideText = "payment_method_side_text"
-        case termsAndConditions = "bottom_text"
+        case displayInfo = "display_info"
     }
 }

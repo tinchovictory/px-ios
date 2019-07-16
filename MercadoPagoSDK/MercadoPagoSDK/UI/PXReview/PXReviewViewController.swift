@@ -104,6 +104,7 @@ extension PXReviewViewController {
         navigationController?.navigationBar.barTintColor = ThemeManager.shared.highlightBackgroundColor()
         navigationItem.leftBarButtonItem?.tintColor = ThemeManager.shared.getTitleColorForReviewConfirmNavigation()
         if contentView.getSubviews().isEmpty {
+            HtmlStorage.shared.clean()
             renderViews()
         }
     }

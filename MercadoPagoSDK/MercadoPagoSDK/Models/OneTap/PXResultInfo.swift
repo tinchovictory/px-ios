@@ -10,12 +10,9 @@ import UIKit
 struct PXResultInfo: Codable {
     let title: String
     let subtitle: String
-    let mainAction: PXLinkableAction
-    let linkAction: PXLinkableAction
+
     enum CodingKeys: String, CodingKey {
         case title
         case subtitle
-        case mainAction = "main_action"
-        case linkAction = "link_action"
     }
 }

@@ -67,15 +67,22 @@ extension ConsumerCreditsCard {
         ])
 
         PXLayout.setHeight(owner: termsAndConditionsText, height: termsAndConditionsTextHeight).isActive = true
-        let tycText = creditsViewModel.text
-        let phrases = creditsViewModel.linkablePhrases
+        let tycText = creditsViewModel.displayInfo.bottomText.text
         let attributedString = NSMutableAttributedString(string: tycText)
 
-        for linkablePhrase in phrases {
-            let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
-            attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
-            attributedString.addAttribute(NSAttributedString.Key.link, value: linkablePhrase.link, range: tycLinkRange)
+        var phrases: [PXLinkablePhraseDto] = [PXLinkablePhraseDto]()
+        if let remotePhrases = creditsViewModel.displayInfo.bottomText.linkablePhrases {
+            phrases = remotePhrases
         }
+
+        for linkablePhrase in phrases {
+            if let customLink = linkablePhrase.link {
+                let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
+                attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
+                attributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
+            }
+        }
+
         termsAndConditionsText.attributedText = attributedString
         termsAndConditionsText.textAlignment = .center
         termsAndConditionsText.textColor = .white
@@ -109,7 +116,7 @@ extension ConsumerCreditsCard {
 
     private func getTitleLabel(creditsViewModel: CreditsViewModel) -> UILabel {
         let titleLabel = UILabel()
-        titleLabel.text = creditsViewModel.paymentMethodSideText
+        titleLabel.text = creditsViewModel.displayInfo.topText.text
         titleLabel.textColor = .white
         titleLabel.textAlignment = .center
         titleLabel.font = titleLabel.font.withSize(PXLayout.XXXS_FONT)
