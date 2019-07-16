@@ -18,12 +18,11 @@ class PXContainedActionButtonRenderer: NSObject {
     }
 
     func render(_ containedButton: PXContainedActionButtonComponent) -> PXContainedActionButtonView {
-
-
         let containedButtonView = PXContainedActionButtonView()
         containedButtonView.translatesAutoresizingMaskIntoConstraints = false
-        var termsView: PXTermsAndConditionView? = nil
-        if (containedButton.props.termsInfo != nil) {
+        var termsView: PXTermsAndConditionView?
+
+        if containedButton.props.termsInfo != nil {
             termsView = PXTermsAndConditionView(termsDto: containedButton.props.termsInfo, delegate: termsDelegate)
         }
 
@@ -39,7 +38,7 @@ class PXContainedActionButtonRenderer: NSObject {
         containedButtonView.layer.shadowOpacity = 0.25
 
         if let termsView = termsView {
-            containedButtonView.addSubview(termsView)
+            containedButtonView.insertSubview(termsView, belowSubview: button)
             PXLayout.pinTop(view: termsView, to: containedButtonView, withMargin: 0).isActive = true
             PXLayout.pinLeft(view: termsView, to: containedButtonView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
             PXLayout.pinRight(view: termsView, to: containedButtonView, withMargin: PXLayout.ZERO_MARGIN).isActive = true

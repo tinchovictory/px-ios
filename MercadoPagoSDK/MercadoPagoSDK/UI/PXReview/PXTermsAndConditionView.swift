@@ -13,7 +13,6 @@ protocol PXTermsAndConditionViewDelegate: NSObjectProtocol {
 }
 
 class PXTermsAndConditionView: PXComponentView {
-
     var SCREEN_TITLE = "Términos y Condiciones"
     internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
@@ -45,7 +44,6 @@ class PXTermsAndConditionView: PXComponentView {
         }
 
         addSubview(termsAndConditionsText)
-            
 
         let URLAttribute: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: UIFont(name: ResourceManager.shared.DEFAULT_FONT_NAME, size: 12) ?? UIFont.systemFont(ofSize: 12), NSAttributedString.Key.foregroundColor: ThemeManager.shared.secondaryColor()]
 

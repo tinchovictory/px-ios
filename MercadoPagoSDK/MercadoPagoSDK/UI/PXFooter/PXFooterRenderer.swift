@@ -20,14 +20,13 @@ final class PXFooterRenderer: NSObject {
     func render(_ footer: PXFooterComponent) -> PXFooterView {
         let fooView = PXFooterView()
         var topView: UIView = fooView
+        var termsView: PXTermsAndConditionView?
         fooView.translatesAutoresizingMaskIntoConstraints = false
         fooView.backgroundColor = .pxWhite
 
-        var termsView: PXTermsAndConditionView? = nil
-        if (footer.props.termsInfo != nil) {
+        if footer.props.termsInfo != nil {
             termsView = PXTermsAndConditionView(termsDto: footer.props.termsInfo, delegate: termsDelegate)
         }
-
 
         if let principalAction = footer.props.buttonAction {
             let principalButton = self.buildAnimatedButton(with: principalAction, color: footer.props.primaryColor)
@@ -40,9 +39,8 @@ final class PXFooterRenderer: NSObject {
             fooView.principalButton?.animationDelegate = footer.props.animationDelegate
             fooView.addSubview(principalButton)
 
-
             if let termsView = termsView {
-                fooView.addSubview(termsView)
+                fooView.insertSubview(termsView, belowSubview: principalButton)
                 PXLayout.pinTop(view: termsView, to: fooView, withMargin: 0).isActive = true
                 PXLayout.pinLeft(view: termsView, to: fooView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
                 PXLayout.pinRight(view: termsView, to: fooView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
