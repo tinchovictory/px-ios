@@ -80,6 +80,11 @@ extension ConsumerCreditsCard {
                 let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
                 attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
                 attributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
+            } else if let customHtml = linkablePhrase.html {
+                let customLink = HtmlStorage.shared.set(customHtml)
+                let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
+                attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
+                attributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
             }
         }
 
