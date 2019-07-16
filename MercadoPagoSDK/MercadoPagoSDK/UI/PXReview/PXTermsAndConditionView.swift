@@ -25,8 +25,6 @@ class PXTermsAndConditionView: PXComponentView {
     init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil, delegate: PXTermsAndConditionViewDelegate? = nil) {
         super.init()
 
-        //HtmlStorage.shared.clean()
-
         self.delegate = delegate
         self.termsAndConditionsDto = termsDto
         self.termsAndConditionsText.backgroundColor = .clear
