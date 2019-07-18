@@ -32,13 +32,13 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
 // MARK: Publics.
 extension PXCardSliderPagerCell {
-    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool) {
+    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool, cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
         containerView.backgroundColor = .clear
         cardHeader = MLCardDrawerController(withCard, cardData, isDisabled)
-        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
         cardHeader?.animated(false)
         cardHeader?.show()
 
@@ -50,13 +50,13 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
-    func renderEmptyCard() {
+    func renderEmptyCard(cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
         containerView.backgroundColor = .clear
         cardHeader = MLCardDrawerController(EmptyCard(), PXCardDataFactory(), false)
-        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
         cardHeader?.animated(false)
         cardHeader?.show()
         if let headerView = cardHeader?.view {
@@ -67,38 +67,38 @@ extension PXCardSliderPagerCell {
         }
     }
 
-    func renderAccountMoneyCard(balanceText: String, isDisabled: Bool) {
+    func renderAccountMoneyCard(balanceText: String, isDisabled: Bool, cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
         cardHeader = MLCardDrawerController(AccountMoneyCard(), PXCardDataFactory(), isDisabled)
-        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
         cardHeader?.animated(false)
         cardHeader?.show()
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            AccountMoneyCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled)
+            AccountMoneyCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled, size: cardSize)
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
         addWarningBadge(isDisabled)
     }
 
-    func renderConsumerCreditsCard(creditsViewModel: CreditsViewModel, isDisabled: Bool) {
+    func renderConsumerCreditsCard(creditsViewModel: CreditsViewModel, isDisabled: Bool, cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
         cardHeader = MLCardDrawerController(ConsumerCreditsCard(), PXCardDataFactory(), isDisabled)
-        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
         cardHeader?.animated(false)
         cardHeader?.show()
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            card.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled)
+            card.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize)
             card.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true

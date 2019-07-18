@@ -35,11 +35,11 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 // MARK: Render
 extension ConsumerCreditsCard {
-    func render(containerView: UIView, creditsViewModel: CreditsViewModel, isDisabled: Bool) {
-        let creditsImageHeight: CGFloat = 50
-        let creditsImageWidth: CGFloat = 100
+    func render(containerView: UIView, creditsViewModel: CreditsViewModel, isDisabled: Bool, size: CGSize) {
+        let creditsImageHeight: CGFloat = size.height * 0.35
+        let creditsImageWidth: CGFloat = size.height * 0.60
         let margins: CGFloat = 16
-        let termsAndConditionsTextHeight: CGFloat = 40
+        let termsAndConditionsTextHeight: CGFloat = 48
 
         let consumerCreditsImage = getConsumerCreditsImageView(isDisabled: isDisabled)
         containerView.addSubview(consumerCreditsImage)
@@ -61,7 +61,7 @@ extension ConsumerCreditsCard {
         let termsAndConditionsText = getTermsAndConditionsTextView()
         containerView.addSubview(termsAndConditionsText)
         NSLayoutConstraint.activate([
-            PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins),
+            PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins - PXLayout.XXXS_MARGIN),
             PXLayout.pinLeft(view: termsAndConditionsText, to: containerView, withMargin: margins),
             PXLayout.pinRight(view: termsAndConditionsText, to: containerView, withMargin: margins)
         ])
