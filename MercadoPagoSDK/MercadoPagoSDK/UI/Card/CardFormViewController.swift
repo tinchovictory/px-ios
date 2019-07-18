@@ -153,6 +153,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         textBox.borderActiveColor = ThemeManager.shared.secondaryColor()
         textBox.autocorrectionType = UITextAutocorrectionType.no
         textBox.keyboardType = UIKeyboardType.numberPad
+        textBox.keyboardAppearance = .light
         textBox.addTarget(self, action: #selector(CardFormViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         setupInputAccessoryView()
         textBox.delegate = self

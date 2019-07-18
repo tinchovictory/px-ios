@@ -64,6 +64,7 @@ extension AdditionalStepViewController {
     private func setupView() {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
         loadMPStyles()
 
         var upperFrame = UIScreen.main.bounds
@@ -183,6 +184,7 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
         } else if viewModel.isBodyCellFor(indexPath: indexPath) {
             let object = self.viewModel.dataSource[indexPath.row]
             let cell = AdditionalStepCellFactory.buildCell(object: object, width: Double(cellWidth), height: Double(viewModel.getDefaultRowCellHeight()))
+            cell.backgroundColor = .white
             return cell
         }
         return UITableViewCell()

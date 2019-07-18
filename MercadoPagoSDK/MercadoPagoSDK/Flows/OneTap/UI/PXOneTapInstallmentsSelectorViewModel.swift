@@ -31,6 +31,7 @@ final class PXOneTapInstallmentsSelectorViewModel {
             }
             let data = getDataFor(payerCost: payerCost, isSelected: isSelected)
             cell.updateData(data)
+            cell.backgroundColor = .white
             return cell
         }
         return cell
