@@ -52,6 +52,7 @@ class WebViewController: MercadoPagoUIViewController, UIWebViewDelegate {
         }
 
         self.view.backgroundColor = ThemeManager.shared.getMainColor()
+        loadingVC.modalPresentationStyle = .fullScreen
         self.present(loadingVC, animated: false, completion: nil)
     }
 
