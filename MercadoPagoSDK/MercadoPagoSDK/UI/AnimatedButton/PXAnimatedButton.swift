@@ -18,6 +18,7 @@ internal class PXAnimatedButton: UIButton {
     let retryText: String
 
     private var buttonColor: UIColor?
+    private var animatedView: UIView?
 
     init(normalText: String, loadingText: String, retryText: String) {
         self.normalText = normalText
@@ -52,38 +53,45 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
     func finishAnimatingButton(color: UIColor, image: UIImage?) {
         status = .expanding
 
-        let newFrame = CGRect(x: self.frame.midX - self.frame.height / 2, y: self.frame.midY - self.frame.height / 2, width: self.frame.height, height: self.frame.height)
-
         progressView?.doComplete(completion: { _ in
+
+            self.animatedView = UIView(frame: self.frame)
+            guard let animatedView = self.animatedView else { return }
+            animatedView.backgroundColor = self.backgroundColor
+            animatedView.layer.cornerRadius = self.layer.cornerRadius
+            self.superview?.addSubview(animatedView)
+            self.alpha = 0
+
+            let toCircleFrame = CGRect(x: self.frame.midX - self.frame.height / 2, y: self.frame.minY, width: self.frame.height, height: self.frame.height)
 
             if #available(iOS 10.0, *) {
                 let transitionAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
-                    self.setTitle("", for: .normal)
-                    self.frame = newFrame
-                    self.layer.cornerRadius = self.frame.height / 2
+                    animatedView.frame = toCircleFrame
+                    animatedView.layer.cornerRadius = toCircleFrame.height / 2
                 })
 
                 transitionAnimator.addCompletion({ (_) in
-                    self.explosion(color: color, newFrame: newFrame, image: image)
+                    self.explosion(color: color, newFrame: toCircleFrame, image: image)
                 })
 
                 transitionAnimator.startAnimation()
             } else {
                 UIView.animate(withDuration: 0.5, animations: {
-                    self.setTitle("", for: .normal)
-                    self.frame = newFrame
-                    self.layer.cornerRadius = self.frame.height / 2
+                    animatedView.frame = toCircleFrame
+                    animatedView.layer.cornerRadius = toCircleFrame.height / 2
                 }, completion: { _ in
-                    self.explosion(color: color, newFrame: newFrame, image: image)
+                    self.explosion(color: color, newFrame: toCircleFrame, image: image)
                 })
             }
         })
     }
 
     private func explosion(color: UIColor, newFrame: CGRect, image: UIImage?) {
+        guard let animatedView = self.animatedView else { return }
+
         UIView.animate(withDuration: 0.3, animations: {
             self.progressView?.alpha = 0
-            self.backgroundColor = color
+            animatedView.backgroundColor = color
         }, completion: { _ in
 
             let scaleFactor: CGFloat = 0.40
@@ -93,7 +101,7 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
             iconImage.contentMode = .scaleAspectFit
             iconImage.alpha = 0
 
-            self.addSubview(iconImage)
+            animatedView.addSubview(iconImage)
 
             PXFeedbackGenerator.successNotificationFeedback()
 
@@ -110,7 +118,7 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
                     self.animationDelegate?.expandAnimationInProgress()
 
                     UIView.animate(withDuration: 0.5, animations: {
-                        self.transform = CGAffineTransform(scaleX: 50, y: 50)
+                        animatedView.transform = CGAffineTransform(scaleX: 50, y: 50)
                     }, completion: { _ in
                         self.animationDelegate?.didFinishAnimation()
                     })
