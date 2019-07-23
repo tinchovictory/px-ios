@@ -15,3 +15,13 @@ struct CreditsViewModel {
         self.displayInfo = withModel.displayInfo
     }
 }
+
+extension CreditsViewModel {
+    func getCardColors() -> [CGColor] {
+        var arrayColors: [CGColor] = [CGColor]()
+        for color in displayInfo.gradientColors {
+            arrayColors.append(color.hexToUIColor().cgColor)
+        }
+        return arrayColors
+    }
+}
