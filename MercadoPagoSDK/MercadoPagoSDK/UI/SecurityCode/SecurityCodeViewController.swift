@@ -52,6 +52,7 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
 
         securityCodeTextField.autocorrectionType = UITextAutocorrectionType.no
         securityCodeTextField.keyboardType = UIKeyboardType.numberPad
+        securityCodeTextField.keyboardAppearance = .light
         securityCodeTextField.addTarget(self, action: #selector(SecurityCodeViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         securityCodeTextField.delegate = self
         completeCvvLabel()

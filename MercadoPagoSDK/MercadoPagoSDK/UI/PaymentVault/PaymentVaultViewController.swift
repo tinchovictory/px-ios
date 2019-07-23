@@ -289,7 +289,8 @@ internal class PaymentVaultViewController: MercadoPagoUIScrollViewController, UI
 
             if let paymentMethodToDisplay = self.viewModel.getPaymentMethodOption(row: indexPath.row) {
                 let discountInfo = self.viewModel.getDiscountInfo(row: indexPath.row)
-                cell.fillCell(drawablePaymentOption: paymentMethodToDisplay, discountInfo: discountInfo)
+                let creditsInfo = self.viewModel.getCreditsInfo(row: indexPath.row)
+                cell.fillCell(drawablePaymentOption: paymentMethodToDisplay, discountInfo: discountInfo, creditsInfo: creditsInfo)
             }
 
             return cell
@@ -360,7 +361,8 @@ internal class PaymentVaultViewController: MercadoPagoUIScrollViewController, UI
     func heightOfItem(indexItem: Int) -> CGFloat {
         if let paymentMethodOptionDrawable = self.viewModel.getPaymentMethodOption(row: indexItem) {
             let discountInfo = self.viewModel.getDiscountInfo(row: indexItem)
-            return PaymentSearchCollectionViewCell.totalHeight(drawablePaymentOption: paymentMethodOptionDrawable, discountInfo: discountInfo)
+            let creditsInfo = self.viewModel.getCreditsInfo(row: indexItem)
+            return PaymentSearchCollectionViewCell.totalHeight(drawablePaymentOption: paymentMethodOptionDrawable, discountInfo: discountInfo, creditsInfo: creditsInfo)
         }
         return 0
     }

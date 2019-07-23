@@ -52,6 +52,7 @@ class WebViewController: MercadoPagoUIViewController, UIWebViewDelegate {
         }
 
         self.view.backgroundColor = ThemeManager.shared.getMainColor()
+        loadingVC.modalPresentationStyle = .fullScreen
         self.present(loadingVC, animated: false, completion: nil)
     }
 
@@ -87,8 +88,13 @@ class WebViewController: MercadoPagoUIViewController, UIWebViewDelegate {
     }
 
     func loadUrl(_ url: URL) {
-        let requestObj = URLRequest(url: url)
-        webView.loadRequest(requestObj)
+        if let html = HtmlStorage.shared.getHtml(url.absoluteString) {
+            webView.loadHTMLString(html, baseURL: nil)
+            loadingVC.dismiss(animated: false, completion: nil)
+        } else {
+            let requestObj = URLRequest(url: url)
+            webView.loadRequest(requestObj)
+        }
     }
 
     func webViewDidFinishLoad(_ webView: UIWebView) {

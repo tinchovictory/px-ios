@@ -79,12 +79,10 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         if layout.getLayoutType() == .onlyTitle {
             layout.makeConstraints(containerView, imageContainerView, titleLabel)
         } else {
-            let subTitleAlpha: CGFloat = 0.48
             let subTitleLabel = UILabel()
             subTitleLabel.translatesAutoresizingMaskIntoConstraints = false
             subTitleLabel.text = subTitle
             subTitleLabel.numberOfLines = 1
-            subTitleLabel.alpha = subTitleAlpha
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
             subTitleLabel.font = Utils.getFont(size: PXLayout.XXXS_FONT)

@@ -11,12 +11,22 @@ import UIKit
 final class PXFooterRenderer: NSObject {
 
     let BUTTON_HEIGHT: CGFloat = 50.0
+    weak var termsDelegate: PXTermsAndConditionViewDelegate?
+
+    init(termsDelegate: PXTermsAndConditionViewDelegate? = nil) {
+        self.termsDelegate = termsDelegate
+    }
 
     func render(_ footer: PXFooterComponent) -> PXFooterView {
         let fooView = PXFooterView()
         var topView: UIView = fooView
+        var termsView: PXTermsAndConditionView?
         fooView.translatesAutoresizingMaskIntoConstraints = false
         fooView.backgroundColor = .pxWhite
+
+        if footer.props.termsInfo != nil {
+            termsView = PXTermsAndConditionView(termsDto: footer.props.termsInfo, delegate: termsDelegate)
+        }
 
         if let principalAction = footer.props.buttonAction {
             let principalButton = self.buildAnimatedButton(with: principalAction, color: footer.props.primaryColor)
@@ -28,7 +38,18 @@ final class PXFooterRenderer: NSObject {
             fooView.principalButton = principalButton
             fooView.principalButton?.animationDelegate = footer.props.animationDelegate
             fooView.addSubview(principalButton)
-            PXLayout.pinTop(view: principalButton, to: topView, withMargin: PXLayout.S_MARGIN).isActive = true
+
+            if let termsView = termsView {
+                fooView.insertSubview(termsView, belowSubview: principalButton)
+                PXLayout.pinTop(view: termsView, to: fooView, withMargin: 0).isActive = true
+                PXLayout.pinLeft(view: termsView, to: fooView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+                PXLayout.pinRight(view: termsView, to: fooView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+                PXLayout.setHeight(owner: termsView, height: termsView.DEFAULT_CREDITS_HEIGHT).isActive = true
+                PXLayout.put(view: principalButton, onBottomOf: termsView, withMargin: PXLayout.S_MARGIN, relation: .equal).isActive = true
+            } else {
+                PXLayout.pinTop(view: principalButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
+            }
+
             PXLayout.pinLeft(view: principalButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
             PXLayout.pinRight(view: principalButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
             PXLayout.setHeight(owner: principalButton, height: BUTTON_HEIGHT).isActive = true

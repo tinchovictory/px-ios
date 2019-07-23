@@ -84,6 +84,14 @@ internal class PXPaymentConfigurationServices {
         return nil
     }
 
+    // Credits comment Info for Payment Method
+    func getCreditsInfoForPaymentMethod(_ id: String) -> String? {
+        if let configuration = configurations.first(where: { $0.paymentOptionID == id }) {
+            return configuration.getCreditsComment()
+        }
+        return nil
+    }
+
     // Discount Configuration for Payment Method
     func getDiscountConfigurationForPaymentMethod(_ id: String) -> PXDiscountConfiguration? {
         if let configuration = configurations.first(where: { $0.paymentOptionID == id }) {

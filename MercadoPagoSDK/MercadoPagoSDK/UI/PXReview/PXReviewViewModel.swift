@@ -58,6 +58,14 @@ extension PXReviewViewModel {
         return false
     }
 
+    func shouldShowCreditsTermsAndConditions() -> Bool {
+        return creditsTermsAndConditions() != nil
+    }
+
+    func creditsTermsAndConditions() -> PXTermsDto? {
+        return self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.termsAndConditions
+    }
+
     func getDiscountTermsAndConditionView(shouldAddMargins: Bool = true) -> PXTermsAndConditionView {
         let discountTermsAndConditionView = PXDiscountTermsAndConditionView(amountHelper: amountHelper, shouldAddMargins: shouldAddMargins)
         return discountTermsAndConditionView
@@ -130,7 +138,14 @@ extension PXReviewViewModel {
     }
 
     func getFloatingConfirmViewHeight() -> CGFloat {
-        return 82 + PXLayout.getSafeAreaBottomInset() / 2
+        return 82 + getCustomerCreditsViewHeight() + PXLayout.getSafeAreaBottomInset() / 2
+    }
+
+    func getCustomerCreditsViewHeight() -> CGFloat {
+        if shouldShowCreditsTermsAndConditions() {
+            return PXTermsAndConditionView().DEFAULT_CREDITS_HEIGHT
+        }
+        return 0
     }
 
     func getSummaryViewModel(amount: Double) -> Summary {
@@ -228,7 +243,10 @@ extension PXReviewViewModel {
         let lightLabelColor = ThemeManager.shared.labelTintColor()
         let boldLabelColor = ThemeManager.shared.boldLabelTintColor()
 
-        if pm.isCard {
+        if pm.isDigitalCurrency {
+            title = paymentMethodName.toAttributedString()
+            accreditationTime = nil
+        } else if pm.isCard {
             if let lastFourDigits = (self.amountHelper.getPaymentData().token?.lastFourDigits) {
                 let text = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
                 title = text.toAttributedString()

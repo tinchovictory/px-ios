@@ -69,7 +69,9 @@
     [self setCheckoutPref_CreditCardNotExcluded];
     [self setCheckoutPrefAdditionalInfo];
 
-    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-ba2e6b8c-8b6d-4fc3-8a47-0ab241d0dba4" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
+//    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-ba2e6b8c-8b6d-4fc3-8a47-0ab241d0dba4" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
+
+    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-eabe409c-8d81-4218-9ed6-fbe21c22b8c7" preferenceId:@"443072934-c08a4d21-deb4-4650-918a-1ef8e80ee509" paymentConfiguration:[self getPaymentConfiguration]];
 
 
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"TEST-4763b824-93d7-4ca2-a7f7-93539c3ee5bd" preferenceId:@"243962506-63f1b044-c8bf-4d34-a800-f257a46628b8"];
@@ -79,14 +81,16 @@
 
 //    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-2590709739431780-102916-f3a297acb7f392333d80ba71b736a700__LA_LD__-181794596"];
 
-    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-6519316523937252-070516-964fafa7e2c91a2c740155fcb5474280__LA_LD__-261748045"];
+//    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-6519316523937252-070516-964fafa7e2c91a2c740155fcb5474280__LA_LD__-261748045"];
+    [self.checkoutBuilder setPrivateKeyWithKey:@"TEST-7169122440478352-062213-d23fa9fb38e4b3e94feee29864f0fae2-443064294"];
 
 
     // AdvancedConfig
     PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
-    [advancedConfig setExpressEnabled:YES];
+    [advancedConfig setExpressEnabled:NO];
+//    [advancedConfig setProductIdWithId:@"bh31umv10flg01nmhg60"];
 
-    PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"test_product_id"];
+    PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"bh31umv10flg01nmhg60"];
     [advancedConfig setDiscountParamsConfiguration: disca];
 
     // Add theme to advanced config.

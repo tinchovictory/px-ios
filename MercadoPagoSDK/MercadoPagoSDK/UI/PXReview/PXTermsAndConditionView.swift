@@ -13,16 +13,19 @@ protocol PXTermsAndConditionViewDelegate: NSObjectProtocol {
 }
 
 class PXTermsAndConditionView: PXComponentView {
-
     var SCREEN_TITLE = "Términos y Condiciones"
+    internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
-    fileprivate let termsAndConditionsText: MPTextView = MPTextView()
+    private let termsAndConditionsText: MPTextView = MPTextView()
+    var termsAndConditionsDto: PXTermsDto?
 
     weak var delegate: PXTermsAndConditionViewDelegate?
 
-    init(shouldAddMargins: Bool = true) {
+    init(shouldAddMargins: Bool = true, termsDto: PXTermsDto? = nil, delegate: PXTermsAndConditionViewDelegate? = nil) {
         super.init()
 
+        self.delegate = delegate
+        self.termsAndConditionsDto = termsDto
         self.termsAndConditionsText.backgroundColor = .clear
         translatesAutoresizingMaskIntoConstraints = false
 
@@ -31,12 +34,14 @@ class PXTermsAndConditionView: PXComponentView {
         termsAndConditionsText.delegate = self
         termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
         termsAndConditionsText.attributedText = getTyCText()
-        termsAndConditionsText.isUserInteractionEnabled = false
         termsAndConditionsText.backgroundColor = .clear
 
-        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        tap.delegate = self
-        self.addGestureRecognizer(tap)
+        if termsAndConditionsDto == nil {
+            //generic terms and conditions case, the whole cell will react presenting the generic tyc webview
+            let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+            tap.delegate = self
+            self.addGestureRecognizer(tap)
+        }
 
         addSubview(termsAndConditionsText)
 
@@ -69,15 +74,26 @@ class PXTermsAndConditionView: PXComponentView {
 extension PXTermsAndConditionView {
 
     func getTyCText() -> NSMutableAttributedString {
-
-        let termsAndConditionsText = "review_terms_and_conditions".localized_beta
+        let termsAndConditionsText = termsAndConditionsDto?.text ?? "review_terms_and_conditions".localized_beta
 
         let normalAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XXXS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.labelTintColor()]
 
         let mutableAttributedString = NSMutableAttributedString(string: termsAndConditionsText, attributes: normalAttributes)
-        let tycLinkRange = (termsAndConditionsText as NSString).range(of: SCREEN_TITLE.localized)
 
-        mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: SiteManager.shared.getTermsAndConditionsURL(), range: tycLinkRange)
+        let defaultLinkablePhrase = PXLinkablePhraseDto(textColor: "", phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL(), html: "")
+
+        let phrases = termsAndConditionsDto?.linkablePhrases ?? [defaultLinkablePhrase]
+
+        for linkablePhrase in phrases {
+            if let customLink = linkablePhrase.link {
+                let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
+                mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
+            } else if let customHtml = linkablePhrase.html {
+                let htmlUrl = HtmlStorage.shared.set(customHtml)
+                let tycLinkRange = (termsAndConditionsText as NSString).range(of: linkablePhrase.phrase)
+                mutableAttributedString.addAttribute(NSAttributedString.Key.link, value: htmlUrl, range: tycLinkRange)
+            }
+        }
 
         let style = NSMutableParagraphStyle()
         style.alignment = .center
@@ -96,7 +112,16 @@ extension PXTermsAndConditionView: UITextViewDelegate, UIGestureRecognizerDelega
         }
     }
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange) -> Bool {
+    @available(iOS 10.0, *)
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        if termsAndConditionsDto != nil {
+            if let range = Range(characterRange, in: textView.text),
+                let text = textView.text?[range] {
+                let title = String(text).capitalized
+                delegate?.shouldOpenTermsCondition(title, url: URL)
+            }
+        }
         return false
     }
 }
+

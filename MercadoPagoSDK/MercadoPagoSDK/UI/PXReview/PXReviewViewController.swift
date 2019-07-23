@@ -104,6 +104,7 @@ extension PXReviewViewController {
         navigationController?.navigationBar.barTintColor = ThemeManager.shared.highlightBackgroundColor()
         navigationItem.leftBarButtonItem?.tintColor = ThemeManager.shared.getTitleColorForReviewConfirmNavigation()
         if contentView.getSubviews().isEmpty {
+            HtmlStorage.shared.clean()
             renderViews()
         }
     }
@@ -336,8 +337,8 @@ extension PXReviewViewController {
                 self.loadingFloatingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
             }
             self.confirmPayment()
-        }, animationDelegate: self))
-        let containedButtonView = PXContainedActionButtonRenderer().render(component)
+        }, animationDelegate: self, termsInfo: self.viewModel.creditsTermsAndConditions()), termsDelegate: self)
+        let containedButtonView = PXContainedActionButtonRenderer(termsDelegate: self).render(component)
         loadingFloatingButtonComponent = containedButtonView.button
         loadingFloatingButtonComponent?.layer.cornerRadius = 4
         containedButtonView.backgroundColor = ThemeManager.shared.detailedBackgroundColor()
@@ -352,9 +353,9 @@ extension PXReviewViewController {
             }
             self.confirmPayment()
         }
-        let footerProps = PXFooterProps(buttonAction: payAction, animationDelegate: self, pinLastSubviewToBottom: false)
+        let footerProps = PXFooterProps(buttonAction: payAction, animationDelegate: self, pinLastSubviewToBottom: false, termsInfo: self.viewModel.creditsTermsAndConditions())
         let footerComponent = PXFooterComponent(props: footerProps)
-        let footerView = PXFooterRenderer().render(footerComponent)
+        let footerView = PXFooterRenderer(termsDelegate: self).render(footerComponent)
         loadingButtonComponent = footerView.principalButton
         loadingButtonComponent?.layer.cornerRadius = 4
         footerView.backgroundColor = .clear

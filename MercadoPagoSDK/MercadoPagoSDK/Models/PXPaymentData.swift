@@ -80,6 +80,10 @@ import UIKit
             return false
         }
 
+        if paymentMethod.isDigitalCurrency && payerCost == nil {
+            return false
+        }
+
         if paymentMethod.isCard && !hasToken() && shouldCheckForToken {
             return false
         }

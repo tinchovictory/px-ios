@@ -47,6 +47,13 @@ extension PXPaymentMethod: Cellable {
         return isAdditionalInfoNeeded("entity_type")
     }
 
+    internal var isDigitalCurrency: Bool {
+        if let paymentTypeId = PXPaymentTypes(rawValue: self.paymentTypeId) {
+            return paymentTypeId.isDigitalCurrency()
+        }
+        return false
+    }
+
     internal var isCard: Bool {
         if let paymentTypeId = PXPaymentTypes(rawValue: self.paymentTypeId) {
             return paymentTypeId.isCard()
@@ -171,7 +178,7 @@ extension PXPaymentMethod: Cellable {
     }
 
     open var isOnlinePaymentMethod: Bool {
-        return self.isCard || self.isAccountMoney
+        return self.isCard || self.isAccountMoney || self.isDigitalCurrency
     }
 
     internal func conformsPaymentPreferences(_ paymentPreference: PXPaymentPreference?) -> Bool {

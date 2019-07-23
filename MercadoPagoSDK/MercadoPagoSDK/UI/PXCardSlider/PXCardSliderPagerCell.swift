@@ -19,6 +19,9 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
     @IBOutlet weak var containerView: UIView!
 
+    private var card: ConsumerCreditsCard = ConsumerCreditsCard()
+    weak var delegate: PXTermsAndConditionViewDelegate?
+
     override func prepareForReuse() {
         super.prepareForReuse()
         cardHeader?.view.removeFromSuperview()
@@ -83,6 +86,26 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
+    func renderConsumerCreditsCard(creditsViewModel: CreditsViewModel, isDisabled: Bool) {
+        containerView.layer.masksToBounds = false
+        containerView.backgroundColor = .clear
+        containerView.removeAllSubviews()
+        containerView.layer.cornerRadius = cornerRadius
+        cardHeader = MLCardDrawerController(ConsumerCreditsCard(), PXCardDataFactory(), isDisabled)
+        cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: PXCardSliderSizeManager.getItemContainerSize())
+        cardHeader?.animated(false)
+        cardHeader?.show()
+
+        if let headerView = cardHeader?.view {
+            containerView.addSubview(headerView)
+            card.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled)
+            card.delegate = self
+            PXLayout.centerHorizontally(view: headerView).isActive = true
+            PXLayout.centerVertically(view: headerView).isActive = true
+        }
+        addWarningBadge(isDisabled)
+    }
+
     func addWarningBadge(_ isDisabled: Bool) {
         if isDisabled {
             let image = ResourceManager.shared.getImage("warning_badge")
@@ -105,5 +128,11 @@ extension PXCardSliderPagerCell {
         cardHeader?.animated(true)
         cardHeader?.show()
         cardHeader?.animated(false)
+    }
+}
+
+extension PXCardSliderPagerCell: PXTermsAndConditionViewDelegate {
+    func shouldOpenTermsCondition(_ title: String, url: URL) {
+        delegate?.shouldOpenTermsCondition(title, url: url)
     }
 }

@@ -64,6 +64,7 @@ extension AdditionalStepViewController {
     private func setupView() {
         tableView.tableFooterView = UIView()
         tableView.separatorStyle = .none
+        tableView.backgroundColor = .white
         loadMPStyles()
 
         var upperFrame = UIScreen.main.bounds
@@ -160,6 +161,10 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
 
         } else if viewModel.isCardCellFor(indexPath: indexPath) {
 
+            if viewModel.isDigitalCurrency() {
+                return createEmptyCell()
+            }
+
             let cardSectionCell = tableView.dequeueReusableCell(withIdentifier: "cardNib", for: indexPath as IndexPath) as! AdditionalStepCardTableViewCell
             cardSectionCell.selectionStyle = .none
             cardSectionCell.backgroundColor = UIColor.primaryColor()
@@ -179,6 +184,7 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
         } else if viewModel.isBodyCellFor(indexPath: indexPath) {
             let object = self.viewModel.dataSource[indexPath.row]
             let cell = AdditionalStepCellFactory.buildCell(object: object, width: Double(cellWidth), height: Double(viewModel.getDefaultRowCellHeight()))
+            cell.backgroundColor = .white
             return cell
         }
         return UITableViewCell()
@@ -195,6 +201,12 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
     public func updateDataSource(dataSource: [Cellable]) {
         self.viewModel.dataSource = dataSource
         self.tableView.reloadData()
+    }
+
+    private func createEmptyCell() -> UITableViewCell {
+        let emptyCell = UITableViewCell()
+        emptyCell.backgroundColor = ThemeManager.shared.getMainColor()
+        return emptyCell
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
