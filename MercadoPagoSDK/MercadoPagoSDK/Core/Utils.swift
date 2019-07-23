@@ -248,11 +248,13 @@ internal class Utils {
     }
 
     private class func getFontWithSize(font: String, size: CGFloat, weight: UIFont.Weight? = nil) -> UIFont {
+        let fontNameToIgnore: String = "Times New Roman"
+        let fallBackFontName: String = "Helvetica"
         if let thisFont = UIFont(name: font, size: size) {
-            if thisFont.familyName != "Times New Roman" {
+            if thisFont.familyName != fontNameToIgnore {
                 return thisFont
             } else {
-                return UIFont(name: "Helvetica", size: size) ?? getFallbackFont(size)
+                return UIFont(name: fallBackFontName, size: size) ?? getFallbackFont(size)
             }
         }
         return getFallbackFont(size)
