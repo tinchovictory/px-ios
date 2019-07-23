@@ -1,3 +1,9 @@
+# v4.18.0
+🚀Private Release - 4.18.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Credits
+- iOS13 improvements
+
 # v4.17.0
 🚀Private Release - 4.17.0 🚀
 MercadoPagoSDKV4 - Private Version
