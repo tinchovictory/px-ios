@@ -39,7 +39,7 @@ extension PXOneTapInstallmentInfoView {
         PXLayout.pinRight(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
     }
 
-    private func setupSlider() {
+    private func setupSlider(width: CGFloat) {
         addSubview(pagerView)
         pagerView.isUserInteractionEnabled = false
         PXLayout.pinTop(view: pagerView).isActive = true
@@ -53,9 +53,9 @@ extension PXOneTapInstallmentInfoView {
         pagerView.isInfinite = false
         pagerView.automaticSlidingInterval = 0
         pagerView.bounces = true
-        pagerView.interitemSpacing = 0
+        pagerView.interitemSpacing = PXCardSliderSizeManager.interItemSpace
         pagerView.decelerationDistance = 1
-        pagerView.itemSize = CGSize(width: PXCardSliderSizeManager.getItemSize().width, height: PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT)
+        pagerView.itemSize = CGSize(width: width, height: PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT)
     }
 }
 
@@ -134,9 +134,9 @@ extension PXOneTapInstallmentInfoView {
         tapEnabled = true
     }
 
-    func render() {
+    func render(_ width: CGFloat) {
         removeAllSubviews()
-        setupSlider()
+        setupSlider(width: width)
         setupFadeImages()
         setupChevron()
         setupTitleLabel()

@@ -8,6 +8,14 @@ import UIKit
 
 struct PXCardSliderSizeManager {
 
+    static let goldenRatio: CGFloat = 1/1.586
+    static let interItemSpace: CGFloat = 16
+    static let cardDeltaDecrease: CGFloat = 60
+
+    static func getGoldenRatioSize(_ forWidth: CGFloat) -> CGSize {
+        return CGSize(width: forWidth, height: forWidth*goldenRatio)
+    }
+
     static func getHeaderViewHeight(viewController: UIViewController) -> CGFloat {
         if UIDevice.isSmallDevice() {
             return PXLayout.getAvailabelScreenHeight(in: viewController, applyingMarginFactor: 38)
@@ -26,31 +34,5 @@ struct PXCardSliderSizeManager {
         } else {
             return PXLayout.getAvailabelScreenHeight(in: viewController, applyingMarginFactor: 60)
         }
-    }
-
-    static func getItemSize() -> CGSize {
-        if UIDevice.isSmallDevice() {
-            return getSizeByGoldenAspectRatio(width: 290)
-        } else if UIDevice.isLargeDevice() {
-            return getSizeByGoldenAspectRatio(width: 340)
-        } else if UIDevice.isExtraLargeDevice() {
-            return getSizeByGoldenAspectRatio(width: 380)
-        } else {
-            return getSizeByGoldenAspectRatio(width: 340)
-        }
-    }
-
-    static func getSizeByGoldenAspectRatio(width: CGFloat) -> CGSize {
-        let goldenAspectRation: CGFloat = 1.586
-        let size = CGSize(width: width, height: width / goldenAspectRation)
-        return size
-    }
-
-    static func getItemContainerSize() -> CGSize {
-        return CGSize(width: getItemSize().width - 20, height: getItemSize().height - 20)
-    }
-
-    static func getSliderSize() -> CGSize {
-        return CGSize(width: UIScreen.main.bounds.width, height: getItemSize().height)
     }
 }

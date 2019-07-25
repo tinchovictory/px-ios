@@ -1,3 +1,10 @@
+# v4.18.1
+🚀Private Release - 4.18.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Credits
+- iOS13 improvements
+- Fix aspect ratio
+
 # v4.18.0
 🚀Private Release - 4.18.0 🚀
 MercadoPagoSDKV4 - Private Version

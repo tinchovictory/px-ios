@@ -20,10 +20,11 @@ class AccountMoneyCard: NSObject, CustomCardDrawerUI {
     var defaultUI = false
     var securityCodePattern = 3
     var fontType: String = "light"
+    var ownOverlayImage: UIImage? = UIImage()
 }
 
 extension AccountMoneyCard {
-    static func render(containerView: UIView, balanceText: String, isDisabled: Bool) {
+    static func render(containerView: UIView, balanceText: String, isDisabled: Bool, size: CGSize) {
         let amImage = UIImageView()
         amImage.backgroundColor = .clear
         amImage.contentMode = .scaleAspectFit
@@ -31,24 +32,23 @@ extension AccountMoneyCard {
         amImage.image = isDisabled ? amImageRaw?.imageGreyScale() : amImageRaw
         amImage.alpha = 0.6
         containerView.addSubview(amImage)
-        PXLayout.setWidth(owner: amImage, width: PXCardSliderSizeManager.getItemContainerSize().height * 0.65).isActive = true
-        PXLayout.setHeight(owner: amImage, height: PXCardSliderSizeManager.getItemContainerSize().height * 0.65).isActive = true
+        PXLayout.setWidth(owner: amImage, width: size.height * 0.65).isActive = true
+        PXLayout.setHeight(owner: amImage, height: size.height * 0.65).isActive = true
         PXLayout.pinTop(view: amImage).isActive = true
         PXLayout.pinRight(view: amImage).isActive = true
 
         let patternView = UIImageView()
         patternView.contentMode = .scaleAspectFit
         patternView.image = ResourceManager.shared.getImage("amPattern")
-        let patternDeltaOffset: CGFloat = 5
         containerView.addSubview(patternView)
 
-        let height = PXCardSliderSizeManager.getItemContainerSize().height
+        let height = size.height
         let width = height * 1.1
 
         PXLayout.setHeight(owner: patternView, height: height).isActive = true
         PXLayout.setWidth(owner: patternView, width: width).isActive = true
         PXLayout.pinTop(view: patternView).isActive = true
-        PXLayout.pinRight(view: patternView, withMargin: patternDeltaOffset).isActive = true
+        PXLayout.pinRight(view: patternView).isActive = true
 
         let label = UILabel()
         label.text = " \(balanceText)   "
@@ -69,8 +69,8 @@ extension AccountMoneyCard {
         let logoImage = ResourceManager.shared.getImage("amLogo")
         amLogo.image = isDisabled ? logoImage?.imageGreyScale() : logoImage
         containerView.addSubview(amLogo)
-        PXLayout.setWidth(owner: amLogo, width: PXCardSliderSizeManager.getItemContainerSize().height * 0.60).isActive = true
-        PXLayout.setHeight(owner: amLogo, height: PXCardSliderSizeManager.getItemContainerSize().height * 0.35).isActive = true
+        PXLayout.setWidth(owner: amLogo, width: size.height * 0.60).isActive = true
+        PXLayout.setHeight(owner: amLogo, height: size.height * 0.35).isActive = true
         PXLayout.pinTop(view: amLogo, withMargin: PXLayout.XXXS_MARGIN).isActive = true
         PXLayout.pinLeft(view: amLogo, to: label, withMargin: 0).isActive = true
     }

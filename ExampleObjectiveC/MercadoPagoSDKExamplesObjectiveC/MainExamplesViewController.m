@@ -71,7 +71,7 @@
 
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-ba2e6b8c-8b6d-4fc3-8a47-0ab241d0dba4" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
 
-    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-eabe409c-8d81-4218-9ed6-fbe21c22b8c7" preferenceId:@"443072934-c08a4d21-deb4-4650-918a-1ef8e80ee509" paymentConfiguration:[self getPaymentConfiguration]];
+    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-306aa86f-a3e7-40cf-b27b-64bb7cd9b1e7" preferenceId:@"443076095-ee615be2-e040-4baf-ace7-6940fdc096f7" paymentConfiguration:[self getPaymentConfiguration]];
 
 
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"TEST-4763b824-93d7-4ca2-a7f7-93539c3ee5bd" preferenceId:@"243962506-63f1b044-c8bf-4d34-a800-f257a46628b8"];
@@ -87,18 +87,18 @@
 
     // AdvancedConfig
     PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
-    [advancedConfig setExpressEnabled:NO];
+    [advancedConfig setExpressEnabled:YES];
 //    [advancedConfig setProductIdWithId:@"bh31umv10flg01nmhg60"];
 
     PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"bh31umv10flg01nmhg60"];
     [advancedConfig setDiscountParamsConfiguration: disca];
 
     // Add theme to advanced config.
-    MeliTheme *meliTheme = [[MeliTheme alloc] init];
-    [advancedConfig setTheme:meliTheme];
+//    MeliTheme *meliTheme = [[MeliTheme alloc] init];
+//    [advancedConfig setTheme:meliTheme];
 
-    //MPTheme *mpTheme = [[MPTheme alloc] init];
-    //[advancedConfig setTheme:mpTheme];
+    MPTheme *mpTheme = [[MPTheme alloc] init];
+    [advancedConfig setTheme:mpTheme];
 
     // Add ReviewConfirm configuration to advanced config.
     [advancedConfig setReviewConfirmConfiguration: [self getReviewScreenConfiguration]];

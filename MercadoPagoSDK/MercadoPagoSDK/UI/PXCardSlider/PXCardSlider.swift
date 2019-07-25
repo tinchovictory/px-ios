@@ -34,20 +34,20 @@ extension PXCardSlider: FSPagerViewDataSource {
             if let cardData = targetModel.cardData, let cell = pagerView.dequeueReusableCell(withReuseIdentifier: PXCardSliderPagerCell.identifier, at: index) as? PXCardSliderPagerCell {
                 if targetModel.cardUI is AccountMoneyCard {
                     // AM card.
-                    cell.renderAccountMoneyCard(balanceText: cardData.name, isDisabled: targetModel.isDisabled)
+                    cell.renderAccountMoneyCard(balanceText: cardData.name, isDisabled: targetModel.isDisabled, cardSize: pagerView.itemSize)
 
                   } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
                     cell.delegate = self
-                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: targetModel.isDisabled)
+                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: targetModel.isDisabled, cardSize: pagerView.itemSize)
                 } else {
                     // Other cards.
-                    cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: targetModel.isDisabled)
+                    cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: targetModel.isDisabled, cardSize: pagerView.itemSize)
                 }
                 return cell
             } else {
                 // Add new card scenario.
                 if let cell = pagerView.dequeueReusableCell(withReuseIdentifier: PXCardSliderPagerCell.identifier, at: index) as? PXCardSliderPagerCell {
-                    cell.renderEmptyCard()
+                    cell.renderEmptyCard(cardSize: pagerView.itemSize)
                     return cell
                 }
             }
@@ -111,11 +111,17 @@ extension PXCardSlider {
             self?.pageControl.alpha = 1
         }
     }
+
     func hide(duration: Double = 0.5) {
         UIView.animate(withDuration: duration) { [weak self] in
             self?.pagerView.alpha = 0
             self?.pageControl.alpha = 0
         }
+    }
+
+    func getItemSize(_ containerView: UIView) -> CGSize {
+        let targetWidth: CGFloat = containerView.bounds.width - PXCardSliderSizeManager.cardDeltaDecrease
+        return PXCardSliderSizeManager.getGoldenRatioSize(targetWidth)
     }
 }
 
@@ -124,7 +130,7 @@ extension PXCardSlider {
     private func setupSlider(_ containerView: UIView) {
         containerView.addSubview(pagerView)
         pagerView.accessibilityIdentifier = "card_carrousel"
-        PXLayout.setHeight(owner: pagerView, height: containerView.bounds.height).isActive = true
+        PXLayout.setHeight(owner: pagerView, height: getItemSize(containerView).height).isActive = true
         PXLayout.pinLeft(view: pagerView).isActive = true
         PXLayout.pinRight(view: pagerView).isActive = true
         PXLayout.matchWidth(ofView: pagerView).isActive = true
@@ -136,13 +142,13 @@ extension PXCardSlider {
         pagerView.isInfinite = false
         pagerView.automaticSlidingInterval = 0
         pagerView.bounces = true
-        pagerView.interitemSpacing = 0
+        pagerView.interitemSpacing = PXCardSliderSizeManager.interItemSpace
         pagerView.decelerationDistance = 1
-        pagerView.itemSize = PXCardSliderSizeManager.getItemSize()
+        pagerView.itemSize = getItemSize(containerView)
     }
 
     private func setupPager(_ containerView: UIView) {
-        let pagerYMargin: CGFloat = PXLayout.XXXS_MARGIN
+        let pagerYMargin: CGFloat = PXLayout.S_MARGIN
         let pagerHeight: CGFloat = 10
         pageControl.radius = 3
         pageControl.padding = 6
@@ -154,7 +160,7 @@ extension PXCardSlider {
         PXLayout.pinRight(view: pageControl).isActive = true
         PXLayout.pinLeft(view: pageControl).isActive = true
         PXLayout.centerHorizontally(view: pageControl).isActive = true
-        PXLayout.pinBottom(view: pageControl, withMargin: -pagerYMargin).isActive = true
+        PXLayout.pinBottom(view: pageControl, to: pagerView, withMargin: -pagerYMargin).isActive = true
         PXLayout.setHeight(owner: pageControl, height: pagerHeight).isActive = true
         pageControl.layoutIfNeeded()
     }

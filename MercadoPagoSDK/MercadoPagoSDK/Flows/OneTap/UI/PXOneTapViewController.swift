@@ -140,12 +140,16 @@ extension PXOneTapViewController {
         let cardSliderContentView = UIView()
         whiteView.addSubview(cardSliderContentView)
         PXLayout.centerHorizontally(view: cardSliderContentView).isActive = true
-        PXLayout.pinLeft(view: cardSliderContentView).isActive = true
-        PXLayout.pinRight(view: cardSliderContentView).isActive = true
         let topMarginConstraint = PXLayout.put(view: cardSliderContentView, onBottomOf: installmentRow, withMargin: 0)
         topMarginConstraint.isActive = true
         cardSliderMarginConstraint = topMarginConstraint
-        PXLayout.setHeight(owner: cardSliderContentView, height: PXCardSliderSizeManager.getSliderSize().height).isActive = true
+
+        // CardSlider with GoldenRatio multiplier
+        cardSliderContentView.translatesAutoresizingMaskIntoConstraints = false
+        let widthSlider: NSLayoutConstraint = cardSliderContentView.widthAnchor.constraint(equalTo: whiteView.widthAnchor)
+        widthSlider.isActive = true
+        let heightSlider: NSLayoutConstraint = cardSliderContentView.heightAnchor.constraint(equalTo: cardSliderContentView.widthAnchor, multiplier: PXCardSliderSizeManager.goldenRatio)
+        heightSlider.isActive = true
 
         // Add footer payment button.
         if let footerView = getFooterView() {
@@ -154,7 +158,6 @@ extension PXOneTapViewController {
             PXLayout.pinLeft(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
             PXLayout.pinRight(view: footerView, withMargin: PXLayout.M_MARGIN).isActive = true
             PXLayout.setHeight(owner: footerView, height: PXLayout.XXL_MARGIN).isActive = true
-
             let bottomMargin = getBottomPayButtonMargin()
             PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
@@ -162,6 +165,10 @@ extension PXOneTapViewController {
         if let selectedCard = selectedCard, selectedCard.isDisabled {
             loadingButtonComponent?.setDisabled()
         }
+
+        view.layoutIfNeeded()
+        let installmentRowWidth: CGFloat = slider.getItemSize(cardSliderContentView).width
+        installmentRow.render(installmentRowWidth)
 
         view.layoutIfNeeded()
         refreshContentViewSize()
@@ -227,15 +234,14 @@ extension PXOneTapViewController {
         return whiteView
     }
 
-    private func getInstallmentInfoView() -> UIView {
+    private func getInstallmentInfoView() -> PXOneTapInstallmentInfoView {
         installmentInfoRow = PXOneTapInstallmentInfoView()
         installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
-        installmentInfoRow?.render()
         installmentInfoRow?.delegate = self
         if let targetView = installmentInfoRow {
             return targetView
         } else {
-            return UIView()
+            return PXOneTapInstallmentInfoView()
         }
     }
 
