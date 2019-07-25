@@ -234,32 +234,41 @@ internal class Utils {
 
         return stringToWrite
     }
+
     class func getFont(size: CGFloat) -> UIFont {
-        return UIFont(name: ThemeManager.shared.getFontName(), size: size) ?? UIFont.systemFont(ofSize: size)
+        return getFontWithSize(font: ThemeManager.shared.getFontName(), size: size)
     }
 
     class func getLightFont(size: CGFloat) -> UIFont {
-        if #available(iOS 8.2, *) {
-            return UIFont(name: ThemeManager.shared.getLightFontName(), size: size) ?? UIFont.systemFont(ofSize: size, weight: UIFont.Weight.thin)
-        } else {
-            return UIFont(name: ThemeManager.shared.getLightFontName(), size: size) ?? UIFont.systemFont(ofSize: size)
-        }
+        return UIFont(name: ThemeManager.shared.getLightFontName(), size: size) ?? getFallbackFont(size, weight: UIFont.Weight.thin)
     }
 
     class func getSemiBoldFont(size: CGFloat) -> UIFont {
-        if #available(iOS 8.2, *) {
-            return UIFont(name: ThemeManager.shared.getSemiBoldFontName(), size: size) ?? UIFont.systemFont(ofSize: size, weight: UIFont.Weight.semibold)
-        } else {
-            return UIFont(name: ThemeManager.shared.getSemiBoldFontName(), size: size) ?? UIFont.systemFont(ofSize: size)
+        return getFontWithSize(font: ThemeManager.shared.getSemiBoldFontName(), size: size, weight: UIFont.Weight.semibold)
+    }
+
+    private class func getFontWithSize(font: String, size: CGFloat, weight: UIFont.Weight? = nil) -> UIFont {
+        let fontNameToIgnore: String = "Times New Roman"
+        let fallBackFontName: String = "Helvetica"
+        if let thisFont = UIFont(name: font, size: size) {
+            if thisFont.familyName != fontNameToIgnore {
+                return thisFont
+            } else {
+                return UIFont(name: fallBackFontName, size: size) ?? getFallbackFont(size)
+            }
         }
+        return getFallbackFont(size)
+    }
+
+    private class func getFallbackFont(_ size: CGFloat, weight: UIFont.Weight?=nil) -> UIFont {
+        if let targetWeight = weight {
+            return UIFont.systemFont(ofSize: size, weight: targetWeight)
+        }
+        return UIFont.systemFont(ofSize: size)
     }
 
     class func getIdentificationFont(size: CGFloat) -> UIFont {
-        if #available(iOS 8.2, *) {
-            return UIFont(name: "KohinoorBangla-Regular", size: size) ?? UIFont.systemFont(ofSize: size, weight: UIFont.Weight.thin)
-        } else {
-            return UIFont(name: "KohinoorBangla-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
-        }
+        return UIFont(name: "KohinoorBangla-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
     }
 
     class func append(firstJSON: String, secondJSON: String) -> String {

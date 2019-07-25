@@ -83,6 +83,7 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
         self.view.backgroundColor = ThemeManager.shared.getMainColor()
         numberTextField.autocorrectionType = UITextAutocorrectionType.no
         numberTextField.keyboardType = UIKeyboardType.numberPad
+        numberTextField.keyboardAppearance = .light
         numberTextField.addTarget(self, action: #selector(IdentificationViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         self.setupInputAccessoryView()
         identificationType = self.identificationTypes.first

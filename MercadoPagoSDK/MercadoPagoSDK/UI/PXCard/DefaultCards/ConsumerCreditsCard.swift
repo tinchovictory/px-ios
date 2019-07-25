@@ -9,6 +9,10 @@ import Foundation
 import MLCardDrawer
 
 class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
+
+    weak var delegate: PXTermsAndConditionViewDelegate?
+
+    // CustomCardDrawerUI
     var placeholderName = ""
     var placeholderExpiration = ""
     var bankImage: UIImage?
@@ -20,13 +24,15 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var defaultUI = false
     var securityCodePattern = 3
     var fontType: String = "light"
-    weak var delegate: PXTermsAndConditionViewDelegate?
     var ownOverlayImage: UIImage? = ResourceManager.shared.getImage("creditsOverlayMask")
-    var ownGradient: CAGradientLayer = getCustomGradient()
+    var ownGradient: CAGradientLayer = CAGradientLayer()
 
-    static func getCustomGradient() -> CAGradientLayer {
+    init(_ creditsViewModel: CreditsViewModel) {
+        ownGradient = ConsumerCreditsCard.getCustomGradient(creditsViewModel)
+    }
+    static func getCustomGradient(_ creditsViewModel: CreditsViewModel) -> CAGradientLayer {
         let gradient = CAGradientLayer()
-        gradient.colors = [#colorLiteral(red: 0.03361242613, green: 0.7578604493, blue: 0.6721206227, alpha: 1).cgColor, #colorLiteral(red: 0.0431372549, green: 0.5382275298, blue: 0.7933213932, alpha: 1).cgColor]
+        gradient.colors = creditsViewModel.getCardColors()
         gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
         gradient.endPoint = CGPoint(x: 1.6, y: 0.5)
         return gradient

@@ -19,7 +19,7 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
     @IBOutlet weak var containerView: UIView!
 
-    private var card: ConsumerCreditsCard = ConsumerCreditsCard()
+    private var consumerCreditCard: ConsumerCreditsCard?
     weak var delegate: PXTermsAndConditionViewDelegate?
 
     override func prepareForReuse() {
@@ -86,20 +86,26 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
+
     func renderConsumerCreditsCard(creditsViewModel: CreditsViewModel, isDisabled: Bool, cardSize: CGSize) {
+        consumerCreditCard = ConsumerCreditsCard(creditsViewModel)
+        guard let consumerCreditCard = consumerCreditCard else { return }
+
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
-        cardHeader = MLCardDrawerController(ConsumerCreditsCard(), PXCardDataFactory(), isDisabled)
+
+        cardHeader = MLCardDrawerController(consumerCreditCard, PXCardDataFactory(), isDisabled)
         cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
+
         cardHeader?.animated(false)
         cardHeader?.show()
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            card.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize)
-            card.delegate = self
+            consumerCreditCard.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize)
+            consumerCreditCard.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
