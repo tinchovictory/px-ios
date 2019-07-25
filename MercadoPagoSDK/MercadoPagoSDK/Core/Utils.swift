@@ -240,7 +240,7 @@ internal class Utils {
     }
 
     class func getLightFont(size: CGFloat) -> UIFont {
-        return UIFont(name: ThemeManager.shared.getLightFontName(), size: size) ?? getFallbackFont(size, weight: UIFont.Weight.thin)
+        return getFontWithSize(font: ThemeManager.shared.getLightFontName(), size: size)
     }
 
     class func getSemiBoldFont(size: CGFloat) -> UIFont {
