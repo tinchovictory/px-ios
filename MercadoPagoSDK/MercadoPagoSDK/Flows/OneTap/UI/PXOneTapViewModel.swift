@@ -150,7 +150,8 @@ extension PXOneTapViewModel {
                     let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow)
                     model.append(installmentInfoModel)
                 } else {
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow)
+                    let isDigitalCurrency: Bool = sliderNode.creditsViewModel != nil
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow)
                     model.append(installmentInfoModel)
                 }
             }
@@ -302,7 +303,7 @@ extension PXOneTapViewModel {
         return attributedString
     }
 
-    private func getInstallmentInfoAttrText(_ payerCost: PXPayerCost?) -> NSMutableAttributedString {
+    private func getInstallmentInfoAttrText(_ payerCost: PXPayerCost?, _ isDigitalCurrency: Bool = false) -> NSMutableAttributedString {
         let text: NSMutableAttributedString = NSMutableAttributedString(string: "")
 
         if let payerCostData = payerCost {
@@ -323,11 +324,14 @@ extension PXOneTapViewModel {
             }
 
             // Third attr
-            if let cftDisplayStr = payerCostData.getCFTValue(), payerCostData.hasCFTValue(), payerCostData.installments != 1 {
-                let thirdAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
-                let thirdText = " CFT: \(cftDisplayStr)"
-                let thirdAttributedString = NSAttributedString(string: thirdText, attributes: thirdAttributes)
-                text.append(thirdAttributedString)
+            if let cftDisplayStr = payerCostData.getCFTValue() {
+                if (payerCostData.hasCFTValue() && (payerCostData.installments != 1)) || isDigitalCurrency {
+                    let thirdAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
+                    let thirdText = " CFT: \(cftDisplayStr)"
+                    let thirdAttributedString = NSAttributedString(string: thirdText, attributes: thirdAttributes)
+                    text.append(thirdAttributedString)
+                }
+
             }
         }
         return text
