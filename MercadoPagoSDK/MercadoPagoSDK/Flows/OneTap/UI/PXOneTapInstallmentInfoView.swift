@@ -79,7 +79,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         label.attributedText = itemModel.text
         label.textAlignment = .left
         cell.addSubview(label)
-        PXLayout.pinLeft(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
+        PXLayout.pinLeft(view: label, withMargin: PXLayout.XXXS_MARGIN).isActive = true
         PXLayout.pinRight(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
         PXLayout.centerVertically(view: label).isActive = true
         PXLayout.matchHeight(ofView: label).isActive = true
