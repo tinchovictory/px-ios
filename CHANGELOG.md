@@ -1,3 +1,8 @@
+# v4.18.2
+🚀Private Release - 4.18.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix CFT
+
 # v4.18.1
 🚀Private Release - 4.18.1 🚀
 MercadoPagoSDKV4 - Private Version
