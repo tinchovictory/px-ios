@@ -1,3 +1,8 @@
+# v4.18.3
+🚀Public Release - 4.18.3 🚀
+MercadoPagoSDK - Public Version
+- Bugfixing and iOS13 support
+
 # v4.18.2
 🚀Private Release - 4.18.2 🚀
 MercadoPagoSDKV4 - Private Version
