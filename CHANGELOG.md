@@ -1,3 +1,11 @@
+# v4.19.0
+🚀Private Release - 4.19.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Credits
+- iOS13 improvements
+- Fix aspect ratio
+- Fix CFT
+
 # v4.18.3
 🚀Public Release - 4.18.3 🚀
 MercadoPagoSDK - Public Version
