@@ -117,7 +117,7 @@ extension PXOneTapHeaderView {
         let shouldHideSplitPaymentView = newModel.splitConfiguration == nil
         let shouldShowHorizontally = self.shouldShowHorizontally(model: newModel)
         let shouldAnimateSummary = newModel.data.count != oldModel.data.count
-        let shouldHideSummary = newModel.data.count < oldModel.data.count
+        let shouldHideSummary = (newModel.data.count < oldModel.data.count) && newModel.data.count == 1
 
         self.layoutIfNeeded()
 
@@ -135,9 +135,11 @@ extension PXOneTapHeaderView {
             let animationDistance: CGFloat = 30
             var animationRows: [UIView] = []
             var pinTopConstraints: [NSLayoutConstraint] = []
+            var summaryViewUpdated: Bool = false
 
             if !shouldHideSummary {
                 summaryView?.update(newModel.data, hideAnimatedView: !shouldHideSummary)
+                summaryViewUpdated = true
             }
 
             self.layoutIfNeeded()
@@ -169,8 +171,16 @@ extension PXOneTapHeaderView {
                     }
                 }
             }
+            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData) {
 
-            summaryView?.update(newModel.data, hideAnimatedView: !shouldHideSummary)
+                let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
+                addEmptyTotalRowView(with: emptyTotalRowHeight)
+                addTotalRowView(newRowView: newRow)
+            }
+
+            if !summaryViewUpdated {
+                summaryView?.update(newModel.data, hideAnimatedView: !shouldHideSummary)
+            }
 
             self.layoutIfNeeded()
             var pxAnimator = PXAnimator(duration: animationDuration, dampingRatio: 1)
@@ -208,6 +218,12 @@ extension PXOneTapHeaderView {
 
             pxAnimator.animate()
         } else {
+            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData) {
+
+                let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
+                addEmptyTotalRowView(with: emptyTotalRowHeight)
+                addTotalRowView(newRowView: newRow)
+            }
             summaryView?.update(newModel.data)
         }
 
@@ -222,6 +238,32 @@ extension PXOneTapHeaderView {
                 self.showSplitPaymentView(duration: animationDuration)
             }
         }
+    }
+
+    private func addEmptyTotalRowView(with rowHeight: CGFloat) {
+        let emptyRowView: UIView = createEmptyRowView()
+        self.addSubview(emptyRowView)
+        NSLayoutConstraint.activate([
+            PXLayout.setHeight(owner: emptyRowView, height: rowHeight),
+            PXLayout.pinBottom(view: emptyRowView, to: self, withMargin: 0),
+            PXLayout.pinLeft(view: emptyRowView),
+            PXLayout.pinRight(view: emptyRowView)
+        ])
+    }
+    private func createEmptyRowView() -> UIView {
+        let emptyRowView = UIView()
+        emptyRowView.translatesAutoresizingMaskIntoConstraints = false
+        emptyRowView.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
+        return emptyRowView
+    }
+    private func addTotalRowView(newRowView: UIView) {
+        self.addSubview(newRowView)
+        newRowView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            PXLayout.pinLeft(view: newRowView, withMargin: 0),
+            PXLayout.pinRight(view: newRowView, withMargin: 0),
+            PXLayout.pinBottom(view: newRowView, to: self, withMargin: PXLayout.S_MARGIN)
+        ])
     }
 
     private func animateToVertical(duration: Double = 0) {
