@@ -171,11 +171,14 @@ extension PXOneTapHeaderView {
                     }
                 }
             }
-            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData) {
+
+            var totalRowToRemove = UIView()
+            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData), newModelData.isTotal {
 
                 let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
-                addEmptyTotalRowView(with: emptyTotalRowHeight)
-                addTotalRowView(newRowView: newRow)
+                let emptyView = addEmptyTotalRowView(with: emptyTotalRowHeight)
+                totalRowToRemove = emptyView
+                addTotalRowView(newRowView: newRow, height: emptyTotalRowHeight, inView: emptyView)
             }
 
             if !summaryViewUpdated {
@@ -184,6 +187,7 @@ extension PXOneTapHeaderView {
 
             self.layoutIfNeeded()
             var pxAnimator = PXAnimator(duration: animationDuration, dampingRatio: 1)
+
             pxAnimator.addAnimation(animation: { [weak self] in
                 for (index, view) in animationRows.enumerated() {
                     let pinTopConstraint = pinTopConstraints[index]
@@ -214,16 +218,12 @@ extension PXOneTapHeaderView {
                 for view in animationRows {
                     view.removeFromSuperview()
                 }
+                totalRowToRemove.removeFromSuperview()
+
             }
 
             pxAnimator.animate()
         } else {
-            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData) {
-
-                let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
-                addEmptyTotalRowView(with: emptyTotalRowHeight)
-                addTotalRowView(newRowView: newRow)
-            }
             summaryView?.update(newModel.data)
         }
 
@@ -240,7 +240,7 @@ extension PXOneTapHeaderView {
         }
     }
 
-    private func addEmptyTotalRowView(with rowHeight: CGFloat) {
+    private func addEmptyTotalRowView(with rowHeight: CGFloat) -> UIView {
         let emptyRowView: UIView = createEmptyRowView()
         self.addSubview(emptyRowView)
         NSLayoutConstraint.activate([
@@ -249,6 +249,7 @@ extension PXOneTapHeaderView {
             PXLayout.pinLeft(view: emptyRowView),
             PXLayout.pinRight(view: emptyRowView)
         ])
+        return emptyRowView
     }
     private func createEmptyRowView() -> UIView {
         let emptyRowView = UIView()
@@ -256,8 +257,9 @@ extension PXOneTapHeaderView {
         emptyRowView.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
         return emptyRowView
     }
-    private func addTotalRowView(newRowView: UIView) {
-        self.addSubview(newRowView)
+
+    private func addTotalRowView(newRowView: UIView, height: CGFloat, inView: UIView) {
+        inView.addSubview(newRowView)
         newRowView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             PXLayout.pinLeft(view: newRowView, withMargin: 0),
