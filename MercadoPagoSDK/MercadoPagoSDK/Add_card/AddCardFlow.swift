@@ -257,6 +257,7 @@ public class AddCardFlow: NSObject, PXFlow {
     }
 
     @objc private func goBack() {
+        PXNotificationManager.UnsuscribeTo.attemptToClose(self)
         self.navigationHandler.popViewController(animated: true)
         ThemeManager.shared.applyAppNavBarStyle(navigationController: self.navigationHandler.navigationController)
     }
