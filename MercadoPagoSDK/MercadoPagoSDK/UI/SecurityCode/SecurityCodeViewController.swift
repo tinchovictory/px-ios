@@ -114,8 +114,8 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
         toolbar.barStyle = UIBarStyle.default
         toolbar.isUserInteractionEnabled = true
 
-        let buttonNext = UIBarButtonItem(title: "card_form_next_button".localized_beta, style: .plain, target: self, action: #selector(self.continueAction))
-        let buttonPrev = UIBarButtonItem(title: "card_form_previous_button".localized_beta, style: .plain, target: self, action: #selector(self.backAction))
+        let buttonNext = UIBarButtonItem(title: "card_form_next_button".localized, style: .plain, target: self, action: #selector(self.continueAction))
+        let buttonPrev = UIBarButtonItem(title: "card_form_previous_button".localized, style: .plain, target: self, action: #selector(self.backAction))
 
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
 

@@ -114,11 +114,7 @@ internal extension PXResultViewModel {
 
         let title = statusDetail + "_title"
 
-        if title.existsLocalizedBeta() {
-            return getTitleForRejected(paymentMethod, title)
-        } else {
-            return getDefaultRejectedTitle()
-        }
+        return getTitleForRejected(paymentMethod, title)
     }
 
     func titleForInstructions() -> NSMutableAttributedString {
@@ -157,10 +153,10 @@ internal extension PXResultViewModel {
             return getDefaultRejectedTitle()
         }
 
-        return NSMutableAttributedString(string: (title.localized_beta as NSString).replacingOccurrences(of: "%0", with: "\(paymentMethodName)"), attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.TITLE_FONT_SIZE)])
+        return NSMutableAttributedString(string: (title.localized as NSString).replacingOccurrences(of: "%0", with: "\(paymentMethodName)"), attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.TITLE_FONT_SIZE)])
     }
 
     func getDefaultRejectedTitle() -> NSAttributedString {
-        return NSMutableAttributedString(string: PXHeaderResutlConstants.REJECTED_HEADER_TITLE.localized_beta, attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.TITLE_FONT_SIZE)])
+        return NSMutableAttributedString(string: PXHeaderResutlConstants.REJECTED_HEADER_TITLE.localized, attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.TITLE_FONT_SIZE)])
     }
 }

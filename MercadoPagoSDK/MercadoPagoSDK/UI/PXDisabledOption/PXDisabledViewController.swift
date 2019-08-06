@@ -19,7 +19,7 @@ class PXDisabledViewController: UIViewController {
         let cardDescription = "disabled_description_card"
         let buttonText = "disabled_screen_change_method_action"
 
-        title.text = isAccountMoney ? amTitle.localized_beta : cardTitle.localized_beta
+        title.text = isAccountMoney ? amTitle.localized : cardTitle.localized
         view.addSubview(title)
         title.font = Utils.getFont(size: PXLayout.M_FONT)
         title.textColor = ThemeManager.shared.boldLabelTintColor()
@@ -31,7 +31,7 @@ class PXDisabledViewController: UIViewController {
         _ = PXLayout.pinRight(view: title, to: view, withMargin: PXLayout.M_MARGIN).isActive = true
 
         let description = UILabel()
-        description.text = isAccountMoney ? amDescription.localized_beta : cardDescription.localized_beta
+        description.text = isAccountMoney ? amDescription.localized : cardDescription.localized
         view.addSubview(description)
         description.font = Utils.getFont(size: PXLayout.XS_FONT)
         description.textColor = ThemeManager.shared.labelTintColor()
@@ -44,7 +44,7 @@ class PXDisabledViewController: UIViewController {
 
         let dismissButton = PXSecondaryButton()
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        dismissButton.buttonTitle = buttonText.localized_beta
+        dismissButton.buttonTitle = buttonText.localized
         view.addSubview(dismissButton)
         _ = PXLayout.put(view: dismissButton, onBottomOf: description, withMargin: PXLayout.S_MARGIN, relation: .equal)
         _ = PXLayout.pinLeft(view: dismissButton, to: view, withMargin: PXLayout.S_MARGIN).isActive = true

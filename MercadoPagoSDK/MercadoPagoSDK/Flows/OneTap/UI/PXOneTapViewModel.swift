@@ -350,7 +350,7 @@ extension PXOneTapViewModel {
 
         let amDisclaimer = "disabled_disclaimer_am"
         let cardDisclaimer = "disabled_disclaimer_am"
-        let disclaimer = isAccountMoney ? amDisclaimer.localized_beta : cardDisclaimer.localized_beta
+        let disclaimer = isAccountMoney ? amDisclaimer.localized : cardDisclaimer.localized
         return NSAttributedString(string: disclaimer, attributes: attributes)
     }
 

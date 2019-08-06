@@ -47,7 +47,7 @@ final class PXResultAddCardFailedViewModel: PXResultViewModelInterface {
     }
 
     func buildHeaderComponent() -> PXHeaderComponent {
-        let props = PXHeaderProps(labelText: NSAttributedString(string: "add_card_failed_label_text".localized_beta), title: NSAttributedString(string: "add_card_failed_title".localized_beta, attributes: [NSAttributedString.Key.font: UIFont.ml_regularSystemFont(ofSize: 26)]), backgroundColor: ThemeManager.shared.warningColor(), productImage: UIImage(named: "card_icon", in: ResourceManager.shared.getBundle(), compatibleWith: nil), statusImage: UIImage(named: "need_action_badge", in: ResourceManager.shared.getBundle(), compatibleWith: nil), closeAction: { [weak self] in
+        let props = PXHeaderProps(labelText: NSAttributedString(string: "add_card_failed_label_text".localized), title: NSAttributedString(string: "add_card_failed_title".localized, attributes: [NSAttributedString.Key.font: UIFont.ml_regularSystemFont(ofSize: 26)]), backgroundColor: ThemeManager.shared.warningColor(), productImage: UIImage(named: "card_icon", in: ResourceManager.shared.getBundle(), compatibleWith: nil), statusImage: UIImage(named: "need_action_badge", in: ResourceManager.shared.getBundle(), compatibleWith: nil), closeAction: { [weak self] in
             if let callback = self?.callback {
                 callback(PaymentResult.CongratsState.cancel_EXIT)
             }
@@ -57,8 +57,8 @@ final class PXResultAddCardFailedViewModel: PXResultViewModelInterface {
     }
 
     func buildFooterComponent() -> PXFooterComponent {
-        let buttonAction = PXAction(label: "add_card_try_again".localized_beta, action: self.buttonCallback)
-        let linkAction = PXAction(label: "add_card_go_to_my_cards".localized_beta, action: self.linkCallback)
+        let buttonAction = PXAction(label: "add_card_try_again".localized, action: self.buttonCallback)
+        let linkAction = PXAction(label: "add_card_go_to_my_cards".localized, action: self.linkCallback)
         let props = PXFooterProps(buttonAction: buttonAction, linkAction: linkAction, primaryColor: UIColor.ml_meli_blue(), animationDelegate: nil)
         let footer = PXFooterComponent(props: props)
         return footer

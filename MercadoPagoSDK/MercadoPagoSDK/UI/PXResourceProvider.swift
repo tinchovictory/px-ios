@@ -17,26 +17,26 @@ internal class PXResourceProvider {
     static var error_body_secondary_title_base = "error_body_secondary_title_"
 
     static internal func getTitleForCallForAuth() -> String {
-        return error_body_title_c4a.localized_beta
+        return error_body_title_c4a.localized
     }
 
     static internal func getTitleForErrorBody() -> String {
-        return error_body_title_base.localized_beta
+        return error_body_title_base.localized
     }
 
     static internal func getDescriptionForErrorBodyForPENDING_CONTINGENCY() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.PENDING_CONTINGENCY
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForPENDING_REVIEW_MANUAL() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.PENDING_REVIEW_MANUAL
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_CALL_FOR_AUTHORIZE(_ amount: Double) -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_CALL_FOR_AUTHORIZE
-        let initialText = key.localized_beta
+        let initialText = key.localized
 
         let currency = SiteManager.shared.getCurrency()
         let currencySymbol = currency.getCurrencySymbolOrDefault()
@@ -51,73 +51,73 @@ internal class PXResourceProvider {
     static internal func getDescriptionForErrorBodyForREJECTED_CARD_DISABLED(_ paymentMethodName: String?) -> String {
         if let paymentMethodName = paymentMethodName {
             let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_CARD_DISABLED
-            return key.localized_beta.replacingOccurrences(of: "%1$s", with: paymentMethodName)
+            return key.localized.replacingOccurrences(of: "%1$s", with: paymentMethodName)
         } else {
-            return error_body_description_base.localized_beta
+            return error_body_description_base.localized
         }
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_INSUFFICIENT_AMOUNT() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_OTHER_REASON() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_OTHER_REASON
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_BY_BANK() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_BY_BANK
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_INSUFFICIENT_DATA() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_INSUFFICIENT_DATA
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_DUPLICATED_PAYMENT() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_DUPLICATED_PAYMENT
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_MAX_ATTEMPTS() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_MAX_ATTEMPTS
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_HIGH_RISK() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_HIGH_RISK
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_CARD_HIGH_RISK() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_BY_REGULATIONS() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_BY_REGULATIONS
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_INVALID_INSTALLMENTS() -> String {
         let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_INVALID_INSTALLMENTS
-        return key.localized_beta
+        return key.localized
     }
 
     static internal func getActionTextForErrorBodyForREJECTED_CALL_FOR_AUTHORIZE(_ paymentMethodName: String?) -> String {
 
         if let paymentMethodName = paymentMethodName {
             let key = error_body_action_text_base + PXPayment.StatusDetails.REJECTED_CALL_FOR_AUTHORIZE
-            return key.localized_beta.replacingOccurrences(of: "%1$s", with: paymentMethodName)
+            return key.localized.replacingOccurrences(of: "%1$s", with: paymentMethodName)
         } else {
-            return error_body_action_text_base.localized_beta
+            return error_body_action_text_base.localized
         }
     }
 
     static internal func getSecondaryTitleForErrorBodyForREJECTED_CALL_FOR_AUTHORIZE() -> String {
-        return error_body_secondary_title_base.localized_beta
+        return error_body_secondary_title_base.localized
     }
 }

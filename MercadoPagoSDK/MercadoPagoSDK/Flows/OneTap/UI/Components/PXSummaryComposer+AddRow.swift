@@ -13,7 +13,7 @@ extension PXSummaryComposer {
         let shouldDisplayHelper = shouldDisplayChargesHelp
         let helperImage = shouldDisplayHelper ? helpIcon(color: summaryColor()) : nil
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
-        let defaultChargeText = "onetap_purchase_summary_charges".localized_beta
+        let defaultChargeText = "onetap_purchase_summary_charges".localized
         let chargeText = additionalInfoSummary?.charges ?? defaultChargeText
         let row = OneTapHeaderSummaryData(chargeText, amountToShow, summaryColor(), textTransparency, false, helperImage, .charges)
         return row
@@ -21,7 +21,7 @@ extension PXSummaryComposer {
 
     func consumedDiscountRow() -> OneTapHeaderSummaryData {
         let helperImage = helpIcon(color: summaryColor())
-        let row = OneTapHeaderSummaryData("total_row_consumed_discount".localized_beta, "", summaryColor(), textTransparency, false, helperImage, .discount)
+        let row = OneTapHeaderSummaryData("total_row_consumed_discount".localized, "", summaryColor(), textTransparency, false, helperImage, .discount)
         return row
     }
 
@@ -56,7 +56,7 @@ extension PXSummaryComposer {
 
     func totalToPayRow() -> OneTapHeaderSummaryData {
         let totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
-        let text = "onetap_purchase_summary_total".localized_beta
+        let text = "onetap_purchase_summary_total".localized
         let row = OneTapHeaderSummaryData(text,
                                           totalAmountToShow,
                                           summaryColor(),

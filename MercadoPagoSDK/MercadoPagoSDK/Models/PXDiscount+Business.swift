@@ -13,7 +13,7 @@ internal extension PXDiscount {
     override open var description: String {
         get {
             if getDiscountDescription() != "" {
-                return getDiscountDescription() + "discount_coupon_detail_description".localized_beta
+                return getDiscountDescription() + "discount_coupon_detail_description".localized
             } else {
                 return ""
             }
@@ -21,7 +21,7 @@ internal extension PXDiscount {
     }
 
     internal func getDiscountDescription() -> String {
-        return name ?? "discount_coupon_detail_default_concept".localized_beta
+        return name ?? "discount_coupon_detail_default_concept".localized
     }
 
     internal func getDiscountAmount() -> Double? {
