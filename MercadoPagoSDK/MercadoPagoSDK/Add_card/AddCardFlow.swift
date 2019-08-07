@@ -18,6 +18,7 @@ public class AddCardFlow: NSObject, PXFlow {
 
     public var delegate: AddCardFlowProtocol?
 
+    private var productId: String?
     private let accessToken: String
     private let model = AddCardFlowModel()
     private let navigationHandler: PXNavigationHandler
@@ -47,6 +48,13 @@ public class AddCardFlow: NSObject, PXFlow {
 
     public func setSiteId(_ siteId: String) {
         SiteManager.shared.setSite(siteId: siteId)
+    }
+
+    /**
+            Set product id
+        */
+    open func setProductId(_ productId: String) {
+        self.productId = productId
     }
 
     public func start() {
@@ -96,7 +104,7 @@ public class AddCardFlow: NSObject, PXFlow {
 
     private func getPaymentMethods() {
         self.navigationHandler.presentLoading()
-        let service = PaymentMethodsUserService(accessToken: self.accessToken)
+        let service = PaymentMethodsUserService(accessToken: self.accessToken, productId: self.productId)
         service.getPaymentMethods(success: { [weak self] (paymentMethods) in
             self?.model.paymentMethods = paymentMethods
             self?.executeNextStep()
@@ -194,7 +202,7 @@ public class AddCardFlow: NSObject, PXFlow {
         guard let selectedPaymentMethod = self.model.selectedPaymentMethod, let token = self.model.tokenizedCard else {
             return
         }
-        let associateCardService = AssociateCardService(accessToken: self.accessToken)
+        let associateCardService = AssociateCardService(accessToken: self.accessToken, productId: productId)
         associateCardService.associateCardToUser(paymentMethod: selectedPaymentMethod, cardToken: token, success: { [weak self] (json) in
             print(json)
             self?.navigationHandler.dismissLoading()
