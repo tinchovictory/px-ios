@@ -8,7 +8,7 @@
 import UIKit
 
 @objcMembers
-open class PXTrackingConfiguration {
+open class PXTrackingConfiguration: NSObject {
     let trackListener: PXTrackerListener?
     let flowName: String?
     let flowDetails: [String: Any]?
