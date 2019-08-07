@@ -36,6 +36,8 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     var cardSliderMarginConstraint: NSLayoutConstraint?
     private var navigationBarTapGesture: UITapGestureRecognizer?
 
+    private var biometricModule: PXBiometricProtocol = PXConfiguratorManager.biometricProtocol
+
     // MARK: Lifecycle/Publics
     init(viewModel: PXOneTapViewModel, timeOutPayButton: TimeInterval = 15, callbackPaymentData : @escaping ((PXPaymentData) -> Void), callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), callbackExit: @escaping (() -> Void), finishButtonAnimation: @escaping (() -> Void)) {
         self.viewModel = viewModel
@@ -218,8 +220,6 @@ extension PXOneTapViewController {
         loadingButtonComponent?.animationDelegate = self
         loadingButtonComponent?.layer.cornerRadius = 4
         loadingButtonComponent?.add(for: .touchUpInside, {
-            self.subscribeLoadingButtonToNotifications()
-            self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
             self.confirmPayment()
         })
         loadingButtonComponent?.setTitle("Pagar".localized, for: .normal)
@@ -263,6 +263,17 @@ extension PXOneTapViewController {
     }
 
     private func confirmPayment() {
+        biometricModule.validate(config: PXBiometricConfig.defaultFactory(), onSuccess: { [weak self] in
+            self?.doPayment()
+        }) { error in
+            // TODO: Tracking
+            PXComponentFactory.SnackBar.showShortDurationMessage(message: "Error", dismissBlock: {})
+        }
+    }
+
+    private func doPayment() {
+        self.subscribeLoadingButtonToNotifications()
+        self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
         scrollView.isScrollEnabled = false
         view.isUserInteractionEnabled = false
         if let selectedCardItem = selectedCard {
@@ -270,9 +281,7 @@ extension PXOneTapViewController {
             let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem)
             trackEvent(path: TrackingPaths.Events.OneTap.getConfirmPath(), properties: properties)
         }
-
         let splitPayment = viewModel.splitPaymentEnabled
-
         self.hideBackButton()
         self.hideNavBar()
         self.callbackConfirm(self.viewModel.amountHelper.getPaymentData(), splitPayment)
