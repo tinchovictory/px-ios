@@ -80,7 +80,7 @@ internal extension MPXTracker {
             }
             metadata[SessionService.SESSION_ID_KEY] = getSessionID()
             // TODO: Upload to MeliData catalog and align with Android.
-            metadata["has_biometric"] = PXConfiguratorManager.hasBiometric
+            metadata["has_biometric"] = PXConfiguratorManager.hasBiometric()
             trackListenerInterfase.trackScreen(screenName: screenName, extraParams: metadata)
         }
     }
