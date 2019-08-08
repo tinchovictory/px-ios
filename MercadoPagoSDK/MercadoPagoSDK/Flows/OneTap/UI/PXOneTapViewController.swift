@@ -36,8 +36,6 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     var cardSliderMarginConstraint: NSLayoutConstraint?
     private var navigationBarTapGesture: UITapGestureRecognizer?
 
-    private var biometricModule: PXBiometricProtocol = PXConfiguratorManager.biometricProtocol
-
     // MARK: Lifecycle/Publics
     init(viewModel: PXOneTapViewModel, timeOutPayButton: TimeInterval = 15, callbackPaymentData : @escaping ((PXPaymentData) -> Void), callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), callbackExit: @escaping (() -> Void), finishButtonAnimation: @escaping (() -> Void)) {
         self.viewModel = viewModel
@@ -263,10 +261,11 @@ extension PXOneTapViewController {
     }
 
     private func confirmPayment() {
-        biometricModule.validate(config: PXBiometricConfig.defaultFactory(), onSuccess: { [weak self] in
+        let biometricModule = PXConfiguratorManager.biometricProtocol
+        biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
             self?.doPayment()
-        }) { error in
-            // TODO: Tracking
+        }) { _ in
+            // TODO: Tracking new PX event (?) - Check with Product team.
             PXComponentFactory.SnackBar.showShortDurationMessage(message: "Error", dismissBlock: {})
         }
     }

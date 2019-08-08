@@ -31,8 +31,6 @@ class PXReviewViewController: PXComponentContainerViewController {
     private let SHADOW_DELTA: CGFloat = 1
     private var DID_ENTER_DYNAMIC_VIEW_CONTROLLER_SHOWED: Bool = false
 
-    private var biometricModule: PXBiometricProtocol = PXConfiguratorManager.biometricProtocol
-
     internal var changePaymentMethodCallback: (() -> Void)?
 
     // MARK: Lifecycle - Publics
@@ -403,10 +401,11 @@ extension PXReviewViewController {
 extension PXReviewViewController: PXTermsAndConditionViewDelegate {
 
     private func confirmPayment(_ targetButton: PXAnimatedButton) {
-        biometricModule.validate(config: PXBiometricConfig.defaultFactory(), onSuccess: { [weak self] in
+        let biometricModule = PXConfiguratorManager.biometricProtocol
+        biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
             self?.doPayment(targetButton)
         }) { error in
-            // TODO: Tracking
+            // TODO: Tracking new PX event (?) - Check with Product team.
             PXComponentFactory.SnackBar.showShortDurationMessage(message: "Error", dismissBlock: {})
         }
     }
