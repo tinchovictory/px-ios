@@ -123,7 +123,7 @@ PXTracker.setListener(self)
 ```
 
 ### 📋 Supported OS & SDK Versions
-* iOS 9.0+
+* iOS 10.0+
 * Swift 4.2
 * xCode 9.2+
 * @Objc full compatibility
