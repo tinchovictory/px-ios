@@ -23,6 +23,7 @@ class PXOneTapHeaderView: PXComponentView {
     private var splitPaymentView: PXOneTapSplitPaymentView?
     private var splitPaymentViewHeightConstraint: NSLayoutConstraint?
     private let splitPaymentViewHeight: CGFloat = 55
+    private var emptyTotalRowBottomMarginConstraint: NSLayoutConstraint?
 
     init(viewModel: PXOneTapHeaderViewModel, delegate: PXOneTapHeaderProtocol?) {
         self.model = viewModel
@@ -57,6 +58,7 @@ class PXOneTapHeaderView: PXComponentView {
 
             strongSelf.splitPaymentView?.alpha = 0
             strongSelf.splitPaymentViewHeightConstraint?.constant = 0
+            strongSelf.emptyTotalRowBottomMarginConstraint?.constant = 0
 
             strongSelf.layoutIfNeeded()
         })
@@ -73,10 +75,9 @@ class PXOneTapHeaderView: PXComponentView {
             }
 
             strongSelf.layoutIfNeeded()
-
             strongSelf.splitPaymentView?.alpha = 1
             strongSelf.splitPaymentViewHeightConstraint?.constant = strongSelf.splitPaymentViewHeight
-
+            strongSelf.emptyTotalRowBottomMarginConstraint?.constant = -strongSelf.splitPaymentViewHeight
             strongSelf.layoutIfNeeded()
         })
 
@@ -159,8 +160,8 @@ extension PXOneTapHeaderView {
                         let pinTopConstraint = PXLayout.pinTop(view: newRow, withMargin: summaryRowViewFrame.minY)
 
                         if !shouldHideSummary {
-                            if shouldAnimateSplitPaymentView, shouldHideSplitPaymentView {
-                                pinTopConstraint.constant += animationDistance + self.splitPaymentViewHeight
+                            if shouldAnimateSplitPaymentView, !shouldHideSplitPaymentView {
+                                pinTopConstraint.constant += animationDistance - self.splitPaymentViewHeight
                             } else {
                                 pinTopConstraint.constant += animationDistance
                             }
@@ -176,7 +177,7 @@ extension PXOneTapHeaderView {
             if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData), newModelData.isTotal {
 
                 let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
-                let emptyView = addEmptyTotalRowView(with: emptyTotalRowHeight)
+                let emptyView = createEmptyTotalRowView(with: emptyTotalRowHeight)
                 totalRowToRemove = emptyView
                 addTotalRowView(newRowView: newRow, height: emptyTotalRowHeight, inView: emptyView)
             }
@@ -219,7 +220,6 @@ extension PXOneTapHeaderView {
                     view.removeFromSuperview()
                 }
                 totalRowToRemove.removeFromSuperview()
-
             }
 
             pxAnimator.animate()
@@ -240,15 +240,18 @@ extension PXOneTapHeaderView {
         }
     }
 
-    private func addEmptyTotalRowView(with rowHeight: CGFloat) -> UIView {
+    private func createEmptyTotalRowView(with rowHeight: CGFloat) -> UIView {
         let emptyRowView: UIView = createEmptyRowView()
         self.addSubview(emptyRowView)
         NSLayoutConstraint.activate([
             PXLayout.setHeight(owner: emptyRowView, height: rowHeight),
-            PXLayout.pinBottom(view: emptyRowView, to: self, withMargin: 0),
             PXLayout.pinLeft(view: emptyRowView),
             PXLayout.pinRight(view: emptyRowView)
         ])
+
+        let splitPaymentViewHeight = splitPaymentView?.frame.height ?? 0.0
+        emptyTotalRowBottomMarginConstraint = PXLayout.pinBottom(view: emptyRowView, to: self, withMargin: splitPaymentViewHeight)
+
         return emptyRowView
     }
     private func createEmptyRowView() -> UIView {
@@ -262,9 +265,9 @@ extension PXOneTapHeaderView {
         inView.addSubview(newRowView)
         newRowView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            PXLayout.pinLeft(view: newRowView, withMargin: 0),
-            PXLayout.pinRight(view: newRowView, withMargin: 0),
-            PXLayout.pinBottom(view: newRowView, to: self, withMargin: PXLayout.S_MARGIN)
+            PXLayout.pinLeft(view: newRowView),
+            PXLayout.pinRight(view: newRowView),
+            PXLayout.pinBottom(view: newRowView, withMargin: PXLayout.S_MARGIN)
         ])
     }
 
