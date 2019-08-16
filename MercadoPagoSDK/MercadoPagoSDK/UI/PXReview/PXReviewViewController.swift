@@ -404,9 +404,9 @@ extension PXReviewViewController: PXTermsAndConditionViewDelegate {
         let biometricModule = PXConfiguratorManager.biometricProtocol
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
             self?.doPayment(targetButton)
-        }) { error in
+        }) { [weak self] error in
             // User abort validation or validation fail.
-            trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            self?.trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
         }
     }
 
