@@ -405,8 +405,8 @@ extension PXReviewViewController: PXTermsAndConditionViewDelegate {
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
             self?.doPayment(targetButton)
         }) { error in
-            // TODO: Tracking new PX event (?) - Check with Product team.
-            PXComponentFactory.SnackBar.showShortDurationMessage(message: "Error", dismissBlock: {})
+            // User abort validation or validation fail.
+            trackScreen(path: TrackingPaths.Events.Security.getBiometricCancelPath())
         }
     }
 

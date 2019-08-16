@@ -66,3 +66,12 @@ extension TrackingPaths.Events {
         }
     }
 }
+
+extension TrackingPaths.Events {
+    internal struct Security {
+        static let securityPath: String = "security"
+        static func getBiometricCancelPath() -> String {
+            return TrackingPaths.pxTrack + "/\(securityPath)/biometric/cancel"
+        }
+    }
+}

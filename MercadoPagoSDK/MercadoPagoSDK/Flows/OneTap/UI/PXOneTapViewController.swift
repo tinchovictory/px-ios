@@ -265,8 +265,8 @@ extension PXOneTapViewController {
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
             self?.doPayment()
         }) { _ in
-            // TODO: Tracking new PX event (?) - Check with Product team.
-            PXComponentFactory.SnackBar.showShortDurationMessage(message: "Error", dismissBlock: {})
+            // User abort validation or validation fail.
+            trackScreen(path: TrackingPaths.Events.Security.getBiometricCancelPath())
         }
     }
 
