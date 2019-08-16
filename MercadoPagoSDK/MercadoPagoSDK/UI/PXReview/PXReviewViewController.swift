@@ -406,7 +406,7 @@ extension PXReviewViewController: PXTermsAndConditionViewDelegate {
             self?.doPayment(targetButton)
         }) { error in
             // User abort validation or validation fail.
-            trackScreen(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
         }
     }
 

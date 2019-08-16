@@ -266,7 +266,7 @@ extension PXOneTapViewController {
             self?.doPayment()
         }) { _ in
             // User abort validation or validation fail.
-            trackScreen(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
         }
     }
 
