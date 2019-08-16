@@ -79,8 +79,7 @@ internal extension MPXTracker {
                 metadata["flow"] = flowName
             }
             metadata[SessionService.SESSION_ID_KEY] = getSessionID()
-            // TODO: Upload to MeliData catalog and align with Android.
-            metadata["has_biometric"] = PXConfiguratorManager.hasBiometric()
+            metadata["biometric_enabled"] = PXConfiguratorManager.hasBiometric()
             trackListenerInterfase.trackScreen(screenName: screenName, extraParams: metadata)
         }
     }
@@ -111,8 +110,7 @@ internal extension MPXTracker {
                     metadata["extra_info"] = frictionExtraInfo
                 }
             }
-            // TODO: Upload to MeliData catalog and align with Android.
-            metadata["has_biometric"] = PXConfiguratorManager.hasBiometric()
+            metadata["biometric_enabled"] = PXConfiguratorManager.hasBiometric()
             trackListenerInterfase.trackEvent(screenName: path, action: "", result: "", extraParams: metadata)
         }
     }
