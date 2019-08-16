@@ -37,7 +37,7 @@ class PXOneTapSummaryRowView: UIView {
     }
 
     open func getRowHeight() -> CGFloat {
-        return data.isTotal && !UIDevice.isSmallDevice() ? 20 : 16
+        return data.isTotal && !UIDevice.isSmallDevice() ? 52 : 16
     }
 
     func update(_ newData: OneTapHeaderSummaryData) {
@@ -52,9 +52,10 @@ class PXOneTapSummaryRowView: UIView {
         let valueFont = data.isTotal ? Utils.getSemiBoldFont(size: PXLayout.S_FONT) : Utils.getFont(size: PXLayout.XXS_FONT)
         let shouldAnimate = data.isTotal ? false : true
 
-//        if data.isTotal {
-//            self.backgroundColor = .red
-//        }
+        if data.isTotal {
+            self.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
+        }
+    
         self.translatesAutoresizingMaskIntoConstraints = false
         self.pxShouldAnimatedOneTapRow = shouldAnimate
 
