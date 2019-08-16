@@ -40,7 +40,7 @@
 "DOCUMENTO DEL TITULAR DE LA TARJETA"="DOCUMENTO DEL TITULAR DE LA TARJETA";
 "Número"="Número";
 "Tipo"="Tipo";
-" Sin interés"=" Sin interés";//--
+" Sin interés"=" Sin interés";
 "¿En cuántas cuotas?" = "¿En cuántas cuotas?";
 "No incluye intereses bancarios" = "No incluye intereses bancarios";
 "¿Quién emitió tu tarjeta?" = "¿Quién emitió tu tarjeta?";
@@ -77,7 +77,6 @@
 "días hábiles" = "días hábiles";
 "hora" = "hora";
 "horas" = "horas";
-// Ex plist
 "error_body_title_" = "¿Qué puedo hacer?";
 "error_body_title_call_for_authorize" = "¿Cómo lo autorizo?";
 "error_body_description_" = "Por favor, intente pagar de otra forma.";
