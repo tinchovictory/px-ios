@@ -403,10 +403,12 @@ extension PXReviewViewController: PXTermsAndConditionViewDelegate {
     private func confirmPayment(_ targetButton: PXAnimatedButton) {
         let biometricModule = PXConfiguratorManager.biometricProtocol
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
-            self?.doPayment(targetButton)
+            DispatchQueue.main.async {
+                self?.doPayment(targetButton)
+            }
         }) { [weak self] error in
             // User abort validation or validation fail.
-            self?.trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
         }
     }
 

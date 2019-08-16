@@ -263,10 +263,12 @@ extension PXOneTapViewController {
     private func confirmPayment() {
         let biometricModule = PXConfiguratorManager.biometricProtocol
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
-            self?.doPayment()
+            DispatchQueue.main.async {
+                self?.doPayment()
+            }
         }) { [weak self] _ in
             // User abort validation or validation fail.
-            self?.trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
         }
     }
 

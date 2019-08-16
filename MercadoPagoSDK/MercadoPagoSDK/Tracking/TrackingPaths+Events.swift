@@ -15,6 +15,7 @@ extension TrackingPaths {
             return TrackingPaths.pxTrack + "/init"
         }
 
+        // Use this path for any user friction.
         static func getErrorPath() -> String {
             return "/friction"
         }
@@ -63,15 +64,6 @@ extension TrackingPaths.Events {
 
         static func getConfirmPath() -> String {
             return TrackingPaths.pxTrack + "/review/confirm"
-        }
-    }
-}
-
-extension TrackingPaths.Events {
-    internal struct Security {
-        static let securityPath: String = "security"
-        static func getBiometricCancelPath() -> String {
-            return TrackingPaths.pxTrack + "/\(securityPath)/biometric/cancel"
         }
     }
 }

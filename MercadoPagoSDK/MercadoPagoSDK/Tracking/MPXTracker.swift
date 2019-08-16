@@ -79,7 +79,7 @@ internal extension MPXTracker {
                 metadata["flow"] = flowName
             }
             metadata[SessionService.SESSION_ID_KEY] = getSessionID()
-            metadata["biometric_enabled"] = PXConfiguratorManager.hasBiometric()
+            metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
             trackListenerInterfase.trackScreen(screenName: screenName, extraParams: metadata)
         }
     }
@@ -110,7 +110,7 @@ internal extension MPXTracker {
                     metadata["extra_info"] = frictionExtraInfo
                 }
             }
-            metadata["biometric_enabled"] = PXConfiguratorManager.hasBiometric()
+            metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
             trackListenerInterfase.trackEvent(screenName: path, action: "", result: "", extraParams: metadata)
         }
     }
