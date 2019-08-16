@@ -118,7 +118,7 @@ extension PXOneTapHeaderView {
         let shouldHideSplitPaymentView = newModel.splitConfiguration == nil
         let shouldShowHorizontally = self.shouldShowHorizontally(model: newModel)
         let shouldAnimateSummary = newModel.data.count != oldModel.data.count
-        let shouldHideSummary = (newModel.data.count < oldModel.data.count) && newModel.data.count == 1
+        let shouldHideSummary = (newModel.data.count < oldModel.data.count)
 
         self.layoutIfNeeded()
 
@@ -145,33 +145,33 @@ extension PXOneTapHeaderView {
 
             self.layoutIfNeeded()
 
-            if let subviews = summaryView?.getSubviews() {
-                for view in subviews {
-                    if view.pxShouldAnimatedOneTapRow, let summaryRowView = view as? PXOneTapSummaryRowView, let newRow = summaryView?.getSummaryRowView(with: summaryRowView.data) {
-
-                        newRow.alpha = shouldHideSummary ? 1 : 0
-                        animationRows.append(newRow)
-                        self.addSubview(newRow)
-
-                        PXLayout.setHeight(owner: newRow, height: summaryRowView.frame.height).isActive = true
-                        PXLayout.setWidth(owner: newRow, width: summaryRowView.frame.width).isActive = true
-
-                        let summaryRowViewFrame = summaryRowView.convert(summaryRowView.bounds, to: self)
-                        let pinTopConstraint = PXLayout.pinTop(view: newRow, withMargin: summaryRowViewFrame.minY)
-
-                        if !shouldHideSummary {
-                            if shouldAnimateSplitPaymentView, !shouldHideSplitPaymentView {
-                                pinTopConstraint.constant += animationDistance - self.splitPaymentViewHeight
-                            } else {
-                                pinTopConstraint.constant += animationDistance
-                            }
-                        }
-
-                        pinTopConstraint.isActive = true
-                        pinTopConstraints.append(pinTopConstraint)
-                    }
-                }
-            }
+//            if let subviews = summaryView?.getSubviews() {
+//                for view in subviews {
+//                    if view.pxShouldAnimatedOneTapRow, let summaryRowView = view as? PXOneTapSummaryRowView, let newRow = summaryView?.getSummaryRowView(with: summaryRowView.getData()) {
+//
+//                        newRow.alpha = shouldHideSummary ? 1 : 0
+//                        animationRows.append(newRow)
+//                        self.addSubview(newRow)
+//
+//                        PXLayout.setHeight(owner: newRow, height: summaryRowView.frame.height).isActive = true
+//                        PXLayout.setWidth(owner: newRow, width: summaryRowView.frame.width).isActive = true
+//
+//                        let summaryRowViewFrame = summaryRowView.convert(summaryRowView.bounds, to: self)
+//                        let pinTopConstraint = PXLayout.pinTop(view: newRow, withMargin: summaryRowViewFrame.minY)
+//
+//                        if !shouldHideSummary {
+//                            if shouldAnimateSplitPaymentView, !shouldHideSplitPaymentView {
+//                                pinTopConstraint.constant += animationDistance - self.splitPaymentViewHeight
+//                            } else {
+//                                pinTopConstraint.constant += animationDistance
+//                            }
+//                        }
+//
+//                        pinTopConstraint.isActive = true
+//                        pinTopConstraints.append(pinTopConstraint)
+//                    }
+//                }
+//            }
 
             var totalRowToRemove = UIView()
             if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData), newModelData.isTotal {
@@ -214,7 +214,7 @@ extension PXOneTapHeaderView {
 
             pxAnimator.addCompletion { [weak self] in
                 if !shouldHideSummary {
-                    self?.summaryView?.showAnimatedViews()
+//                    self?.summaryView?.showAnimatedViews()
                 }
                 for view in animationRows {
                     view.removeFromSuperview()

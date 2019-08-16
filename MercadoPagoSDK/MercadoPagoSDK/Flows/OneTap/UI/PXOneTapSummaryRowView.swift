@@ -17,9 +17,10 @@ class PXOneTapSummaryRowView: UIView {
         case discount
         case charges
         case generic
+        case total
     }
 
-    let data: OneTapHeaderSummaryData
+    private var data: OneTapHeaderSummaryData
 
     init(data: OneTapHeaderSummaryData) {
         self.data = data
@@ -31,12 +32,29 @@ class PXOneTapSummaryRowView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    open func getData() -> OneTapHeaderSummaryData {
+        return data
+    }
+
+    open func getRowHeight() -> CGFloat {
+        return data.isTotal && !UIDevice.isSmallDevice() ? 20 : 16
+    }
+
+    func update(_ newData: OneTapHeaderSummaryData) {
+        self.data = newData
+        self.render()
+    }
+
     private func render() {
-        let rowHeight: CGFloat = data.isTotal && !UIDevice.isSmallDevice() ? 20 : 16
+        removeAllSubviews()
+        let rowHeight = getRowHeight()
         let titleFont = data.isTotal ? Utils.getFont(size: PXLayout.S_FONT) : Utils.getFont(size: PXLayout.XXS_FONT)
         let valueFont = data.isTotal ? Utils.getSemiBoldFont(size: PXLayout.S_FONT) : Utils.getFont(size: PXLayout.XXS_FONT)
         let shouldAnimate = data.isTotal ? false : true
 
+//        if data.isTotal {
+//            self.backgroundColor = .red
+//        }
         self.translatesAutoresizingMaskIntoConstraints = false
         self.pxShouldAnimatedOneTapRow = shouldAnimate
 
