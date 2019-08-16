@@ -56,8 +56,7 @@ extension MercadoPagoCheckoutViewModel {
     }
 
     func configureBiometricModule() {
-        // Create config for biometric module. With flowIdentifier (productId) and amount.
-        ///  TODO: Check minimal mandatory info (flowIdentifier? / amount?)
+        // We use productId as unique identifier
         PXConfiguratorManager.biometricConfig = PXBiometricConfig.createConfig(withFlowIdentifier: getAdvancedConfiguration().productId, andAmount: paymentData.getRawAmount())
     }
 }
