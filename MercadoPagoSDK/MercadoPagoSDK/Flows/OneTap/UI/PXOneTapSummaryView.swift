@@ -29,6 +29,7 @@ class PXOneTapSummaryView: PXComponentView {
     private var oldData: [OneTapHeaderSummaryData] = []
     private var data: [OneTapHeaderSummaryData] = []
     private weak var delegate: PXOneTapSummaryProtocol?
+    private var rowViews: [PXOneTapSummaryRowView] = []
     private var rows: [Row] = [] {
         didSet {
             if rows.count < oldValue.count {
@@ -87,10 +88,6 @@ class PXOneTapSummaryView: PXComponentView {
             self.pinLastSubviewToBottom(withMargin: PXLayout.S_MARGIN)?.isActive = true
     }
 
-    func getRowMargin(data: OneTapHeaderSummaryData) -> CGFloat {
-        return data.isTotal ? PXLayout.ZERO_MARGIN : PXLayout.XXS_MARGIN
-    }
-
     func render() {
         self.removeAllSubviews()
         self.pinContentViewToBottom()
@@ -98,18 +95,17 @@ class PXOneTapSummaryView: PXComponentView {
 
         var offset: CGFloat = 0
         for row in self.data.reversed() {
-            let margin = getRowMargin(data: row)
             let rowView = self.getSummaryRowView(with: row)
+            let margin = rowView.getRowMargin()
 
             offset += margin
 
-//            let totalContainerView = UIView()
             self.addSubview(rowView)
             let rowViewConstraint = PXLayout.pinBottom(view: rowView, withMargin: offset)
 
             offset += rowView.getRowHeight()
 
-            self.rows.append(Row(data: row, view: rowView, constraint: rowViewConstraint, rowHeight: rowView.getRowHeight() + margin))
+            self.rows.append(Row(data: row, view: rowView, constraint: rowViewConstraint, rowHeight: rowView.getTotalHeightNeeded()))
 
             if row.isTotal {
                 let separatorView = UIView()
@@ -133,13 +129,6 @@ class PXOneTapSummaryView: PXComponentView {
             rowView.addGestureRecognizer(tap)
             rowView.isUserInteractionEnabled = true
         }
-
-        guard let firstView = rows.first?.view else {
-            return
-        }
-        self.bringSubviewToFront(firstView)
-
-//        self.pinLastSubviewToBottom(withMargin: PXLayout.S_MARGIN)?.isActive = true
     }
 
     func tapRow(_ sender: UITapGestureRecognizer) {
@@ -165,8 +154,6 @@ class PXOneTapSummaryView: PXComponentView {
         var animator = PXAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1)
 
         var distanceDelta: CGFloat = 0
-
-        let notTotalRows = rows.filter({!$0.data.isTotal})
 
         for (index, row) in rows.enumerated() {
             if indexesToRemove.contains(index) {
@@ -203,9 +190,7 @@ class PXOneTapSummaryView: PXComponentView {
         var newRows: [Row] = []
         for rowData in data {
             let rowView = getSummaryRowView(with: rowData)
-            let margin = getRowMargin(data: rowData)
-            let height = rowView.getRowHeight()
-            let totalHeight = height + margin
+            let totalHeight = rowView.getTotalHeightNeeded()
             distanceDelta += totalHeight
             rowView.alpha = 0
 
@@ -228,14 +213,12 @@ class PXOneTapSummaryView: PXComponentView {
             rows.insert(newRow, at: 1)
         }
 
-        for (index, row) in rows.enumerated() {
-            if !row.data.isTotal {
-                animator.addAnimation(animation: {
-                    row.view.alpha = 1
-                    row.constraint.constant -= distanceDelta
-                    self.layoutIfNeeded()
-                })
-            }
+        for row in rows where !row.data.isTotal {
+            animator.addAnimation(animation: {
+                row.view.alpha = 1
+                row.constraint.constant -= distanceDelta
+                self.layoutIfNeeded()
+            })
         }
 
         animator.addCompletion {
@@ -279,9 +262,7 @@ class PXOneTapSummaryView: PXComponentView {
 
             addSummaryRows(with: newRowsData, animated: true)
         } else {
-            for (index, row) in rows.enumerated() {
-                row.view.update(data.reversed()[index])
-            }
+            updateAllRows()
         }
     }
 
