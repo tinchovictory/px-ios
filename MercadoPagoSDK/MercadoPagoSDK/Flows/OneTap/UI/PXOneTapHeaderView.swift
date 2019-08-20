@@ -117,8 +117,6 @@ extension PXOneTapHeaderView {
         let shouldAnimateSplitPaymentView = (newModel.splitConfiguration != nil) != (oldModel.splitConfiguration != nil)
         let shouldHideSplitPaymentView = newModel.splitConfiguration == nil
         let shouldShowHorizontally = self.shouldShowHorizontally(model: newModel)
-        let shouldAnimateSummary = newModel.data.count != oldModel.data.count
-        let shouldHideSummary = (newModel.data.count < oldModel.data.count)
 
         self.layoutIfNeeded()
 
@@ -132,100 +130,7 @@ extension PXOneTapHeaderView {
 
         self.layoutIfNeeded()
 
-        if shouldAnimateSummary {
-            let animationDistance: CGFloat = 30
-            var animationRows: [UIView] = []
-            var pinTopConstraints: [NSLayoutConstraint] = []
-            var summaryViewUpdated: Bool = false
-
-            if !shouldHideSummary {
-                summaryView?.update(newModel.data, hideAnimatedView: !shouldHideSummary)
-                summaryViewUpdated = true
-            }
-
-            self.layoutIfNeeded()
-
-//            if let subviews = summaryView?.getSubviews() {
-//                for view in subviews {
-//                    if view.pxShouldAnimatedOneTapRow, let summaryRowView = view as? PXOneTapSummaryRowView, let newRow = summaryView?.getSummaryRowView(with: summaryRowView.getData()) {
-//
-//                        newRow.alpha = shouldHideSummary ? 1 : 0
-//                        animationRows.append(newRow)
-//                        self.addSubview(newRow)
-//
-//                        PXLayout.setHeight(owner: newRow, height: summaryRowView.frame.height).isActive = true
-//                        PXLayout.setWidth(owner: newRow, width: summaryRowView.frame.width).isActive = true
-//
-//                        let summaryRowViewFrame = summaryRowView.convert(summaryRowView.bounds, to: self)
-//                        let pinTopConstraint = PXLayout.pinTop(view: newRow, withMargin: summaryRowViewFrame.minY)
-//
-//                        if !shouldHideSummary {
-//                            if shouldAnimateSplitPaymentView, !shouldHideSplitPaymentView {
-//                                pinTopConstraint.constant += animationDistance - self.splitPaymentViewHeight
-//                            } else {
-//                                pinTopConstraint.constant += animationDistance
-//                            }
-//                        }
-//
-//                        pinTopConstraint.isActive = true
-//                        pinTopConstraints.append(pinTopConstraint)
-//                    }
-//                }
-//            }
-
-            var totalRowToRemove = UIView()
-            if let lastSummaryRowView = summaryView?.getSubviews().last, let newModelData = newModel.data.last, let newRow = summaryView?.getSummaryRowView(with: newModelData), newModelData.isTotal {
-
-                let emptyTotalRowHeight: CGFloat = lastSummaryRowView.frame.size.height + PXLayout.L_MARGIN
-                let emptyView = createEmptyTotalRowView(with: emptyTotalRowHeight)
-                totalRowToRemove = emptyView
-                addTotalRowView(newRowView: newRow, height: emptyTotalRowHeight, inView: emptyView)
-            }
-
-            if !summaryViewUpdated {
-                summaryView?.update(newModel.data, hideAnimatedView: !shouldHideSummary)
-            }
-
-            self.layoutIfNeeded()
-            var pxAnimator = PXAnimator(duration: animationDuration, dampingRatio: 1)
-
-            pxAnimator.addAnimation(animation: { [weak self] in
-                for (index, view) in animationRows.enumerated() {
-                    let pinTopConstraint = pinTopConstraints[index]
-
-                    if shouldHideSummary {
-                        pinTopConstraint.constant += animationDistance
-                    } else {
-                        if shouldAnimateSplitPaymentView {
-                            if shouldHideSplitPaymentView {
-                                pinTopConstraint.constant -= animationDistance
-                            } else {
-                                pinTopConstraint.constant -= animationDistance
-                            }
-                        } else {
-                            pinTopConstraint.constant -= animationDistance
-                        }
-                    }
-
-                    self?.layoutIfNeeded()
-                    view.alpha = shouldHideSummary ? 0 : 1
-                }
-            })
-
-            pxAnimator.addCompletion { [weak self] in
-                if !shouldHideSummary {
-//                    self?.summaryView?.showAnimatedViews()
-                }
-                for view in animationRows {
-                    view.removeFromSuperview()
-                }
-                totalRowToRemove.removeFromSuperview()
-            }
-
-            pxAnimator.animate()
-        } else {
-            summaryView?.update(newModel.data)
-        }
+        summaryView?.update(newModel.data)
 
         if shouldAnimateSplitPaymentView {
             if shouldHideSplitPaymentView {

@@ -54,40 +54,6 @@ class PXOneTapSummaryView: PXComponentView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func oldRender() {
-            self.removeAllSubviews()
-            self.pinContentViewToBottom()
-            self.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
-
-            for row in self.data {
-                let margin: CGFloat = row.isTotal ? PXLayout.S_MARGIN : PXLayout.XXS_MARGIN
-                let rowView = self.getSummaryRowView(with: row)
-
-                if row.isTotal {
-                    let separatorView = UIView()
-                    separatorView.backgroundColor = ThemeManager.shared.boldLabelTintColor()
-                    separatorView.alpha = 0.1
-                    separatorView.translatesAutoresizingMaskIntoConstraints = false
-                    self.addSubviewToBottom(separatorView, withMargin: margin)
-                    PXLayout.setHeight(owner: separatorView, height: 1).isActive = true
-                    PXLayout.pinLeft(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
-                    PXLayout.pinRight(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
-                }
-
-                self.addSubviewToBottom(rowView, withMargin: margin)
-
-                PXLayout.centerHorizontally(view: rowView).isActive = true
-                PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
-                PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
-
-                let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
-                rowView.addGestureRecognizer(tap)
-                rowView.isUserInteractionEnabled = true
-            }
-
-            self.pinLastSubviewToBottom(withMargin: PXLayout.S_MARGIN)?.isActive = true
-    }
-
     func render() {
         self.removeAllSubviews()
         self.pinContentViewToBottom()
@@ -150,7 +116,14 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func removeSummaryRows(at indexesToRemove: [Int], animated: Bool) {
+    func removeSummaryRows(animated: Bool) {
+        let rowsToRemove = oldData.count - data.count
+        var indexesToRemove: [Int] = []
+
+        for index in 1...rowsToRemove {
+            indexesToRemove.append(index)
+        }
+
         var animator = PXAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1)
 
         var distanceDelta: CGFloat = 0
@@ -179,16 +152,32 @@ class PXOneTapSummaryView: PXComponentView {
             }
         }
 
-        animator.animate()
+//        if let currentAnimator = currentAnimator {
+//
+//        } else {
+//            animator.animate()
+//        }
+//        self.currentAnimator = animator
+//
+//        animator.addCompletion {
+//            self.currentAnimator = nil
+//        }
     }
 
-    func addSummaryRows(with data: [OneTapHeaderSummaryData], animated: Bool) {
+    func addSummaryRows(animated: Bool) {
+        let rowsToAdd = self.data.count - oldData.count
+        var newRowsData: [OneTapHeaderSummaryData] = []
+
+        for index in 1...rowsToAdd {
+            newRowsData.append(self.data.reversed()[index])
+        }
+
         var animator = PXAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1)
 
         var distanceDelta: CGFloat = 0
 
         var newRows: [Row] = []
-        for rowData in data {
+        for rowData in newRowsData {
             let rowView = getSummaryRowView(with: rowData)
             let totalHeight = rowView.getTotalHeightNeeded()
             distanceDelta += totalHeight
@@ -225,7 +214,11 @@ class PXOneTapSummaryView: PXComponentView {
             self.updateAllRows()
         }
 
-        animator.animate()
+//        self.currentAnimator = animator
+//        animator.animate()
+//        animator.addCompletion {
+//            self.currentAnimator = nil
+//        }
     }
 
     func updateAllRows() {
@@ -236,31 +229,17 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
+    var currentAnimator: PXAnimator?
+
     func update(_ newData: [OneTapHeaderSummaryData], hideAnimatedView: Bool = false) {
 
         self.oldData = data
         self.data = newData
 
-        var indexes: [Int] = []
-
         if data.count < oldData.count {
-            let rowsToRemove = oldData.count - data.count
-
-            for index in 1...rowsToRemove {
-                indexes.append(index)
-            }
-
-            removeSummaryRows(at: indexes, animated: true)
+            removeSummaryRows(animated: true)
         } else if data.count > oldData.count {
-            let rowsToAdd = data.count - oldData.count
-            var newRowsData: [OneTapHeaderSummaryData] = []
-
-            for index in 1...rowsToAdd {
-                indexes.append(index)
-                newRowsData.append(data.reversed()[index])
-            }
-
-            addSummaryRows(with: newRowsData, animated: true)
+            addSummaryRows(animated: true)
         } else {
             updateAllRows()
         }
