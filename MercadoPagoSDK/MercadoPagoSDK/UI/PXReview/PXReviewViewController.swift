@@ -332,11 +332,8 @@ extension PXReviewViewController {
 
     private func getFloatingButtonView() -> PXContainedActionButtonView {
         let component = PXContainedActionButtonComponent(props: PXContainedActionButtonProps(title: "Pagar".localized, action: {
-            if self.shouldAnimatePayButton {
-                self.subscribeLoadingButtonToNotifications(loadingButton: self.loadingFloatingButtonComponent)
-                self.loadingFloatingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
-            }
-            self.confirmPayment()
+            guard let targetButton = self.loadingFloatingButtonComponent else { return }
+            self.confirmPayment(targetButton)
         }, animationDelegate: self, termsInfo: self.viewModel.creditsTermsAndConditions()), termsDelegate: self)
         let containedButtonView = PXContainedActionButtonRenderer(termsDelegate: self).render(component)
         loadingFloatingButtonComponent = containedButtonView.button
@@ -347,11 +344,8 @@ extension PXReviewViewController {
 
     private func getFooterView() -> UIView {
         let payAction = PXAction(label: "Pagar".localized) {
-            if self.shouldAnimatePayButton {
-                self.subscribeLoadingButtonToNotifications(loadingButton: self.loadingButtonComponent)
-                self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
-            }
-            self.confirmPayment()
+            guard let targetButton = self.loadingButtonComponent else { return }
+            self.confirmPayment(targetButton)
         }
         let footerProps = PXFooterProps(buttonAction: payAction, animationDelegate: self, pinLastSubviewToBottom: false, termsInfo: self.viewModel.creditsTermsAndConditions())
         let footerComponent = PXFooterComponent(props: footerProps)
@@ -406,7 +400,23 @@ extension PXReviewViewController {
 // MARK: Actions.
 extension PXReviewViewController: PXTermsAndConditionViewDelegate {
 
-    private func confirmPayment() {
+    private func confirmPayment(_ targetButton: PXAnimatedButton) {
+        let biometricModule = PXConfiguratorManager.biometricProtocol
+        biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
+            DispatchQueue.main.async {
+                self?.doPayment(targetButton)
+            }
+        }) { [weak self] error in
+            // User abort validation or validation fail.
+            self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
+        }
+    }
+
+    private func doPayment(_ targetButton: PXAnimatedButton) {
+        if shouldAnimatePayButton {
+            subscribeLoadingButtonToNotifications(loadingButton: targetButton)
+            targetButton.startLoading(timeOut: self.timeOutPayButton)
+        }
         scrollView.isScrollEnabled = false
         view.isUserInteractionEnabled = false
         trackEvent(path: TrackingPaths.Events.ReviewConfirm.getConfirmPath(), properties: viewModel.getConfirmEventProperties())
@@ -422,10 +432,6 @@ extension PXReviewViewController: PXTermsAndConditionViewDelegate {
         } else {
             loadingFloatingButtonComponent?.showErrorToast()
         }
-
-// MARK: Uncomment for Shake button
-//        loadingFloatingButtonComponent?.shake()
-//        loadingButtonComponent?.shake()
     }
 
     func shouldOpenTermsCondition(_ title: String, url: URL) {

@@ -218,8 +218,6 @@ extension PXOneTapViewController {
         loadingButtonComponent?.animationDelegate = self
         loadingButtonComponent?.layer.cornerRadius = 4
         loadingButtonComponent?.add(for: .touchUpInside, {
-            self.subscribeLoadingButtonToNotifications()
-            self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
             self.confirmPayment()
         })
         loadingButtonComponent?.setTitle("Pagar".localized, for: .normal)
@@ -263,6 +261,20 @@ extension PXOneTapViewController {
     }
 
     private func confirmPayment() {
+        let biometricModule = PXConfiguratorManager.biometricProtocol
+        biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
+            DispatchQueue.main.async {
+                self?.doPayment()
+            }
+        }) { [weak self] _ in
+            // User abort validation or validation fail.
+            self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
+        }
+    }
+
+    private func doPayment() {
+        self.subscribeLoadingButtonToNotifications()
+        self.loadingButtonComponent?.startLoading(timeOut: self.timeOutPayButton)
         scrollView.isScrollEnabled = false
         view.isUserInteractionEnabled = false
         if let selectedCardItem = selectedCard {
@@ -270,9 +282,7 @@ extension PXOneTapViewController {
             let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem)
             trackEvent(path: TrackingPaths.Events.OneTap.getConfirmPath(), properties: properties)
         }
-
         let splitPayment = viewModel.splitPaymentEnabled
-
         self.hideBackButton()
         self.hideNavBar()
         self.callbackConfirm(self.viewModel.amountHelper.getPaymentData(), splitPayment)

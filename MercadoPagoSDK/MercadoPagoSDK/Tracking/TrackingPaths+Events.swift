@@ -15,6 +15,7 @@ extension TrackingPaths {
             return TrackingPaths.pxTrack + "/init"
         }
 
+        // Use this path for any user friction.
         static func getErrorPath() -> String {
             return "/friction"
         }
