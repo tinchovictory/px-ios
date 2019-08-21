@@ -38,13 +38,14 @@ extension PXOneTapViewModel {
         return properties
     }
 
-    func getConfirmEventProperties(selectedCard: PXCardSliderViewModel) -> [String: Any] {
+    func getConfirmEventProperties(selectedCard: PXCardSliderViewModel, selectedIndex: Int) -> [String: Any] {
         guard let paymentMethod = amountHelper.getPaymentData().paymentMethod else {
             return [:]
         }
         let cardIdsEsc = PXTrackingStore.sharedInstance.getData(forKey: PXTrackingStore.cardIdsESC) as? [String] ?? []
 
         var properties: [String: Any] = [:]
+        properties["payment_method_selected_index"] = selectedIndex
         if paymentMethod.isCard {
             properties["payment_method_type"] = paymentMethod.paymentTypeId
             properties["payment_method_id"] = paymentMethod.id

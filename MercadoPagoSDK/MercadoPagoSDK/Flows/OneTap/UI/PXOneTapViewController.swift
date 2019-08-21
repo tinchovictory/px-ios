@@ -279,7 +279,7 @@ extension PXOneTapViewController {
         view.isUserInteractionEnabled = false
         if let selectedCardItem = selectedCard {
             viewModel.amountHelper.getPaymentData().payerCost = selectedCardItem.selectedPayerCost
-            let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem)
+            let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem, selectedIndex: slider.getSelectedIndex())
             trackEvent(path: TrackingPaths.Events.OneTap.getConfirmPath(), properties: properties)
         }
         let splitPayment = viewModel.splitPaymentEnabled
@@ -371,6 +371,7 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 extension PXOneTapViewController: PXCardSliderProtocol {
 
     func newCardDidSelected(targetModel: PXCardSliderViewModel) {
+
         selectedCard = targetModel
 
         trackEvent(path: TrackingPaths.Events.OneTap.getSwipePath())
