@@ -15,13 +15,13 @@ extension PXSummaryComposer {
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
         let defaultChargeText = "onetap_purchase_summary_charges".localized_beta
         let chargeText = additionalInfoSummary?.charges ?? defaultChargeText
-        let row = OneTapHeaderSummaryData(chargeText, amountToShow, summaryColor(), textTransparency, false, helperImage, .charges)
+        let row = OneTapHeaderSummaryData(title: chargeText, value: amountToShow, highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .charges)
         return row
     }
 
     func consumedDiscountRow() -> OneTapHeaderSummaryData {
         let helperImage = helpIcon(color: summaryColor())
-        let row = OneTapHeaderSummaryData("total_row_consumed_discount".localized_beta, "", summaryColor(), textTransparency, false, helperImage, .discount)
+        let row = OneTapHeaderSummaryData(title: "total_row_consumed_discount".localized_beta, value: "", highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .discount)
         return row
     }
 
@@ -33,37 +33,37 @@ extension PXSummaryComposer {
 
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
         let helperImage = helpIcon(color: discountColor())
-        let row = OneTapHeaderSummaryData(discount.getDiscountDescription(),
-                                          "- \(discountToShow)",
-            discountColor(),
-            textTransparency,
-            false,
-            helperImage,
-            .discount)
+        let row = OneTapHeaderSummaryData(title: discount.getDiscountDescription(),
+                                          value: "- \(discountToShow)",
+            highlightedColor: discountColor(),
+            alpha: textTransparency,
+            isTotal: false,
+            image: helperImage,
+            type: .discount)
         return row
     }
 
     func purchaseRow() -> OneTapHeaderSummaryData {
-        let row = OneTapHeaderSummaryData( yourPurchaseSummaryTitle(),
-                                           yourPurchaseToShow(),
-                                           summaryColor(),
-                                           textTransparency,
-                                           false,
-                                           nil,
-                                           .generic)
+        let row = OneTapHeaderSummaryData( title: yourPurchaseSummaryTitle(),
+                                           value: yourPurchaseToShow(),
+                                           highlightedColor: summaryColor(),
+                                           alpha: textTransparency,
+                                           isTotal: false,
+                                           image: nil,
+                                           type: .generic)
         return row
     }
 
     func totalToPayRow() -> OneTapHeaderSummaryData {
         let totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
         let text = "onetap_purchase_summary_total".localized_beta
-        let row = OneTapHeaderSummaryData(text,
-                                          totalAmountToShow,
-                                          summaryColor(),
-                                          textTransparency,
-                                          true,
-                                          nil,
-                                          .total)
+        let row = OneTapHeaderSummaryData(title: text,
+                                          value: totalAmountToShow,
+                                          highlightedColor: summaryColor(),
+                                          alpha: textTransparency,
+                                          isTotal: true,
+                                          image: nil,
+                                          type: .total)
         return row
     }
 

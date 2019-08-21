@@ -7,7 +7,11 @@
 
 import UIKit
 
-class Row {
+class Row: Equatable {
+    static func == (lhs: Row, rhs: Row) -> Bool {
+        return lhs.rowHeight == rhs.rowHeight && lhs.constraint == rhs.constraint && lhs.view == rhs.view && lhs.data == rhs.data
+    }
+
     var data: OneTapHeaderSummaryData
     var view: PXOneTapSummaryRowView
     var constraint: NSLayoutConstraint
@@ -132,6 +136,8 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
+    var cAnimator: UIViewPropertyAnimator?
+
     func animatedRows(_ rows: [Row], rowsToMove: [Row], animateIn: Bool, distance: CGFloat, completion: @escaping () -> Void) {
         let duration: Double = 0.5
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: nil)
@@ -155,6 +161,7 @@ class PXOneTapSummaryView: PXComponentView {
             completion()
         }
 
+        cAnimator = animator
         animator.startAnimation()
     }
 
@@ -180,11 +187,12 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         animatedRows(rowsToRemove, rowsToMove: rowsToMove, animateIn: false, distance: distanceDelta) {
-            for (index, row) in rowsToRemove.enumerated() {
-                self.rows.remove(at: index)
-                row.view.removeFromSuperview()
+            for row in rowsToRemove {
+                if let index = self.rows.firstIndex(of: row) {
+                    self.rows.remove(at: index)
+                    row.view.removeFromSuperview()
+                }
             }
-            print("******Completion")
         }
     }
 
@@ -235,7 +243,6 @@ class PXOneTapSummaryView: PXComponentView {
     }
 
     func updateAllRows(newData: [OneTapHeaderSummaryData]) {
-        print("**** Update")
         for (index, row) in rows.enumerated() {
             let newRowData = newData[index]
             row.view.update(newRowData)
