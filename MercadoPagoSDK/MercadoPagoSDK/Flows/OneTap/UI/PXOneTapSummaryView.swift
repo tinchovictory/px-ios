@@ -26,12 +26,34 @@ class Row {
 }
 
 class PXOneTapSummaryView: PXComponentView {
-    private var oldData: [OneTapHeaderSummaryData] = []
-    private var data: [OneTapHeaderSummaryData] = []
+    private var data: [OneTapHeaderSummaryData] = [] {
+        willSet {
+            if data.count > newValue.count {
+                removeSummaryRows(oldValue: data, newValue: newValue, animated: true)
+            } else if data.count < newValue.count {
+                addSummaryRows(oldValue: data, newValue: newValue, animated: true)
+
+//                let newRowsData = getNewRowsData(oldValue: data, newValue: newValue)
+//                var newRows: [Row] = []
+//                for rowData in newRowsData {
+//                    let rowView = getSummaryRowView(with: rowData)
+//                    let rowHeight = rowView.getTotalHeightNeeded()
+//                    let row = Row(data: rowData, view: rowView, constraint: nil, rowHeight: rowHeight)
+//                    newRows.insert(row, at: 1)
+//                }
+            } else {
+                updateAllRows(newData: newValue)
+            }
+        }
+        didSet {
+            print("****** la cantidad de datas es: ", data.count)
+        }
+    }
     private weak var delegate: PXOneTapSummaryProtocol?
     private var rowViews: [PXOneTapSummaryRowView] = []
     private var rows: [Row] = [] {
         didSet {
+            print("****** la cantidad de rows es: ", rows.count)
             if rows.count < oldValue.count {
                 //DELETE EXTRA ROWS
             } else if rows.count > oldValue.count {
@@ -42,9 +64,10 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
+    var currentAnimator: UIViewPropertyAnimator?
 
     init(data: [OneTapHeaderSummaryData] = [], delegate: PXOneTapSummaryProtocol) {
-        self.data = data
+        self.data = data.reversed()
         self.delegate = delegate
         super.init()
         render()
@@ -54,13 +77,24 @@ class PXOneTapSummaryView: PXComponentView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func getNewRowsData(oldValue: [OneTapHeaderSummaryData], newValue: [OneTapHeaderSummaryData]) -> [OneTapHeaderSummaryData] {
+        let rowsToAdd = newValue.count - oldValue.count
+        var newRowsData: [OneTapHeaderSummaryData] = []
+
+        for index in 1...rowsToAdd {
+            newRowsData.append(newValue[index])
+        }
+
+        return newRowsData
+    }
+
     func render() {
         self.removeAllSubviews()
         self.pinContentViewToBottom()
         self.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
         var offset: CGFloat = 0
-        for row in self.data.reversed() {
+        for row in self.data {
             let rowView = self.getSummaryRowView(with: row)
             let margin = rowView.getRowMargin()
 
@@ -116,15 +150,16 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func removeSummaryRows(animated: Bool) {
-        let rowsToRemove = oldData.count - data.count
+    func removeSummaryRows(oldValue: [OneTapHeaderSummaryData], newValue: [OneTapHeaderSummaryData], animated: Bool) {
+        let rowsToRemove = oldValue.count - newValue.count
         var indexesToRemove: [Int] = []
 
         for index in 1...rowsToRemove {
             indexesToRemove.append(index)
         }
 
-        var animator = PXAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1)
+        let animator = UIViewPropertyAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1, animations: nil)
+        animator.isInterruptible = true
 
         var distanceDelta: CGFloat = 0
 
@@ -132,47 +167,46 @@ class PXOneTapSummaryView: PXComponentView {
             if indexesToRemove.contains(index) {
                 distanceDelta += row.rowHeight
 
-                animator.addAnimation(animation: {
+                animator.addAnimations {
                     row.view.alpha = 0
                     self.layoutIfNeeded()
-                })
+                }
 
-                animator.addCompletion {
+                animator.addCompletion { (_) in
+                    print("****** Completion del remove index: ", index)
+                    self.currentAnimator = nil
                     row.view.removeFromSuperview()
                     self.rows.remove(at: index)
-                    self.updateAllRows()
+                    self.updateAllRows(newData: newValue)
                 }
             }
 
             if !row.data.isTotal {
-                animator.addAnimation(animation: {
+                animator.addAnimations {
                     row.constraint.constant += distanceDelta
                     self.layoutIfNeeded()
-                })
+                }
             }
         }
 
-//        if let currentAnimator = currentAnimator {
-//
-//        } else {
-//            animator.animate()
-//        }
-//        self.currentAnimator = animator
-//
-//        animator.addCompletion {
-//            self.currentAnimator = nil
-//        }
+        if let currentAnimator = self.currentAnimator {
+            currentAnimator.stopAnimation(true)
+            print("****** Stop Animation en el remove")
+        }
+        self.currentAnimator = animator
+        animator.startAnimation()
     }
 
-    func addSummaryRows(animated: Bool) {
-        let rowsToAdd = self.data.count - oldData.count
+    func addSummaryRows(oldValue: [OneTapHeaderSummaryData], newValue: [OneTapHeaderSummaryData], animated: Bool) {
+        let rowsToAdd = newValue.count - oldValue.count
         var newRowsData: [OneTapHeaderSummaryData] = []
 
         for index in 1...rowsToAdd {
-            newRowsData.append(self.data.reversed()[index])
+            newRowsData.append(newValue[index])
         }
 
-        var animator = PXAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1)
+        let animator = UIViewPropertyAnimator(duration: animated ? 0.5 : 0.0, dampingRatio: 1, animations: nil)
+        animator.isInterruptible = true
 
         var distanceDelta: CGFloat = 0
 
@@ -202,47 +236,46 @@ class PXOneTapSummaryView: PXComponentView {
             rows.insert(newRow, at: 1)
         }
 
-        for row in rows where !row.data.isTotal {
-            animator.addAnimation(animation: {
+        for (index, row) in rows.enumerated() where !row.data.isTotal {
+            animator.addAnimations {
                 row.view.alpha = 1
                 row.constraint.constant -= distanceDelta
                 self.layoutIfNeeded()
-            })
+            }
+
+            animator.addCompletion { (_) in
+                print("****** Completion del add en el index: ", index)
+                self.currentAnimator = nil
+                self.updateAllRows(newData: newValue)
+            }
         }
 
-        animator.addCompletion {
-            self.updateAllRows()
-        }
-
-//        self.currentAnimator = animator
-//        animator.animate()
-//        animator.addCompletion {
+//        animator.addCompletion { (_) in
+//            print("****** Completion en el add")
 //            self.currentAnimator = nil
+//            self.updateAllRows(newData: newValue)
 //        }
+
+        if let currentAnimator = self.currentAnimator {
+            currentAnimator.stopAnimation(true)
+            self.rows.removeLast()
+            print("****** Stop Animation en el add")
+        }
+        self.currentAnimator = animator
+        animator.startAnimation()
     }
 
-    func updateAllRows() {
-        for (index, row) in rows.reversed().enumerated() {
-            let newRowData = self.data[index]
+    func updateAllRows(newData: [OneTapHeaderSummaryData]) {
+        print("**** Update")
+        for (index, row) in rows.enumerated() {
+            let newRowData = newData[index]
             row.view.update(newRowData)
             row.updateData(newRowData)
         }
     }
 
-    var currentAnimator: PXAnimator?
-
     func update(_ newData: [OneTapHeaderSummaryData], hideAnimatedView: Bool = false) {
-
-        self.oldData = data
-        self.data = newData
-
-        if data.count < oldData.count {
-            removeSummaryRows(animated: true)
-        } else if data.count > oldData.count {
-            addSummaryRows(animated: true)
-        } else {
-            updateAllRows()
-        }
+        self.data = newData.reversed()
     }
 
     func getSummaryRowView(with data: OneTapHeaderSummaryData) -> PXOneTapSummaryRowView {
