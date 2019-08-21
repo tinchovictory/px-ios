@@ -80,6 +80,7 @@ internal extension MPXTracker {
             }
             metadata[SessionService.SESSION_ID_KEY] = getSessionID()
             metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
+            metadata["session_time"] = PXTrackingStore.sharedInstance.getSecondsAfterInit()
             trackListenerInterfase.trackScreen(screenName: screenName, extraParams: metadata)
         }
     }
@@ -111,6 +112,7 @@ internal extension MPXTracker {
                 }
             }
             metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
+            metadata["session_time"] = PXTrackingStore.sharedInstance.getSecondsAfterInit()
             trackListenerInterfase.trackEvent(screenName: path, action: "", result: "", extraParams: metadata)
         }
     }
