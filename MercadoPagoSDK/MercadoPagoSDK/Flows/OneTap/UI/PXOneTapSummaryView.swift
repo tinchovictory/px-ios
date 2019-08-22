@@ -29,6 +29,14 @@ class Row: Equatable {
     }
 }
 
+extension Collection {
+
+    subscript(optional index: Index) -> Iterator.Element? {
+        return self.indices.contains(index) ? self[index] : nil
+    }
+
+}
+
 class PXOneTapSummaryView: PXComponentView {
     private var data: [OneTapHeaderSummaryData] = [] {
         willSet {
@@ -70,6 +78,8 @@ class PXOneTapSummaryView: PXComponentView {
             offset += margin
 
             self.addSubview(rowView)
+            print("******* consta en ren: ", offset)
+
             let rowViewConstraint = PXLayout.pinBottom(view: rowView, withMargin: offset)
 
             offset += rowView.getRowHeight()
@@ -83,11 +93,11 @@ class PXOneTapSummaryView: PXComponentView {
                 separatorView.translatesAutoresizingMaskIntoConstraints = false
 
                 self.addSubview(separatorView)
-                offset += margin
                 PXLayout.pinBottom(view: separatorView, withMargin: offset).isActive = true
                 PXLayout.setHeight(owner: separatorView, height: 1).isActive = true
                 PXLayout.pinLeft(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
                 PXLayout.pinRight(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
+                offset += PXLayout.S_MARGIN
             }
 
             PXLayout.centerHorizontally(view: rowView).isActive = true
@@ -119,7 +129,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func stopCAnimatorIfNeeded() {
+    func stopCurrentAnimatorIfNeeded() {
         if let cAnimator = self.currentAnimator {
             cAnimator.stopAnimation(false)
             cAnimator.finishAnimation(at: .end)
@@ -189,7 +199,7 @@ class PXOneTapSummaryView: PXComponentView {
             }
         }
 
-        stopCAnimatorIfNeeded()
+        stopCurrentAnimatorIfNeeded()
         animateRows(rowsToRemove, rowsToMove: rowsToMove, newData: newValue, animateIn: false, distance: distanceDelta) {
             for row in rowsToRemove {
                 row.view.removeFromSuperview()
@@ -215,16 +225,29 @@ class PXOneTapSummaryView: PXComponentView {
             distanceDelta += totalHeight
             rowView.alpha = 0
 
-            var constraintConstant = rows[1].constraint.constant
+            var constraintConstant: CGFloat = 0 {
+                didSet {
+                    print("****** new constant: ", constraintConstant)
+                }
+            }
+            if let firstRow = rows[optional: 1] {
+                constraintConstant = firstRow.constraint.constant
+            } else {
+                constraintConstant = -rows[0].view.getRowHeight() - PXLayout.XS_MARGIN
+            }
+
             constraintConstant += totalHeight
 
+            //View Constraints
             self.addSubview(rowView)
             let constraint = PXLayout.pinBottom(view: rowView, withMargin: -constraintConstant)
+            print("******* consta en add: ", -constraintConstant)
             PXLayout.centerHorizontally(view: rowView).isActive = true
             PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
             self.layoutIfNeeded()
 
+            //Tap Gesture
             let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
             rowView.addGestureRecognizer(tap)
             rowView.isUserInteractionEnabled = true
@@ -238,7 +261,7 @@ class PXOneTapSummaryView: PXComponentView {
             rowsToMove.append(row)
         }
 
-        stopCAnimatorIfNeeded()
+        stopCurrentAnimatorIfNeeded()
         animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta) {
         }
     }

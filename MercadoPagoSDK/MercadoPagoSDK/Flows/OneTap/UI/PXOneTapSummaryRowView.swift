@@ -19,8 +19,6 @@ class PXOneTapSummaryRowView: UIView {
     }
 
     private var data: OneTapHeaderSummaryData
-    private var pinBottomConstraint: NSLayoutConstraint?
-
     private var titleLabel: UILabel?
     private var iconImageView: UIImageView?
     private var valueLabel: UILabel?
