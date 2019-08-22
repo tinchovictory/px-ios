@@ -48,12 +48,20 @@ class PXOneTapSummaryRowView: UIView {
     }
 
     open func getRowHeight() -> CGFloat {
-        return data.isTotal && !UIDevice.isSmallDevice() ? 52 : 16
+        if data.isTotal {
+            if !UIDevice.isSmallDevice() {
+                return 52
+            } else {
+                return 48
+            }
+        } else {
+            return 16
+        }
     }
 
     func update(_ newData: OneTapHeaderSummaryData) {
         self.data = newData
-        self.updateUI(animated: false)
+        self.updateUI(animated: true)
     }
 
     private func updateUI(animated: Bool = false) {

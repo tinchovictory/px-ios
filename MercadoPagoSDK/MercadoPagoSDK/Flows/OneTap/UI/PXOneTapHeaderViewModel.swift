@@ -74,7 +74,7 @@ class PXOneTapHeaderViewModel {
 
     private func isMediumSummaryOrLarger() -> Bool {
         for item in data {
-            if item.type == .charges || item.type == .discount  {
+            if item.type == .charges || item.type == .discount {
                 return true
             }
         }

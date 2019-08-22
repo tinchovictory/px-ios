@@ -40,17 +40,11 @@ class PXOneTapSummaryView: PXComponentView {
                 updateAllRows(newData: newValue)
             }
         }
-        didSet {
-            print("****** la cantidad de datas es: ", data.count)
-        }
     }
     private weak var delegate: PXOneTapSummaryProtocol?
     private var rowViews: [PXOneTapSummaryRowView] = []
-    private var rows: [Row] = [] {
-        didSet {
-            print("****** la cantidad de rows es: ", rows.count)
-        }
-    }
+    private var rows: [Row] = []
+    var currentAnimator: UIViewPropertyAnimator?
 
     init(data: [OneTapHeaderSummaryData] = [], delegate: PXOneTapSummaryProtocol) {
         self.data = data.reversed()
@@ -61,17 +55,6 @@ class PXOneTapSummaryView: PXComponentView {
 
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func getNewRowsData(oldValue: [OneTapHeaderSummaryData], newValue: [OneTapHeaderSummaryData]) -> [OneTapHeaderSummaryData] {
-        let rowsToAdd = newValue.count - oldValue.count
-        var newRowsData: [OneTapHeaderSummaryData] = []
-
-        for index in 1...rowsToAdd {
-            newRowsData.append(newValue[index])
-        }
-
-        return newRowsData
     }
 
     func render() {
@@ -136,13 +119,27 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    var cAnimator: UIViewPropertyAnimator?
+    func stopCAnimatorIfNeeded() {
+        if let cAnimator = self.currentAnimator {
+            cAnimator.stopAnimation(false)
+            cAnimator.finishAnimation(at: .end)
+        }
+    }
 
-    func animatedRows(_ rows: [Row], rowsToMove: [Row], animateIn: Bool, distance: CGFloat, completion: @escaping () -> Void) {
-        let duration: Double = 0.5
+    func animateRows(_ rowsToAnimate: [Row], rowsToMove: [Row], newData: [OneTapHeaderSummaryData], animateIn: Bool, distance: CGFloat, completion: @escaping () -> Void) {
+        let duration: Double = 0.4
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: nil)
 
-        for row in rows {
+        if let cAnimator = self.currentAnimator {
+            cAnimator.stopAnimation(false)
+            cAnimator.finishAnimation(at: .end)
+        }
+
+        animator.addAnimations {
+            self.updateAllRows(newData: newData)
+        }
+
+        for row in rowsToAnimate {
             animator.addAnimations {
                 row.view.alpha = animateIn ? 1 : 0
                 row.constraint.constant += animateIn ? -distance + row.rowHeight : distance
@@ -161,7 +158,7 @@ class PXOneTapSummaryView: PXComponentView {
             completion()
         }
 
-        cAnimator = animator
+        currentAnimator = animator
         animator.startAnimation()
     }
 
@@ -186,12 +183,16 @@ class PXOneTapSummaryView: PXComponentView {
             }
         }
 
-        animatedRows(rowsToRemove, rowsToMove: rowsToMove, animateIn: false, distance: distanceDelta) {
+        for row in rowsToRemove {
+            if let index = self.rows.firstIndex(of: row) {
+                self.rows.remove(at: index)
+            }
+        }
+
+        stopCAnimatorIfNeeded()
+        animateRows(rowsToRemove, rowsToMove: rowsToMove, newData: newValue, animateIn: false, distance: distanceDelta) {
             for row in rowsToRemove {
-                if let index = self.rows.firstIndex(of: row) {
-                    self.rows.remove(at: index)
-                    row.view.removeFromSuperview()
-                }
+                row.view.removeFromSuperview()
             }
         }
     }
@@ -237,8 +238,8 @@ class PXOneTapSummaryView: PXComponentView {
             rowsToMove.append(row)
         }
 
-        animatedRows(rowsToAdd, rowsToMove: rowsToMove, animateIn: true, distance: distanceDelta) {
-
+        stopCAnimatorIfNeeded()
+        animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta) {
         }
     }
 
