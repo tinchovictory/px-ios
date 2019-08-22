@@ -72,9 +72,12 @@ extension PXOneTapViewModel {
 
     func getOneTapScreenProperties() -> [String: Any] {
         var properties: [String: Any] = [:]
-        properties["available_methods"] = getAvailablePaymentMethodForTracking()
+        let availablePaymentMethods = getAvailablePaymentMethodForTracking()
+        properties["available_methods"] = availablePaymentMethods
+        properties["available_methods_quantity"] = availablePaymentMethods.count
         properties["preference_amount"] = amountHelper.preferenceAmount
         properties["discount"] = amountHelper.getDiscountForTracking()
+        
         var itemsDic: [Any] = []
         for item in amountHelper.preference.items {
             itemsDic.append(item.getItemForTracking())
