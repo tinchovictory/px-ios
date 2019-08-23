@@ -215,14 +215,17 @@ class PXOneTapSummaryView: PXComponentView {
             newRowsData.append(newValue[index])
         }
 
-        var distanceDelta: CGFloat = 0
+        var distanceDelta: CGFloat = 24 {
+            didSet {
+                print("new distance delta: ", distanceDelta)
+            }
+        }
         var rowsToAdd: [Row] = []
         var rowsToMove: [Row] = []
 
         for rowData in newRowsData {
             let rowView = getSummaryRowView(with: rowData)
             let totalHeight = rowView.getTotalHeightNeeded()
-            distanceDelta += totalHeight
             rowView.alpha = 0
 
             var constraintConstant: CGFloat = 0 {
@@ -232,11 +235,12 @@ class PXOneTapSummaryView: PXComponentView {
             }
             if let firstRow = rows[optional: 1] {
                 constraintConstant = firstRow.constraint.constant
+                constraintConstant += totalHeight
             } else {
-                constraintConstant = -rows[0].view.getRowHeight() - PXLayout.XS_MARGIN
+                distanceDelta = totalHeight + PXLayout.S_MARGIN
+//                constraintConstant = -rows[0].view.getRowHeight() - PXLayout.M_MARGIN
+                constraintConstant = -76
             }
-
-            constraintConstant += totalHeight
 
             //View Constraints
             self.addSubview(rowView)
