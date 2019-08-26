@@ -81,6 +81,10 @@ internal extension MPXTracker {
             metadata[SessionService.SESSION_ID_KEY] = getSessionID()
             metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
             metadata["session_time"] = PXTrackingStore.sharedInstance.getSecondsAfterInit()
+            if let choType = PXTrackingStore.sharedInstance.getChoType() {
+                metadata["checkout_type"] = choType
+                print("checkout_type: \(choType) " + screenName)
+            }
             trackListenerInterfase.trackScreen(screenName: screenName, extraParams: metadata)
         }
     }
@@ -113,6 +117,10 @@ internal extension MPXTracker {
             }
             metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
             metadata["session_time"] = PXTrackingStore.sharedInstance.getSecondsAfterInit()
+            if let choType = PXTrackingStore.sharedInstance.getChoType() {
+                metadata["checkout_type"] = choType
+                print("checkout_type: \(choType) " + path)
+            }
             trackListenerInterfase.trackEvent(screenName: path, action: "", result: "", extraParams: metadata)
         }
     }
