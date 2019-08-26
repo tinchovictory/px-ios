@@ -42,7 +42,7 @@ struct PXAnimator {
                 completion()
             }
         }
-        
+
         transitionAnimator.startAnimation()
     }
 
