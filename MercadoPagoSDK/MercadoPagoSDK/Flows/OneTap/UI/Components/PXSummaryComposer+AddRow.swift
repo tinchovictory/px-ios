@@ -8,24 +8,24 @@
 import Foundation
 
 extension PXSummaryComposer {
-    func chargesRow() -> OneTapHeaderSummaryData {
+    func chargesRow() -> PXOneTapSummaryRowData {
         let amount = getChargesAmount()
         let shouldDisplayHelper = shouldDisplayChargesHelp
         let helperImage = shouldDisplayHelper ? helpIcon(color: summaryColor()) : nil
         let amountToShow = Utils.getAmountFormated(amount: amount, forCurrency: currency)
         let defaultChargeText = "onetap_purchase_summary_charges".localized_beta
         let chargeText = additionalInfoSummary?.charges ?? defaultChargeText
-        let row = OneTapHeaderSummaryData(title: chargeText, value: amountToShow, highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .charges)
+        let row = PXOneTapSummaryRowData(title: chargeText, value: amountToShow, highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .charges)
         return row
     }
 
-    func consumedDiscountRow() -> OneTapHeaderSummaryData {
+    func consumedDiscountRow() -> PXOneTapSummaryRowData {
         let helperImage = helpIcon(color: summaryColor())
-        let row = OneTapHeaderSummaryData(title: "total_row_consumed_discount".localized_beta, value: "", highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .discount)
+        let row = PXOneTapSummaryRowData(title: "total_row_consumed_discount".localized_beta, value: "", highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .discount)
         return row
     }
 
-    func discountRow() -> OneTapHeaderSummaryData? {
+    func discountRow() -> PXOneTapSummaryRowData? {
         guard let discount = getDiscount() else {
             printError("Discount is required to add the discount row")
             return nil
@@ -33,7 +33,7 @@ extension PXSummaryComposer {
 
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
         let helperImage = helpIcon(color: discountColor())
-        let row = OneTapHeaderSummaryData(title: discount.getDiscountDescription(),
+        let row = PXOneTapSummaryRowData(title: discount.getDiscountDescription(),
                                           value: "- \(discountToShow)",
             highlightedColor: discountColor(),
             alpha: textTransparency,
@@ -43,8 +43,8 @@ extension PXSummaryComposer {
         return row
     }
 
-    func purchaseRow() -> OneTapHeaderSummaryData {
-        let row = OneTapHeaderSummaryData( title: yourPurchaseSummaryTitle(),
+    func purchaseRow() -> PXOneTapSummaryRowData {
+        let row = PXOneTapSummaryRowData( title: yourPurchaseSummaryTitle(),
                                            value: yourPurchaseToShow(),
                                            highlightedColor: summaryColor(),
                                            alpha: textTransparency,
@@ -54,10 +54,10 @@ extension PXSummaryComposer {
         return row
     }
 
-    func totalToPayRow() -> OneTapHeaderSummaryData {
+    func totalToPayRow() -> PXOneTapSummaryRowData {
         let totalAmountToShow = Utils.getAmountFormated(amount: amountHelper.getAmountToPayWithoutPayerCost(selectedCard?.cardId), forCurrency: currency)
         let text = "onetap_purchase_summary_total".localized_beta
-        let row = OneTapHeaderSummaryData(title: text,
+        let row = PXOneTapSummaryRowData(title: text,
                                           value: totalAmountToShow,
                                           highlightedColor: summaryColor(),
                                           alpha: textTransparency,

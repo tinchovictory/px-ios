@@ -17,12 +17,12 @@ class PXOneTapSummaryRowView: UIView {
         case generic
     }
 
-    private var data: OneTapHeaderSummaryData
+    private var data: PXOneTapSummaryRowData
     private var titleLabel: UILabel?
     private var iconImageView: UIImageView?
     private var valueLabel: UILabel?
 
-    init(data: OneTapHeaderSummaryData) {
+    init(data: PXOneTapSummaryRowData) {
         self.data = data
         super.init(frame: CGRect.zero)
         render()
@@ -32,7 +32,7 @@ class PXOneTapSummaryRowView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    open func getData() -> OneTapHeaderSummaryData {
+    open func getData() -> PXOneTapSummaryRowData {
         return data
     }
 
@@ -56,7 +56,7 @@ class PXOneTapSummaryRowView: UIView {
         }
     }
 
-    func update(_ newData: OneTapHeaderSummaryData) {
+    func update(_ newData: PXOneTapSummaryRowData) {
         self.data = newData
         self.updateUI(animated: true)
     }
