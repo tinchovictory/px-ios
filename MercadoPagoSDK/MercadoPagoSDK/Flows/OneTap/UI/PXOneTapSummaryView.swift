@@ -98,6 +98,7 @@ class PXOneTapSummaryView: PXComponentView {
                 PXLayout.pinLeft(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
                 PXLayout.pinRight(view: separatorView, withMargin: PXLayout.M_MARGIN).isActive = true
                 offset += PXLayout.S_MARGIN
+                self.bringSubviewToFront(rowView)
             }
 
             PXLayout.centerHorizontally(view: rowView).isActive = true
@@ -146,6 +147,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         for row in rowsToAnimate {
+            self.sendSubviewToBack(row.view)
             animator.addAnimations {
                 row.view.alpha = animateIn ? 1 : 0
                 row.constraint.constant += animateIn ? -distance + row.rowHeight : distance
@@ -154,6 +156,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         for mRow in rowsToMove {
+            self.sendSubviewToBack(mRow.view)
             animator.addAnimations {
                 mRow.constraint.constant += animateIn ? -distance : distance
                 self.layoutIfNeeded()
