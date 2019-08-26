@@ -63,7 +63,7 @@ extension PXSummaryComposer {
                                           alpha: textTransparency,
                                           isTotal: true,
                                           image: nil,
-                                          type: .total)
+                                          type: .generic)
         return row
     }
 

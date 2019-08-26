@@ -15,7 +15,6 @@ class PXOneTapSummaryRowView: UIView {
         case discount
         case charges
         case generic
-        case total
     }
 
     private var data: OneTapHeaderSummaryData

@@ -103,10 +103,6 @@ class PXOneTapSummaryView: PXComponentView {
             PXLayout.centerHorizontally(view: rowView).isActive = true
             PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
-
-            let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
-            rowView.addGestureRecognizer(tap)
-            rowView.isUserInteractionEnabled = true
         }
     }
 
@@ -215,9 +211,9 @@ class PXOneTapSummaryView: PXComponentView {
             newRowsData.append(newValue[index])
         }
 
-        var distanceDelta: CGFloat = 24 {
+        var distanceDelta: CGFloat = 0 {
             didSet {
-                print("new distance delta: ", distanceDelta)
+                print("******* new distance delta: ", distanceDelta)
             }
         }
         var rowsToAdd: [Row] = []
@@ -230,31 +226,28 @@ class PXOneTapSummaryView: PXComponentView {
 
             var constraintConstant: CGFloat = 0 {
                 didSet {
-                    print("****** new constant: ", constraintConstant)
+                    print("\n\n****** CONSTANT: \(constraintConstant)\nINFO: \(rowData.title)\nTOTAL HEIGHT: \(totalHeight)\nDISTANCE DELTA: \(distanceDelta)")
                 }
             }
             if let firstRow = rows[optional: 1] {
                 constraintConstant = firstRow.constraint.constant
                 constraintConstant += totalHeight
-            } else {
+                distanceDelta = firstRow.rowHeight
+            } else if let totalRow = rows[optional: 0] {
                 distanceDelta = totalHeight + PXLayout.S_MARGIN
-//                constraintConstant = -rows[0].view.getRowHeight() - PXLayout.M_MARGIN
-                constraintConstant = -76
+                constraintConstant = totalRow.constraint.constant - totalRow.rowHeight - totalHeight - PXLayout.M_MARGIN
+            } else {
+                distanceDelta = totalHeight
+                constraintConstant = 0
             }
 
             //View Constraints
             self.addSubview(rowView)
             let constraint = PXLayout.pinBottom(view: rowView, withMargin: -constraintConstant)
-            print("******* consta en add: ", -constraintConstant)
             PXLayout.centerHorizontally(view: rowView).isActive = true
             PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
             self.layoutIfNeeded()
-
-            //Tap Gesture
-            let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
-            rowView.addGestureRecognizer(tap)
-            rowView.isUserInteractionEnabled = true
 
             let newRow = Row(data: rowData, view: rowView, constraint: constraint, rowHeight: totalHeight)
             rowsToAdd.append(newRow)
@@ -284,6 +277,12 @@ class PXOneTapSummaryView: PXComponentView {
 
     func getSummaryRowView(with data: OneTapHeaderSummaryData) -> PXOneTapSummaryRowView {
         let rowView = PXOneTapSummaryRowView(data: data)
+
+        //Tap Gesture
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
+        rowView.addGestureRecognizer(tap)
+        rowView.isUserInteractionEnabled = true
+
         return rowView
     }
 }
