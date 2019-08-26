@@ -15,17 +15,10 @@ struct PXAnimator {
     private var completions: [() -> Void] = []
     private let duration: Double
     private let dampingRatio: CGFloat
-    var animator: UIViewPropertyAnimator
-    var isRunning: Bool {
-        get {
-            return animator.isRunning
-        }
-    }
 
     init(duration: Double, dampingRatio: CGFloat) {
         self.duration = duration
         self.dampingRatio = dampingRatio
-        self.animator = UIViewPropertyAnimator(duration: self.duration, dampingRatio: self.dampingRatio, animations: nil)
     }
 
     mutating func addAnimation(animation: @escaping () -> Void, delay: CGFloat = 0) {
@@ -38,17 +31,19 @@ struct PXAnimator {
     }
 
     func animate() {
+        let transitionAnimator = UIViewPropertyAnimator(duration: self.duration, dampingRatio: self.dampingRatio, animations: nil)
+
         for animation in animations {
-            animator.addAnimations(animation.animation, delayFactor: animation.delay)
+            transitionAnimator.addAnimations(animation.animation, delayFactor: animation.delay)
         }
 
         for completion in completions {
-            animator.addCompletion { (_) in
+            transitionAnimator.addCompletion { (_) in
                 completion()
             }
         }
         
-        animator.startAnimation()
+        transitionAnimator.startAnimation()
     }
 
 }
