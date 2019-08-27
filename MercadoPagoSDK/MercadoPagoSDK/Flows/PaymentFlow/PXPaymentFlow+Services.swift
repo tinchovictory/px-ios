@@ -67,7 +67,7 @@ internal extension PXPaymentFlow {
         model.shouldSearchPointsAndBenefits = false
         model.mercadoPagoServicesAdapter.getPointsAndBenefits(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, pointsDataJSON: pointsJsonBody, query: nil, headers: ["String": "String"], callback: { [weak self] (pointsAndBenef) in
             guard let strongSelf = self else { return }
-            strongSelf.pointsAndBenefitsViewModel = PointsAndBenefitsViewModel(pointsAndBenef)
+            strongSelf.model.pointsAndBenefits = pointsAndBenef
             strongSelf.executeNextStep()
 
             }, failure: { [weak self] () in

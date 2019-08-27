@@ -35,9 +35,10 @@ extension OneTapFlow: PXPaymentResultHandlerProtocol {
         reviewScreen.resetButton(error: error)
     }
 
-    func finishPaymentFlow(paymentResult: PaymentResult, instructionsInfo: PXInstructions?) {
+    func finishPaymentFlow(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndBenefits: PointsAndBenefits?) {
         self.model.paymentResult = paymentResult
         self.model.instructionsInfo = instructionsInfo
+        self.model.pointsAndBenefits = pointsAndBenefits
         if isShowingLoading() {
             self.executeNextStep()
         } else {
