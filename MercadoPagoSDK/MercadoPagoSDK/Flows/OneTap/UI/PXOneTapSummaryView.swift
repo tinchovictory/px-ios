@@ -104,11 +104,6 @@ class PXOneTapSummaryView: PXComponentView {
         let duration: Double = 0.4
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: nil)
 
-        if let cAnimator = self.currentAnimator {
-            cAnimator.stopAnimation(false)
-            cAnimator.finishAnimation(at: .end)
-        }
-
         animator.addAnimations {
             self.updateAllRows(newData: newData)
         }
@@ -117,7 +112,7 @@ class PXOneTapSummaryView: PXComponentView {
             self.sendSubviewToBack(row.view)
             animator.addAnimations {
                 row.view.alpha = animateIn ? 1 : 0
-                row.constraint.constant += animateIn ? -distance + row.rowHeight : distance
+                row.constraint.constant += animateIn ? -distance : distance
                 self.layoutIfNeeded()
             }
         }
@@ -185,23 +180,15 @@ class PXOneTapSummaryView: PXComponentView {
         var rowsToAdd: [PXOneTapSummaryRow] = []
         var rowsToMove: [PXOneTapSummaryRow] = []
 
-        for rowData in newRowsData {
+        for (index, rowData) in newRowsData.enumerated() {
             let rowView = getSummaryRowView(with: rowData)
-            let totalHeight = rowView.getTotalHeightNeeded()
+            let rowHeight = rowView.getTotalHeightNeeded()
+            let totalRowHeight = rows[optional: 0]?.rowHeight ?? 52
             rowView.alpha = 0
 
-            var constraintConstant: CGFloat = 0
-            if let firstRow = rows[optional: 1] {
-                constraintConstant = firstRow.constraint.constant
-                constraintConstant += totalHeight
-                distanceDelta = firstRow.rowHeight
-            } else if let totalRow = rows[optional: 0] {
-                distanceDelta = totalHeight + PXLayout.S_MARGIN
-                constraintConstant = totalRow.constraint.constant - totalRow.rowHeight - totalHeight - PXLayout.M_MARGIN
-            } else {
-                distanceDelta = totalHeight
-                constraintConstant = 0
-            }
+            let multiplier = rowHeight * CGFloat(index)
+            let constraintConstant: CGFloat = -totalRowHeight - multiplier
+            distanceDelta = rowHeight
 
             //View Constraints
             self.addSubview(rowView)
@@ -211,12 +198,12 @@ class PXOneTapSummaryView: PXComponentView {
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
             self.layoutIfNeeded()
 
-            let newRow = PXOneTapSummaryRow(data: rowData, view: rowView, constraint: constraint, rowHeight: totalHeight)
+            let newRow = PXOneTapSummaryRow(data: rowData, view: rowView, constraint: constraint, rowHeight: rowHeight)
             rowsToAdd.append(newRow)
-            rows.insert(newRow, at: 1)
+            rows.insert(newRow, at: index+1)
         }
 
-        for row in rows where !row.data.isTotal {
+        for row in rows where !row.data.isTotal && !newRowsData.contains(row.data) {
             rowsToMove.append(row)
         }
 
