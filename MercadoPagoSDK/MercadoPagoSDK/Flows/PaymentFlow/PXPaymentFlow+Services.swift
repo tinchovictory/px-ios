@@ -60,6 +60,23 @@ internal extension PXPaymentFlow {
         })
     }
 
+    func getPointsAndBenefits() {
+        let pointsAndBenefitsBody = PointsAndBenefitsSearchBody(model.businessResult?.getReceiptId())
+        let pointsJsonBody = try? pointsAndBenefitsBody.toJSON()
+
+        model.shouldSearchPointsAndBenefits = false
+        model.mercadoPagoServicesAdapter.getPointsAndBenefits(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, pointsDataJSON: pointsJsonBody, query: nil, headers: ["String": "String"], callback: { [weak self] (pointsAndBenef) in
+            guard let strongSelf = self else { return }
+            strongSelf.pointsAndBenefitsViewModel = PointsAndBenefitsViewModel(pointsAndBenef)
+            strongSelf.executeNextStep()
+
+            }, failure: { [weak self] () in
+                print("Fallo el endpoint de puntos y beneficios")
+                guard let strongSelf = self else { return }
+                strongSelf.executeNextStep()
+        })
+    }
+
     func getInstructions() {
         guard let paymentResult = model.paymentResult else {
             fatalError("Get Instructions - Payment Result does no exist")

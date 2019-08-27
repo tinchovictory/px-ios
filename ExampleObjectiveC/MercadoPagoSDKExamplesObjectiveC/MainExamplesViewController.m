@@ -71,7 +71,12 @@
 
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-ba2e6b8c-8b6d-4fc3-8a47-0ab241d0dba4" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
 
-    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-306aa86f-a3e7-40cf-b27b-64bb7cd9b1e7" preferenceId:@"443076095-ee615be2-e040-4baf-ace7-6940fdc096f7" paymentConfiguration:[self getPaymentConfiguration]];
+
+   // Para iniciar con pref cerrada
+       self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-c4f42ada-0fea-42a1-9b13-31e67096dcd3" preferenceId:@"272097319-a9040a88-5971-4fcd-92d5-6eeb4612abce" paymentConfiguration:[self getPaymentConfiguration]];
+
+        // Para iniciar con pref abierta
+//       self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-28cbf5df-77fb-46e4-928e-5cda2023e183" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
 
 
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"TEST-4763b824-93d7-4ca2-a7f7-93539c3ee5bd" preferenceId:@"243962506-63f1b044-c8bf-4d34-a800-f257a46628b8"];
@@ -82,7 +87,7 @@
 //    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-2590709739431780-102916-f3a297acb7f392333d80ba71b736a700__LA_LD__-181794596"];
 
 //    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-6519316523937252-070516-964fafa7e2c91a2c740155fcb5474280__LA_LD__-261748045"];
-    [self.checkoutBuilder setPrivateKeyWithKey:@"TEST-7169122440478352-062213-d23fa9fb38e4b3e94feee29864f0fae2-443064294"];
+    [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-4358483438928568-060717-4441b603d16ef1adec2cc76501f150fb-272097319"];
 
 
     // AdvancedConfig
