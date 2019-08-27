@@ -57,6 +57,8 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
             createPaymentWithPlugin(plugin: model.paymentPlugin)
         case .createPaymentPluginScreen:
             showPaymentProcessor(paymentProcessor: model.paymentPlugin)
+        case .getPointsAndBenefits:
+            getPointsAndBenefits()
         case .getInstructions:
             getInstructions()
         case .finish:
