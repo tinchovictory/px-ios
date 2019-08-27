@@ -21,7 +21,7 @@ class PXOneTapSummaryView: PXComponentView {
     }
     private weak var delegate: PXOneTapSummaryProtocol?
     private var rows: [PXOneTapSummaryRow] = []
-    var currentAnimator: UIViewPropertyAnimator?
+    private var currentAnimator: UIViewPropertyAnimator?
 
     init(data: [PXOneTapSummaryRowData] = [], delegate: PXOneTapSummaryProtocol) {
         self.data = data.reversed()
