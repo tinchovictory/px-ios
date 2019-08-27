@@ -334,10 +334,6 @@ extension IdentificationViewController {
             numberTextField.keyboardType = .default
             return
         }
-        if identificationType.isNumberType() {
-            numberTextField.keyboardType = .numberPad
-        } else {
-            numberTextField.keyboardType = .numbersAndPunctuation
-        }
+        numberTextField.keyboardType = identificationType.isNumberType() ? .numberPad : .numbersAndPunctuation
     }
 }
