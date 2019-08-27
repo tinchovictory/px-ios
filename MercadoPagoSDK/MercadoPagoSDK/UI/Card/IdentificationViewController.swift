@@ -82,11 +82,11 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
         self.textField.borderInactiveColor = ThemeManager.shared.secondaryColor()
         self.view.backgroundColor = ThemeManager.shared.getMainColor()
         numberTextField.autocorrectionType = UITextAutocorrectionType.no
-        numberTextField.keyboardType = UIKeyboardType.numberPad
         numberTextField.keyboardAppearance = .light
         numberTextField.addTarget(self, action: #selector(IdentificationViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         self.setupInputAccessoryView()
         identificationType = self.identificationTypes.first
+        numberTextField.keyboardType = getKeyboardType()
         textField.text = self.identificationTypes.first?.name
         self.numberTextField.text = ""
         self.remask()
@@ -321,5 +321,15 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
 
     private func remask() {
         drawMask(masks: Utils.getMasks(forId: identificationType))
+    }
+}
+
+// MARK: Identification type keyboard fix
+extension IdentificationViewController {
+    private func getKeyboardType() -> UIKeyboardType {
+        guard let identificationType = identificationType else {
+            return UIKeyboardType.default
+        }
+        return identificationType.isNumberType() ? UIKeyboardType.numberPad : UIKeyboardType.numbersAndPunctuation
     }
 }
