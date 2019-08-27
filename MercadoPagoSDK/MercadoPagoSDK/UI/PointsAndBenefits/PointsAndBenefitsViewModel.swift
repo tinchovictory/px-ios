@@ -6,3 +6,12 @@
 //
 
 import Foundation
+
+struct PointsAndBenefitsViewModel {
+
+    let pointsAndBenefits: PointsAndBenefits
+
+    init(_ withModel: PointsAndBenefits) {
+        self.pointsAndBenefits = withModel
+    }
+}

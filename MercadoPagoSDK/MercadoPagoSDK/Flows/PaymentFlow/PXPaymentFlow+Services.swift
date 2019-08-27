@@ -61,15 +61,19 @@ internal extension PXPaymentFlow {
     }
 
     func getPointsAndBenefits() {
-        print("Aca se va a llamar al endpoint de puntos y beneficios")
-        model.mercadoPagoServicesAdapter.getPointsAndBenefits(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, paymentDataJSON: Data(), query: nil, headers: ["String": "String"], callback: { (points) in
-                // creo un viewModel a partir del dto de puntos y beneficios
-            print("Funciono perfecto puntos y beneficios, ahora creo un viewModel a partir del dto de puntos y beneficios")
+        let pointsAndBenefitsBody = PointsAndBenefitsSearchBody(model.businessResult?.getReceiptId())
+        let pointsJsonBody = try? pointsAndBenefitsBody.toJSON()
 
-            self.executeNextStep()
+        model.shouldSearchPointsAndBenefits = false
+        model.mercadoPagoServicesAdapter.getPointsAndBenefits(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, pointsDataJSON: pointsJsonBody, query: nil, headers: ["String": "String"], callback: { [weak self] (pointsAndBenef) in
+            guard let strongSelf = self else { return }
+            strongSelf.pointsAndBenefitsViewModel = PointsAndBenefitsViewModel(pointsAndBenef)
+            strongSelf.executeNextStep()
 
-            }, failure: { [weak self] (error) in
-                print("Fallo el endpoint de puntos y beneficios con el siguiente error: \(error)")
+            }, failure: { [weak self] () in
+                print("Fallo el endpoint de puntos y beneficios")
+                guard let strongSelf = self else { return }
+                strongSelf.executeNextStep()
         })
     }
 

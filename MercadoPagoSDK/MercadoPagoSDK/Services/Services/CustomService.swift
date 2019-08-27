@@ -80,39 +80,31 @@ internal class CustomService: MercadoPagoService {
         })
     }
 
-    internal func getPointsAndBenefits(headers: [String: String]? = nil, body: Data, params: String?, success: @escaping (_ jsonResult: PointsAndBenefits) -> Void, failure: ((_ error: PXError) -> Void)?) {
+    internal func getPointsAndBenefits(headers: [String: String]? = nil, body: Data?, params: String?, success: @escaping (_ jsonResult: PointsAndBenefits) -> Void, failure: (() -> Void)?) {
 
             self.request(uri: self.URI, params: params, body: body, method: HTTPMethod.post, headers: headers, cache: false, success: { (data: Data) -> Void in
                 do {
                     let jsonResult = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-                    if let paymentDic = jsonResult as? NSDictionary {
-                        if paymentDic["error"] != nil {
-//                            if paymentDic["status"] as? Int == PXApitUtil.PROCESSING {
-//                                let inProcessPayment = PXPayment(id: 0, status: PXPayment.Status.IN_PROCESS)
-//                                inProcessPayment.status = PXPayment.Status.IN_PROCESS
-//                                inProcessPayment.statusDetail = PXPayment.StatusDetails.PENDING_CONTINGENCY
-//                                success(inProcessPayment)
-//                            } else {
-                                let apiException = try PXApiException.fromJSON(data: data)
-                                failure?(PXError(domain: "mercadopago.sdk.customServer.createPayment", code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: paymentDic as! [String: Any], apiException: apiException))
-//                            }
+                    if let pointsDic = jsonResult as? NSDictionary {
+                        if pointsDic["error"] != nil {
+                                failure?()
                         } else {
-                            if paymentDic.allKeys.count > 0 {
-                                let payment = try PointsAndBenefits.fromJSON(data: data)
-                                success(payment)
+                            if pointsDic.allKeys.count > 0 {
+                                let pointsAndBenefits = try PointsAndBenefits.fromJSON(data: data)
+                                success(pointsAndBenefits)
                             } else {
-                                failure?(PXError(domain: "mercadopago.sdk.customServer.createPayment", code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "PAYMENT_ERROR"]))
+                                failure?()
                             }
                         }
                     } else {
-                        failure?(PXError(domain: "mercadopago.sdk.customServer.createPayment", code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "Response cannot be decoded"]))
+                        failure?()
                     }
                 } catch {
-                    failure?(PXError(domain: "mercadopago.sdk.PaymentMethodSearchService.getPaymentMethods", code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "No se ha podido crear el pago"]))
+                    failure?()
                 }
             }, failure: { (_) -> Void in
                 if let failure = failure {
-                    failure(PXError(domain: "mercadopago.sdk.CustomService.createPayment", code: ErrorTypes.NO_INTERNET_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "Verifique su conexión a internet e intente nuevamente"]))
+                    failure()
                 }
             })
         }
