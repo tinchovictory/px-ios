@@ -1,3 +1,14 @@
+# v4.20.0
+🚀Private Release - 4.20.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix onetap summary animation
+- Fix identification type
+- Tracking improvements
+- Deprecate iOS 9 Support
+- Biometric abstraction and default implementation
+- Add productId to addCardFlow
+- General improvements
+
 # v4.19.0
 🚀Private Release - 4.19.0 🚀
 MercadoPagoSDKV4 - Private Version
