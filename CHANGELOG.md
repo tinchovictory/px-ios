@@ -6,7 +6,7 @@ MercadoPagoSDKV4 - Private Version
 - Tracking improvements
 - Deprecate iOS 9 Support
 - Biometric abstraction and default implementation
-- Add productId to add card flow
+- Add productId to addCardFlow
 - General improvements
 
 # v4.19.0
