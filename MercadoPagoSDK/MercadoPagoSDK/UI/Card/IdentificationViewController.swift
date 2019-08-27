@@ -18,7 +18,11 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
     var callback : (( PXIdentification) -> Void)?
     var errorExitCallback: (() -> Void)?
     var identificationTypes: [PXIdentificationType]!
-    var identificationType: PXIdentificationType?
+    var identificationType: PXIdentificationType? {
+        didSet {
+            self.updateKeyboard()
+        }
+    }
 
     //identification Masks
     var identificationMask = TextMaskFormater(mask: "XXXXXXXXXXXXX", completeEmptySpaces: false, leftToRight: false)
@@ -86,7 +90,6 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
         numberTextField.addTarget(self, action: #selector(IdentificationViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         self.setupInputAccessoryView()
         identificationType = self.identificationTypes.first
-        numberTextField.keyboardType = getKeyboardType()
         textField.text = self.identificationTypes.first?.name
         self.numberTextField.text = ""
         self.remask()
@@ -326,10 +329,15 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
 
 // MARK: Identification type keyboard fix
 extension IdentificationViewController {
-    private func getKeyboardType() -> UIKeyboardType {
+    private func updateKeyboard() {
         guard let identificationType = identificationType else {
-            return UIKeyboardType.default
+            numberTextField.keyboardType = .default
+            return
         }
-        return identificationType.isNumberType() ? UIKeyboardType.numberPad : UIKeyboardType.numbersAndPunctuation
+        if identificationType.isNumberType() {
+            numberTextField.keyboardType = .numberPad
+        } else {
+            numberTextField.keyboardType = .numbersAndPunctuation
+        }
     }
 }
