@@ -89,10 +89,10 @@ internal class MercadoPagoServicesAdapter {
         }, failure: failure)
     }
 
-    func getPointsAndBenefits(url: String, uri: String, transactionId: String? = nil, pointsDataJSON: Data?, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PointsAndBenefits) -> Void, failure: @escaping (() -> Void)) {
+    func getPointsAndDiscounts(url: String, uri: String, transactionId: String? = nil, pointsDataJSON: Data?, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PointsAndDiscounts) -> Void, failure: @escaping (() -> Void)) {
 
-        mercadoPagoServices.getPointsAndBenefits(url: url, uri: uri, transactionId: transactionId, pointsDataJSON: pointsDataJSON, query: query, headers: headers, callback: { (pointsAndBenefits) in
-            callback(pointsAndBenefits)
+        mercadoPagoServices.getPointsAndDiscounts(url: url, uri: uri, transactionId: transactionId, pointsDataJSON: pointsDataJSON, query: query, headers: headers, callback: { (pointsAndDiscounts) in
+            callback(pointsAndDiscounts)
         }, failure: failure)
     }
 

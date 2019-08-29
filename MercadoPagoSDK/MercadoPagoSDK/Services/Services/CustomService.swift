@@ -80,7 +80,7 @@ internal class CustomService: MercadoPagoService {
         })
     }
 
-    internal func getPointsAndBenefits(headers: [String: String]? = nil, body: Data?, params: String?, success: @escaping (_ jsonResult: PointsAndBenefits) -> Void, failure: (() -> Void)?) {
+    internal func getPointsAndDiscounts(headers: [String: String]? = nil, body: Data?, params: String?, success: @escaping (_ jsonResult: PointsAndDiscounts) -> Void, failure: (() -> Void)?) {
 
             self.request(uri: self.URI, params: params, body: body, method: HTTPMethod.post, headers: headers, cache: false, success: { (data: Data) -> Void in
                 do {
@@ -90,8 +90,8 @@ internal class CustomService: MercadoPagoService {
                                 failure?()
                         } else {
                             if pointsDic.allKeys.count > 0 {
-                                let pointsAndBenefits = try PointsAndBenefits.fromJSON(data: data)
-                                success(pointsAndBenefits)
+                                let pointsAndDiscounts = try PointsAndDiscounts.fromJSON(data: data)
+                                success(pointsAndDiscounts)
                             } else {
                                 failure?()
                             }

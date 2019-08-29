@@ -18,10 +18,10 @@ extension MercadoPagoCheckout: PXPaymentResultHandlerProtocol {
         reviewScreen.resetButton()
     }
 
-    func finishPaymentFlow(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndBenefits: PointsAndBenefits?) {
+    func finishPaymentFlow(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts: PointsAndDiscounts?) {
         viewModel.paymentResult = paymentResult
         viewModel.instructionsInfo = instructionsInfo
-        viewModel.pointsAndBenefits = pointsAndBenefits
+        viewModel.pointsAndDiscounts = pointsAndDiscounts
 
         if viewModel.pxNavigationHandler.navigationController.viewControllers.last as? PXReviewViewController != nil {
             PXAnimatedButton.animateButtonWith(status: paymentResult.status, statusDetail: paymentResult.statusDetail)

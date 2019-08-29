@@ -56,8 +56,8 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
             createPaymentWithPlugin(plugin: model.paymentPlugin)
         case .createPaymentPluginScreen:
             showPaymentProcessor(paymentProcessor: model.paymentPlugin)
-        case .getPointsAndBenefits:
-            getPointsAndBenefits()
+        case .getPointsAndDiscounts:
+            getPointsAndDiscounts()
         case .getInstructions:
             getInstructions()
         case .finish:
@@ -84,7 +84,7 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
 
     func finishFlow() {
         if let paymentResult = model.paymentResult {
-            self.resultHandler?.finishPaymentFlow(paymentResult: (paymentResult), instructionsInfo: model.instructionsInfo, pointsAndBenefits: model.pointsAndBenefits)
+            self.resultHandler?.finishPaymentFlow(paymentResult: (paymentResult), instructionsInfo: model.instructionsInfo, pointsAndDiscounts: model.pointsAndDiscounts)
             return
         } else if let businessResult = model.businessResult {
             self.resultHandler?.finishPaymentFlow(businessResult: businessResult)

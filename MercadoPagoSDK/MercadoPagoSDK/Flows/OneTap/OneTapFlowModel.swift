@@ -24,7 +24,7 @@ final internal class OneTapFlowModel: PXFlowModel {
     var readyToPay: Bool = false
     var paymentResult: PaymentResult?
     var instructionsInfo: PXInstructions?
-    var pointsAndBenefits: PointsAndBenefits?
+    var pointsAndDiscounts: PointsAndDiscounts?
     var businessResult: PXBusinessResult?
     var customerPaymentOptions: [CustomerPaymentMethod]?
     var paymentMethodPlugins: [PXPaymentMethodPlugin]?

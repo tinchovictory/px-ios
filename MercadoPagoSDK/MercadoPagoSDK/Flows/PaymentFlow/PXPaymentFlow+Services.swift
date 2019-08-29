@@ -60,14 +60,14 @@ internal extension PXPaymentFlow {
         })
     }
 
-    func getPointsAndBenefits() {
-        let pointsAndBenefitsBody = PointsAndBenefitsSearchBody(model.businessResult?.getReceiptId())
-        let pointsJsonBody = try? pointsAndBenefitsBody.toJSON()
+    func getPointsAndDiscounts() {
+        let pointsAndDiscountsBody = PointsAndBenefitsSearchBody(model.businessResult?.getReceiptId())
+        let pointsJsonBody = try? pointsAndDiscountsBody.toJSON()
 
-        model.shouldSearchPointsAndBenefits = false
-        model.mercadoPagoServicesAdapter.getPointsAndBenefits(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, pointsDataJSON: pointsJsonBody, query: nil, headers: ["String": "String"], callback: { [weak self] (pointsAndBenef) in
+        model.shouldSearchPointsAndDiscounts = false
+        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MOCK_API_POINTS_AND_BENEFITS, uri: PXServicesURLConfigs.MOCK_POINTS_AND_BENEFITS, pointsDataJSON: pointsJsonBody, query: nil, headers: ["String": "String"], callback: { [weak self] (pointsAndBenef) in
             guard let strongSelf = self else { return }
-            strongSelf.model.pointsAndBenefits = pointsAndBenef
+            strongSelf.model.pointsAndDiscounts = pointsAndBenef
             strongSelf.executeNextStep()
 
             }, failure: { [weak self] () in
