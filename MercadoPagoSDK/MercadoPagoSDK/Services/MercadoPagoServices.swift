@@ -66,7 +66,7 @@ internal class MercadoPagoServices: NSObject {
         service.createPayment(headers: headers, body: paymentDataJSON, params: params, success: callback, failure: failure)
     }
 
-    func getPointsAndBenefits(url: String, uri: String, transactionId: String? = nil, pointsDataJSON: Data?, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PointsAndBenefits) -> Void, failure: @escaping (() -> Void)) {
+    func getPointsAndDiscounts(url: String, uri: String, transactionId: String? = nil, pointsDataJSON: Data?, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PointsAndDiscounts) -> Void, failure: @escaping (() -> Void)) {
         let service: CustomService = CustomService(baseURL: url, URI: uri)
 
         var params = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
@@ -75,7 +75,7 @@ internal class MercadoPagoServices: NSObject {
             params = queryParams.parseToQuery()
         }
 
-        service.getPointsAndBenefits(headers: headers, body: pointsDataJSON, params: params, success: callback, failure: failure)
+        service.getPointsAndDiscounts(headers: headers, body: pointsDataJSON, params: params, success: callback, failure: failure)
     }
 
     func createToken(cardToken: PXCardToken, callback : @escaping (PXToken) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {

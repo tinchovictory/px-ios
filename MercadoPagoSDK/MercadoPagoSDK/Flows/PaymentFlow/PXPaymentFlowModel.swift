@@ -17,12 +17,12 @@ internal final class PXPaymentFlowModel: NSObject {
 
     var paymentResult: PaymentResult?
     var instructionsInfo: PXInstructions?
-    var pointsAndBenefits: PointsAndBenefits?
+    var pointsAndDiscounts: PointsAndDiscounts?
     var businessResult: PXBusinessResult?
 
     let escManager: MercadoPagoESC?
     var productId: String?
-    var shouldSearchPointsAndBenefits: Bool = true
+    var shouldSearchPointsAndDiscounts: Bool = true
 
     init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?) {
         self.paymentPlugin = paymentPlugin
@@ -33,7 +33,7 @@ internal final class PXPaymentFlowModel: NSObject {
     enum Steps: String {
         case createPaymentPlugin
         case createDefaultPayment
-        case getPointsAndBenefits
+        case getPointsAndDiscounts
         case getInstructions
         case createPaymentPluginScreen
         case finish
@@ -46,8 +46,8 @@ internal final class PXPaymentFlowModel: NSObject {
             return .createPaymentPluginScreen
         } else if needToCreatePayment() {
             return .createDefaultPayment
-        } else if needToGetPointsAndBenefits() {
-            return .getPointsAndBenefits
+        } else if needToGetPointsAndDiscounts() {
+            return .getPointsAndDiscounts
         } else if needToGetInstructions() {
             return .getInstructions
         } else {
@@ -82,8 +82,8 @@ internal final class PXPaymentFlowModel: NSObject {
         return paymentResult == nil && businessResult == nil
     }
 
-    func needToGetPointsAndBenefits() -> Bool {
-        return shouldSearchPointsAndBenefits
+    func needToGetPointsAndDiscounts() -> Bool {
+        return shouldSearchPointsAndDiscounts
     }
 
     func needToGetInstructions() -> Bool {
