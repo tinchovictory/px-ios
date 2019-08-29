@@ -148,6 +148,7 @@ import Foundation
     }
 
     //Pin first content view subview to top
+    @discardableResult
     public func pinFirstSubviewToTop(withMargin margin: CGFloat = 0 ) -> NSLayoutConstraint? {
         guard let firstView = self.contentView.subviews.first else {
             return nil
@@ -157,6 +158,7 @@ import Foundation
     }
 
     //Pin last content view subview to bottom
+    @discardableResult
     public func pinLastSubviewToBottom(withMargin margin: CGFloat = 0 ) -> NSLayoutConstraint? {
         guard let lastView = self.contentView.subviews.last else {
             return nil
@@ -166,6 +168,7 @@ import Foundation
     }
 
     //Put view on bottom of content view last subview
+    @discardableResult
     public func putOnBottomOfLastView(view: UIView, withMargin margin: CGFloat = 0) -> NSLayoutConstraint? {
         if !self.contentView.subviews.contains(view) {
             return nil
