@@ -168,3 +168,35 @@ extension PXResultViewModel {
         }
     }
 }
+
+// MARK: New Result View Model Interface
+extension PXResultViewModel: PXNewResultViewModelInterface {
+    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+
+            let cell = PXNewResultHeader()
+            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+                if let callback = self?.callback {
+                    if let url = self?.getBackUrl() {
+                        self?.openURL(url: url, success: { (_) in
+                            callback(PaymentResult.CongratsState.cancel_EXIT)
+                        })
+                    } else {
+                        callback(PaymentResult.CongratsState.cancel_EXIT)
+                    }
+                }
+            })
+            cell.setData(data: cellData)
+
+            return cell
+        } else {
+            let cell = UITableViewCell()
+            cell.backgroundColor = .blue
+            return cell
+        }
+    }
+
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        return 2
+    }
+}

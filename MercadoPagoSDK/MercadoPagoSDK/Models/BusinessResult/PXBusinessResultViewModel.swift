@@ -58,9 +58,10 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
         return ResourceManager.shared.getBadgeImageWith(status: self.businessResult.getBusinessStatus().getDescription())
     }
 
-    func getAttributedTitle() -> NSAttributedString {
+    func getAttributedTitle(forNewResult: Bool = false) -> NSAttributedString {
         let title = businessResult.getTitle()
-        let attributes = [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.TITLE_FONT_SIZE)]
+        let fontSize = forNewResult ? PXNewResultHeader.TITLE_FONT_SIZE : PXHeaderRenderer.TITLE_FONT_SIZE
+        let attributes = [NSAttributedString.Key.font: Utils.getFont(size: fontSize)]
         let attributedString = NSAttributedString(string: title, attributes: attributes)
         return attributedString
     }
@@ -216,6 +217,32 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
             return defaultImage
         }
         return nil
+    }
+}
+
+// MARK: New Result View Model Interface
+extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
+    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+            let headerImage = getHeaderDefaultIcon()
+            let cell = PXNewResultHeader()
+            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle(forNewResult: true), icon: headerImage, iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
+                if let callback = self?.callback {
+                    callback(PaymentResult.CongratsState.cancel_EXIT)
+                }
+            })
+            cell.setData(data: cellData)
+
+            return cell
+        } else {
+            let cell = UITableViewCell()
+            cell.backgroundColor = .blue
+            return cell
+        }
+    }
+
+    func numberOfRowsInSection(_ section: Int) -> Int {
+        return 1
     }
 }
 

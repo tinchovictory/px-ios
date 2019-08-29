@@ -7,19 +7,18 @@
 
 import UIKit
 
-class PXNewResultViewController: MercadoPagoUIScrollViewController {
+class PXNewResultViewController: MercadoPagoUIViewController {
 
-    let tableView: UITableView
-    let viewModel: PXResultViewModelInterface
+    private lazy var elasticHeader = UIView()
+    let tableView = UITableView()
+    let viewModel: PXNewResultViewModelInterface
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
-    init(viewModel: PXResultViewModelInterface, callback : @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
+    init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
         self.viewModel = viewModel
         self.viewModel.setCallback(callback: callback)
-        self.tableView = UITableView()
         super.init(nibName: nil, bundle: nil)
-        setupTableView()
         self.shouldHideNavigationBar = true
     }
 
@@ -27,23 +26,49 @@ class PXNewResultViewController: MercadoPagoUIScrollViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupTableView()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.reloadData()
+    }
+
     private func setupTableView() {
+        view.removeAllSubviews()
         view.addSubview(tableView)
-        PXLayout.matchWidth(ofView: tableView).isActive = true
-        PXLayout.matchHeight(ofView: tableView).isActive = true
-        PXLayout.centerVertically(view: tableView).isActive = true
-        PXLayout.centerHorizontally(view: tableView).isActive = true
+        tableView.backgroundColor = .white
+        PXLayout.setHeight(owner: tableView, height: 700).isActive = true
+        PXLayout.pinLeft(view: tableView).isActive = true
+        PXLayout.pinTop(view: tableView).isActive = true
+        PXLayout.pinRight(view: tableView).isActive = true
+        tableView.separatorInset = .init(top: 0, left: 0, bottom: 0, right: 0)
+        tableView.delegate = self
+        tableView.dataSource = self
+        tableView.tableFooterView = UIView()
+        tableView.tableHeaderView = UIView()
+        tableView.tableHeaderView?.layoutIfNeeded()
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 100
+        tableView.reloadData()
+        tableView.layoutIfNeeded()
+        tableView.allowsSelection = false
     }
 }
 
 extension PXNewResultViewController: UITableViewDelegate, UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return viewModel.numberOfRowsInSection(section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = "Text"
-        return cell
+        return viewModel.getCellAtIndexPath(indexPath)
     }
 }

@@ -138,7 +138,7 @@ internal final class PXHeaderRenderer: NSObject {
 
     func buildMessageLabel(with text: NSAttributedString) -> UILabel {
         let messageLabel = UILabel()
-        messageLabel.textAlignment = .center
+        messageLabel.textAlignment = .left
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         messageLabel.attributedText = text
         messageLabel.textColor = .white

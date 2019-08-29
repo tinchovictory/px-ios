@@ -94,6 +94,24 @@ class PXLayout: NSObject {
         return checkContraintActivation(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: superView, attribute: .bottom, multiplier: 1, constant: -margin))
     }
 
+    //Pin All Edges to Superview
+    @discardableResult
+    static func pinAllEdges(view: UIView, to otherView: UIView? = nil, withMargin margin: CGFloat = 0 ) -> [NSLayoutConstraint] {
+        var superView: UIView!
+        if otherView == nil {
+            superView = view.superview
+        } else {
+            superView = otherView
+        }
+
+        let topConstraint = checkContraintActivation(NSLayoutConstraint(item: view, attribute: .top, relatedBy: .equal, toItem: superView, attribute: .top, multiplier: 1, constant: margin))
+        let bottomConstraint = checkContraintActivation(NSLayoutConstraint(item: view, attribute: .bottom, relatedBy: .equal, toItem: superView, attribute: .bottom, multiplier: 1, constant: -margin))
+        let leftConstraint = checkContraintActivation(NSLayoutConstraint(item: view, attribute: .left, relatedBy: .equal, toItem: superView, attribute: .left, multiplier: 1, constant: margin))
+        let rightConstraint = checkContraintActivation(NSLayoutConstraint(item: view, attribute: .right, relatedBy: .equal, toItem: superView, attribute: .right, multiplier: 1, constant: -margin))
+
+        return [topConstraint, bottomConstraint, leftConstraint, rightConstraint]
+    }
+
     //Pin parent last subview to Bottom
     static func pinLastSubviewToBottom(view: UIView, withMargin margin: CGFloat = 0 ) -> NSLayoutConstraint? {
         guard let lastView = view.subviews.last else {
