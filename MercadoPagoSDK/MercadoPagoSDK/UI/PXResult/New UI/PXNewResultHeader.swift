@@ -18,7 +18,11 @@ struct PXNewResultHeaderData {
 
 class PXNewResultHeader: UITableViewCell {
 
-    var data: PXNewResultHeaderData?
+    var data: PXNewResultHeaderData? {
+        didSet {
+            render()
+        }
+    }
 
     //Image
     let IMAGE_WIDTH: CGFloat = 45.0
@@ -42,26 +46,16 @@ class PXNewResultHeader: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        selectionStyle = .none
-        render()
-        animate()
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
     }
 
     func setData(data: PXNewResultHeaderData) {
         self.data = data
-
-        render()
         animate()
     }
 
     func render() {
         removeAllSubviews()
+        selectionStyle = .none
         self.backgroundColor = data?.color
         let pxContentView = UIView()
         pxContentView.backgroundColor = .clear

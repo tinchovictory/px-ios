@@ -39,11 +39,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private func setupTableView() {
         view.removeAllSubviews()
         view.addSubview(tableView)
+        tableView.frame = view.frame
         tableView.backgroundColor = .white
-        PXLayout.setHeight(owner: tableView, height: 700).isActive = true
-        PXLayout.pinLeft(view: tableView).isActive = true
-        PXLayout.pinTop(view: tableView).isActive = true
-        PXLayout.pinRight(view: tableView).isActive = true
         tableView.separatorInset = .init(top: 0, left: 0, bottom: 0, right: 0)
         tableView.delegate = self
         tableView.dataSource = self
@@ -55,6 +52,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         tableView.reloadData()
         tableView.layoutIfNeeded()
         tableView.allowsSelection = false
+        tableView.separatorColor = .clear
     }
 }
 

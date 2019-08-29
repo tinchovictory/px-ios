@@ -223,10 +223,16 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 // MARK: New Result View Model Interface
 extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
+
+        let customCellsData: [PXNewCustomViewData] = [
+            PXNewCustomViewData(title: "LATAM Pass", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
+            PXNewCustomViewData(title: nil, subtitle: "Ganaste $100", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: PXAction(label: "Toca aca para agarrarlo", action: {})),
+            PXNewCustomViewData(title: "Latam", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
+            PXNewCustomViewData(title: "Latam", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil)]
+
         if indexPath.row == 0 {
-            let headerImage = getHeaderDefaultIcon()
             let cell = PXNewResultHeader()
-            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle(forNewResult: true), icon: headerImage, iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
+            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle(forNewResult: true), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
                 if let callback = self?.callback {
                     callback(PaymentResult.CongratsState.cancel_EXIT)
                 }
@@ -235,14 +241,15 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
             return cell
         } else {
-            let cell = UITableViewCell()
-            cell.backgroundColor = .blue
+            let cell = PXNewCustomView()
+            let cellData = customCellsData[indexPath.row-1]
+            cell.setData(data: cellData)
             return cell
         }
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        return 1
+        return 5
     }
 }
 
