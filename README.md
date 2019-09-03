@@ -128,6 +128,10 @@ PXTracker.setListener(self)
 * xCode 9.2+
 * @Objc full compatibility
 
+### Do you need support for iOS 9?
+We removed iOS9 support. But you can use the following tag to get the latest version compatible with iOS9. (Under yourk risk)
++ [v4.18.3] (https://github.com/mercadopago/px-ios/tree/4.18.3)
+
 ### 🔮 Project Example
 This project include an example project using MercadoPagoSDKV4. `ExampleObjectiveC & ExampleSwift`. In case you need support contact the MercadoPago Developers Site.
 
