@@ -14,6 +14,7 @@ protocol PXNewResultViewModelInterface {
 
 //    func getPaymentData() -> PXPaymentData
     func primaryResultColor() -> UIColor
+    func getInstructionsView() -> UIView?
 //
 //    func getPaymentStatus() -> String
 //    func getPaymentStatusDetail() -> String

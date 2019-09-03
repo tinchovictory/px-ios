@@ -225,10 +225,10 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
 
         let customCellsData: [PXNewCustomViewData] = [
-            PXNewCustomViewData(title: "LATAM Pass", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
-            PXNewCustomViewData(title: nil, subtitle: "Ganaste $100", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: PXAction(label: "Toca aca para agarrarlo", action: {})),
-            PXNewCustomViewData(title: "Latam", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
-            PXNewCustomViewData(title: "Latam", subtitle: "Sumsate 100 millas", icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil)]
+            PXNewCustomViewData(title: "LATAM Pass".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
+            PXNewCustomViewData(title: nil, subtitle: "Ganaste $100".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: PXAction(label: "Toca aca para agarrarlo", action: {print("action tapped $100")})),
+            PXNewCustomViewData(title: "Latam".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
+            PXNewCustomViewData(title: "Latam".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil)]
 
         if indexPath.row == 0 {
             let cell = PXNewResultHeader()
@@ -250,6 +250,13 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
     func numberOfRowsInSection(_ section: Int) -> Int {
         return 5
+    }
+
+    func getInstructionsView() -> UIView? {
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+            return bodyComponent.render()
+        }
+        return nil
     }
 }
 

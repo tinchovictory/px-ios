@@ -189,6 +189,11 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             cell.setData(data: cellData)
 
             return cell
+        } else if let instructionsView = getInstructionsView() {
+            let cell = NewInstructionsView()
+            cell.setInstructionsView(view: instructionsView)
+            cell.addSubview(instructionsView)
+            return cell
         } else {
             let cell = UITableViewCell()
             cell.backgroundColor = .blue
@@ -198,5 +203,12 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
     func numberOfRowsInSection(_ section: Int) -> Int {
         return 2
+    }
+
+    func getInstructionsView() -> UIView? {
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+            return bodyComponent.render()
+        }
+        return nil
     }
 }
