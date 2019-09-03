@@ -222,6 +222,10 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 
 // MARK: New Result View Model Interface
 extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
+    func getCells() -> [ResultCellItem] {
+        return []
+    }
+    
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
 
         let customCellsData: [PXNewCustomViewData] = [
@@ -252,10 +256,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return 5
     }
 
-    func getInstructionsView() -> UIView? {
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            return bodyComponent.render()
-        }
+    func getInstructionsCell() -> UITableViewCell? {
         return nil
     }
 }

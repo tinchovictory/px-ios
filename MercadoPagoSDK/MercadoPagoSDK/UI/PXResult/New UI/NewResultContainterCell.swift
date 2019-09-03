@@ -1,5 +1,5 @@
 //
-//  NewInstructionsView.swift
+//  NewResultContainterCell.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 03/09/2019.
@@ -7,12 +7,12 @@
 
 import UIKit
 
-class NewInstructionsView: UITableViewCell {
+class NewResultContainterCell: UITableViewCell {
 
-    var instructionsView: UIView?
+    var content: UIView?
 
-    func setInstructionsView(view: UIView) {
-        self.instructionsView = view
+    func setContent(view: UIView) {
+        self.content = view
         render(with: view)
     }
 

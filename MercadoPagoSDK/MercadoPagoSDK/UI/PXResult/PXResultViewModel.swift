@@ -171,44 +171,68 @@ extension PXResultViewModel {
 
 // MARK: New Result View Model Interface
 extension PXResultViewModel: PXNewResultViewModelInterface {
-    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.row == 0 {
+    func getCells() -> [ResultCellItem] {
+        var cells: [ResultCellItem] = []
 
-            let cell = PXNewResultHeader()
-            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
-                if let callback = self?.callback {
-                    if let url = self?.getBackUrl() {
-                        self?.openURL(url: url, success: { (_) in
-                            callback(PaymentResult.CongratsState.cancel_EXIT)
-                        })
-                    } else {
-                        callback(PaymentResult.CongratsState.cancel_EXIT)
-                    }
-                }
-            })
-            cell.setData(data: cellData)
+        //Header Cell
+        let headerCell = ResultCellItem(position: .header, relatedCell: getHeaderCell(), relatedComponent: nil, relatedView: nil)
+        cells.append(headerCell)
 
-            return cell
-        } else if let instructionsView = getInstructionsView() {
-            let cell = NewInstructionsView()
-            cell.setInstructionsView(view: instructionsView)
-            cell.addSubview(instructionsView)
-            return cell
+        //Top Disclaimer Cell
+        if let receiptComponent = buildReceiptComponent() {
+            let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
+            cells.append(receiptCell)
         } else {
-            let cell = UITableViewCell()
-            cell.backgroundColor = .blue
-            return cell
+            //SUBE
         }
+
+        //Top Custom Cell
+        if let topCustomView = buildTopCustomView() {
+            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
+            cells.append(topCustomCell)
+        }
+
+        //Instructions Cell
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+            let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
+            cells.append(instructionsCell)
+        }
+
+        //Bottom Custom Cell
+        if let bottomCustomView = buildBottomCustomView() {
+            let bottomCustomCell = ResultCellItem(position: .bottomCustomView, relatedCell: nil, relatedComponent: nil, relatedView: bottomCustomView)
+            cells.append(bottomCustomCell)
+        }
+
+        //Footer Cell
+        let footerCell = ResultCellItem(position: .footer, relatedCell: nil, relatedComponent: buildFooterComponent(), relatedView: nil)
+        cells.append(footerCell)
+
+        return cells
+    }
+
+    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
+        return getCells()[indexPath.row].getCell()
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        return 2
+        return getCells().count
     }
 
-    func getInstructionsView() -> UIView? {
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            return bodyComponent.render()
-        }
-        return nil
+    func getHeaderCell() -> UITableViewCell {
+        let cell = PXNewResultHeader()
+        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+            if let callback = self?.callback {
+                if let url = self?.getBackUrl() {
+                    self?.openURL(url: url, success: { (_) in
+                        callback(PaymentResult.CongratsState.cancel_EXIT)
+                    })
+                } else {
+                    callback(PaymentResult.CongratsState.cancel_EXIT)
+                }
+            }
+        })
+        cell.setData(data: cellData)
+        return cell
     }
 }

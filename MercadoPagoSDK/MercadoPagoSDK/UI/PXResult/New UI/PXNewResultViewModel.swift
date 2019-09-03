@@ -7,15 +7,46 @@
 
 import Foundation
 
+enum NewResultCells {
+    case header
+    case paymentMethod
+    case instructions
+    case topCustomView
+    case bottomCustomView
+    case topDisclosureView
+    case footer
+}
+
+struct ResultCellItem {
+    let position: NewResultCells
+    let relatedCell: UITableViewCell?
+    let relatedComponent: PXComponentizable?
+    let relatedView: UIView?
+
+    func getCell() -> UITableViewCell {
+        if let relatedCell = relatedCell {
+            return relatedCell
+        } else if let relatedComponent = relatedComponent {
+            let cell = NewResultContainterCell()
+            cell.setContent(view: relatedComponent.render())
+            return cell
+        } else if let relatedView = relatedView {
+            let cell = NewResultContainterCell()
+            cell.setContent(view: relatedView)
+            return cell
+        } else {
+            return UITableViewCell()
+        }
+    }
+}
+
+
 protocol PXNewResultViewModelInterface {
+    func getCells() -> [ResultCellItem]
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell
     func numberOfRowsInSection(_ section: Int) -> Int
     func setCallback(callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void)
 
-//    func getPaymentData() -> PXPaymentData
-    func primaryResultColor() -> UIColor
-    func getInstructionsView() -> UIView?
-//
 //    func getPaymentStatus() -> String
 //    func getPaymentStatusDetail() -> String
 //    func getPaymentId() -> String?
