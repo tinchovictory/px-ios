@@ -198,6 +198,13 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             cells.append(instructionsCell)
         }
 
+        //Payment Detail Title Cell
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Detalle del pago"
+        let detailTitleCell = ResultCellItem(position: .paymentDetailTitle, relatedCell: nil, relatedComponent: nil, relatedView: label)
+        cells.append(detailTitleCell)
+
         //Payment Method Cell
         if let paymentData = paymentResult.paymentData {
             let paymentMethodCell = getPaymentMethodCell(paymentData: paymentData)
@@ -310,7 +317,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
 //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
 
-        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil)
+        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .red)
         let cell = PXNewCustomView()
         cell.setData(data: data)
         return cell

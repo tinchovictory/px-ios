@@ -13,13 +13,15 @@ open class PXNewCustomViewData {
     let icon: UIImage?
     let iconURL: String?
     let action: PXAction?
+    let color: UIColor?
 
-    init(title: NSMutableAttributedString?, subtitle: NSMutableAttributedString?, icon: UIImage?, iconURL: String?, action: PXAction?) {
+    init(title: NSMutableAttributedString?, subtitle: NSMutableAttributedString?, icon: UIImage?, iconURL: String?, action: PXAction?, color: UIColor?) {
         self.title = title
         self.subtitle = subtitle
         self.icon = icon
         self.iconURL = iconURL
         self.action = action
+        self.color = color
     }
 }
 
@@ -27,7 +29,6 @@ class PXNewCustomView: UITableViewCell {
 
     //Row Settings
     let ROW_HEIGHT: CGFloat = 75
-//    let CONTENT_WIDTH_PERCENTAGE: CGFloat = 86.0
 
     //Icon
     let IMAGE_WIDTH: CGFloat = 48.0
@@ -60,6 +61,11 @@ class PXNewCustomView: UITableViewCell {
         PXLayout.pinAllEdges(view: pxContentView, withMargin: PXLayout.ZERO_MARGIN)
         PXLayout.setHeight(owner: pxContentView, height: ROW_HEIGHT).isActive = true
 
+        //Background Color
+        if let color = data?.color {
+            self.backgroundColor = color
+        }
+
         // Icon
         if let imageURL = data?.iconURL, imageURL.isNotEmpty {
             let pximage = PXUIImage(url: imageURL)
@@ -69,6 +75,7 @@ class PXNewCustomView: UITableViewCell {
         }
 
         let labelsView = PXComponentView()
+        labelsView.clipsToBounds = true
         pxContentView.addSubview(labelsView)
 
         if let circleImage = iconImageView {

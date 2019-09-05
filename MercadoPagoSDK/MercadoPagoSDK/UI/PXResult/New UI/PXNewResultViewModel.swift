@@ -13,6 +13,7 @@ enum NewResultCells {
     case instructions
     case topCustomView
     case bottomCustomView
+    case paymentDetailTitle
     case topDisclosureView
     case footer
 }
@@ -46,7 +47,7 @@ protocol PXNewResultViewModelInterface {
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell
     func numberOfRowsInSection(_ section: Int) -> Int
     func setCallback(callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void)
-
+    func primaryResultColor() -> UIColor
 //    func getPaymentStatus() -> String
 //    func getPaymentStatusDetail() -> String
 //    func getPaymentId() -> String?
