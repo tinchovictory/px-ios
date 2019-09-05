@@ -198,6 +198,20 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             cells.append(instructionsCell)
         }
 
+        //Payment Method Cell
+        if let paymentData = paymentResult.paymentData {
+            let paymentMethodCell = getPaymentMethodCell(paymentData: paymentData)
+            let cell = ResultCellItem(position: .paymentMethod, relatedCell: paymentMethodCell, relatedComponent: nil, relatedView: nil)
+            cells.append(cell)
+        }
+
+        //Split Payment Cell
+        if let splitPaymentData = paymentResult.splitAccountMoney {
+            let paymentMethodCell = getPaymentMethodCell(paymentData: splitPaymentData)
+            let cell = ResultCellItem(position: .paymentMethod, relatedCell: paymentMethodCell, relatedComponent: nil, relatedView: nil)
+            cells.append(cell)
+        }
+
         //Bottom Custom Cell
         if let bottomCustomView = buildBottomCustomView() {
             let bottomCustomCell = ResultCellItem(position: .bottomCustomView, relatedCell: nil, relatedComponent: nil, relatedView: bottomCustomView)
@@ -219,7 +233,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return getCells().count
     }
 
-    func getHeaderCell() -> UITableViewCell {
+    private func getHeaderCell() -> UITableViewCell {
         let cell = PXNewResultHeader()
         let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
@@ -233,6 +247,72 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             }
         })
         cell.setData(data: cellData)
+        return cell
+    }
+
+    private func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
+        let defaultColor = paymentMethod.paymentTypeId == PXPaymentTypes.ACCOUNT_MONEY.rawValue && paymentMethod.paymentTypeId != PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue
+        var paymentMethodImage: UIImage? =  ResourceManager.shared.getImageForPaymentMethod(withDescription: paymentMethod.id, defaultColor: defaultColor)
+        // Retrieve image for payment plugin or any external payment method.
+        if paymentMethod.paymentTypeId == PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue {
+            paymentMethodImage = paymentMethod.getImageForExtenalPaymentMethod()
+        }
+        return paymentMethodImage
+    }
+
+    private func getPaymentMethodCell(paymentData: PXPaymentData) -> PXNewCustomView? {
+        guard let paymentMethod = paymentData.paymentMethod else {
+            return nil
+        }
+
+        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
+        let currency = SiteManager.shared.getCurrency()
+        var amountTitle: NSMutableAttributedString =  "".toAttributedString()
+        var subtitle: NSMutableAttributedString?
+        if let payerCost = paymentData.payerCost {
+            if payerCost.installments > 1 {
+                amountTitle = String(String(payerCost.installments) + "x " + Utils.getAmountFormated(amount: payerCost.installmentAmount, forCurrency: currency)).toAttributedString()
+                subtitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency, addingParenthesis: true).toAttributedString()
+            } else {
+                amountTitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency).toAttributedString()
+            }
+        } else {
+            // Caso account money
+            if  let splitAccountMoneyAmount = paymentData.getTransactionAmountWithDiscount() {
+                amountTitle = Utils.getAmountFormated(amount: splitAccountMoneyAmount, forCurrency: currency).toAttributedString()
+            } else {
+                amountTitle = Utils.getAmountFormated(amount: amountHelper.amountToPay, forCurrency: currency).toAttributedString()
+            }
+        }
+
+        var pmDescription: String = ""
+        let paymentMethodName = paymentMethod.name ?? ""
+
+        let issuer = paymentData.getIssuer()
+        let paymentMethodIssuerName = issuer?.name ?? ""
+        var descriptionDetail: NSAttributedString?
+
+        if paymentMethod.isCard {
+            if let lastFourDigits = (paymentData.token?.lastFourDigits) {
+                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
+            }
+            if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
+                descriptionDetail = paymentMethodIssuerName.toAttributedString()
+            }
+        } else {
+            pmDescription = paymentMethodName
+        }
+
+        var disclaimerText: String?
+        if let statementDescription = paymentResult.statementDescription {
+            disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
+        }
+
+//        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
+
+        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil)
+        let cell = PXNewCustomView()
+        cell.setData(data: data)
         return cell
     }
 }

@@ -8,13 +8,13 @@
 import UIKit
 
 open class PXNewCustomViewData {
-    let title: NSAttributedString?
-    let subtitle: NSAttributedString?
+    let title: NSMutableAttributedString?
+    let subtitle: NSMutableAttributedString?
     let icon: UIImage?
     let iconURL: String?
     let action: PXAction?
 
-    init(title: NSAttributedString?, subtitle: NSAttributedString?, icon: UIImage?, iconURL: String?, action: PXAction?) {
+    init(title: NSMutableAttributedString?, subtitle: NSMutableAttributedString?, icon: UIImage?, iconURL: String?, action: PXAction?) {
         self.title = title
         self.subtitle = subtitle
         self.icon = icon
@@ -30,8 +30,8 @@ class PXNewCustomView: UITableViewCell {
 //    let CONTENT_WIDTH_PERCENTAGE: CGFloat = 86.0
 
     //Icon
-    let IMAGE_WIDTH: CGFloat = 40.0
-    let IMAGE_HEIGHT: CGFloat = 40.0
+    let IMAGE_WIDTH: CGFloat = 48.0
+    let IMAGE_HEIGHT: CGFloat = 48.0
 
     var iconImageView: PXUIImageView?
 
@@ -88,15 +88,29 @@ class PXNewCustomView: UITableViewCell {
 
         // Title Label
         if let title = data?.title {
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = .byTruncatingTail
+
+            title.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: title.length))
+
             let label = UILabel()
+            label.font = Utils.getSemiBoldFont(size: PXLayout.XS_FONT)
             label.attributedText = title
             labelsView.addSubviewToBottom(label)
         }
 
         // Subtitle Label
         if let subtitle = data?.subtitle {
+            let paragraph = NSMutableParagraphStyle()
+            paragraph.lineBreakMode = .byTruncatingTail
+
+            subtitle.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: subtitle.length))
+
             let label = UILabel()
-            label.textColor = .gray
+            label.font = Utils.getFont(size: PXLayout.XXS_FONT)
+            label.numberOfLines = 2
+            label.lineBreakMode = .byTruncatingTail
+            label.alpha = 0.45
             label.attributedText = subtitle
             labelsView.addSubviewToBottom(label)
         }

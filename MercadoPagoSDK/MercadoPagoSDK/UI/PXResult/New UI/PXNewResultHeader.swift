@@ -25,16 +25,16 @@ class PXNewResultHeader: UITableViewCell {
     }
 
     //Image
-    let IMAGE_WIDTH: CGFloat = 45.0
-    let IMAGE_HEIGHT: CGFloat = 45.0
+    let IMAGE_WIDTH: CGFloat = 48.0
+    let IMAGE_HEIGHT: CGFloat = 48.0
 
     //Badge Image
-    let BADGE_IMAGE_SIZE: CGFloat = 15.0
+    let BADGE_IMAGE_SIZE: CGFloat = 20
     let BADGE_HORIZONTAL_OFFSET: CGFloat = -6.0
     let BADGE_VERTICAL_OFFSET: CGFloat = 0.0
 
     //Close Button
-    let CLOSE_BUTTON_SIZE: CGFloat = 35
+    let CLOSE_BUTTON_SIZE: CGFloat = 19
 
     //Text
     static let TITLE_FONT_SIZE: CGFloat = PXLayout.L_FONT
@@ -89,23 +89,23 @@ class PXNewResultHeader: UITableViewCell {
             closeButton = button
             pxContentView.addSubview(button)
             button.add(for: .touchUpInside, {
-//                headerView.delegate?.didTapCloseButton()
                 closeAction()
             })
             PXLayout.setHeight(owner: button, height: CLOSE_BUTTON_SIZE).isActive = true
             PXLayout.setWidth(owner: button, width: CLOSE_BUTTON_SIZE).isActive = true
-            PXLayout.pinTop(view: button, withMargin: PXLayout.ZERO_MARGIN).isActive = true
-            PXLayout.pinLeft(view: button, withMargin: PXLayout.XXXS_MARGIN).isActive = true
+            PXLayout.pinTop(view: button, withMargin: PXLayout.S_MARGIN).isActive = true
+            PXLayout.pinLeft(view: button, withMargin: PXLayout.M_MARGIN).isActive = true
         }
 
         //Title Label
         if let title = data?.title {
             let label = buildMessageLabel(with: title)
             titleLabel = label
+            label.font = Utils.getSemiBoldFont(size: 18)
             pxContentView.addSubview(label)
 
             PXLayout.centerVertically(view: label, withMargin: PXLayout.ZERO_MARGIN).isActive = true
-            PXLayout.pinLeft(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
+            PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
 
             if let iconImageView = iconImageView {
                 PXLayout.put(view: label, leftOf: iconImageView, withMargin: PXLayout.S_MARGIN, relation: .equal).isActive = true
@@ -127,7 +127,7 @@ class PXNewResultHeader: UITableViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let image = ResourceManager.shared.getImage("close-button")
-        let margin: CGFloat = PXLayout.XS_MARGIN
+        let margin: CGFloat = PXLayout.XXXS_MARGIN
         button.contentEdgeInsets = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
         button.setImage(image, for: .normal)
         button.accessibilityIdentifier = "result_close_button"
