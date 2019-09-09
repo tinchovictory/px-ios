@@ -35,16 +35,27 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         super.viewWillAppear(animated)
         setupTableView()
         addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
-        self.prepareForAnimation()
-        self.animateContentView { (_) in
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        animateTableView()
+    }
+
+    private func animateTableView() {
+        let animator = UIViewPropertyAnimator(duration: 0.2, dampingRatio: 1) {
+            self.tableView.alpha = 1
+        }
+        animator.addCompletion { (_) in
             self.headerCell?.animate()
         }
+        animator.startAnimation()
     }
 
     private func setupTableView() {
         view.removeAllSubviews()
         view.addSubview(tableView)
-        view.backgroundColor = .pxWhite
+        view.backgroundColor = viewModel.primaryResultColor()
         tableView.backgroundColor = .pxWhite
         tableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -53,6 +64,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        tableView.alpha = 0
         tableView.bounces = true
         tableView.showsVerticalScrollIndicator = false
         tableView.showsHorizontalScrollIndicator = false
@@ -86,25 +98,6 @@ extension PXNewResultViewController: UITableViewDelegate, UITableViewDataSource 
             self.headerCell = headerCell
         }
         return viewModel.getCellAtIndexPath(indexPath)
-    }
-}
-
-// MARK: Spruce
-extension PXNewResultViewController {
-    func animateContentView(customAnimations: [StockAnimation]? = nil, completion: CompletionHandler? = nil) {
-        if let animationCustom = customAnimations {
-            self.tableView.pxSpruce.animate(animationCustom, sortFunction: PXSpruce.PXDefaultAnimation.appearSortFunction, completion: completion)
-        } else {
-            self.tableView.pxSpruce.animate(PXSpruce.PXDefaultAnimation.slideUpAnimation, sortFunction: PXSpruce.PXDefaultAnimation.appearSortFunction, completion: completion)
-        }
-    }
-
-    func prepareForAnimation(customAnimations: [StockAnimation]? = nil) {
-        if let animationCustom = customAnimations {
-            self.tableView.pxSpruce.prepare(with: animationCustom)
-        } else {
-            self.tableView.pxSpruce.prepare(with: PXSpruce.PXDefaultAnimation.slideUpAnimation)
-        }
     }
 }
 

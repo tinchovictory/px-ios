@@ -71,17 +71,16 @@ class PXNewResultHeader: UITableViewCell {
         }
         if let circleImage = iconImageView {
             pxContentView.addSubview(circleImage)
-//            PXLayout.centerVertically(view: circleImage, withMargin: PXLayout.ZERO_MARGIN).isActive = true
             PXLayout.pinBottom(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
             PXLayout.pinRight(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
-        }
 
-        //Badge Image
-        let bagdeView = buildBadgeImage(with: data?.badgeImage)
-        badgeImageView = bagdeView
-        pxContentView.addSubview(bagdeView)
-        PXLayout.pinRight(view: bagdeView, to: iconImageView!, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
-        PXLayout.pinBottom(view: bagdeView, to: iconImageView!, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
+            //Badge Image
+            let bagdeView = buildBadgeImage(with: data?.badgeImage)
+            self.badgeImageView = bagdeView
+            pxContentView.addSubview(bagdeView)
+            PXLayout.pinRight(view: bagdeView, to: circleImage, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
+            PXLayout.pinBottom(view: bagdeView, to: circleImage, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
+        }
 
         //Close button
         if let closeAction = data?.closeAction {
@@ -104,7 +103,6 @@ class PXNewResultHeader: UITableViewCell {
             label.font = Utils.getSemiBoldFont(size: 18)
             pxContentView.addSubview(label)
 
-//            PXLayout.centerVertically(view: label, withMargin: PXLayout.ZERO_MARGIN).isActive = true
             PXLayout.pinBottom(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
             PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
 

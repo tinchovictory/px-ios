@@ -178,14 +178,6 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         let headerCell = ResultCellItem(position: .header, relatedCell: getHeaderCell(), relatedComponent: nil, relatedView: nil)
         cells.append(headerCell)
 
-        //Top Disclaimer Cell
-        if let receiptComponent = buildReceiptComponent() {
-            let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
-            cells.append(receiptCell)
-        } else {
-            //SUBE
-        }
-
         //Instructions Cell
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
             let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
@@ -215,6 +207,12 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             PXLayout.pinBottom(view: label, withMargin: PXLayout.M_MARGIN)
             let detailTitleCell = ResultCellItem(position: .paymentDetailTitle, relatedCell: nil, relatedComponent: nil, relatedView: containerView)
             cells.append(detailTitleCell)
+        }
+
+        //Receipt Cell
+        if let receiptComponent = buildReceiptComponent() {
+            let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
+            cells.append(receiptCell)
         }
 
         //Payment Method Cell
@@ -253,7 +251,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
     }
 
     private func shouldShowPaymentDetailCell() -> Bool {
-        return paymentResult.paymentData != nil || paymentResult.splitAccountMoney != nil
+        return paymentResult.paymentData != nil || paymentResult.splitAccountMoney != nil || buildReceiptComponent() != nil
     }
 
     private func getHeaderCell() -> UITableViewCell {
