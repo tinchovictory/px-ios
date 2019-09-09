@@ -41,7 +41,6 @@ struct ResultCellItem {
     }
 }
 
-
 protocol PXNewResultViewModelInterface {
     func getCells() -> [ResultCellItem]
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell

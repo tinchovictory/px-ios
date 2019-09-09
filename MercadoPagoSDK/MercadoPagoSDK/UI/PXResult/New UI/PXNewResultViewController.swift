@@ -10,6 +10,10 @@ import UIKit
 class PXNewResultViewController: MercadoPagoUIViewController {
 
     private lazy var elasticHeader = UIView()
+    private lazy var NAVIGATION_BAR_DELTA_Y: CGFloat = 29.8
+    private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
+    private lazy var navigationTitleStatusStep: Int = 0
+
     let tableView = UITableView()
     let viewModel: PXNewResultViewModelInterface
     var headerCell: PXNewResultHeader?
@@ -30,6 +34,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupTableView()
+        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
         self.prepareForAnimation()
         self.animateContentView { (_) in
             self.headerCell?.animate()
@@ -48,6 +53,9 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+        tableView.bounces = true
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
@@ -97,5 +105,33 @@ extension PXNewResultViewController {
         } else {
             self.tableView.pxSpruce.prepare(with: PXSpruce.PXDefaultAnimation.slideUpAnimation)
         }
+    }
+}
+
+// MARK: Elastic Header
+extension PXNewResultViewController {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+    }
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        if scrollView.contentOffset.y > 0 && scrollView.contentOffset.y <= 32 {
+            UIView.animate(withDuration: 0.25, animations: {
+                targetContentOffset.pointee.y = 32
+            })
+        }
+    }
+
+    func addElasticHeader(headerBackgroundColor: UIColor?, navigationDeltaY: CGFloat?=nil, navigationSecondaryDeltaY: CGFloat?=nil) {
+        elasticHeader.removeFromSuperview()
+        elasticHeader.backgroundColor = headerBackgroundColor
+        if let customDeltaY = navigationDeltaY {
+            NAVIGATION_BAR_DELTA_Y = customDeltaY
+        }
+        if let customSecondaryDeltaY = navigationSecondaryDeltaY {
+            NAVIGATION_BAR_SECONDARY_DELTA_Y = customSecondaryDeltaY
+        }
+
+        view.insertSubview(elasticHeader, aboveSubview: tableView)
     }
 }
