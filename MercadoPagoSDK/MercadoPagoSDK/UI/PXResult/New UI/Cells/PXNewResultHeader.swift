@@ -50,7 +50,6 @@ class PXNewResultHeader: UITableViewCell {
 
     func setData(data: PXNewResultHeaderData) {
         self.data = data
-        animate()
     }
 
     func render() {
@@ -61,7 +60,7 @@ class PXNewResultHeader: UITableViewCell {
         pxContentView.backgroundColor = .clear
         addSubview(pxContentView)
         PXLayout.pinAllEdges(view: pxContentView, withMargin: PXLayout.ZERO_MARGIN)
-        PXLayout.setHeight(owner: pxContentView, height: 120).isActive = true
+        PXLayout.setHeight(owner: pxContentView, height: 136).isActive = true
 
         //Image
         if let imageURL = data?.iconURL, imageURL.isNotEmpty {
@@ -72,7 +71,8 @@ class PXNewResultHeader: UITableViewCell {
         }
         if let circleImage = iconImageView {
             pxContentView.addSubview(circleImage)
-            PXLayout.centerVertically(view: circleImage, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+//            PXLayout.centerVertically(view: circleImage, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+            PXLayout.pinBottom(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
             PXLayout.pinRight(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
         }
 
@@ -104,7 +104,8 @@ class PXNewResultHeader: UITableViewCell {
             label.font = Utils.getSemiBoldFont(size: 18)
             pxContentView.addSubview(label)
 
-            PXLayout.centerVertically(view: label, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+//            PXLayout.centerVertically(view: label, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+            PXLayout.pinBottom(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
             PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
 
             if let iconImageView = iconImageView {

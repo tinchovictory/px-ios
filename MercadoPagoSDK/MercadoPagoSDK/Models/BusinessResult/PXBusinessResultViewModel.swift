@@ -225,35 +225,14 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     func getCells() -> [ResultCellItem] {
         return []
     }
-    
+
     func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
-
-        let customCellsData: [PXNewCustomViewData] = [
-            PXNewCustomViewData(title: "LATAM Pass".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
-            PXNewCustomViewData(title: nil, subtitle: "Ganaste $100".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: PXAction(label: "Toca aca para agarrarlo", action: {print("action tapped $100")})),
-            PXNewCustomViewData(title: "Latam".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil),
-            PXNewCustomViewData(title: "Latam".toAttributedString(), subtitle: "Sumsate 100 millas".toAttributedString(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), action: nil)]
-
-        if indexPath.row == 0 {
-            let cell = PXNewResultHeader()
-            let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle(forNewResult: true), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
-                if let callback = self?.callback {
-                    callback(PaymentResult.CongratsState.cancel_EXIT)
-                }
-            })
-            cell.setData(data: cellData)
-
-            return cell
-        } else {
-            let cell = PXNewCustomView()
-            let cellData = customCellsData[indexPath.row-1]
-            cell.setData(data: cellData)
-            return cell
-        }
+        let cell = UITableViewCell()
+        return cell
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        return 5
+        return 1
     }
 
     func getInstructionsCell() -> UITableViewCell? {

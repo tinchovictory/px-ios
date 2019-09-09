@@ -186,24 +186,36 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             //SUBE
         }
 
-        //Top Custom Cell
-        if let topCustomView = buildTopCustomView() {
-            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
-            cells.append(topCustomCell)
-        }
-
         //Instructions Cell
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
             let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
             cells.append(instructionsCell)
         }
 
+        //Top Custom Cell
+        if let topCustomView = buildTopCustomView() {
+            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
+            cells.append(topCustomCell)
+        }
+
         //Payment Detail Title Cell
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Detalle del pago"
-        let detailTitleCell = ResultCellItem(position: .paymentDetailTitle, relatedCell: nil, relatedComponent: nil, relatedView: label)
-        cells.append(detailTitleCell)
+        if shouldShowPaymentDetailCell() {
+            let label = UILabel()
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.text = "Detalle del pago"
+            label.font = Utils.getSemiBoldFont(size: 18)
+
+            let containerView = UIView()
+            containerView.backgroundColor = .pxWhite
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(label)
+            PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN)
+            PXLayout.pinRight(view: label, withMargin: PXLayout.L_MARGIN)
+            PXLayout.pinTop(view: label, withMargin: PXLayout.L_MARGIN)
+            PXLayout.pinBottom(view: label, withMargin: PXLayout.M_MARGIN)
+            let detailTitleCell = ResultCellItem(position: .paymentDetailTitle, relatedCell: nil, relatedComponent: nil, relatedView: containerView)
+            cells.append(detailTitleCell)
+        }
 
         //Payment Method Cell
         if let paymentData = paymentResult.paymentData {
@@ -238,6 +250,10 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
     func numberOfRowsInSection(_ section: Int) -> Int {
         return getCells().count
+    }
+
+    private func shouldShowPaymentDetailCell() -> Bool {
+        return paymentResult.paymentData != nil || paymentResult.splitAccountMoney != nil
     }
 
     private func getHeaderCell() -> UITableViewCell {
@@ -317,7 +333,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
 //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
 
-        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .red)
+        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
         let cell = PXNewCustomView()
         cell.setData(data: data)
         return cell

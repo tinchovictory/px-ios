@@ -42,6 +42,17 @@ class PXNewCustomView: UITableViewCell {
         }
     }
 
+    //Attributes
+    private let titleAttributes: [NSAttributedString.Key: Any] = [
+        NSAttributedString.Key.font: Utils.getSemiBoldFont(size: PXLayout.XS_FONT),
+        NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.8)
+    ]
+
+    private let subtitleAttributes: [NSAttributedString.Key: Any] = [
+        NSAttributedString.Key.font: Utils.getFont(size: PXLayout.XXS_FONT),
+        NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.45)
+    ]
+
     override func awakeFromNib() {
         super.awakeFromNib()
         self.isUserInteractionEnabled = true
@@ -81,7 +92,7 @@ class PXNewCustomView: UITableViewCell {
         if let circleImage = iconImageView {
             pxContentView.addSubview(circleImage)
             PXLayout.centerVertically(view: circleImage, withMargin: PXLayout.ZERO_MARGIN)
-            PXLayout.pinLeft(view: circleImage, withMargin: PXLayout.M_MARGIN)
+            PXLayout.pinLeft(view: circleImage, withMargin: PXLayout.L_MARGIN)
 
             // Put labels view next to the icon
             PXLayout.put(view: labelsView, rightOf: circleImage, withMargin: PXLayout.S_MARGIN)
@@ -95,10 +106,7 @@ class PXNewCustomView: UITableViewCell {
 
         // Title Label
         if let title = data?.title {
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.lineBreakMode = .byTruncatingTail
-
-            title.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: title.length))
+            title.addAttributes(titleAttributes, range: NSRange(location: 0, length: title.length))
 
             let label = UILabel()
             label.font = Utils.getSemiBoldFont(size: PXLayout.XS_FONT)
@@ -108,18 +116,14 @@ class PXNewCustomView: UITableViewCell {
 
         // Subtitle Label
         if let subtitle = data?.subtitle {
-            let paragraph = NSMutableParagraphStyle()
-            paragraph.lineBreakMode = .byTruncatingTail
-
-            subtitle.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraph, range: NSRange(location: 0, length: subtitle.length))
+            subtitle.addAttributes(subtitleAttributes, range: NSRange(location: 0, length: subtitle.length))
 
             let label = UILabel()
             label.font = Utils.getFont(size: PXLayout.XXS_FONT)
             label.numberOfLines = 2
             label.lineBreakMode = .byTruncatingTail
-            label.alpha = 0.45
             label.attributedText = subtitle
-            labelsView.addSubviewToBottom(label)
+            labelsView.addSubviewToBottom(label, withMargin: PXLayout.XXXS_MARGIN)
         }
 
         //Action Label
@@ -130,8 +134,10 @@ class PXNewCustomView: UITableViewCell {
             button.contentHorizontalAlignment = .left
             button.setTitle(action.label, for: .normal)
             button.setTitleColor(.blue, for: .normal)
+            button.titleLabel?.font = Utils.getFont(size: 14)
+            button.setTitleColor(ThemeManager.shared.secondaryColor(), for: .normal)
             button.add(for: .touchUpInside, action.action)
-            labelsView.addSubviewToBottom(button)
+            labelsView.addSubviewToBottom(button, withMargin: PXLayout.XXXS_MARGIN)
             PXLayout.setHeight(owner: button, height: 20)
             PXLayout.pinLeft(view: button)
             PXLayout.pinRight(view: button)
@@ -159,7 +165,9 @@ extension PXNewCustomView {
         circleImage.enableFadeIn()
         circleImage.contentMode = .scaleAspectFill
         circleImage.image = image
-        circleImage.backgroundColor = .clear
+        circleImage.backgroundColor = UIColor.black.withAlphaComponent(0.04)
+        circleImage.layer.borderWidth = 1
+        circleImage.layer.borderColor = UIColor.black.withAlphaComponent(0.08).cgColor
         PXLayout.setHeight(owner: circleImage, height: IMAGE_WIDTH).isActive = true
         PXLayout.setWidth(owner: circleImage, width: IMAGE_HEIGHT).isActive = true
         return circleImage
