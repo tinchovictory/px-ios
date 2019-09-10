@@ -40,7 +40,7 @@ class PXNewResultHeader: UITableViewCell {
     static let TITLE_FONT_SIZE: CGFloat = PXLayout.L_FONT
 
     var iconImageView: PXUIImageView?
-    var badgeImageView: PXAnimatedImageView?
+    var badgeImageView: UIImageView?
     var closeButton: UIButton?
     var titleLabel: UILabel?
 
@@ -75,11 +75,15 @@ class PXNewResultHeader: UITableViewCell {
             PXLayout.pinRight(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
 
             //Badge Image
-            let bagdeView = buildBadgeImage(with: data?.badgeImage)
-            self.badgeImageView = bagdeView
-            pxContentView.addSubview(bagdeView)
-            PXLayout.pinRight(view: bagdeView, to: circleImage, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
-            PXLayout.pinBottom(view: bagdeView, to: circleImage, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
+            let badgeImageView = UIImageView()
+            self.badgeImageView = badgeImageView
+            badgeImageView.image = data?.badgeImage
+            badgeImageView.translatesAutoresizingMaskIntoConstraints = false
+            pxContentView.addSubview(badgeImageView)
+            PXLayout.setWidth(owner: badgeImageView, width: BADGE_IMAGE_SIZE).isActive = true
+            PXLayout.setHeight(owner: badgeImageView, height: BADGE_IMAGE_SIZE).isActive = true
+            PXLayout.pinRight(view: badgeImageView, to: circleImage, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
+            PXLayout.pinBottom(view: badgeImageView, to: circleImage, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
         }
 
         //Close button
@@ -114,12 +118,6 @@ class PXNewResultHeader: UITableViewCell {
         }
 
         self.layoutIfNeeded()
-    }
-
-    func buildBadgeImage(with image: UIImage?) -> PXAnimatedImageView {
-        let imageView = PXAnimatedImageView(image: image, size: CGSize(width: BADGE_IMAGE_SIZE, height: BADGE_IMAGE_SIZE))
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
     }
 
     func buildCloseButton() -> UIButton {
@@ -159,9 +157,4 @@ class PXNewResultHeader: UITableViewCell {
         messageLabel.lineBreakMode = .byTruncatingTail
         return messageLabel
     }
-
-    func animate() {
-        badgeImageView?.animate(duration: 0.2)
-    }
-
 }

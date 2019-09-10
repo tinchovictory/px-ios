@@ -16,7 +16,6 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     let tableView = UITableView()
     let viewModel: PXNewResultViewModelInterface
-    var headerCell: PXNewResultHeader?
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
@@ -43,11 +42,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     }
 
     private func animateTableView() {
-        let animator = UIViewPropertyAnimator(duration: 0.2, dampingRatio: 1) {
+        let animator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1) {
             self.tableView.alpha = 1
-        }
-        animator.addCompletion { (_) in
-            self.headerCell?.animate()
         }
         animator.startAnimation()
     }
@@ -93,10 +89,6 @@ extension PXNewResultViewController: UITableViewDelegate, UITableViewDataSource 
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = viewModel.getCellAtIndexPath(indexPath)
-        if let headerCell = cell as? PXNewResultHeader {
-            self.headerCell = headerCell
-        }
         return viewModel.getCellAtIndexPath(indexPath)
     }
 }

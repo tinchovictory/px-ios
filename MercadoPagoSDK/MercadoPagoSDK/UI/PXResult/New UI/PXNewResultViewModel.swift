@@ -47,6 +47,7 @@ protocol PXNewResultViewModelInterface {
     func numberOfRowsInSection(_ section: Int) -> Int
     func setCallback(callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void)
     func primaryResultColor() -> UIColor
+    func buildHeaderCell() -> UITableViewCell
 //    func getPaymentStatus() -> String
 //    func getPaymentStatusDetail() -> String
 //    func getPaymentId() -> String?

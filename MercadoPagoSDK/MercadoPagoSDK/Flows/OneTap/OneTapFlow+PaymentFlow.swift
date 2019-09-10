@@ -46,8 +46,9 @@ extension OneTapFlow: PXPaymentResultHandlerProtocol {
         }
     }
 
-    func finishPaymentFlow(businessResult: PXBusinessResult) {
+    func finishPaymentFlow(businessResult: PXBusinessResult, pointsAndDiscounts: PointsAndDiscounts?) {
         self.model.businessResult = businessResult
+        self.model.pointsAndDiscounts = pointsAndDiscounts
         if isShowingLoading() {
             self.executeNextStep()
         } else {

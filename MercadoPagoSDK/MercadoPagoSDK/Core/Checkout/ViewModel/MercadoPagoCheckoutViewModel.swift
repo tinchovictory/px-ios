@@ -306,7 +306,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     }
 
     func resultViewModel() -> PXResultViewModel {
-        return PXResultViewModel(amountHelper: self.amountHelper, paymentResult: self.paymentResult!, instructionsInfo: self.instructionsInfo, resultConfiguration: self.advancedConfig.paymentResultConfiguration)
+        return PXResultViewModel(amountHelper: self.amountHelper, paymentResult: self.paymentResult!, instructionsInfo: self.instructionsInfo, pointsAndDiscounts: self.pointsAndDiscounts, resultConfiguration: self.advancedConfig.paymentResultConfiguration)
     }
 
     //SEARCH_PAYMENT_METHODS

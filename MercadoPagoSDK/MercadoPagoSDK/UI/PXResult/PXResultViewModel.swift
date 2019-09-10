@@ -12,15 +12,17 @@ internal class PXResultViewModel: PXResultViewModelInterface {
 
     var paymentResult: PaymentResult
     var instructionsInfo: PXInstructions?
+    var pointsAndDiscounts: PointsAndDiscounts?
     var preference: PXPaymentResultConfiguration
     var callback: ((PaymentResult.CongratsState) -> Void)?
     let amountHelper: PXAmountHelper
 
     let warningStatusDetails = [PXRejectedStatusDetail.INVALID_ESC, PXRejectedStatusDetail.CALL_FOR_AUTH, PXRejectedStatusDetail.BAD_FILLED_CARD_NUMBER, PXRejectedStatusDetail.CARD_DISABLE, PXRejectedStatusDetail.INSUFFICIENT_AMOUNT, PXRejectedStatusDetail.BAD_FILLED_DATE, PXRejectedStatusDetail.BAD_FILLED_SECURITY_CODE, PXRejectedStatusDetail.REJECTED_INVALID_INSTALLMENTS, PXRejectedStatusDetail.BAD_FILLED_OTHER]
 
-    init(amountHelper: PXAmountHelper, paymentResult: PaymentResult, instructionsInfo: PXInstructions? = nil, resultConfiguration: PXPaymentResultConfiguration = PXPaymentResultConfiguration()) {
+    init(amountHelper: PXAmountHelper, paymentResult: PaymentResult, instructionsInfo: PXInstructions? = nil, pointsAndDiscounts: PointsAndDiscounts?, resultConfiguration: PXPaymentResultConfiguration = PXPaymentResultConfiguration()) {
         self.paymentResult = paymentResult
         self.instructionsInfo = instructionsInfo
+        self.pointsAndDiscounts = pointsAndDiscounts
         self.preference = resultConfiguration
         self.amountHelper = amountHelper
     }
@@ -175,7 +177,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         var cells: [ResultCellItem] = []
 
         //Header Cell
-        let headerCell = ResultCellItem(position: .header, relatedCell: getHeaderCell(), relatedComponent: nil, relatedView: nil)
+        let headerCell = ResultCellItem(position: .header, relatedCell: buildHeaderCell(), relatedComponent: nil, relatedView: nil)
         cells.append(headerCell)
 
         //Instructions Cell
@@ -254,7 +256,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return paymentResult.paymentData != nil || paymentResult.splitAccountMoney != nil || buildReceiptComponent() != nil
     }
 
-    private func getHeaderCell() -> UITableViewCell {
+    func buildHeaderCell() -> UITableViewCell {
         let cell = PXNewResultHeader()
         let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
