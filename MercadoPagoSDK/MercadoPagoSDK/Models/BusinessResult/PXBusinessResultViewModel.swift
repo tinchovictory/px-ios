@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MLBusinessComponents
 
 class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 
@@ -245,25 +246,6 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
             cells.append(topCustomCell)
         }
 
-        //Payment Detail Title Cell
-        if shouldShowPaymentDetailCell() {
-            let label = UILabel()
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.text = "Detalle del pago"
-            label.font = Utils.getSemiBoldFont(size: 18)
-
-            let containerView = UIView()
-            containerView.backgroundColor = .pxWhite
-            containerView.translatesAutoresizingMaskIntoConstraints = false
-            containerView.addSubview(label)
-            PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN)
-            PXLayout.pinRight(view: label, withMargin: PXLayout.L_MARGIN)
-            PXLayout.pinTop(view: label, withMargin: PXLayout.L_MARGIN)
-            PXLayout.pinBottom(view: label, withMargin: PXLayout.M_MARGIN)
-            let detailTitleCell = ResultCellItem(position: .paymentDetailTitle, relatedCell: nil, relatedComponent: nil, relatedView: containerView)
-            cells.append(detailTitleCell)
-        }
-
         //Receipt Cell
         if let receiptComponent = buildReceiptComponent() {
             let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
@@ -298,10 +280,6 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
     func getInstructionsCell() -> UITableViewCell? {
         return nil
-    }
-
-    private func shouldShowPaymentDetailCell() -> Bool {
-        return true
     }
 
     func buildHeaderCell() -> UITableViewCell {

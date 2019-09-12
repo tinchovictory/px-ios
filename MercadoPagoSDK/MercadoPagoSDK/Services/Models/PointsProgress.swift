@@ -10,12 +10,12 @@ import Foundation
 struct PointsProgress: Decodable {
 
     let percentage: Double
-    let pointsFrom: Int
-    let pointsTo: Int
+    let levelColor: String
+    let levelNumber: Int
 
     enum CodingKeys: String, CodingKey {
         case percentage
-        case pointsFrom = "points_from"
-        case pointsTo = "points_to"
+        case levelColor = "level_color"
+        case levelNumber = "level_number"
     }
 }

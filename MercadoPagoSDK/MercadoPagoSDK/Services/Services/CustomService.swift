@@ -82,7 +82,7 @@ internal class CustomService: MercadoPagoService {
 
     internal func getPointsAndDiscounts(headers: [String: String]? = nil, body: Data?, params: String?, success: @escaping (_ jsonResult: PointsAndDiscounts) -> Void, failure: (() -> Void)?) {
 
-            self.request(uri: self.URI, params: params, body: body, method: HTTPMethod.post, headers: headers, cache: false, success: { (data: Data) -> Void in
+            self.request(uri: self.URI, params: params, body: body, method: HTTPMethod.get, headers: headers, cache: false, success: { (data: Data) -> Void in
                 do {
                     let jsonResult = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
                     if let pointsDic = jsonResult as? NSDictionary {

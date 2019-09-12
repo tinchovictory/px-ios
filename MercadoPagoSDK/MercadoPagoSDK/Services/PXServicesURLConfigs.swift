@@ -15,7 +15,6 @@ internal class PXServicesURLConfigs: NSObject {
     static var API_VERSION = "2.0"
     static let MP_API_BASE_URL_PROD: String =  "https://api.mercadopago.com"
     static let MP_API_BASE_URL: String = MP_API_BASE_URL_PROD
-    static let MOCK_API_POINTS_AND_BENEFITS = "http://private-df92b-"
 
     static let MP_DEFAULT_PROCESSING_MODE = "aggregator"
     static let MP_DEFAULT_PROCESSING_MODES = [MP_DEFAULT_PROCESSING_MODE]
@@ -40,5 +39,5 @@ internal class PXServicesURLConfigs: NSObject {
     static let MP_CAMPAIGNS_URI = "/campaigns/check_availability"
     static let MP_SUMMARY_AMOUNT_URI = "\(MP_SELECTED_ENV)/px_mobile_api/summary_amount"
     static let MP_PAYMENTS_URI = MP_SELECTED_ENV + "/px_mobile" + PAYMENTS
-    static let MOCK_POINTS_AND_BENEFITS = "getpointsandbenefits.apiary-mock.com/getPointsAndBenefits"
+    static let MP_POINTS_URI = MP_SELECTED_ENV + "/px_mobile" + PAYMENTS + "/congrats"
 }

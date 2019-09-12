@@ -66,16 +66,13 @@ internal class MercadoPagoServices: NSObject {
         service.createPayment(headers: headers, body: paymentDataJSON, params: params, success: callback, failure: failure)
     }
 
-    func getPointsAndDiscounts(url: String, uri: String, transactionId: String? = nil, pointsDataJSON: Data?, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PointsAndDiscounts) -> Void, failure: @escaping (() -> Void)) {
+    func getPointsAndDiscounts(url: String, uri: String, paymentIds: [String]? = nil, platform: String, callback : @escaping (PointsAndDiscounts) -> Void, failure: @escaping (() -> Void)) {
         let service: CustomService = CustomService(baseURL: url, URI: uri)
 
-        var params = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
+        var params = MercadoPagoServices.getParamsAccessTokenAndPaymentIdsAndPlatform(payerAccessToken, paymentIds, platform)
         params.paramsAppend(key: ApiParams.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
-        if let queryParams = query as NSDictionary? {
-            params = queryParams.parseToQuery()
-        }
 
-        service.getPointsAndDiscounts(headers: headers, body: pointsDataJSON, params: params, success: callback, failure: failure)
+        service.getPointsAndDiscounts(body: nil, params: params, success: callback, failure: failure)
     }
 
     func createToken(cardToken: PXCardToken, callback : @escaping (PXToken) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
@@ -257,6 +254,31 @@ internal class MercadoPagoServices: NSObject {
             params.paramsAppend(key: ApiParams.PAYER_ACCESS_TOKEN, value: payerAccessToken!)
         }
         params.paramsAppend(key: ApiParams.PUBLIC_KEY, value: merchantPublicKey)
+
+        return params
+    }
+
+    class func getParamsAccessTokenAndPaymentIdsAndPlatform(_ payerAccessToken: String?, _ paymentIds: [String]?, _ platform: String?) -> String {
+        var params: String = ""
+
+        if let payerAccessToken = payerAccessToken, !payerAccessToken.isEmpty {
+            params.paramsAppend(key: ApiParams.PAYER_ACCESS_TOKEN, value: payerAccessToken)
+        }
+
+        if let paymentIds = paymentIds {
+            var paymentIdsString = ""
+            for (index, paymentId) in paymentIds.enumerated() {
+                if index != 0 {
+                    paymentIdsString.append(",")
+                }
+                paymentIdsString.append(paymentId)
+            }
+            params.paramsAppend(key: ApiParams.PAYMENT_IDS, value: paymentIdsString)
+        }
+
+        if let platform = platform {
+            params.paramsAppend(key: ApiParams.PLATFORM, value: platform)
+        }
 
         return params
     }
