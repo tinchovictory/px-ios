@@ -9,7 +9,7 @@ import UIKit
 
 struct PXNewResultHeaderData {
     let color: UIColor?
-    let title: NSAttributedString?
+    let title: String
     let icon: UIImage?
     let iconURL: String?
     let badgeImage: UIImage?
@@ -34,7 +34,7 @@ class PXNewResultHeader: UITableViewCell {
     let BADGE_VERTICAL_OFFSET: CGFloat = 0.0
 
     //Close Button
-    let CLOSE_BUTTON_SIZE: CGFloat = 19
+    let CLOSE_BUTTON_SIZE: CGFloat = 14
 
     //Text
     static let TITLE_FONT_SIZE: CGFloat = PXLayout.L_FONT
@@ -53,41 +53,18 @@ class PXNewResultHeader: UITableViewCell {
     }
 
     func render() {
+        guard let data = self.data else {return}
         removeAllSubviews()
         selectionStyle = .none
-        self.backgroundColor = data?.color
+        self.backgroundColor = data.color
         let pxContentView = UIView()
         pxContentView.backgroundColor = .clear
+        pxContentView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(pxContentView)
         PXLayout.pinAllEdges(view: pxContentView, withMargin: PXLayout.ZERO_MARGIN)
-        PXLayout.setHeight(owner: pxContentView, height: 136).isActive = true
-
-        //Image
-        if let imageURL = data?.iconURL, imageURL.isNotEmpty {
-            let pximage = PXUIImage(url: imageURL)
-            iconImageView = buildCircleImage(with: pximage)
-        } else {
-            iconImageView = buildCircleImage(with: data?.icon)
-        }
-        if let circleImage = iconImageView {
-            pxContentView.addSubview(circleImage)
-            PXLayout.pinBottom(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
-            PXLayout.pinRight(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
-
-            //Badge Image
-            let badgeImageView = UIImageView()
-            self.badgeImageView = badgeImageView
-            badgeImageView.image = data?.badgeImage
-            badgeImageView.translatesAutoresizingMaskIntoConstraints = false
-            pxContentView.addSubview(badgeImageView)
-            PXLayout.setWidth(owner: badgeImageView, width: BADGE_IMAGE_SIZE).isActive = true
-            PXLayout.setHeight(owner: badgeImageView, height: BADGE_IMAGE_SIZE).isActive = true
-            PXLayout.pinRight(view: badgeImageView, to: circleImage, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
-            PXLayout.pinBottom(view: badgeImageView, to: circleImage, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
-        }
 
         //Close button
-        if let closeAction = data?.closeAction {
+        if let closeAction = data.closeAction {
             let button = buildCloseButton()
             closeButton = button
             pxContentView.addSubview(button)
@@ -96,25 +73,52 @@ class PXNewResultHeader: UITableViewCell {
             })
             PXLayout.setHeight(owner: button, height: CLOSE_BUTTON_SIZE).isActive = true
             PXLayout.setWidth(owner: button, width: CLOSE_BUTTON_SIZE).isActive = true
-            PXLayout.pinTop(view: button, withMargin: PXLayout.S_MARGIN).isActive = true
-            PXLayout.pinLeft(view: button, withMargin: PXLayout.M_MARGIN).isActive = true
+            PXLayout.pinTop(view: button, withMargin: PXLayout.M_MARGIN).isActive = true
+            PXLayout.pinLeft(view: button, withMargin: PXLayout.L_MARGIN).isActive = true
         }
 
         //Title Label
-        if let title = data?.title {
-            let label = buildMessageLabel(with: title)
-            titleLabel = label
-            label.font = Utils.getSemiBoldFont(size: 18)
-            pxContentView.addSubview(label)
+        let titleLabel = buildTitleLabel(with: data.title)
+        self.titleLabel = titleLabel
+        pxContentView.addSubview(titleLabel)
 
-            PXLayout.pinBottom(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
-            PXLayout.pinLeft(view: label, withMargin: PXLayout.L_MARGIN).isActive = true
+        if let closeButton = self.closeButton {
+            PXLayout.put(view: titleLabel, onBottomOf: closeButton, withMargin: PXLayout.M_MARGIN).isActive = true
+        } else {
+            PXLayout.pinTop(view: titleLabel, withMargin: PXLayout.M_MARGIN).isActive = true
+        }
 
-            if let iconImageView = iconImageView {
-                PXLayout.put(view: label, leftOf: iconImageView, withMargin: PXLayout.S_MARGIN, relation: .equal).isActive = true
-            } else {
-                PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
-            }
+        PXLayout.pinBottom(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
+        PXLayout.pinLeft(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
+
+        //Icon ImageView
+        if let imageURL = data.iconURL, imageURL.isNotEmpty {
+            let pximage = PXUIImage(url: imageURL)
+            iconImageView = buildCircleImage(with: pximage)
+        } else {
+            iconImageView = buildCircleImage(with: data.icon)
+        }
+        if let circleImage = iconImageView {
+            pxContentView.addSubview(circleImage)
+            PXLayout.centerVertically(view: circleImage, to: titleLabel).isActive = true
+            PXLayout.pinRight(view: circleImage, withMargin: PXLayout.L_MARGIN).isActive = true
+
+            //Title label layout
+            PXLayout.put(view: titleLabel, leftOf: circleImage, withMargin: PXLayout.S_MARGIN).isActive = true
+
+            //Badge Image
+            let badgeImageView = UIImageView()
+            self.badgeImageView = badgeImageView
+            badgeImageView.image = data.badgeImage
+            badgeImageView.translatesAutoresizingMaskIntoConstraints = false
+            pxContentView.addSubview(badgeImageView)
+            PXLayout.setWidth(owner: badgeImageView, width: BADGE_IMAGE_SIZE).isActive = true
+            PXLayout.setHeight(owner: badgeImageView, height: BADGE_IMAGE_SIZE).isActive = true
+            PXLayout.pinRight(view: badgeImageView, to: circleImage, withMargin: BADGE_HORIZONTAL_OFFSET).isActive = true
+            PXLayout.pinBottom(view: badgeImageView, to: circleImage, withMargin: BADGE_VERTICAL_OFFSET).isActive = true
+        } else {
+            //Title label layout
+            PXLayout.pinRight(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
         }
 
         self.layoutIfNeeded()
@@ -124,7 +128,7 @@ class PXNewResultHeader: UITableViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let image = ResourceManager.shared.getImage("close-button")
-        let margin: CGFloat = PXLayout.XXXS_MARGIN
+        let margin: CGFloat = 0
         button.contentEdgeInsets = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
         button.setImage(image, for: .normal)
         button.accessibilityIdentifier = "result_close_button"
@@ -146,15 +150,16 @@ class PXNewResultHeader: UITableViewCell {
         return circleImage
     }
 
-    func buildMessageLabel(with text: NSAttributedString) -> UILabel {
-        let messageLabel = UILabel()
-        messageLabel.textAlignment = .left
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        messageLabel.attributedText = text
-        messageLabel.textColor = .white
-        messageLabel.lineBreakMode = .byWordWrapping
-        messageLabel.numberOfLines = 2
-        messageLabel.lineBreakMode = .byTruncatingTail
-        return messageLabel
+    func buildTitleLabel(with text: String) -> UILabel {
+        let titleLabel = UILabel()
+        titleLabel.font = Utils.getSemiBoldFont(size: 20)
+        titleLabel.textAlignment = .left
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.text = text
+        titleLabel.textColor = .white
+        titleLabel.numberOfLines = 0
+        titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.lineBreakMode = .byTruncatingTail
+        return titleLabel
     }
 }

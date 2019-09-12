@@ -235,7 +235,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
     func buildHeaderCell() -> UITableViewCell {
         let cell = PXNewResultHeader()
-        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true), icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 if let url = self?.getBackUrl() {
                     self?.openURL(url: url, success: { (_) in

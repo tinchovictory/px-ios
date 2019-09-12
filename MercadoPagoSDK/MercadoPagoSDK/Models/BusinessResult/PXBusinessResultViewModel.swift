@@ -306,7 +306,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
     func buildHeaderCell() -> UITableViewCell {
         let cell = PXNewResultHeader()
-        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle(), icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
+        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 callback(PaymentResult.CongratsState.cancel_EXIT)
             }
