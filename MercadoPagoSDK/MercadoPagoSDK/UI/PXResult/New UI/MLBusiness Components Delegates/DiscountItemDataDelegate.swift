@@ -32,6 +32,6 @@ class DiscountItemDataDelegate: NSObject, MLBusinessSingleItemProtocol {
     }
 
     func trackIdForItem() -> String? {
-        return ""
+        return item.campaingId
     }
 }
