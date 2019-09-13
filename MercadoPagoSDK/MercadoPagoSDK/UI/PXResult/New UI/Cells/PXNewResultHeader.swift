@@ -18,12 +18,18 @@ struct PXNewResultHeaderData {
 
 class PXNewResultHeader: UIView {
 
-    var data: PXNewResultHeaderData? {
-        didSet {
-            render()
-        }
-    }
+    let data: PXNewResultHeaderData
 
+    init(data: PXNewResultHeaderData) {
+        self.data = data
+        super.init(frame: .zero)
+        render()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     //Image
     let IMAGE_WIDTH: CGFloat = 48.0
     let IMAGE_HEIGHT: CGFloat = 48.0
@@ -44,12 +50,7 @@ class PXNewResultHeader: UIView {
     var closeButton: UIButton?
     var titleLabel: UILabel?
 
-    func setData(data: PXNewResultHeaderData) {
-        self.data = data
-    }
-
     func render() {
-        guard let data = self.data else {return}
         removeAllSubviews()
         self.backgroundColor = data.color
         let pxContentView = UIView()

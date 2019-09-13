@@ -85,8 +85,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
-        for view in viewModel.getViews() {
-            contentView.addViewToBottom(view)
+        for (view, margin) in viewModel.getViews() {
+            contentView.addViewToBottom(view, withMargin: margin)
             PXLayout.centerHorizontally(view: view, to: contentView).isActive = true
             PXLayout.matchWidth(ofView: view, toView: contentView).isActive = true
         }
@@ -131,7 +131,7 @@ internal extension UIView {
         if self.subviews.count == 1 {
             PXLayout.pinTop(view: view, withMargin: margin).isActive = true
         } else {
-            PXLayout.put(view: view, onBottomOfLastViewOf: self)?.isActive = true
+            PXLayout.put(view: view, onBottomOfLastViewOf: self, withMargin: margin)?.isActive = true
         }
     }
 }

@@ -36,10 +36,16 @@ class PXNewCustomView: UIView {
 
     var iconImageView: PXUIImageView?
 
-    var data: PXNewCustomViewData? {
-        didSet {
-            render()
-        }
+    let data: PXNewCustomViewData
+
+    init(data: PXNewCustomViewData) {
+        self.data = data
+        super.init(frame: .zero)
+        render()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     //Attributes
@@ -53,10 +59,6 @@ class PXNewCustomView: UIView {
         NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.45)
     ]
 
-    func setData(data: PXNewCustomViewData) {
-        self.data = data
-    }
-
     func render() {
         removeAllSubviews()
         let pxContentView = UIView()
@@ -66,16 +68,16 @@ class PXNewCustomView: UIView {
         PXLayout.setHeight(owner: pxContentView, height: ROW_HEIGHT).isActive = true
 
         //Background Color
-        if let color = data?.color {
+        if let color = data.color {
             self.backgroundColor = color
         }
 
         // Icon
-        if let imageURL = data?.iconURL, imageURL.isNotEmpty {
+        if let imageURL = data.iconURL, imageURL.isNotEmpty {
             let pximage = PXUIImage(url: imageURL)
             iconImageView = buildCircleImage(with: pximage)
         } else {
-            iconImageView = buildCircleImage(with: data?.icon)
+            iconImageView = buildCircleImage(with: data.icon)
         }
 
         let labelsView = PXComponentView()
@@ -98,7 +100,7 @@ class PXNewCustomView: UIView {
         PXLayout.matchHeight(ofView: labelsView, relation: .lessThanOrEqual)
 
         // Title Label
-        if let title = data?.title {
+        if let title = data.title {
             title.addAttributes(titleAttributes, range: NSRange(location: 0, length: title.length))
 
             let label = UILabel()
@@ -108,7 +110,7 @@ class PXNewCustomView: UIView {
         }
 
         // Subtitle Label
-        if let subtitle = data?.subtitle {
+        if let subtitle = data.subtitle {
             subtitle.addAttributes(subtitleAttributes, range: NSRange(location: 0, length: subtitle.length))
 
             let label = UILabel()
@@ -120,7 +122,7 @@ class PXNewCustomView: UIView {
         }
 
         //Action Label
-        if let action = data?.action {
+        if let action = data.action {
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -139,7 +141,7 @@ class PXNewCustomView: UIView {
     }
 
     @objc func actionTapped() {
-        guard let action = data?.action else {
+        guard let action = data.action else {
             return
         }
         action.action()

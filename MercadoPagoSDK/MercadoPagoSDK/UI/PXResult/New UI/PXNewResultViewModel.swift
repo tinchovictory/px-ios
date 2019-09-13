@@ -8,7 +8,7 @@
 import Foundation
 
 protocol PXNewResultViewModelInterface {
-    func getViews() -> [UIView]
+    func getViews() -> [(view: UIView, margin: CGFloat)]
 
 //    func getCells() -> [ResultCellItem]
 //    func getCellsClases() -> [(id: String, cell: AnyClass)]

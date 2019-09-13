@@ -175,61 +175,61 @@ extension PXResultViewModel {
 // MARK: New Result View Model Interface
 extension PXResultViewModel: PXNewResultViewModelInterface {
 
-    func getViews() -> [UIView] {
-        var views = [UIView]()
+    func getViews() -> [(view: UIView, margin: CGFloat)] {
+        var views = [(view: UIView, margin: CGFloat)]()
 
         //Header View
         let headerView = buildHeaderView()
-        views.append(headerView)
+        views.append((view: headerView, margin: 0))
 
         //Important View
 
         //Points
         if let pointsView = buildPointsViews() {
-            views.append(pointsView)
+            views.append((view: pointsView, margin: PXLayout.M_MARGIN))
         }
 
         //Discounts
         if let discountsView = buildDiscountsViews() {
-            views.append(DividingLineView(hasTriangle: true))
-            views.append(discountsView)
+            views.append((view: DividingLineView(hasTriangle: true), margin: PXLayout.M_MARGIN))
+            views.append((view: discountsView, margin: PXLayout.S_MARGIN))
         } else {
-            views.append(DividingLineView())
+            views.append((view: DividingLineView(), margin: PXLayout.M_MARGIN))
         }
 
         //Instructions View
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            views.append(bodyComponent.render())
+            views.append((view: bodyComponent.render(), margin: 0))
         }
 
         //Top Custom View
         if let topCustomView = buildTopCustomView() {
-            views.append(topCustomView)
+            views.append((view: topCustomView, margin: 0))
         }
 
         //Receipt View
         if let receiptView = buildReceiptView() {
-            views.append(receiptView)
+            views.append((view: receiptView, margin: 0))
         }
 
         //Payment Method View
         if let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
-            views.append(PMView)
+            views.append((view: PMView, margin: 0))
         }
 
         //Split Payment View
         if let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
-            views.append(splitView)
+            views.append((view: splitView, margin: 0))
         }
 
         //Bottom Custom View
         if let bottomCustomView = buildBottomCustomView() {
-            views.append(bottomCustomView)
+            views.append((view: bottomCustomView, margin: 0))
         }
 
         //Footer View
         let footerView = buildFooterComponent().render()
-        views.append(footerView)
+        views.append((view: footerView, margin: 0))
 
         return views
     }
@@ -239,8 +239,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 extension PXResultViewModel {
     //Header View
     func buildHeaderView() -> UIView {
-        let headerView = PXNewResultHeader()
-        let viewData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+        let data = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 if let url = self?.getBackUrl() {
                     self?.openURL(url: url, success: { (_) in
@@ -251,18 +250,18 @@ extension PXResultViewModel {
                 }
             }
         })
-        headerView.setData(data: viewData)
+        let headerView = PXNewResultHeader(data: data)
         return headerView
     }
 
     //Receipt View
     func buildReceiptView() -> UIView? {
-        guard let props = getReceiptComponentProps() else {
+        guard let props = getReceiptComponentProps(), let title = props.receiptDescriptionString else {
             return nil
         }
-        //        let title = props.receiptDescriptionString.toAttributedString
-        let view = PXNewCustomView()
-        view.setData(data: (PXNewCustomViewData(title: "".toAttributedString(), subtitle: "".toAttributedString(), icon: nil, iconURL: nil, action: nil, color: nil)))
+        let subtitle = props.dateLabelString ?? ""
+        let data = PXNewCustomViewData(title: title.toAttributedString(), subtitle: subtitle.toAttributedString(), icon: nil, iconURL: nil, action: nil, color: nil)
+        let view = PXNewCustomView(data: data)
         return view
     }
 
@@ -343,8 +342,7 @@ extension PXResultViewModel {
         //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
 
         let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
-        let view = PXNewCustomView()
-        view.setData(data: data)
+        let view = PXNewCustomView(data: data)
         return view
     }
 }
