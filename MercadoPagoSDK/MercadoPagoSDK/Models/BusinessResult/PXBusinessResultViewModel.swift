@@ -224,145 +224,204 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 }
 
 // MARK: New Result View Model Interface
-extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
-    func getCells() -> [ResultCellItem] {
-        var cells: [ResultCellItem] = []
-
-        //Header Cell
-        let headerCell = ResultCellItem(position: .header, relatedCell: buildHeaderCell(), relatedComponent: nil, relatedView: nil)
-        cells.append(headerCell)
-
-        //
-
-        //Instructions Cell
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
-            cells.append(instructionsCell)
-        }
-
-        //Top Custom Cell
-        if let topCustomView = buildTopCustomView() {
-            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
-            cells.append(topCustomCell)
-        }
-
-        //Receipt Cell
-        if let receiptComponent = buildReceiptComponent() {
-            let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
-            cells.append(receiptCell)
-        }
-
-        //Payment Methods
-        if self.businessResult.mustShowPaymentMethod() {
-            getPaymentMethodComponents()
-        }
-
-        //Bottom Custom Cell
-        if let bottomCustomView = buildBottomCustomView() {
-            let bottomCustomCell = ResultCellItem(position: .bottomCustomView, relatedCell: nil, relatedComponent: nil, relatedView: bottomCustomView)
-            cells.append(bottomCustomCell)
-        }
-
-        //Footer Cell
-        let footerCell = ResultCellItem(position: .footer, relatedCell: nil, relatedComponent: buildFooterComponent(), relatedView: nil)
-        cells.append(footerCell)
-
-        return cells
-    }
-
-    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
-        return getCells()[indexPath.row].getCell()
-    }
-
-    func numberOfRowsInSection(_ section: Int) -> Int {
-        return getCells().count
-    }
-
-    func getInstructionsCell() -> UITableViewCell? {
-        return nil
-    }
-
-    func buildHeaderCell() -> UITableViewCell {
-        let cell = PXNewResultHeader()
-        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
-            if let callback = self?.callback {
-                callback(PaymentResult.CongratsState.cancel_EXIT)
-            }
-        })
-        cell.setData(data: cellData)
-        return cell
-    }
-
-    func getPaymentMethodCells() -> [PXNewCustomView] {
-        var paymentMethodsCells: [PXNewCustomView] = []
-
-        if let splitAccountMoney = amountHelper.splitAccountMoney, let secondPMCell = getPaymentMethodCell(paymentData: splitAccountMoney) {
-            paymentMethodsCells.append(secondPMCell)
-        }
-
-        if let firstPMCell = getPaymentMethodCell(paymentData: self.amountHelper.getPaymentData()) {
-            paymentMethodsCells.append(firstPMCell)
-        }
-
-        return paymentMethodsCells
-    }
-
-    func getPaymentMethodCell(paymentData: PXPaymentData) -> PXNewCustomView? {
-        guard let paymentMethod = paymentData.paymentMethod else {
-            return nil
-        }
-
-        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
-        let currency = SiteManager.shared.getCurrency()
-        var amountTitle: String = ""
-        var subtitle: NSMutableAttributedString?
-        if let payerCost = paymentData.payerCost {
-            if payerCost.installments > 1 {
-                amountTitle = String(payerCost.installments) + "x " + Utils.getAmountFormated(amount: payerCost.installmentAmount, forCurrency: currency)
-                subtitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency, addingParenthesis: true).toAttributedString()
-            } else {
-                amountTitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency)
-            }
-        } else {
-            // Caso account money
-            if  let splitAccountMoneyAmount = paymentData.getTransactionAmountWithDiscount() {
-                amountTitle = Utils.getAmountFormated(amount: splitAccountMoneyAmount ?? 0, forCurrency: currency)
-            } else {
-                amountTitle = Utils.getAmountFormated(amount: amountHelper.amountToPay, forCurrency: currency)
-            }
-        }
-
-        var pmDescription: String = ""
-        let paymentMethodName = paymentMethod.name ?? ""
-
-        let issuer = self.paymentData.getIssuer()
-        let paymentMethodIssuerName = issuer?.name ?? ""
-        var descriptionDetail: NSAttributedString?
-
-        if paymentMethod.isCard {
-            if let lastFourDigits = (self.paymentData.token?.lastFourDigits) {
-                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
-            }
-            if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
-                descriptionDetail = paymentMethodIssuerName.toAttributedString()
-            }
-        } else {
-            pmDescription = paymentMethodName
-        }
-
-        var disclaimerText: String?
-        if let statementDescription = self.businessResult.getStatementDescription() {
-            disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
-        }
-
-        //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle.toAttributedString(), subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
-
-        let data = PXNewCustomViewData(title: amountTitle.toAttributedString(), subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
-        let cell = PXNewCustomView()
-        cell.setData(data: data)
-        return cell
-    }
-}
+//extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
+//    func getViews() -> [UIView] {
+//        return []
+//    }
+//
+//    func getCellsClases() -> [(id: String, cell: AnyClass)] {
+//        return [(id: "headerCell", cell: PXNewResultHeader.self), (id: "containerCell", cell: PXNewResultHeader.self)]
+//    }
+//
+//    func getCells() -> [ResultCellItem] {
+//        var cells: [ResultCellItem] = []
+//
+//        //Header Cell
+////        let headerCell = ResultCellItem(position: .header, relatedCell: buildHeaderCell(), relatedComponent: nil, relatedView: nil)
+////        cells.append(headerCell)
+//
+//        //Points
+//        let ringView = MLBusinessLoyaltyRingView(self)
+//        let ringCell = ResultCellItem(position: .points, relatedCell: nil, relatedComponent: nil, relatedView: ringView)
+//        cells.append(ringCell)
+//
+//        // Add tap action and receive the deepLink
+//
+//        //Instructions Cell
+//        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+//            let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
+//            cells.append(instructionsCell)
+//        }
+//
+//        //Top Custom Cell
+//        if let topCustomView = buildTopCustomView() {
+//            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
+//            cells.append(topCustomCell)
+//        }
+//
+//        //Receipt Cell
+//        if let receiptComponent = buildReceiptComponent() {
+//            let receiptCell = ResultCellItem(position: .receipt, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
+//            cells.append(receiptCell)
+//        }
+//
+//        //Payment Methods
+//        if self.businessResult.mustShowPaymentMethod() {
+//            getPaymentMethodComponents()
+//        }
+//
+//        //Bottom Custom Cell
+//        if let bottomCustomView = buildBottomCustomView() {
+//            let bottomCustomCell = ResultCellItem(position: .bottomCustomView, relatedCell: nil, relatedComponent: nil, relatedView: bottomCustomView)
+//            cells.append(bottomCustomCell)
+//        }
+//
+//        //Footer Cell
+//        let footerCell = ResultCellItem(position: .footer, relatedCell: nil, relatedComponent: buildFooterComponent(), relatedView: nil)
+//        cells.append(footerCell)
+//
+//        return cells
+//    }
+//
+//    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
+//        return getCells()[indexPath.row].getCell()
+//    }
+//
+//    func numberOfRowsInSection(_ section: Int) -> Int {
+//        return getCells().count
+//    }
+//
+//    func getInstructionsCell() -> UITableViewCell? {
+//        return nil
+//    }
+//
+//    func buildHeaderView() -> UIView {
+////        let cell = PXNewResultHeader()
+////        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
+////            if let callback = self?.callback {
+////                callback(PaymentResult.CongratsState.cancel_EXIT)
+////            }
+////        })
+////        cell.setData(data: cellData)
+//        return UIView()
+//    }
+//
+//    func getPaymentMethodCells() -> [PXNewCustomView] {
+//        var paymentMethodsCells: [PXNewCustomView] = []
+//
+//        if let splitAccountMoney = amountHelper.splitAccountMoney, let secondPMCell = getPaymentMethodCell(paymentData: splitAccountMoney) {
+//            paymentMethodsCells.append(secondPMCell)
+//        }
+//
+//        if let firstPMCell = getPaymentMethodCell(paymentData: self.amountHelper.getPaymentData()) {
+//            paymentMethodsCells.append(firstPMCell)
+//        }
+//
+//        return paymentMethodsCells
+//    }
+//
+//    func getPaymentMethodCell(paymentData: PXPaymentData) -> PXNewCustomView? {
+//        guard let paymentMethod = paymentData.paymentMethod else {
+//            return nil
+//        }
+//
+//        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
+//        let currency = SiteManager.shared.getCurrency()
+//        var amountTitle: String = ""
+//        var subtitle: NSMutableAttributedString?
+//        if let payerCost = paymentData.payerCost {
+//            if payerCost.installments > 1 {
+//                amountTitle = String(payerCost.installments) + "x " + Utils.getAmountFormated(amount: payerCost.installmentAmount, forCurrency: currency)
+//                subtitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency, addingParenthesis: true).toAttributedString()
+//            } else {
+//                amountTitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency)
+//            }
+//        } else {
+//            // Caso account money
+//            if  let splitAccountMoneyAmount = paymentData.getTransactionAmountWithDiscount() {
+//                amountTitle = Utils.getAmountFormated(amount: splitAccountMoneyAmount ?? 0, forCurrency: currency)
+//            } else {
+//                amountTitle = Utils.getAmountFormated(amount: amountHelper.amountToPay, forCurrency: currency)
+//            }
+//        }
+//
+//        var pmDescription: String = ""
+//        let paymentMethodName = paymentMethod.name ?? ""
+//
+//        let issuer = self.paymentData.getIssuer()
+//        let paymentMethodIssuerName = issuer?.name ?? ""
+//        var descriptionDetail: NSAttributedString?
+//
+//        if paymentMethod.isCard {
+//            if let lastFourDigits = (self.paymentData.token?.lastFourDigits) {
+//                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
+//            }
+//            if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
+//                descriptionDetail = paymentMethodIssuerName.toAttributedString()
+//            }
+//        } else {
+//            pmDescription = paymentMethodName
+//        }
+//
+//        var disclaimerText: String?
+//        if let statementDescription = self.businessResult.getStatementDescription() {
+//            disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
+//        }
+//
+//        //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle.toAttributedString(), subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
+//
+//        let data = PXNewCustomViewData(title: amountTitle.toAttributedString(), subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
+//        let cell = PXNewCustomView()
+//        cell.setData(data: data)
+//        return cell
+//    }
+//}
+//
+//
+////MARK: ML Business Loyalty Ring Protocol
+//extension PXBusinessResultViewModel: MLBusinessLoyaltyRingData {
+//    func getRingHexaColor() -> String {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return ""
+//        }
+//        return points.progress.levelColor
+//    }
+//
+//    func getRingNumber() -> Int {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return 0
+//        }
+//        return points.progress.levelNumber
+//    }
+//
+//    func getRingPercentage() -> Float {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return 0.0
+//        }
+//        return Float(points.progress.percentage)
+//    }
+//
+//    func getTitle() -> String {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return ""
+//        }
+//        return points.title
+//    }
+//
+//    func getButtonTitle() -> String {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return ""
+//        }
+//        return points.action.label
+//    }
+//
+//    func getButtonDeepLink() -> String {
+//        guard let points = pointsAndDiscounts?.points else {
+//            return ""
+//        }
+//        return points.action.target
+//    }
+//}
 
 class PXBusinessResultBodyComponent: PXComponentizable {
     var paymentMethodComponents: [PXComponentizable]

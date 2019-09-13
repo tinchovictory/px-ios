@@ -14,7 +14,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
     private lazy var navigationTitleStatusStep: Int = 0
 
-    let tableView = UITableView()
+    let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
 
     internal var changePaymentMethodCallback: (() -> Void)?
@@ -32,64 +32,73 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupTableView()
-        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
+        setupScrollView()
+//        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        animateTableView()
+        animateScrollView()
     }
 
-    private func animateTableView() {
+    private func animateScrollView() {
         let animator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1) {
-            self.tableView.alpha = 1
+            self.scrollView.alpha = 1
         }
         animator.startAnimation()
     }
 
-    private func setupTableView() {
+    private func setupScrollView() {
         view.removeAllSubviews()
-        view.addSubview(tableView)
+        view.addSubview(scrollView)
         view.backgroundColor = viewModel.primaryResultColor()
-        tableView.backgroundColor = .pxWhite
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.backgroundColor = .red
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        tableView.alpha = 0
-        tableView.bounces = true
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.tableFooterView = UIView()
-        tableView.tableHeaderView = UIView()
-        tableView.tableHeaderView?.layoutIfNeeded()
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 100
-        tableView.layoutIfNeeded()
-        tableView.allowsSelection = false
-        tableView.separatorColor = .clear
-        tableView.reloadData()
+        scrollView.alpha = 0
+        scrollView.bounces = true
+//        scrollView.delegate = self
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.layoutIfNeeded()
+
+        renderContentView()
+    }
+
+    func renderContentView() {
+        let contentView = UIView()
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.backgroundColor = .pxWhite
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+
+        PXLayout.pinTop(view: contentView, to: scrollView).isActive = true
+        PXLayout.centerHorizontally(view: contentView, to: scrollView).isActive = true
+        PXLayout.matchWidth(ofView: contentView, toView: scrollView).isActive = true
+
+        for view in viewModel.getViews() {
+            contentView.addSubToBottom(view)
+            PXLayout.centerHorizontally(view: view, to: contentView).isActive = true
+            PXLayout.matchWidth(ofView: view, toView: contentView).isActive = true
+        }
+        PXLayout.pinLastSubviewToBottom(view: contentView)
     }
 }
 
-extension PXNewResultViewController: UITableViewDelegate, UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.numberOfRowsInSection(section)
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return viewModel.getCellAtIndexPath(indexPath)
+extension UIView {
+    public func addSubToBottom(_ view: UIView, withMargin margin: CGFloat = 0) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(view)
+        if self.subviews.count == 1 {
+            PXLayout.pinTop(view: view, withMargin: margin).isActive = true
+        } else {
+            PXLayout.put(view: view, onBottomOfLastViewOf: self)?.isActive = true
+        }
     }
 }
 
@@ -117,6 +126,6 @@ extension PXNewResultViewController {
             NAVIGATION_BAR_SECONDARY_DELTA_Y = customSecondaryDeltaY
         }
 
-        view.insertSubview(elasticHeader, aboveSubview: tableView)
+        view.insertSubview(elasticHeader, aboveSubview: scrollView)
     }
 }

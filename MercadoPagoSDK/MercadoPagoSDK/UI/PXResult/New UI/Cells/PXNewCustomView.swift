@@ -25,7 +25,7 @@ open class PXNewCustomViewData {
     }
 }
 
-class PXNewCustomView: UITableViewCell {
+class PXNewCustomView: UIView {
 
     //Row Settings
     let ROW_HEIGHT: CGFloat = 75
@@ -53,19 +53,12 @@ class PXNewCustomView: UITableViewCell {
         NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.45)
     ]
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        self.isUserInteractionEnabled = true
-        // Initialization code
-    }
-
     func setData(data: PXNewCustomViewData) {
         self.data = data
     }
 
     func render() {
         removeAllSubviews()
-        selectionStyle = .none
         let pxContentView = UIView()
         pxContentView.backgroundColor = .clear
         addSubview(pxContentView)
@@ -133,7 +126,6 @@ class PXNewCustomView: UITableViewCell {
 
             button.contentHorizontalAlignment = .left
             button.setTitle(action.label, for: .normal)
-            button.setTitleColor(.blue, for: .normal)
             button.titleLabel?.font = Utils.getFont(size: 14)
             button.setTitleColor(ThemeManager.shared.secondaryColor(), for: .normal)
             button.add(for: .touchUpInside, action.action)

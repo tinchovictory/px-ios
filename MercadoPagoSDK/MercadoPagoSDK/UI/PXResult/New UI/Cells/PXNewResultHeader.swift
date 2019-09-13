@@ -16,7 +16,7 @@ struct PXNewResultHeaderData {
     let closeAction: (() -> Void)?
 }
 
-class PXNewResultHeader: UITableViewCell {
+class PXNewResultHeader: UIView {
 
     var data: PXNewResultHeaderData? {
         didSet {
@@ -44,10 +44,6 @@ class PXNewResultHeader: UITableViewCell {
     var closeButton: UIButton?
     var titleLabel: UILabel?
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-
     func setData(data: PXNewResultHeaderData) {
         self.data = data
     }
@@ -55,7 +51,6 @@ class PXNewResultHeader: UITableViewCell {
     func render() {
         guard let data = self.data else {return}
         removeAllSubviews()
-        selectionStyle = .none
         self.backgroundColor = data.color
         let pxContentView = UIView()
         pxContentView.backgroundColor = .clear

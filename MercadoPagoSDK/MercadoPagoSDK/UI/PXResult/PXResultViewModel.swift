@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MLBusinessComponents
 
 internal class PXResultViewModel: PXResultViewModelInterface {
 
@@ -173,69 +174,70 @@ extension PXResultViewModel {
 
 // MARK: New Result View Model Interface
 extension PXResultViewModel: PXNewResultViewModelInterface {
-    func getCells() -> [ResultCellItem] {
-        var cells: [ResultCellItem] = []
 
-        //Header Cell
-        let headerCell = ResultCellItem(position: .header, relatedCell: buildHeaderCell(), relatedComponent: nil, relatedView: nil)
-        cells.append(headerCell)
+    func getViews() -> [UIView] {
+        var views = [UIView]()
 
-        //Instructions Cell
+        //Header View
+        let headerView = buildHeaderView()
+        views.append(headerView)
+
+        //Important View
+
+        //Instructions View
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            let instructionsCell = ResultCellItem(position: .instructions, relatedCell: nil, relatedComponent: bodyComponent, relatedView: nil)
-            cells.append(instructionsCell)
+            views.append(bodyComponent.render())
         }
 
-        //Top Custom Cell
+        //Top Custom View
         if let topCustomView = buildTopCustomView() {
-            let topCustomCell = ResultCellItem(position: .topCustomView, relatedCell: nil, relatedComponent: nil, relatedView: topCustomView)
-            cells.append(topCustomCell)
+            views.append(topCustomView)
         }
 
-        //Receipt Cell
-        if let receiptComponent = buildReceiptComponent() {
-            let receiptCell = ResultCellItem(position: .topDisclosureView, relatedCell: nil, relatedComponent: receiptComponent, relatedView: nil)
-            cells.append(receiptCell)
+        //Points
+        if let pointsView = buildPointsViews() {
+            views.append(pointsView)
         }
 
-        //Payment Method Cell
-        if let paymentData = paymentResult.paymentData {
-            let paymentMethodCell = getPaymentMethodCell(paymentData: paymentData)
-            let cell = ResultCellItem(position: .paymentMethod, relatedCell: paymentMethodCell, relatedComponent: nil, relatedView: nil)
-            cells.append(cell)
+        //Discounts
+        if let discountsView = buildDiscountsViews() {
+            views.append(discountsView)
         }
 
-        //Split Payment Cell
-        if let splitPaymentData = paymentResult.splitAccountMoney {
-            let paymentMethodCell = getPaymentMethodCell(paymentData: splitPaymentData)
-            let cell = ResultCellItem(position: .paymentMethod, relatedCell: paymentMethodCell, relatedComponent: nil, relatedView: nil)
-            cells.append(cell)
+        //Receipt View
+        if let receiptView = buildReceiptView() {
+            views.append(receiptView)
         }
 
-        //Bottom Custom Cell
+        //Payment Method View
+        if let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
+            views.append(PMView)
+        }
+
+        //Split Payment View
+        if let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
+            views.append(splitView)
+        }
+
+        //Bottom Custom View
         if let bottomCustomView = buildBottomCustomView() {
-            let bottomCustomCell = ResultCellItem(position: .bottomCustomView, relatedCell: nil, relatedComponent: nil, relatedView: bottomCustomView)
-            cells.append(bottomCustomCell)
+            views.append(bottomCustomView)
         }
 
-        //Footer Cell
-        let footerCell = ResultCellItem(position: .footer, relatedCell: nil, relatedComponent: buildFooterComponent(), relatedView: nil)
-        cells.append(footerCell)
+        //Footer View
+        let footerView = buildFooterComponent().render()
+        views.append(footerView)
 
-        return cells
+        return views
     }
+}
 
-    func getCellAtIndexPath(_ indexPath: IndexPath) -> UITableViewCell {
-        return getCells()[indexPath.row].getCell()
-    }
-
-    func numberOfRowsInSection(_ section: Int) -> Int {
-        return getCells().count
-    }
-
-    func buildHeaderCell() -> UITableViewCell {
-        let cell = PXNewResultHeader()
-        let cellData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+//MARK: New Result View Model Builders
+extension PXResultViewModel {
+    //Header View
+    func buildHeaderView() -> UIView {
+        let headerView = PXNewResultHeader()
+        let viewData = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 if let url = self?.getBackUrl() {
                     self?.openURL(url: url, success: { (_) in
@@ -246,8 +248,35 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
                 }
             }
         })
-        cell.setData(data: cellData)
-        return cell
+        headerView.setData(data: viewData)
+        return headerView
+    }
+
+    //Receipt View
+    func buildReceiptView() -> UIView? {
+        guard let props = getReceiptComponentProps() else {
+            return nil
+        }
+        //        let title = props.receiptDescriptionString.toAttributedString
+        let view = PXNewCustomView()
+        view.setData(data: (PXNewCustomViewData(title: "".toAttributedString(), subtitle: "".toAttributedString(), icon: nil, iconURL: nil, action: nil, color: nil)))
+        return view
+    }
+
+    //Points View
+    func buildPointsViews() -> UIView? {
+        guard let points = pointsAndDiscounts?.points else {return nil}
+        let pointsDelegate = RingViewDateDelegate(points: points)
+        let pointsView = MLBusinessLoyaltyRingView(pointsDelegate)
+        return pointsView
+    }
+
+    //Discounts View
+    func buildDiscountsViews() -> UIView? {
+        guard let discounts = pointsAndDiscounts?.discounts else {return nil}
+        let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
+        let discountsView = MLBusinessDiscountBoxView(discountsDelegate)
+        return discountsView
     }
 
     private func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
@@ -260,7 +289,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return paymentMethodImage
     }
 
-    private func getPaymentMethodCell(paymentData: PXPaymentData) -> PXNewCustomView? {
+    private func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
         guard let paymentMethod = paymentData.paymentMethod else {
             return nil
         }
@@ -308,11 +337,11 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
         }
 
-//        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
+        //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
 
         let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
-        let cell = PXNewCustomView()
-        cell.setData(data: data)
-        return cell
+        let view = PXNewCustomView()
+        view.setData(data: data)
+        return view
     }
 }
