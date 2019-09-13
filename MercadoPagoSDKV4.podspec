@@ -16,6 +16,7 @@ Pod::Spec.new do |s|
     default.source_files = ['MercadoPagoSDK/MercadoPagoSDK/**/**/**.{h,m,swift}']
     s.dependency 'MLUI', '~> 5.0'
     s.dependency 'MLCardDrawer', '~> 1.0'
+    s.dependency 'MLBusinessComponents', '~> 1.0'
   end
   
   s.subspec 'ESC' do |esc|

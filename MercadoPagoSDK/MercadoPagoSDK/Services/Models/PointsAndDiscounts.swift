@@ -9,8 +9,8 @@ import Foundation
 
 struct PointsAndDiscounts: Decodable {
 
-    private let points: Points?
-    private let discounts: Discounts?
+    let points: Points?
+    let discounts: Discounts?
 
     init(points: Points?, discounts: Discounts?) {
         self.points = points

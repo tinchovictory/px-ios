@@ -9,9 +9,9 @@ import Foundation
 
 struct Discounts: Decodable {
 
-    private let title: String
-    private let action: PointsAndDiscountsAction
-    private let items: [DiscountsItem]
+    let title: String
+    let action: PointsAndDiscountsAction
+    let items: [DiscountsItem]
 
     enum CodingKeys: String, CodingKey {
         case title
