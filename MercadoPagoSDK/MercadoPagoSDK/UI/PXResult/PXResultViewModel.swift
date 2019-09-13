@@ -184,6 +184,19 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
         //Important View
 
+        //Points
+        if let pointsView = buildPointsViews() {
+            views.append(pointsView)
+        }
+
+        //Discounts
+        if let discountsView = buildDiscountsViews() {
+            views.append(DividingLineView(hasTriangle: true))
+            views.append(discountsView)
+        } else {
+            views.append(DividingLineView())
+        }
+
         //Instructions View
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
             views.append(bodyComponent.render())
@@ -192,16 +205,6 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         //Top Custom View
         if let topCustomView = buildTopCustomView() {
             views.append(topCustomView)
-        }
-
-        //Points
-        if let pointsView = buildPointsViews() {
-            views.append(pointsView)
-        }
-
-        //Discounts
-        if let discountsView = buildDiscountsViews() {
-            views.append(discountsView)
         }
 
         //Receipt View

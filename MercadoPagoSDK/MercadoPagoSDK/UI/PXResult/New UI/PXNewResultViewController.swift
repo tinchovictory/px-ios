@@ -33,7 +33,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupScrollView()
-//        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
+        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -52,7 +52,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         view.removeAllSubviews()
         view.addSubview(scrollView)
         view.backgroundColor = viewModel.primaryResultColor()
-        scrollView.backgroundColor = .red
+        scrollView.backgroundColor = .pxWhite
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -62,7 +62,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
         scrollView.alpha = 0
         scrollView.bounces = true
-//        scrollView.delegate = self
+        scrollView.delegate = self
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.layoutIfNeeded()
@@ -72,17 +72,21 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     func renderContentView() {
         let contentView = UIView()
-        contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.backgroundColor = .pxWhite
         contentView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentView)
 
-        PXLayout.pinTop(view: contentView, to: scrollView).isActive = true
-        PXLayout.centerHorizontally(view: contentView, to: scrollView).isActive = true
-        PXLayout.matchWidth(ofView: contentView, toView: scrollView).isActive = true
+        //Content View Layout
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
 
         for view in viewModel.getViews() {
-            contentView.addSubToBottom(view)
+            contentView.addViewToBottom(view)
             PXLayout.centerHorizontally(view: view, to: contentView).isActive = true
             PXLayout.matchWidth(ofView: view, toView: contentView).isActive = true
         }
@@ -90,22 +94,21 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     }
 }
 
-extension UIView {
-    public func addSubToBottom(_ view: UIView, withMargin margin: CGFloat = 0) {
-        view.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(view)
-        if self.subviews.count == 1 {
-            PXLayout.pinTop(view: view, withMargin: margin).isActive = true
-        } else {
-            PXLayout.put(view: view, onBottomOfLastViewOf: self)?.isActive = true
+// MARK: Elastic header.
+extension PXNewResultViewController: UIScrollViewDelegate {
+    func addElasticHeader(headerBackgroundColor: UIColor?, navigationDeltaY: CGFloat?=nil, navigationSecondaryDeltaY: CGFloat?=nil) {
+        elasticHeader.removeFromSuperview()
+        scrollView.delegate = self
+        elasticHeader.backgroundColor = headerBackgroundColor
+        if let customDeltaY = navigationDeltaY {
+            NAVIGATION_BAR_DELTA_Y = customDeltaY
         }
-    }
-}
+        if let customSecondaryDeltaY = navigationSecondaryDeltaY {
+            NAVIGATION_BAR_SECONDARY_DELTA_Y = customSecondaryDeltaY
+        }
 
-// MARK: Elastic Header
-extension PXNewResultViewController {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        view.insertSubview(elasticHeader, aboveSubview: scrollView)
+        scrollView.bounces = true
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -116,16 +119,19 @@ extension PXNewResultViewController {
         }
     }
 
-    func addElasticHeader(headerBackgroundColor: UIColor?, navigationDeltaY: CGFloat?=nil, navigationSecondaryDeltaY: CGFloat?=nil) {
-        elasticHeader.removeFromSuperview()
-        elasticHeader.backgroundColor = headerBackgroundColor
-        if let customDeltaY = navigationDeltaY {
-            NAVIGATION_BAR_DELTA_Y = customDeltaY
-        }
-        if let customSecondaryDeltaY = navigationSecondaryDeltaY {
-            NAVIGATION_BAR_SECONDARY_DELTA_Y = customSecondaryDeltaY
-        }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+    }
+}
 
-        view.insertSubview(elasticHeader, aboveSubview: scrollView)
+internal extension UIView {
+    func addViewToBottom(_ view: UIView, withMargin margin: CGFloat = 0) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(view)
+        if self.subviews.count == 1 {
+            PXLayout.pinTop(view: view, withMargin: margin).isActive = true
+        } else {
+            PXLayout.put(view: view, onBottomOfLastViewOf: self)?.isActive = true
+        }
     }
 }
