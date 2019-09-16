@@ -40,3 +40,30 @@ class RingViewDateDelegate: NSObject, MLBusinessLoyaltyRingData {
         return points.action.target
     }
 }
+
+class LoyaltyRingData: NSObject, MLBusinessLoyaltyRingData {
+
+    func getRingNumber() -> Int {
+        return 3
+    }
+
+    func getRingHexaColor() -> String {
+        return "#17aad6"
+    }
+
+    func getRingPercentage() -> Float {
+        return 0.80
+    }
+
+    func getTitle() -> String {
+        return "Ganaste 100 Puntos"
+    }
+
+    func getButtonTitle() -> String {
+        return "Mis beneficios"
+    }
+
+    func getButtonDeepLink() -> String {
+        return "mercadopago://home"
+    }
+}
