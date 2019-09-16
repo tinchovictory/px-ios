@@ -7,8 +7,14 @@
 
 import Foundation
 
+struct ResultViewData {
+    let view: UIView
+    let verticalMargin: CGFloat
+    let horizontalMargin: CGFloat
+}
+
 protocol PXNewResultViewModelInterface {
-    func getViews() -> [(view: UIView, margin: CGFloat)]
+    func getViews() -> [ResultViewData]
 
 //    func getCells() -> [ResultCellItem]
 //    func getCellsClases() -> [(id: String, cell: AnyClass)]
