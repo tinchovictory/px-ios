@@ -119,6 +119,14 @@ import Foundation
         self.contentView.addSubview(view)
     }
 
+    override func bringSubviewToFront(_ view: UIView) {
+        self.contentView.bringSubviewToFront(view)
+    }
+
+    override func sendSubviewToBack(_ view: UIView) {
+        self.contentView.sendSubviewToBack(view)
+    }
+
     func addSubviewToComponentView(_ view: UIView) {
         view.translatesAutoresizingMaskIntoConstraints = false
         super.addSubview(view)
