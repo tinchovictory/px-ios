@@ -85,10 +85,10 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
-        for (view, margin) in viewModel.getViews() {
-            contentView.addViewToBottom(view, withMargin: margin)
-            PXLayout.centerHorizontally(view: view, to: contentView).isActive = true
-            PXLayout.matchWidth(ofView: view, toView: contentView).isActive = true
+        for data in viewModel.getViews() {
+            contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
+            PXLayout.pinLeft(view: view, withMargin: data.horizontalMargin).isActive = true
+            PXLayout.pinRight(view: view, withMargin: data.horizontalMargin).isActive = true
         }
         PXLayout.pinLastSubviewToBottom(view: contentView)
     }

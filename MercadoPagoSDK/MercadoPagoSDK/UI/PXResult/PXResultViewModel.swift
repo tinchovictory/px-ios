@@ -175,61 +175,71 @@ extension PXResultViewModel {
 // MARK: New Result View Model Interface
 extension PXResultViewModel: PXNewResultViewModelInterface {
 
-    func getViews() -> [(view: UIView, margin: CGFloat)] {
-        var views = [(view: UIView, margin: CGFloat)]()
+    func getViews() -> [ResultViewData] {
+        var views = [ResultViewData]()
 
         //Header View
         let headerView = buildHeaderView()
-        views.append((view: headerView, margin: 0))
+        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 10))
 
         //Important View
 
         //Points
         if let pointsView = buildPointsViews() {
-            views.append((view: pointsView, margin: PXLayout.M_MARGIN))
+            views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Discounts
         if let discountsView = buildDiscountsViews() {
-            views.append((view: DividingLineView(hasTriangle: true), margin: PXLayout.M_MARGIN))
-            views.append((view: discountsView, margin: PXLayout.S_MARGIN))
+            views.append(ResultViewData(view: DividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+
+            let button = PXSecondaryButton()
+            button.buttonTitle = "Ver todos los descuentos"
+            button.layer.borderWidth = 2
+            button.layer.cornerRadius = 5
+
+            views.append(ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         } else {
-            views.append((view: DividingLineView(), margin: PXLayout.M_MARGIN))
+            views.append(ResultViewData(view: DividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Instructions View
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            views.append((view: bodyComponent.render(), margin: 0))
+            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Top Custom View
         if let topCustomView = buildTopCustomView() {
-            views.append((view: topCustomView, margin: 0))
+            views.append(ResultViewData(view: topCustomView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Receipt View
         if let receiptView = buildReceiptView() {
-            views.append((view: receiptView, margin: 0))
+            views.append(ResultViewData(view: receiptView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Payment Method View
         if let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
-            views.append((view: PMView, margin: 0))
+            views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Split Payment View
         if let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
-            views.append((view: splitView, margin: 0))
+            views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Bottom Custom View
         if let bottomCustomView = buildBottomCustomView() {
-            views.append((view: bottomCustomView, margin: 0))
+            views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
         }
+
+        //Separator View
+        views.append(ResultViewData(view: DividingLineView(), verticalMargin: 0, horizontalMargin: 0))
 
         //Footer View
         let footerView = buildFooterComponent().render()
-        views.append((view: footerView, margin: 0))
+        views.append(ResultViewData(view: footerView, verticalMargin: 0, horizontalMargin: 0))
 
         return views
     }
@@ -259,8 +269,10 @@ extension PXResultViewModel {
         guard let props = getReceiptComponentProps(), let title = props.receiptDescriptionString else {
             return nil
         }
+        let attributedTitle = NSAttributedString(string: title, attributes: PXNewCustomView.titleAttributes)
         let subtitle = props.dateLabelString ?? ""
-        let data = PXNewCustomViewData(title: title.toAttributedString(), subtitle: subtitle.toAttributedString(), icon: nil, iconURL: nil, action: nil, color: nil)
+        let attributedSubtitle = NSAttributedString(string: subtitle, attributes: PXNewCustomView.subtitleAttributes)
+        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: nil, iconURL: nil, action: nil, color: nil)
         let view = PXNewCustomView(data: data)
         return view
     }
@@ -281,67 +293,8 @@ extension PXResultViewModel {
         return discountsView
     }
 
-    private func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
-        let defaultColor = paymentMethod.paymentTypeId == PXPaymentTypes.ACCOUNT_MONEY.rawValue && paymentMethod.paymentTypeId != PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue
-        var paymentMethodImage: UIImage? =  ResourceManager.shared.getImageForPaymentMethod(withDescription: paymentMethod.id, defaultColor: defaultColor)
-        // Retrieve image for payment plugin or any external payment method.
-        if paymentMethod.paymentTypeId == PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue {
-            paymentMethodImage = paymentMethod.getImageForExtenalPaymentMethod()
-        }
-        return paymentMethodImage
-    }
-
     private func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
-        guard let paymentMethod = paymentData.paymentMethod else {
-            return nil
-        }
-
-        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
-        let currency = SiteManager.shared.getCurrency()
-        var amountTitle: NSMutableAttributedString =  "".toAttributedString()
-        var subtitle: NSMutableAttributedString?
-        if let payerCost = paymentData.payerCost {
-            if payerCost.installments > 1 {
-                amountTitle = String(String(payerCost.installments) + "x " + Utils.getAmountFormated(amount: payerCost.installmentAmount, forCurrency: currency)).toAttributedString()
-                subtitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency, addingParenthesis: true).toAttributedString()
-            } else {
-                amountTitle = Utils.getAmountFormated(amount: payerCost.totalAmount, forCurrency: currency).toAttributedString()
-            }
-        } else {
-            // Caso account money
-            if  let splitAccountMoneyAmount = paymentData.getTransactionAmountWithDiscount() {
-                amountTitle = Utils.getAmountFormated(amount: splitAccountMoneyAmount, forCurrency: currency).toAttributedString()
-            } else {
-                amountTitle = Utils.getAmountFormated(amount: amountHelper.amountToPay, forCurrency: currency).toAttributedString()
-            }
-        }
-
-        var pmDescription: String = ""
-        let paymentMethodName = paymentMethod.name ?? ""
-
-        let issuer = paymentData.getIssuer()
-        let paymentMethodIssuerName = issuer?.name ?? ""
-        var descriptionDetail: NSAttributedString?
-
-        if paymentMethod.isCard {
-            if let lastFourDigits = (paymentData.token?.lastFourDigits) {
-                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
-            }
-            if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
-                descriptionDetail = paymentMethodIssuerName.toAttributedString()
-            }
-        } else {
-            pmDescription = paymentMethodName
-        }
-
-        var disclaimerText: String?
-        if let statementDescription = paymentResult.statementDescription {
-            disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
-        }
-
-        //        let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle, subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())
-
-        let data = PXNewCustomViewData(title: amountTitle, subtitle: pmDescription.toAttributedString(), icon: image, iconURL: nil, action: nil, color: .pxWhite)
+        guard let data = PXNewCustomViewData.getDataFromPaymentData(paymentData, amountHelper: amountHelper) else {return nil}
         let view = PXNewCustomView(data: data)
         return view
     }
