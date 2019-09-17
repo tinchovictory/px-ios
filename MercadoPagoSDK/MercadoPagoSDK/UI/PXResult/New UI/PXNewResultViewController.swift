@@ -87,8 +87,11 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
         for data in viewModel.getViews() {
             contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
-            PXLayout.pinLeft(view: view, withMargin: data.horizontalMargin).isActive = true
-            PXLayout.pinRight(view: view, withMargin: data.horizontalMargin).isActive = true
+
+            NSLayoutConstraint.activate([
+                data.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: data.horizontalMargin),
+                data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
+            ])
         }
         PXLayout.pinLastSubviewToBottom(view: contentView)
     }

@@ -180,7 +180,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
         //Header View
         let headerView = buildHeaderView()
-        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 10))
+        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
 
         //Important View
 
@@ -194,10 +194,8 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             views.append(ResultViewData(view: DividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
-            let button = PXSecondaryButton()
+            let button = PXOutlinedSecondaryButton()
             button.buttonTitle = "Ver todos los descuentos"
-            button.layer.borderWidth = 2
-            button.layer.cornerRadius = 5
 
             views.append(ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         } else {
