@@ -236,14 +236,14 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         views.append(ResultViewData(view: DividingLineView(), verticalMargin: 0, horizontalMargin: 0))
 
         //Footer View
-        let footerView = buildFooterComponent().render()
+        let footerView = buildFooterView()
         views.append(ResultViewData(view: footerView, verticalMargin: 0, horizontalMargin: 0))
 
         return views
     }
 }
 
-//MARK: New Result View Model Builders
+// MARK: New Result View Model Builders
 extension PXResultViewModel {
     //Header View
     func buildHeaderView() -> UIView {
@@ -293,9 +293,17 @@ extension PXResultViewModel {
         return discountsView
     }
 
-    private func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
+    //Payment Method View
+    func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
         guard let data = PXNewCustomViewData.getDataFromPaymentData(paymentData, amountHelper: amountHelper) else {return nil}
         let view = PXNewCustomView(data: data)
         return view
     }
+
+    //Footer View
+    func buildFooterView() -> UIView {
+        let footerView = buildFooterComponent().render()
+        return footerView
+    }
+
 }
