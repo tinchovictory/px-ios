@@ -183,6 +183,9 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
 
         //Important View
+        if let importantView = buildImportantCustomView() {
+            views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
+        }
 
         //Points
         if let pointsView = buildPointsViews() {
@@ -191,7 +194,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
         //Discounts
         if let discountsView = buildDiscountsViews() {
-            views.append(ResultViewData(view: DividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
             let button = PXOutlinedSecondaryButton()
@@ -199,7 +202,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
             views.append(ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         } else {
-            views.append(ResultViewData(view: DividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Instructions View
@@ -233,7 +236,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         }
 
         //Separator View
-        views.append(ResultViewData(view: DividingLineView(), verticalMargin: 0, horizontalMargin: 0))
+        views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: 0, horizontalMargin: 0))
 
         //Footer View
         let footerView = buildFooterView()
@@ -273,6 +276,11 @@ extension PXResultViewModel {
         let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: nil, iconURL: nil, action: nil, color: nil)
         let view = PXNewCustomView(data: data)
         return view
+    }
+
+    //Important View
+    func buildImportantCustomView() -> UIView? {
+        return nil
     }
 
     //Points View

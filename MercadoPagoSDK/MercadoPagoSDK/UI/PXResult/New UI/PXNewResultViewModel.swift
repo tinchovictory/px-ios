@@ -19,6 +19,7 @@ protocol PXNewResultViewModelInterface {
     func primaryResultColor() -> UIColor
     func buildHeaderView() -> UIView
     func buildFooterView() -> UIView
+    func buildImportantCustomView() -> UIView?
     func buildTopCustomView() -> UIView?
     func buildBottomCustomView() -> UIView?
     func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView?
