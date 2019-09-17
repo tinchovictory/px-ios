@@ -1,3 +1,8 @@
+# v4.21.1
+🚀Private Release - 4.21.1 🚀
+MercadoPagoSDKV4 - Private Version
+- iOS 13 navigation bar - Meli compatibility
+
 # v4.21
 🚀Private Release - 4.21 🚀
 MercadoPagoSDKV4 - Private Version
