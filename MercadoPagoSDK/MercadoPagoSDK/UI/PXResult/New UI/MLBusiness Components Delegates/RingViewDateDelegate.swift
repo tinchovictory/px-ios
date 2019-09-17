@@ -33,7 +33,7 @@ class RingViewDateDelegate: NSObject, MLBusinessLoyaltyRingData {
     }
 
     func getButtonTitle() -> String {
-        return points.action.label ?? ""
+        return points.action.label
     }
 
     func getButtonDeepLink() -> String {

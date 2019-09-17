@@ -255,7 +255,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         }
 
         //Discounts
-        if let discountsView = buildDiscountsViews() {
+        if let discountsView = buildDiscountsView() {
             views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
@@ -344,7 +344,7 @@ extension PXBusinessResultViewModel {
     }
 
     //Discounts View
-    func buildDiscountsViews() -> UIView? {
+    func buildDiscountsView() -> UIView? {
         guard let discounts = pointsAndDiscounts?.discounts else {return nil}
         let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
 //        let mockData = DiscountData()

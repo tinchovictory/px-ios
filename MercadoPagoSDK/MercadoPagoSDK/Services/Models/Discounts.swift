@@ -9,15 +9,17 @@ import Foundation
 
 struct Discounts: Decodable {
 
-    let title: String
-    let subtitle: String
+    let title: String?
+    let subtitle: String?
     let action: PointsAndDiscountsAction
+    let actionDownload: PointsAndDiscountsAction
     let items: [DiscountsItem]
 
     enum CodingKeys: String, CodingKey {
         case title
         case subtitle
         case action
+        case actionDownload = "action_download"
         case items
     }
 }
