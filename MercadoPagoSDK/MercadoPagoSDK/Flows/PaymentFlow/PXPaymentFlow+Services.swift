@@ -69,7 +69,8 @@ internal extension PXPaymentFlow {
         }
 
         model.shouldSearchPointsAndDiscounts = false
-        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: [paymentId], platform: "MP", callback: { [weak self] (pointsAndBenef) in
+        let platform = MLBusinessAppDataService().getAppIdentifier().rawValue
+        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: [paymentId], platform: platform, callback: { [weak self] (pointsAndBenef) in
                 guard let strongSelf = self else { return }
                 strongSelf.model.pointsAndDiscounts = pointsAndBenef
                 strongSelf.executeNextStep()
