@@ -10,11 +10,13 @@ import Foundation
 struct Discounts: Decodable {
 
     let title: String
+    let subtitle: String
     let action: PointsAndDiscountsAction
     let items: [DiscountsItem]
 
     enum CodingKeys: String, CodingKey {
         case title
+        case subtitle
         case action
         case items
     }

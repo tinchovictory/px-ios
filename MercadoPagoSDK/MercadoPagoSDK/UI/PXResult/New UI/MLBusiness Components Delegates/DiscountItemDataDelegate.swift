@@ -28,7 +28,7 @@ class DiscountItemDataDelegate: NSObject, MLBusinessSingleItemProtocol {
     }
 
     func deepLinkForItem() -> String? {
-        return item.target
+        return item.action?.target
     }
 
     func trackIdForItem() -> String? {

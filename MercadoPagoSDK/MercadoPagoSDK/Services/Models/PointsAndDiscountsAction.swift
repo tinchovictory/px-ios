@@ -9,7 +9,7 @@ import Foundation
 
 struct PointsAndDiscountsAction: Decodable {
 
-    let label: String
+    let label: String?
     let target: String
 
     enum CodingKeys: String, CodingKey {

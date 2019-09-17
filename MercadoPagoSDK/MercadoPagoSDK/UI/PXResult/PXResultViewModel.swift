@@ -285,19 +285,19 @@ extension PXResultViewModel {
 
     //Points View
     func buildPointsViews() -> UIView? {
-//        guard let points = pointsAndDiscounts?.points else {return nil}
-//        let pointsDelegate = RingViewDateDelegate(points: points)
-        let mockData = LoyaltyRingData()
-        let pointsView = MLBusinessLoyaltyRingView(mockData)
+        guard let points = pointsAndDiscounts?.points else {return nil}
+        let pointsDelegate = RingViewDateDelegate(points: points)
+//        let mockData = LoyaltyRingData()
+        let pointsView = MLBusinessLoyaltyRingView(pointsDelegate)
         return pointsView
     }
 
     //Discounts View
     func buildDiscountsViews() -> UIView? {
-//        guard let discounts = pointsAndDiscounts?.discounts else {return nil}
-//        let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
-        let mockData = DiscountData()
-        let discountsView = MLBusinessDiscountBoxView(mockData)
+        guard let discounts = pointsAndDiscounts?.discounts else {return nil}
+        let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
+//        let mockData = DiscountData()
+        let discountsView = MLBusinessDiscountBoxView(discountsDelegate)
         return discountsView
     }
 

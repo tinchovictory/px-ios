@@ -12,14 +12,14 @@ struct DiscountsItem: Decodable {
     let icon: String
     let title: String
     let subtitle: String
-    let target: String?
+    let action: PointsAndDiscountsAction?
     let campaingId: String?
 
     enum CodingKeys: String, CodingKey {
         case icon
         case title
         case subtitle
-        case target
+        case action
         case campaingId = "campaing_id"
     }
 }

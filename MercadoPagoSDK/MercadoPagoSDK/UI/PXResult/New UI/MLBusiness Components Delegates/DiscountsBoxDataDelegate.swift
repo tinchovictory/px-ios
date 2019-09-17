@@ -16,12 +16,12 @@ class DiscountsBoxDataDelegate: NSObject, MLBusinessDiscountBoxData {
         self.discounts = discounts
     }
 
-    func getTitle() -> String {
+    func getTitle() -> String? {
         return discounts.title
     }
 
-    func getSubtitle() -> String {
-        return "Subtitulo"
+    func getSubtitle() -> String? {
+        return discounts.subtitle
     }
 
     func getItems() -> [MLBusinessSingleItemProtocol] {
@@ -34,11 +34,11 @@ class DiscountsBoxDataDelegate: NSObject, MLBusinessDiscountBoxData {
 }
 
 class DiscountData: NSObject, MLBusinessDiscountBoxData {
-    func getTitle() -> String {
+    func getTitle() -> String? {
         return "200 descuentos"
     }
 
-    func getSubtitle() -> String {
+    func getSubtitle() -> String? {
         return "por ser nivel 3"
     }
 
