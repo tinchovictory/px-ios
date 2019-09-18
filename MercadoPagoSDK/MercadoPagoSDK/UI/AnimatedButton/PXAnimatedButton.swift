@@ -64,25 +64,16 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
 
             let toCircleFrame = CGRect(x: self.frame.midX - self.frame.height / 2, y: self.frame.minY, width: self.frame.height, height: self.frame.height)
 
-            if #available(iOS 10.0, *) {
-                let transitionAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
-                    animatedView.frame = toCircleFrame
-                    animatedView.layer.cornerRadius = toCircleFrame.height / 2
-                })
+            let transitionAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
+                animatedView.frame = toCircleFrame
+                animatedView.layer.cornerRadius = toCircleFrame.height / 2
+            })
 
-                transitionAnimator.addCompletion({ (_) in
-                    self.explosion(color: color, newFrame: toCircleFrame, image: image)
-                })
+            transitionAnimator.addCompletion({ (_) in
+                self.explosion(color: color, newFrame: toCircleFrame, image: image)
+            })
 
-                transitionAnimator.startAnimation()
-            } else {
-                UIView.animate(withDuration: 0.5, animations: {
-                    animatedView.frame = toCircleFrame
-                    animatedView.layer.cornerRadius = toCircleFrame.height / 2
-                }, completion: { _ in
-                    self.explosion(color: color, newFrame: toCircleFrame, image: image)
-                })
-            }
+            transitionAnimator.startAnimation()
         })
     }
 

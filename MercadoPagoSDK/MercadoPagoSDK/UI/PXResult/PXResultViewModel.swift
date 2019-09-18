@@ -162,12 +162,7 @@ extension PXResultViewModel {
         }
 
         if UIApplication.shared.canOpenURL(url) {
-            if #available(iOS 10.0, *) {
-                UIApplication.shared.open(url, options: [:], completionHandler: completionHandler)
-            } else {
-                UIApplication.shared.openURL(url)
-                completionHandler(true)
-            }
+            UIApplication.shared.open(url, options: [:], completionHandler: completionHandler)
         } else {
             success(false)
         }

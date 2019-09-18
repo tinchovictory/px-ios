@@ -265,6 +265,7 @@ extension MercadoPagoCheckout {
     }
 
     private func commondInit() {
+        PXTrackingStore.sharedInstance.initializeInitDate()
         viewModel.setInitFlowProtocol(flowInitProtocol: self)
         if !viewModel.shouldApplyDiscount() {
             viewModel.clearDiscount()

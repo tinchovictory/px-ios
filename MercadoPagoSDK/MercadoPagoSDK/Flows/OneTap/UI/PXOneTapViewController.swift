@@ -263,10 +263,12 @@ extension PXOneTapViewController {
     private func confirmPayment() {
         let biometricModule = PXConfiguratorManager.biometricProtocol
         biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
-            self?.doPayment()
+            DispatchQueue.main.async {
+                self?.doPayment()
+            }
         }) { [weak self] _ in
             // User abort validation or validation fail.
-            self?.trackEvent(path: TrackingPaths.Events.Security.getBiometricCancelPath())
+            self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
         }
     }
 
@@ -277,7 +279,7 @@ extension PXOneTapViewController {
         view.isUserInteractionEnabled = false
         if let selectedCardItem = selectedCard {
             viewModel.amountHelper.getPaymentData().payerCost = selectedCardItem.selectedPayerCost
-            let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem)
+            let properties = viewModel.getConfirmEventProperties(selectedCard: selectedCardItem, selectedIndex: slider.getSelectedIndex())
             trackEvent(path: TrackingPaths.Events.OneTap.getConfirmPath(), properties: properties)
         }
         let splitPayment = viewModel.splitPaymentEnabled
@@ -369,6 +371,7 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 extension PXOneTapViewController: PXCardSliderProtocol {
 
     func newCardDidSelected(targetModel: PXCardSliderViewModel) {
+
         selectedCard = targetModel
 
         trackEvent(path: TrackingPaths.Events.OneTap.getSwipePath())
