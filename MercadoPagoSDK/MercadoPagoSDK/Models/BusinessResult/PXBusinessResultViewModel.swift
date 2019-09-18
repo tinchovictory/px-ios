@@ -336,8 +336,8 @@ extension PXBusinessResultViewModel {
 
     //Points View
     func buildPointsViews() -> UIView? {
-        guard let points = pointsAndDiscounts?.points else {return nil}
-        let pointsDelegate = RingViewDateDelegate(points: points)
+//        guard let points = pointsAndDiscounts?.points else {return nil}
+//        let pointsDelegate = RingViewDateDelegate(points: points)
         let mockData = LoyaltyRingData()
         let pointsView = MLBusinessLoyaltyRingView(mockData)
         return pointsView
@@ -345,8 +345,8 @@ extension PXBusinessResultViewModel {
 
     //Discounts View
     func buildDiscountsView() -> UIView? {
-        guard let discounts = pointsAndDiscounts?.discounts else {return nil}
-        let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
+//        guard let discounts = pointsAndDiscounts?.discounts else {return nil}
+//        let discountsDelegate = DiscountsBoxDataDelegate(discounts: discounts)
         let mockData = DiscountData()
         let discountsView = MLBusinessDiscountBoxView(mockData)
         return discountsView
