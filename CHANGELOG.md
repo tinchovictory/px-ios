@@ -1,3 +1,8 @@
+# v4.21.2
+🚀Private Release - 4.21.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Change access level PXBiometricConfig
+
 # v4.21.1
 🚀Private Release - 4.21.1 🚀
 MercadoPagoSDKV4 - Private Version
