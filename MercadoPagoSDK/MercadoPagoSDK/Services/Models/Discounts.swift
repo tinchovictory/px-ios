@@ -12,7 +12,7 @@ struct Discounts: Decodable {
     let title: String?
     let subtitle: String?
     let action: PointsAndDiscountsAction
-    let actionDownload: PointsAndDiscountsAction
+    let actionDownload: DownloadAction
     let items: [DiscountsItem]
 
     enum CodingKeys: String, CodingKey {
