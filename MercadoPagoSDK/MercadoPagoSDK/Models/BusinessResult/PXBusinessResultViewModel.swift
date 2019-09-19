@@ -323,13 +323,9 @@ extension PXBusinessResultViewModel {
 
     //Receipt View
     func buildReceiptView() -> UIView? {
-        guard let props = getReceiptProps(), let title = props.receiptDescriptionString else {
+        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: businessResult.getReceiptId()) else {
             return nil
         }
-        let attributedTitle = NSAttributedString(string: title, attributes: PXNewCustomView.titleAttributes)
-        let subtitle = props.dateLabelString ?? ""
-        let attributedSubtitle = NSAttributedString(string: subtitle, attributes: PXNewCustomView.subtitleAttributes)
-        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: nil, iconURL: nil, action: nil, color: nil)
         let view = PXNewCustomView(data: data)
         return view
     }
@@ -354,7 +350,7 @@ extension PXBusinessResultViewModel {
 
     //Payment Method View
     func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
-        guard let data = PXNewCustomViewData.getDataFromPaymentData(paymentData, amountHelper: amountHelper) else {return nil}
+        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {return nil}
         let view = PXNewCustomView(data: data)
         return view
     }
