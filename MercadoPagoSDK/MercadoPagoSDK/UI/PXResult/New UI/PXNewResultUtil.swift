@@ -175,4 +175,29 @@ class PXNewResultUtil {
         let data = DiscountsBoxDataDelegate(discounts: discounts)
         return data
     }
+
+    //DISCOUNTS ACCESSORY VIEW
+    class func getDataForDiscountsAccessoryView(discounts: Discounts?) -> ResultViewData? {
+        guard let discounts = discounts else {
+            return nil
+        }
+        if MLBusinessAppDataService().isMpAlreadyInstalled() {
+            let button = PXOutlinedSecondaryButton()
+            button.buttonTitle = discounts.actionDownload.action.label
+
+            button.add(for: .touchUpInside) {
+                //OPEN DEEP LINK
+                print(discounts.actionDownload.action.target)
+            }
+            return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        } else {
+            let downloadAppDelegate = DownloadAppDataDelegate(discounts: discounts)
+            let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
+            downloadAppView.addTapAction { (deepLink) in
+                //OPEN DEEP LINK
+                print(deepLink)
+            }
+            return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        }
+    }
 }

@@ -25,5 +25,6 @@ protocol PXNewResultViewModelInterface {
     func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView?
     func buildPointsViews() -> UIView?
     func buildDiscountsView() -> UIView?
+    func buildDiscountsAccessoryView() -> ResultViewData?
     func buildReceiptView() -> UIView?
 }

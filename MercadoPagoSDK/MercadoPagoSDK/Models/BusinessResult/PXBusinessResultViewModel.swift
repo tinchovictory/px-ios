@@ -259,10 +259,10 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
             views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
-            let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = "Ver todos los descuentos"
-
-            views.append(ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            //Discounts Accessory View
+            if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
+                views.append(discountsAccessoryViewData)
+            }
         } else {
             views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
@@ -346,6 +346,11 @@ extension PXBusinessResultViewModel {
         }
         let discountsView = MLBusinessDiscountBoxView(data)
         return discountsView
+    }
+
+    //Discounts Accessory View
+    func buildDiscountsAccessoryView() -> ResultViewData? {
+        return PXNewResultUtil.getDataForDiscountsAccessoryView(discounts: pointsAndDiscounts?.discounts)
     }
 
     //Payment Method View
