@@ -312,7 +312,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 extension PXBusinessResultViewModel {
     //Header View
     func buildHeaderView() -> UIView {
-        let data = PXNewResultHeaderData(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
+        let data = PXNewResultUtil.getDataForHeaderView(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 callback(PaymentResult.CongratsState.cancel_EXIT)
             }
@@ -360,6 +360,4 @@ extension PXBusinessResultViewModel {
         let footerView = buildFooterComponent().render()
         return footerView
     }
-
 }
-

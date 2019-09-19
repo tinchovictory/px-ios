@@ -12,6 +12,12 @@ class PXNewResultUtil {
 
     static let shouldUseMockedData = true
 
+    //HEADER DATA
+    class func getDataForHeaderView(color: UIColor?, title: String, icon: UIImage?, iconURL: String?, badgeImage: UIImage?, closeAction: (() -> Void)?) -> PXNewResultHeaderData {
+
+        return PXNewResultHeaderData(color: color, title: title, icon: icon, iconURL: iconURL, badgeImage: badgeImage, closeAction: closeAction)
+    }
+
     //PAYMENT METHOD ICON
     class func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
         let defaultColor = paymentMethod.paymentTypeId == PXPaymentTypes.ACCOUNT_MONEY.rawValue && paymentMethod.paymentTypeId != PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue

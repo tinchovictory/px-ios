@@ -250,7 +250,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 extension PXResultViewModel {
     //Header View
     func buildHeaderView() -> UIView {
-        let data = PXNewResultHeaderData(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
+        let data = PXNewResultUtil.getDataForHeaderView(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
             if let callback = self?.callback {
                 if let url = self?.getBackUrl() {
                     self?.openURL(url: url, success: { (_) in
