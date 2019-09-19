@@ -6,8 +6,11 @@
 //
 
 import Foundation
+import MLBusinessComponents
 
 class PXNewResultUtil {
+
+    static let shouldUseMockedData = true
 
     //PAYMENT METHOD ICON
     class func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
@@ -141,4 +144,29 @@ class PXNewResultUtil {
         return data
     }
 
+    //POINTS DATA
+    class func getDataForPointsView(points: Points?) -> MLBusinessLoyaltyRingData? {
+        if shouldUseMockedData {
+            let mockData = LoyaltyRingData()
+            return mockData
+        }
+        guard let points = points else {
+            return nil
+        }
+        let data = RingViewDateDelegate(points: points)
+        return data
+    }
+
+    //DISCOUNTS DATA
+    class func getDataForDiscountsView(discounts: Discounts?) -> MLBusinessDiscountBoxData? {
+        if shouldUseMockedData {
+            let mockData = DiscountData()
+            return mockData
+        }
+        guard let discounts = discounts else {
+            return nil
+        }
+        let data = DiscountsBoxDataDelegate(discounts: discounts)
+        return data
+    }
 }
