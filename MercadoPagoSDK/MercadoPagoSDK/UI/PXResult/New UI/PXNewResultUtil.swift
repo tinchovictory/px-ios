@@ -183,11 +183,11 @@ class PXNewResultUtil {
         }
         if MLBusinessAppDataService().isMpAlreadyInstalled() {
             let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = discounts.actionDownload.action.label
+            button.buttonTitle = discounts.discountsAction.label
 
             button.add(for: .touchUpInside) {
                 //open deep link
-                PXDeepLinkManager.open(discounts.actionDownload.action.target)
+                PXDeepLinkManager.open(discounts.discountsAction.target)
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         } else {

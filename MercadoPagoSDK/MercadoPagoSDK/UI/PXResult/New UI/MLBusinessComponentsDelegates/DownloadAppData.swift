@@ -21,15 +21,15 @@ class DownloadAppData: NSObject, MLBusinessDownloadAppData {
     }
 
     func getTitle() -> String {
-        return discounts.actionDownload.title
+        return discounts.downloadAction.title
     }
 
     func getButtonTitle() -> String {
-        return discounts.actionDownload.action.label
+        return discounts.downloadAction.action.label
     }
 
     func getButtonDeepLink() -> String {
-        return discounts.actionDownload.action.target
+        return discounts.downloadAction.action.target
     }
 }
 
