@@ -274,7 +274,7 @@ extension PXResultViewModel {
 
     //Receipt View
     func buildReceiptView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: paymentResult.paymentId) else {
+        guard hasReceiptComponent(), let data = PXNewResultUtil.getDataForReceiptView(paymentId: paymentResult.paymentId) else {
             return nil
         }
         let view = PXNewCustomView(data: data)
