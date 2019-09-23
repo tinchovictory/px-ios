@@ -214,7 +214,7 @@ class PXNewResultUtil {
         }
         var data = [MLBusinessCrossSellingBoxData]()
         for item in crossSellingItems {
-            data.append(CrossSellingItemData(item: item))
+            data.append(PXCrossSellingItemData(item: item))
         }
         return data
     }
