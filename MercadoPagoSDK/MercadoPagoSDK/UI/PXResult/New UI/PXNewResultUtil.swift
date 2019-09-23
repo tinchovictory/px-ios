@@ -186,16 +186,16 @@ class PXNewResultUtil {
             button.buttonTitle = discounts.actionDownload.action.label
 
             button.add(for: .touchUpInside) {
-                //OPEN DEEP LINK
-                print(discounts.actionDownload.action.target)
+                //open deep link
+                PXDeepLinkManager.open(discounts.actionDownload.action.target)
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         } else {
             let downloadAppDelegate = DownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
-                //OPEN DEEP LINK
-                print(deepLink)
+                //open deep link
+                PXDeepLinkManager.open(deepLink)
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         }
