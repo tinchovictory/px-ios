@@ -26,5 +26,6 @@ protocol PXNewResultViewModelInterface {
     func buildPointsViews() -> UIView?
     func buildDiscountsView() -> UIView?
     func buildDiscountsAccessoryView() -> ResultViewData?
+    func buildCrossSellingViews() -> [UIView]?
     func buildReceiptView() -> UIView?
 }

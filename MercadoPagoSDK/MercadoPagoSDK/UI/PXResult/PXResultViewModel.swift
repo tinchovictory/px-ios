@@ -205,6 +205,13 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
+        //Cross Selling View
+        if let crossSellingViews = buildCrossSellingViews() {
+            for crossSellingView in crossSellingViews {
+                views.append(ResultViewData(view: crossSellingView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            }
+        }
+
         //Instructions View
         if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
             views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
@@ -300,6 +307,19 @@ extension PXResultViewModel {
     //Discounts Accessory View
     func buildDiscountsAccessoryView() -> ResultViewData? {
         return PXNewResultUtil.getDataForDiscountsAccessoryView(discounts: pointsAndDiscounts?.discounts)
+    }
+
+    //Cross Selling View
+    func buildCrossSellingViews() -> [UIView]? {
+        guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: pointsAndDiscounts?.crossSelling) else {
+            return nil
+        }
+        var itemsViews = [UIView]()
+        for itemData in data {
+            let itemView = MLBusinessCrossSellingBoxView(itemData)
+            itemsViews.append(itemView)
+        }
+        return itemsViews
     }
 
     //Payment Method View
