@@ -1,5 +1,5 @@
 //
-//  DownloadAppDataDelegate.swift
+//  DownloadAppData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 18/09/2019.
@@ -8,7 +8,7 @@
 import Foundation
 import MLBusinessComponents
 
-class DownloadAppDataDelegate: NSObject, MLBusinessDownloadAppData {
+class DownloadAppData: NSObject, MLBusinessDownloadAppData {
 
     let discounts: Discounts
 

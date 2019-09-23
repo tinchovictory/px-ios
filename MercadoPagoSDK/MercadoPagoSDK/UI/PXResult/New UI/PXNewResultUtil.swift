@@ -159,7 +159,7 @@ class PXNewResultUtil {
         guard let points = points else {
             return nil
         }
-        let data = RingViewDateDelegate(points: points)
+        let data = RingViewDate(points: points)
         return data
     }
 
@@ -172,7 +172,7 @@ class PXNewResultUtil {
         guard let discounts = discounts else {
             return nil
         }
-        let data = DiscountsBoxDataDelegate(discounts: discounts)
+        let data = DiscountsBoxData(discounts: discounts)
         return data
     }
 
@@ -191,7 +191,7 @@ class PXNewResultUtil {
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         } else {
-            let downloadAppDelegate = DownloadAppDataDelegate(discounts: discounts)
+            let downloadAppDelegate = DownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
                 //OPEN DEEP LINK

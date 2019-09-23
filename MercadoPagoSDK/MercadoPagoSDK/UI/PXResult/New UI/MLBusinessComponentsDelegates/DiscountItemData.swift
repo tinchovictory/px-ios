@@ -1,5 +1,5 @@
 //
-//  DiscountItemDataDelegate.swift
+//  DiscountItemData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 13/09/2019.
@@ -8,7 +8,7 @@
 import UIKit
 import MLBusinessComponents
 
-class DiscountItemDataDelegate: NSObject, MLBusinessSingleItemProtocol {
+class DiscountItemData: NSObject, MLBusinessSingleItemProtocol {
     let item: DiscountsItem
 
     init(item: DiscountsItem) {
