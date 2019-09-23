@@ -284,7 +284,7 @@ extension PXResultViewModel {
         guard let data = PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points) else {
             return nil
         }
-        let pointsView = MLBusinessLoyaltyRingView(data)
+        let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
         return pointsView
     }
 

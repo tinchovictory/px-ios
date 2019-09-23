@@ -6,9 +6,11 @@
 //
 
 import UIKit
+import MLBusinessComponents
 
 class PXNewResultViewController: MercadoPagoUIViewController {
 
+    private weak var ringView: MLBusinessLoyaltyRingView?
     private lazy var elasticHeader = UIView()
     private lazy var NAVIGATION_BAR_DELTA_Y: CGFloat = 29.8
     private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
@@ -39,6 +41,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animateScrollView()
+        animateRing()
     }
 
     private func animateScrollView() {
@@ -86,6 +89,10 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         for data in viewModel.getViews() {
+            if let ringView = data.view as? MLBusinessLoyaltyRingView {
+                self.ringView = ringView
+            }
+
             contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
 
             NSLayoutConstraint.activate([
@@ -136,5 +143,16 @@ internal extension UIView {
         } else {
             PXLayout.put(view: view, onBottomOfLastViewOf: self, withMargin: margin)?.isActive = true
         }
+    }
+}
+
+// MARK: Ring Animate.
+extension PXNewResultViewController {
+    @objc func doAnimateRing() {
+        ringView?.fillPercentProgressWithAnimation()
+    }
+
+    private func animateRing() {
+        perform(#selector(self.doAnimateRing), with: self, afterDelay: 0.3)
     }
 }
