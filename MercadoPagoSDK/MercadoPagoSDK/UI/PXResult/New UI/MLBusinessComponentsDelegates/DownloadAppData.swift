@@ -17,7 +17,7 @@ class DownloadAppData: NSObject, MLBusinessDownloadAppData {
     }
 
     func getAppSite() -> MLBusinessDownloadAppView.AppSite {
-        return MLBusinessDownloadAppView.AppSite.ML
+        return MLBusinessDownloadAppView.AppSite.MP
     }
 
     func getTitle() -> String {

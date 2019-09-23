@@ -177,7 +177,7 @@ class PXNewResultUtil {
     }
 
     //DISCOUNTS ACCESSORY VIEW
-    class func getDataForDiscountsAccessoryView(discounts: Discounts?) -> ResultViewData? {
+    class func getDataForDiscountsAccessoryViewData(discounts: Discounts?) -> ResultViewData? {
         guard let discounts = discounts else {
             return nil
         }
@@ -190,7 +190,7 @@ class PXNewResultUtil {
                 PXDeepLinkManager.open(discounts.discountsAction.target)
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else {
+        } else if MLBusinessAppDataService().isMeli() {
             let downloadAppDelegate = DownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
@@ -198,6 +198,8 @@ class PXNewResultUtil {
                 PXDeepLinkManager.open(deepLink)
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        } else {
+            return nil
         }
     }
 }

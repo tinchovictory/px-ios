@@ -299,7 +299,7 @@ extension PXResultViewModel {
 
     //Discounts Accessory View
     func buildDiscountsAccessoryView() -> ResultViewData? {
-        return PXNewResultUtil.getDataForDiscountsAccessoryView(discounts: pointsAndDiscounts?.discounts)
+        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: pointsAndDiscounts?.discounts)
     }
 
     //Payment Method View
