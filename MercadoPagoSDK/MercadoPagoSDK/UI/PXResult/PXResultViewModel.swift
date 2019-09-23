@@ -291,7 +291,7 @@ extension PXResultViewModel {
         guard let data = PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points) else {
             return nil
         }
-        let pointsView = MLBusinessLoyaltyRingView(data)
+        let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
         return pointsView
     }
 
@@ -306,7 +306,7 @@ extension PXResultViewModel {
 
     //Discounts Accessory View
     func buildDiscountsAccessoryView() -> ResultViewData? {
-        return PXNewResultUtil.getDataForDiscountsAccessoryView(discounts: pointsAndDiscounts?.discounts)
+        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: pointsAndDiscounts?.discounts)
     }
 
     //Cross Selling View

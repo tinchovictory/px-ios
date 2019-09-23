@@ -159,7 +159,7 @@ class PXNewResultUtil {
         guard let points = points else {
             return nil
         }
-        let data = RingViewDateDelegate(points: points)
+        let data = PXRingViewData(points: points)
         return data
     }
 
@@ -172,32 +172,34 @@ class PXNewResultUtil {
         guard let discounts = discounts else {
             return nil
         }
-        let data = DiscountsBoxDataDelegate(discounts: discounts)
+        let data = PXDiscountsBoxData(discounts: discounts)
         return data
     }
 
     //DISCOUNTS ACCESSORY VIEW
-    class func getDataForDiscountsAccessoryView(discounts: Discounts?) -> ResultViewData? {
+    class func getDataForDiscountsAccessoryViewData(discounts: Discounts?) -> ResultViewData? {
         guard let discounts = discounts else {
             return nil
         }
         if MLBusinessAppDataService().isMpAlreadyInstalled() {
             let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = discounts.actionDownload.action.label
+            button.buttonTitle = discounts.discountsAction.label
 
             button.add(for: .touchUpInside) {
-                //OPEN DEEP LINK
-                print(discounts.actionDownload.action.target)
+                //open deep link
+                PXDeepLinkManager.open(discounts.discountsAction.target)
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else {
-            let downloadAppDelegate = DownloadAppDataDelegate(discounts: discounts)
+        } else if MLBusinessAppDataService().isMeli() {
+            let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
-                //OPEN DEEP LINK
-                print(deepLink)
+                //open deep link
+                PXDeepLinkManager.open(deepLink)
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        } else {
+            return nil
         }
     }
 
