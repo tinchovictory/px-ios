@@ -1,5 +1,5 @@
 //
-//  RingViewDate.swift
+//  PXRingViewData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 13/09/2019.
@@ -8,7 +8,7 @@
 import UIKit
 import MLBusinessComponents
 
-class RingViewDate: NSObject, MLBusinessLoyaltyRingData {
+class PXRingViewData: NSObject, MLBusinessLoyaltyRingData {
 
     let points: Points
 

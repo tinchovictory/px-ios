@@ -1,5 +1,5 @@
 //
-//  DiscountsBoxData.swift
+//  PXDiscountsBoxData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 13/09/2019.
@@ -8,7 +8,7 @@
 import UIKit
 import MLBusinessComponents
 
-class DiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
+class PXDiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
 
     let discounts: Discounts
 
@@ -27,7 +27,7 @@ class DiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
     func getItems() -> [MLBusinessSingleItemProtocol] {
         var itemProtocols = [MLBusinessSingleItemProtocol]()
         for item in discounts.items {
-            itemProtocols.append(DiscountItemData(item: item))
+            itemProtocols.append(PXDiscountItemData(item: item))
         }
         return itemProtocols
     }

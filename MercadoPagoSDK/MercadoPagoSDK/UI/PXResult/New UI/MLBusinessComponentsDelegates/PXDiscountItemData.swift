@@ -1,5 +1,5 @@
 //
-//  DiscountItemData.swift
+//  PXDiscountItemData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 13/09/2019.
@@ -8,7 +8,7 @@
 import UIKit
 import MLBusinessComponents
 
-class DiscountItemData: NSObject, MLBusinessSingleItemProtocol {
+class PXDiscountItemData: NSObject, MLBusinessSingleItemProtocol {
     let item: DiscountsItem
 
     init(item: DiscountsItem) {

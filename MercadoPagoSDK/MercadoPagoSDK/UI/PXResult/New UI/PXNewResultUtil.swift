@@ -159,7 +159,7 @@ class PXNewResultUtil {
         guard let points = points else {
             return nil
         }
-        let data = RingViewDate(points: points)
+        let data = PXRingViewData(points: points)
         return data
     }
 
@@ -172,7 +172,7 @@ class PXNewResultUtil {
         guard let discounts = discounts else {
             return nil
         }
-        let data = DiscountsBoxData(discounts: discounts)
+        let data = PXDiscountsBoxData(discounts: discounts)
         return data
     }
 
@@ -191,7 +191,7 @@ class PXNewResultUtil {
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         } else if MLBusinessAppDataService().isMeli() {
-            let downloadAppDelegate = DownloadAppData(discounts: discounts)
+            let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
                 //open deep link

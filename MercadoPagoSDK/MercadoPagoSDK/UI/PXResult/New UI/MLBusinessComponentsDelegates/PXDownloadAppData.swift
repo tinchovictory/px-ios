@@ -1,5 +1,5 @@
 //
-//  DownloadAppData.swift
+//  PXDownloadAppData.swift
 //  MercadoPagoSDK
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 18/09/2019.
@@ -8,7 +8,7 @@
 import Foundation
 import MLBusinessComponents
 
-class DownloadAppData: NSObject, MLBusinessDownloadAppData {
+class PXDownloadAppData: NSObject, MLBusinessDownloadAppData {
 
     let discounts: Discounts
 
