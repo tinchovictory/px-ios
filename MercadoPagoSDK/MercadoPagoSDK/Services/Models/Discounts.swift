@@ -11,15 +11,15 @@ struct Discounts: Decodable {
 
     let title: String?
     let subtitle: String?
-    let action: PointsAndDiscountsAction
-    let actionDownload: PointsAndDiscountsAction
+    let discountsAction: PointsAndDiscountsAction
+    let downloadAction: DownloadAction
     let items: [DiscountsItem]
 
     enum CodingKeys: String, CodingKey {
         case title
         case subtitle
-        case action
-        case actionDownload = "action_download"
+        case discountsAction = "action"
+        case downloadAction = "action_download"
         case items
     }
 }
