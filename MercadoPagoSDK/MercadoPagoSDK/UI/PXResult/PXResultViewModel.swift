@@ -195,7 +195,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         //Discounts
         if let discountsView = buildDiscountsView() {
             views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
-            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
             if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
