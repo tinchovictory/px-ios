@@ -343,6 +343,10 @@ extension PXBusinessResultViewModel {
             return nil
         }
         let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
+        pointsView.addTapAction { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+        }
         return pointsView
     }
 
@@ -352,6 +356,10 @@ extension PXBusinessResultViewModel {
             return nil
         }
         let discountsView = MLBusinessDiscountBoxView(data)
+        discountsView.addTapAction { (index, deepLink, trackId) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+        }
         return discountsView
     }
 
@@ -368,6 +376,10 @@ extension PXBusinessResultViewModel {
         var itemsViews = [UIView]()
         for itemData in data {
             let itemView = MLBusinessCrossSellingBoxView(itemData)
+            itemView.addTapAction { (deepLink) in
+                //open deep link
+                PXDeepLinkManager.open(deepLink)
+            }
             itemsViews.append(itemView)
         }
         return itemsViews
