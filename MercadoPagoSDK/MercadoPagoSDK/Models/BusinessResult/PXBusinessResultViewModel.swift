@@ -254,22 +254,27 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
             views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
         }
 
+        //Points and Discounts
+        let pointsView = buildPointsViews()
+        let discountsView = buildDiscountsView()
+
         //Points
-        if let pointsView = buildPointsViews() {
+        if let pointsView = pointsView {
             views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Discounts
-        if let discountsView = buildDiscountsView() {
-            views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+        if let discountsView = discountsView {
+            if pointsView != nil {
+                //Dividing Line
+                views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            }
             views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
             if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
                 views.append(discountsAccessoryViewData)
             }
-        } else {
-            views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Cross Selling View
