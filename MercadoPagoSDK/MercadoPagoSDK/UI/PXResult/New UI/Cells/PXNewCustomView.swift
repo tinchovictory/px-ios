@@ -36,7 +36,7 @@ class PXNewCustomView: UIView {
     let IMAGE_WIDTH: CGFloat = 48.0
     let IMAGE_HEIGHT: CGFloat = 48.0
 
-    var iconImageView: PXUIImageView?
+    var iconView: UIView?
 
     let data: PXNewCustomViewData
 
@@ -81,16 +81,16 @@ class PXNewCustomView: UIView {
         // Icon
         if let imageURL = data.iconURL, imageURL.isNotEmpty {
             let pximage = PXUIImage(url: imageURL)
-            iconImageView = buildCircleImage(with: pximage)
+            iconView = buildCircleImage(with: pximage)
         } else {
-            iconImageView = buildCircleImage(with: data.icon)
+            iconView = buildCircleImage(with: data.icon)
         }
 
         let labelsView = PXComponentView()
         labelsView.clipsToBounds = true
         pxContentView.addSubview(labelsView)
 
-        if let circleImage = iconImageView {
+        if let circleImage = iconView {
             pxContentView.addSubview(circleImage)
             PXLayout.pinTop(view: circleImage, withMargin: PXLayout.S_MARGIN)
             PXLayout.pinLeft(view: circleImage, withMargin: PXLayout.L_MARGIN)
@@ -151,21 +151,33 @@ class PXNewCustomView: UIView {
 
 // MARK: UI Builders
 extension PXNewCustomView {
-    func buildCircleImage(with image: UIImage?) -> PXUIImageView {
-        let circleImage = PXUIImageView(frame: CGRect(x: 0, y: 0, width: IMAGE_WIDTH, height: IMAGE_HEIGHT))
-        circleImage.layer.masksToBounds = false
-        circleImage.layer.cornerRadius = circleImage.frame.height / 2
-        circleImage.clipsToBounds = true
-        circleImage.translatesAutoresizingMaskIntoConstraints = false
-        circleImage.enableFadeIn()
-        circleImage.contentMode = .scaleAspectFill
-        circleImage.image = image
-        circleImage.backgroundColor = UIColor.black.withAlphaComponent(0.04)
-        circleImage.layer.borderWidth = 1
-        circleImage.layer.borderColor = UIColor.black.withAlphaComponent(0.08).cgColor
-        PXLayout.setHeight(owner: circleImage, height: IMAGE_WIDTH).isActive = true
-        PXLayout.setWidth(owner: circleImage, width: IMAGE_HEIGHT).isActive = true
-        return circleImage
+    func buildCircleImage(with image: UIImage?) -> UIView {
+        let RADIUS_DELTA_FROM_ICON_TO_BACKGROUND: CGFloat = 58
+
+        let iconView = UIView()
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        iconView.backgroundColor = ThemeManager.shared.iconBackgroundColor()
+        iconView.layer.cornerRadius = IMAGE_HEIGHT/2
+        iconView.layer.masksToBounds = true
+        iconView.layer.borderWidth = 1
+        iconView.layer.borderColor = UIColor.black.withAlphaComponent(0.08).cgColor
+        PXLayout.setHeight(owner: iconView, height: IMAGE_HEIGHT)
+        PXLayout.setWidth(owner: iconView, width: IMAGE_WIDTH)
+
+        let imageView = PXUIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = image
+        imageView.clipsToBounds = true
+        imageView.enableFadeIn()
+        imageView.contentMode = .scaleAspectFill
+        iconView.addSubview(imageView)
+
+        PXLayout.matchWidth(ofView: imageView, withPercentage: RADIUS_DELTA_FROM_ICON_TO_BACKGROUND).isActive = true
+        PXLayout.matchHeight(ofView: imageView, withPercentage: RADIUS_DELTA_FROM_ICON_TO_BACKGROUND).isActive = true
+        PXLayout.centerVertically(view: imageView).isActive = true
+        PXLayout.centerHorizontally(view: imageView).isActive = true
+
+        return iconView
     }
 
     func buildLabel(_ string: NSAttributedString) -> UILabel {

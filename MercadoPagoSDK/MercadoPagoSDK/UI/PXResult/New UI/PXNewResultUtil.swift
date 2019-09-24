@@ -10,14 +10,89 @@ import MLBusinessComponents
 
 class PXNewResultUtil {
 
-    static let shouldUseMockedData = true
-
     //HEADER DATA
     class func getDataForHeaderView(color: UIColor?, title: String, icon: UIImage?, iconURL: String?, badgeImage: UIImage?, closeAction: (() -> Void)?) -> PXNewResultHeaderData {
 
         return PXNewResultHeaderData(color: color, title: title, icon: icon, iconURL: iconURL, badgeImage: badgeImage, closeAction: closeAction)
     }
 
+    //RECEIPT DATA
+    class func getDataForReceiptView(paymentId: String?) -> PXNewCustomViewData? {
+        guard let paymentId = paymentId else {
+            return nil
+        }
+
+        let attributedTitle = NSAttributedString(string: "Operación".localized + " #" + paymentId, attributes: PXNewCustomView.titleAttributes)
+
+        let date = Date()
+        let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date), attributes: PXNewCustomView.subtitleAttributes)
+
+        let icon = ResourceManager.shared.getImage("receipt_icon")
+
+        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: icon, iconURL: nil, action: nil, color: nil)
+        return data
+    }
+
+    //POINTS DATA
+    class func getDataForPointsView(points: Points?) -> MLBusinessLoyaltyRingData? {
+        guard let points = points else {
+            return nil
+        }
+        let data = PXRingViewData(points: points)
+        return data
+    }
+
+    //DISCOUNTS DATA
+    class func getDataForDiscountsView(discounts: Discounts?) -> MLBusinessDiscountBoxData? {
+        guard let discounts = discounts else {
+            return nil
+        }
+        let data = PXDiscountsBoxData(discounts: discounts)
+        return data
+    }
+
+    //DISCOUNTS ACCESSORY VIEW
+    class func getDataForDiscountsAccessoryViewData(discounts: Discounts?) -> ResultViewData? {
+        guard let discounts = discounts else {
+            return nil
+        }
+        if MLBusinessAppDataService().isMpAlreadyInstalled() {
+            let button = PXOutlinedSecondaryButton()
+            button.buttonTitle = discounts.discountsAction.label
+
+            button.add(for: .touchUpInside) {
+                //open deep link
+                PXDeepLinkManager.open(discounts.discountsAction.target)
+            }
+            return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        } else if MLBusinessAppDataService().isMeli() {
+            let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
+            let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
+            downloadAppView.addTapAction { (deepLink) in
+                //open deep link
+                PXDeepLinkManager.open(deepLink)
+            }
+            return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        } else {
+            return nil
+        }
+    }
+
+    //CROSS SELLING VIEW
+    class func getDataForCrossSellingView(crossSellingItems: [PXCrossSellingItem]?) -> [MLBusinessCrossSellingBoxData]? {
+        guard let crossSellingItems = crossSellingItems else {
+            return nil
+        }
+        var data = [MLBusinessCrossSellingBoxData]()
+        for item in crossSellingItems {
+            data.append(PXCrossSellingItemData(item: item))
+        }
+        return data
+    }
+}
+
+// MARK: Payment Method Logic
+extension PXNewResultUtil {
     //PAYMENT METHOD ICON
     class func getPaymentMethodIcon(paymentMethod: PXPaymentMethod) -> UIImage? {
         let defaultColor = paymentMethod.paymentTypeId == PXPaymentTypes.ACCOUNT_MONEY.rawValue && paymentMethod.paymentTypeId != PXPaymentTypes.PAYMENT_METHOD_PLUGIN.rawValue
@@ -35,6 +110,20 @@ class PXNewResultUtil {
             return nil
         }
 
+        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
+        let currency = SiteManager.shared.getCurrency()
+
+        let firstString: NSAttributedString = getPMFirstString(currency: currency, paymentData: paymentData, amountHelper: amountHelper)
+        let secondString: NSAttributedString? = getPMSecondString(paymentData: paymentData)
+        let thirdString: NSAttributedString? = getPMThirdString(paymentData: paymentData)
+
+        let data = PXNewCustomViewData(firstString: firstString, secondString: secondString, thirdString: thirdString, icon: image, iconURL: nil, action: nil, color: .pxWhite)
+        return data
+    }
+
+    // PM First String
+    class func getPMFirstString(currency: PXCurrency, paymentData: PXPaymentData, amountHelper: PXAmountHelper) -> NSAttributedString {
+
         let totalAmountAttributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.font: Utils.getSemiBoldFont(size: PXLayout.XS_FONT),
             NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.45)
@@ -51,14 +140,8 @@ class PXNewResultUtil {
             NSAttributedString.Key.strikethroughStyle: NSUnderlineStyle.single.rawValue
         ]
 
-        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
-        let currency = SiteManager.shared.getCurrency()
-
         let firstString: NSMutableAttributedString = NSMutableAttributedString()
-        let secondString: NSAttributedString?
-        var thirdString: NSAttributedString?
 
-        // First String
         if let payerCost = paymentData.payerCost {
             if payerCost.installments > 1 {
                 let titleString = String(payerCost.installments) + "x " + Utils.getAmountFormated(amount: payerCost.installmentAmount, forCurrency: currency)
@@ -108,7 +191,14 @@ class PXNewResultUtil {
             firstString.appendWithSpace(attributedString)
         }
 
-        // Second String
+        return firstString
+    }
+
+    // PM Second String
+    class func getPMSecondString(paymentData: PXPaymentData) -> NSAttributedString? {
+        guard let paymentMethod = paymentData.paymentMethod else {
+            return nil
+        }
         var pmDescription: String = ""
         let paymentMethodName = paymentMethod.name ?? ""
 
@@ -121,101 +211,21 @@ class PXNewResultUtil {
         }
 
         let attributedSecond = NSMutableAttributedString(string: pmDescription, attributes: PXNewCustomView.subtitleAttributes)
-        secondString = attributedSecond
+        return attributedSecond
+    }
 
-        // Third String
+    // PM Third String
+    class func getPMThirdString(paymentData: PXPaymentData) -> NSAttributedString? {
+        guard let paymentMethod = paymentData.paymentMethod else {
+            return nil
+        }
+        let paymentMethodName = paymentMethod.name ?? ""
         if let issuer = paymentData.getIssuer(), let issuerName = issuer.name, !issuerName.isEmpty, issuerName.lowercased() != paymentMethodName.lowercased() {
 
             let issuerAttributedString = NSMutableAttributedString(string: issuerName, attributes: PXNewCustomView.subtitleAttributes)
 
-            thirdString = issuerAttributedString
+            return issuerAttributedString
         }
-
-        let data = PXNewCustomViewData(firstString: firstString, secondString: secondString, thirdString: thirdString, icon: image, iconURL: nil, action: nil, color: .pxWhite)
-        return data
-    }
-
-    //RECEIPT DATA
-    class func getDataForReceiptView(paymentId: String?) -> PXNewCustomViewData? {
-        guard let paymentId = paymentId else {
-            return nil
-        }
-
-        let attributedTitle = NSAttributedString(string: "Operación".localized + " #" + paymentId, attributes: PXNewCustomView.titleAttributes)
-
-        let date = Date()
-        let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date), attributes: PXNewCustomView.subtitleAttributes)
-
-        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: nil, iconURL: nil, action: nil, color: nil)
-        return data
-    }
-
-    //POINTS DATA
-    class func getDataForPointsView(points: Points?) -> MLBusinessLoyaltyRingData? {
-        if shouldUseMockedData {
-            let mockData = LoyaltyRingData()
-            return mockData
-        }
-        guard let points = points else {
-            return nil
-        }
-        let data = PXRingViewData(points: points)
-        return data
-    }
-
-    //DISCOUNTS DATA
-    class func getDataForDiscountsView(discounts: Discounts?) -> MLBusinessDiscountBoxData? {
-        if shouldUseMockedData {
-            let mockData = DiscountData()
-            return mockData
-        }
-        guard let discounts = discounts else {
-            return nil
-        }
-        let data = PXDiscountsBoxData(discounts: discounts)
-        return data
-    }
-
-    //DISCOUNTS ACCESSORY VIEW
-    class func getDataForDiscountsAccessoryViewData(discounts: Discounts?) -> ResultViewData? {
-        guard let discounts = discounts else {
-            return nil
-        }
-        if MLBusinessAppDataService().isMpAlreadyInstalled() {
-            let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = discounts.discountsAction.label
-
-            button.add(for: .touchUpInside) {
-                //open deep link
-                PXDeepLinkManager.open(discounts.discountsAction.target)
-            }
-            return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else if MLBusinessAppDataService().isMeli() {
-            let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
-            let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
-            downloadAppView.addTapAction { (deepLink) in
-                //open deep link
-                PXDeepLinkManager.open(deepLink)
-            }
-            return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else {
-            return nil
-        }
-    }
-
-    //CROSS SELLING VIEW
-    class func getDataForCrossSellingView(crossSellingItems: [PXCrossSellingItem]?) -> [MLBusinessCrossSellingBoxData]? {
-        if shouldUseMockedData {
-            let mockData = CrossSellingBoxData()
-            return [mockData]
-        }
-        guard let crossSellingItems = crossSellingItems else {
-            return nil
-        }
-        var data = [MLBusinessCrossSellingBoxData]()
-        for item in crossSellingItems {
-            data.append(PXCrossSellingItemData(item: item))
-        }
-        return data
+        return nil
     }
 }

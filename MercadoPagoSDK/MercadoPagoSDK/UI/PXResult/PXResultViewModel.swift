@@ -182,27 +182,37 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         let headerView = buildHeaderView()
         views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
 
+        //Instructions View
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
+        }
+
         //Important View
         if let importantView = buildImportantCustomView() {
             views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
         }
 
+        //Points and Discounts
+        let pointsView = buildPointsViews()
+        let discountsView = buildDiscountsView()
+
         //Points
-        if let pointsView = buildPointsViews() {
+        if let pointsView = pointsView {
             views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Discounts
-        if let discountsView = buildDiscountsView() {
-            views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
-            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.S_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+        if let discountsView = discountsView {
+            if pointsView != nil {
+                //Dividing Line
+                views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            }
+            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
             if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
                 views.append(discountsAccessoryViewData)
             }
-        } else {
-            views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Cross Selling View
@@ -210,11 +220,6 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             for crossSellingView in crossSellingViews {
                 views.append(ResultViewData(view: crossSellingView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             }
-        }
-
-        //Instructions View
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Top Custom View
@@ -228,12 +233,12 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         }
 
         //Payment Method View
-        if let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
+        if !hasInstructions(), let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
             views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Split Payment View
-        if let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
+        if !hasInstructions(), let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
             views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
         }
 
@@ -255,6 +260,13 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
 // MARK: New Result View Model Builders
 extension PXResultViewModel {
+    //Instructions Logic
+    func hasInstructions() -> Bool {
+        let bodyComponent = buildBodyComponent() as? PXBodyComponent
+        return bodyComponent?.hasInstructions() ?? false
+
+    }
+
     //Header View
     func buildHeaderView() -> UIView {
         let data = PXNewResultUtil.getDataForHeaderView(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
@@ -274,7 +286,7 @@ extension PXResultViewModel {
 
     //Receipt View
     func buildReceiptView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: paymentResult.paymentId) else {
+        guard hasReceiptComponent(), let data = PXNewResultUtil.getDataForReceiptView(paymentId: paymentResult.paymentId) else {
             return nil
         }
         let view = PXNewCustomView(data: data)
@@ -292,6 +304,10 @@ extension PXResultViewModel {
             return nil
         }
         let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
+        pointsView.addTapAction { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+        }
         return pointsView
     }
 
@@ -301,6 +317,10 @@ extension PXResultViewModel {
             return nil
         }
         let discountsView = MLBusinessDiscountBoxView(data)
+        discountsView.addTapAction { (index, deepLink, trackId) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+        }
         return discountsView
     }
 
@@ -317,6 +337,10 @@ extension PXResultViewModel {
         var itemsViews = [UIView]()
         for itemData in data {
             let itemView = MLBusinessCrossSellingBoxView(itemData)
+            itemView.addTapAction { (deepLink) in
+                //open deep link
+                PXDeepLinkManager.open(deepLink)
+            }
             itemsViews.append(itemView)
         }
         return itemsViews

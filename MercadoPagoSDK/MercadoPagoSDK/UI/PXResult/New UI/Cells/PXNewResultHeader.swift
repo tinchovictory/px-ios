@@ -35,8 +35,8 @@ class PXNewResultHeader: UIView {
     let IMAGE_HEIGHT: CGFloat = 48.0
 
     //Badge Image
-    let BADGE_IMAGE_SIZE: CGFloat = 20
-    let BADGE_HORIZONTAL_OFFSET: CGFloat = -6.0
+    let BADGE_IMAGE_SIZE: CGFloat = 16
+    let BADGE_HORIZONTAL_OFFSET: CGFloat = -2.0
     let BADGE_VERTICAL_OFFSET: CGFloat = 0.0
 
     //Close Button
@@ -135,6 +135,8 @@ class PXNewResultHeader: UIView {
         let circleImage = PXUIImageView(frame: CGRect(x: 0, y: 0, width: IMAGE_WIDTH, height: IMAGE_HEIGHT))
         circleImage.layer.masksToBounds = false
         circleImage.layer.cornerRadius = circleImage.frame.height / 2
+        circleImage.layer.borderWidth = 1
+        circleImage.layer.borderColor = UIColor.black.withAlphaComponent(0.1).cgColor
         circleImage.clipsToBounds = true
         circleImage.translatesAutoresizingMaskIntoConstraints = false
         circleImage.enableFadeIn()
