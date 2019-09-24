@@ -146,7 +146,9 @@ class PXNewResultUtil {
         let date = Date()
         let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date), attributes: PXNewCustomView.subtitleAttributes)
 
-        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: nil, iconURL: nil, action: nil, color: nil)
+        let icon = ResourceManager.shared.getImage("receipt_icon")
+
+        let data = PXNewCustomViewData(firstString: attributedTitle, secondString: attributedSubtitle, thirdString: nil, icon: icon, iconURL: nil, action: nil, color: nil)
         return data
     }
 
