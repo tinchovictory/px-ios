@@ -43,14 +43,14 @@ internal class MercadoPagoServices: NSObject {
 
     func getInstructions(paymentId: Int64, paymentTypeId: String, callback : @escaping (PXInstructions) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
         let instructionsService = InstructionsService(baseURL: baseURL, merchantPublicKey: merchantPublicKey, payerAccessToken: payerAccessToken)
-        instructionsService.getInstructions(for: paymentId, paymentTypeId: paymentTypeId, language: language, success: { (instructionsInfo : PXInstructions) -> Void in
+        instructionsService.getInstructions(for: paymentId, paymentTypeId: paymentTypeId, success: { (instructionsInfo : PXInstructions) -> Void in
             callback(instructionsInfo)
         }, failure: failure)
     }
 
     func getPaymentMethodSearch(amount: Double, excludedPaymentTypesIds: [String], excludedPaymentMethodsIds: [String], cardsWithEsc: [String]?, supportedPlugins: [String]?, defaultPaymentMethod: String?, payer: PXPayer, site: PXSite, differentialPricingId: String?, defaultInstallments: String?, expressEnabled: String, splitEnabled: String, discountParamsConfiguration: PXDiscountParamsConfiguration?, marketplace: String?, charges: [PXPaymentTypeChargeRule]?, maxInstallments: String?, callback : @escaping (PXPaymentMethodSearch) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
         let paymentMethodSearchService = PaymentMethodSearchService(baseURL: baseURL, merchantPublicKey: merchantPublicKey, payerAccessToken: payerAccessToken, processingModes: processingModes, branchId: branchId)
-        paymentMethodSearchService.getPaymentMethods(amount, defaultPaymenMethodId: defaultPaymentMethod, excludedPaymentTypeIds: excludedPaymentTypesIds, excludedPaymentMethodIds: excludedPaymentMethodsIds, cardsWithEsc: cardsWithEsc, supportedPlugins: supportedPlugins, site: site, payer: payer, language: language, differentialPricingId: differentialPricingId, defaultInstallments: defaultInstallments, expressEnabled: expressEnabled, splitEnabled: splitEnabled, discountParamsConfiguration: discountParamsConfiguration, marketplace: marketplace, charges: charges, maxInstallments: maxInstallments, success: callback, failure: failure)
+        paymentMethodSearchService.getPaymentMethods(amount, defaultPaymenMethodId: defaultPaymentMethod, excludedPaymentTypeIds: excludedPaymentTypesIds, excludedPaymentMethodIds: excludedPaymentMethodsIds, cardsWithEsc: cardsWithEsc, supportedPlugins: supportedPlugins, site: site, payer: payer, differentialPricingId: differentialPricingId, defaultInstallments: defaultInstallments, expressEnabled: expressEnabled, splitEnabled: splitEnabled, discountParamsConfiguration: discountParamsConfiguration, marketplace: marketplace, charges: charges, maxInstallments: maxInstallments, success: callback, failure: failure)
     }
 
     func createPayment(url: String, uri: String, transactionId: String? = nil, paymentDataJSON: Data, query: [String: String]? = nil, headers: [String: String]? = nil, callback : @escaping (PXPayment) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
