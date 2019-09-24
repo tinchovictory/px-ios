@@ -32,22 +32,3 @@ class PXDownloadAppData: NSObject, MLBusinessDownloadAppData {
         return discounts.downloadAction.action.target
     }
 }
-
-class DownloadAppDataMock: NSObject, MLBusinessDownloadAppData {
-
-    func getAppSite() -> MLBusinessDownloadAppView.AppSite {
-        return MLBusinessDownloadAppView.AppSite.MP
-    }
-
-    func getTitle() -> String {
-        return "Exclusivo con la app de Mercado Pago"
-    }
-
-    func getButtonTitle() -> String {
-        return "Descargar"
-    }
-
-    func getButtonDeepLink() -> String {
-        return "button deep link"
-    }
-}

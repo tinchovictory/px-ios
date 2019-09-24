@@ -10,8 +10,6 @@ import MLBusinessComponents
 
 class PXNewResultUtil {
 
-    static let shouldUseMockedData = true
-
     //HEADER DATA
     class func getDataForHeaderView(color: UIColor?, title: String, icon: UIImage?, iconURL: String?, badgeImage: UIImage?, closeAction: (() -> Void)?) -> PXNewResultHeaderData {
 
@@ -37,10 +35,6 @@ class PXNewResultUtil {
 
     //POINTS DATA
     class func getDataForPointsView(points: Points?) -> MLBusinessLoyaltyRingData? {
-        if shouldUseMockedData {
-            let mockData = LoyaltyRingData()
-            return mockData
-        }
         guard let points = points else {
             return nil
         }
@@ -50,10 +44,6 @@ class PXNewResultUtil {
 
     //DISCOUNTS DATA
     class func getDataForDiscountsView(discounts: Discounts?) -> MLBusinessDiscountBoxData? {
-        if shouldUseMockedData {
-            let mockData = DiscountData()
-            return mockData
-        }
         guard let discounts = discounts else {
             return nil
         }
@@ -90,10 +80,6 @@ class PXNewResultUtil {
 
     //CROSS SELLING VIEW
     class func getDataForCrossSellingView(crossSellingItems: [PXCrossSellingItem]?) -> [MLBusinessCrossSellingBoxData]? {
-        if shouldUseMockedData {
-            let mockData = CrossSellingBoxData()
-            return [mockData]
-        }
         guard let crossSellingItems = crossSellingItems else {
             return nil
         }
