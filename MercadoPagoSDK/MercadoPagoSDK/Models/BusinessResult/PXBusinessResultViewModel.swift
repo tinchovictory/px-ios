@@ -290,12 +290,12 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         }
 
         //Payment Method View
-        if let PMView = buildPaymentMethodView(paymentData: paymentData) {
+        if !hasInstructions(), let PMView = buildPaymentMethodView(paymentData: paymentData) {
             views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Split Payment View
-        if let splitPaymentData = amountHelper.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
+        if !hasInstructions(), let splitPaymentData = amountHelper.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
             views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
         }
 
@@ -317,6 +317,13 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
 // MARK: New Result View Model Builders
 extension PXBusinessResultViewModel {
+    //Instructions Logic
+    func hasInstructions() -> Bool {
+        let bodyComponent = buildBodyComponent() as? PXBodyComponent
+        return bodyComponent?.hasInstructions() ?? false
+
+    }
+
     //Header View
     func buildHeaderView() -> UIView {
         let data = PXNewResultUtil.getDataForHeaderView(color: primaryResultColor(), title: getAttributedTitle().string, icon: getHeaderDefaultIcon(), iconURL: businessResult.getImageUrl(), badgeImage: getBadgeImage(), closeAction: { [weak self] in
