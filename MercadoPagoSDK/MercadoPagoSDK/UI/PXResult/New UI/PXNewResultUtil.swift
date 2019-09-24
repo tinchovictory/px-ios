@@ -202,4 +202,20 @@ class PXNewResultUtil {
             return nil
         }
     }
+
+    //CROSS SELLING VIEW
+    class func getDataForCrossSellingView(crossSellingItems: [PXCrossSellingItem]?) -> [MLBusinessCrossSellingBoxData]? {
+        if shouldUseMockedData {
+            let mockData = CrossSellingBoxData()
+            return [mockData]
+        }
+        guard let crossSellingItems = crossSellingItems else {
+            return nil
+        }
+        var data = [MLBusinessCrossSellingBoxData]()
+        for item in crossSellingItems {
+            data.append(PXCrossSellingItemData(item: item))
+        }
+        return data
+    }
 }
