@@ -244,6 +244,11 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         let headerView = buildHeaderView()
         views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
 
+        //Instructions View
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
+        }
+
         //Important View
         if let importantView = buildImportantCustomView() {
             views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
@@ -272,11 +277,6 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
             for crossSellingView in crossSellingViews {
                 views.append(ResultViewData(view: crossSellingView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
             }
-        }
-
-        //Instructions View
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Top Custom View
