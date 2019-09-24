@@ -16,6 +16,7 @@ internal class MercadoPagoService: NSObject {
         case sessionId = "X-Session-Id"
         case requestId = "X-Request-Id"
         case idempotencyKey = "X-Idempotency-Key"
+        case density = "x-density"
     }
 
     let MP_DEFAULT_TIME_OUT = 15.0
@@ -62,6 +63,9 @@ internal class MercadoPagoService: NSObject {
         // Add session id
         request.setValue(MPXTracker.sharedInstance.getRequestId(), forHTTPHeaderField: HeaderField.requestId.rawValue)
         request.setValue(MPXTracker.sharedInstance.getSessionID(), forHTTPHeaderField: HeaderField.sessionId.rawValue)
+
+        //Density Header
+        request.setValue("xxxhdpi", forHTTPHeaderField: HeaderField.density.rawValue)
 
         if headers?[HeaderField.productId.rawValue] == nil {
             request.setValue(MP_DEFAULT_PRODUCT_ID, forHTTPHeaderField: HeaderField.productId.rawValue)
