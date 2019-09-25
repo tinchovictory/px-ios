@@ -56,7 +56,9 @@ class PXNewResultUtil {
         guard let discounts = discounts else {
             return nil
         }
-        if MLBusinessAppDataService().isMpAlreadyInstalled() {
+
+        let dataService = MLBusinessAppDataService()
+        if dataService.isMpAlreadyInstalled() {
             let button = PXOutlinedSecondaryButton()
             button.buttonTitle = discounts.discountsAction.label
 
@@ -65,7 +67,7 @@ class PXNewResultUtil {
                 PXDeepLinkManager.open(discounts.discountsAction.target)
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else if MLBusinessAppDataService().isMeli() {
+        } else {
             let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
@@ -73,8 +75,6 @@ class PXNewResultUtil {
                 PXDeepLinkManager.open(deepLink)
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else {
-            return nil
         }
     }
 
