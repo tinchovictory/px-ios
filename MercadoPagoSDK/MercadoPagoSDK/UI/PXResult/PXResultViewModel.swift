@@ -217,8 +217,14 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
 
         //Cross Selling View
         if let crossSellingViews = buildCrossSellingViews() {
+            var margin: CGFloat = 0
+            if discountsView != nil && pointsView == nil {
+                margin = PXLayout.M_MARGIN
+            } else if discountsView == nil && pointsView != nil {
+                margin = PXLayout.XXS_MARGIN
+            }
             for crossSellingView in crossSellingViews {
-                views.append(ResultViewData(view: crossSellingView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+                views.append(ResultViewData(view: crossSellingView, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
             }
         }
 
