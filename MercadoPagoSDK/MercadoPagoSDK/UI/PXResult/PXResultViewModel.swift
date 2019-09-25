@@ -9,7 +9,7 @@
 import UIKit
 import MLBusinessComponents
 
-internal class PXResultViewModel: PXResultViewModelInterface {
+internal class PXResultViewModel: NSObject, PXResultViewModelInterface {
 
     var paymentResult: PaymentResult
     var instructionsInfo: PXInstructions?
@@ -56,6 +56,46 @@ internal class PXResultViewModel: PXResultViewModelInterface {
     }
 }
 
+// MARK: PXCongratsTrackingDataProtocol Implementation
+extension PXResultViewModel: PXCongratsTrackingDataProtocol {
+    func hasBottomView() -> Bool {
+        return buildBottomCustomView() != nil ? true : false
+    }
+
+    func hasTopView() -> Bool {
+        return buildTopCustomView() != nil ? true : false
+    }
+
+    func hasImportantView() -> Bool {
+        return buildImportantCustomView() != nil ? true : false
+    }
+
+    func getScoreLevel() -> Int? {
+        return PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points)?.getRingNumber()
+    }
+
+    func getDiscountsCount() -> Int? {
+        return PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts)?.getItems().count
+    }
+
+    func getCampaignsIds() -> String {
+        var campaignsIdsArray: [String] = []
+        if let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) {
+            for item in discounts.getItems() {
+                if let id = item.trackIdForItem() {
+                    campaignsIdsArray.append(id)
+                }
+            }
+        }
+        return campaignsIdsArray.joined(separator: ", ")
+    }
+
+    func getCampaignId() -> String? {
+        guard let campaignId = amountHelper.campaign?.id else { return nil }
+        return "\(campaignId)"
+    }
+}
+
 // MARK: Tracking
 extension PXResultViewModel {
     func getTrackingProperties() -> [String: Any] {
@@ -75,6 +115,7 @@ extension PXResultViewModel {
         properties[has_split] = amountHelper.isSplitPayment
         properties[currency_id] = SiteManager.shared.getCurrency().id
         properties[discount_coupon_amount] = amountHelper.getDiscountCouponAmountForTracking()
+        properties = PXCongratsTracking.trackProperties(dataProtocol: self, properties: properties)
 
         if let rawAmount = amountHelper.getPaymentData().getRawAmount() {
             properties[raw_amount] = rawAmount.decimalValue
@@ -307,6 +348,7 @@ extension PXResultViewModel {
         pointsView.addTapAction { (deepLink) in
             //open deep link
             PXDeepLinkManager.open(deepLink)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapScorePath())
         }
         return pointsView
     }
@@ -320,6 +362,7 @@ extension PXResultViewModel {
         discountsView.addTapAction { (index, deepLink, trackId) in
             //open deep link
             PXDeepLinkManager.open(deepLink)
+            PXCongratsTracking.trackTapDiscountItemEvent(index, trackId)
         }
         return discountsView
     }
@@ -340,6 +383,7 @@ extension PXResultViewModel {
             itemView.addTapAction { (deepLink) in
                 //open deep link
                 PXDeepLinkManager.open(deepLink)
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapCrossSellingPath())
             }
             itemsViews.append(itemView)
         }

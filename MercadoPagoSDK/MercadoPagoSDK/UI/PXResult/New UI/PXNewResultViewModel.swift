@@ -28,4 +28,6 @@ protocol PXNewResultViewModelInterface {
     func buildDiscountsAccessoryView() -> ResultViewData?
     func buildCrossSellingViews() -> [UIView]?
     func buildReceiptView() -> UIView?
+    func getTrackingProperties() -> [String: Any]
+    func getTrackingPath() -> String
 }
