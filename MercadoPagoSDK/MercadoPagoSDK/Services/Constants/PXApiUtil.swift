@@ -41,4 +41,5 @@ internal class ApiParams: NSObject {
     static let CHARGES = "charges"
     static let PAYMENT_IDS = "payment_ids"
     static let PLATFORM = "platform"
+    static let CAMPAIGN_ID = "campaign_id"
 }
