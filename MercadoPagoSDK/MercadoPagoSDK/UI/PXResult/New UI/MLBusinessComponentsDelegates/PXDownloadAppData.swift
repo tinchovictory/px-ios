@@ -10,9 +10,9 @@ import MLBusinessComponents
 
 class PXDownloadAppData: NSObject, MLBusinessDownloadAppData {
 
-    let discounts: Discounts
+    let discounts: PXDiscounts
 
-    init(discounts: Discounts) {
+    init(discounts: PXDiscounts) {
         self.discounts = discounts
     }
 

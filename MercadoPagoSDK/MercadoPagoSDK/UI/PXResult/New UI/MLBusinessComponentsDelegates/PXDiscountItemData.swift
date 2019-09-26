@@ -9,9 +9,9 @@ import UIKit
 import MLBusinessComponents
 
 class PXDiscountItemData: NSObject, MLBusinessSingleItemProtocol {
-    let item: DiscountsItem
+    let item: PXDiscountsItem
 
-    init(item: DiscountsItem) {
+    init(item: PXDiscountsItem) {
         self.item = item
     }
 

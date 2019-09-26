@@ -10,9 +10,9 @@ import MLBusinessComponents
 
 class PXDiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
 
-    let discounts: Discounts
+    let discounts: PXDiscounts
 
-    init(discounts: Discounts) {
+    init(discounts: PXDiscounts) {
         self.discounts = discounts
     }
 

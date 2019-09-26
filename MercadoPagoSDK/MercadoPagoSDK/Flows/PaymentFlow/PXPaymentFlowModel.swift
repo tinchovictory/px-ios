@@ -17,7 +17,7 @@ internal final class PXPaymentFlowModel: NSObject {
 
     var paymentResult: PaymentResult?
     var instructionsInfo: PXInstructions?
-    var pointsAndDiscounts: PointsAndDiscounts?
+    var pointsAndDiscounts: PXPointsAndDiscounts?
     var businessResult: PXBusinessResult?
 
     let escManager: MercadoPagoESC?
