@@ -69,7 +69,7 @@ internal extension PXPaymentFlow {
             paymentId = businessResult.getPaymentId()
         }
 
-        let campaignId: String? = nil
+        let campaignId: String? = model.amountHelper?.campaign?.id?.stringValue
 
         guard let safePaymentId = paymentId else {
             print("Points and Discounts - Payment Id does no exist")
