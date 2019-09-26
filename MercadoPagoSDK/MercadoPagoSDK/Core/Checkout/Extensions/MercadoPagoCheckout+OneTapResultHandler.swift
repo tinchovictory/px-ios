@@ -22,9 +22,8 @@ extension MercadoPagoCheckout: PXOneTapResultHandlerProtocol {
     }
 
     func cancelOneTapForNewPaymentMethodSelection() {
-
         self.viewModel.checkoutPreference.setCardId(cardId: "cards")
-         self.viewModel.prepareForNewSelection()
+        self.viewModel.prepareForNewSelection()
         self.executeNextStep()
     }
 
