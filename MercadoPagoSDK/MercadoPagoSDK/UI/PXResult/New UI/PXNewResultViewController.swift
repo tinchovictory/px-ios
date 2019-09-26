@@ -16,6 +16,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
     private lazy var navigationTitleStatusStep: Int = 0
 
+    private let statusBarHeight = PXLayout.getStatusBarHeight()
+
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
 
@@ -154,7 +156,12 @@ extension PXNewResultViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        // Elastic header min height
+        if -scrollView.contentOffset.y < statusBarHeight {
+            elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: statusBarHeight)
+        } else {
+            elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        }
     }
 }
 
