@@ -10,9 +10,9 @@ import MLBusinessComponents
 
 class PXRingViewData: NSObject, MLBusinessLoyaltyRingData {
 
-    let points: Points
+    let points: PXPoints
 
-    init(points: Points) {
+    init(points: PXPoints) {
         self.points = points
     }
 

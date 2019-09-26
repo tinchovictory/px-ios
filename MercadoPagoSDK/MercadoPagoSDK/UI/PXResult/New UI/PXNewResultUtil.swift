@@ -34,7 +34,7 @@ class PXNewResultUtil {
     }
 
     //POINTS DATA
-    class func getDataForPointsView(points: Points?) -> MLBusinessLoyaltyRingData? {
+    class func getDataForPointsView(points: PXPoints?) -> MLBusinessLoyaltyRingData? {
         guard let points = points else {
             return nil
         }
