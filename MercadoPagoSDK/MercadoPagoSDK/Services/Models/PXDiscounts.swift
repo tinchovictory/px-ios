@@ -1,5 +1,5 @@
 //
-//  Discounts.swift
+//  PXDiscounts.swift
 //  MercadoPagoSDK
 //
 //  Created by Esteban Adrian Boffa on 28/08/2019.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Discounts: Decodable {
+struct PXDiscounts: Decodable {
 
     let title: String?
     let subtitle: String?

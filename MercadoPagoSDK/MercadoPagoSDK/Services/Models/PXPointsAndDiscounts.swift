@@ -10,10 +10,10 @@ import Foundation
 struct PXPointsAndDiscounts: Decodable {
 
     let points: Points?
-    let discounts: Discounts?
+    let discounts: PXDiscounts?
     let crossSelling: [PXCrossSellingItem]?
 
-    init(points: Points?, discounts: Discounts?, crossSelling: [PXCrossSellingItem]?) {
+    init(points: Points?, discounts: PXDiscounts?, crossSelling: [PXCrossSellingItem]?) {
         self.points = points
         self.discounts = discounts
         self.crossSelling = crossSelling
@@ -28,7 +28,7 @@ struct PXPointsAndDiscounts: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: PointsAndDiscountsCodingKeys.self)
         let points: Points? = try container.decodeIfPresent(Points.self, forKey: .points)
-        let discounts: Discounts? = try container.decodeIfPresent(Discounts.self, forKey: .discounts)
+        let discounts: PXDiscounts? = try container.decodeIfPresent(PXDiscounts.self, forKey: .discounts)
         let crossSelling: [PXCrossSellingItem]? = try container.decodeIfPresent([PXCrossSellingItem].self, forKey: .crossSelling)
         self.init(points: points, discounts: discounts, crossSelling: crossSelling)
     }

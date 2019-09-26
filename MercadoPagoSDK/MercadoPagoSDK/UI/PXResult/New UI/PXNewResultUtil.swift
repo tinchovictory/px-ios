@@ -43,7 +43,7 @@ class PXNewResultUtil {
     }
 
     //DISCOUNTS DATA
-    class func getDataForDiscountsView(discounts: Discounts?) -> MLBusinessDiscountBoxData? {
+    class func getDataForDiscountsView(discounts: PXDiscounts?) -> MLBusinessDiscountBoxData? {
         guard let discounts = discounts else {
             return nil
         }
@@ -52,7 +52,7 @@ class PXNewResultUtil {
     }
 
     //DISCOUNTS ACCESSORY VIEW
-    class func getDataForDiscountsAccessoryViewData(discounts: Discounts?) -> ResultViewData? {
+    class func getDataForDiscountsAccessoryViewData(discounts: PXDiscounts?) -> ResultViewData? {
         guard let discounts = discounts else {
             return nil
         }
