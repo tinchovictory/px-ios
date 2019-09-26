@@ -132,6 +132,11 @@ extension TrackingPaths.Screens {
         private static let primaryAction = "/primary_action"
         private static let secondaryAction = "/secondary_action"
         private static let changePaymentMethod = "/change_payment_method"
+        private static let tapScore = "/tap_score"
+        private static let tapDiscountItem = "/tap_discount_item"
+        private static let tapDownloadApp = "/tap_download_app"
+        private static let tapCrossSelling = "/tap_cross_selling"
+        private static let tapSeeAllDiscounts = "/tap_see_all_discounts"
 
         private static let result = TrackingPaths.pxTrack + "/result"
 
@@ -153,6 +158,26 @@ extension TrackingPaths.Screens {
 
         static func getSuccessSecondaryActionPath() -> String {
             return getSuccessPath() + secondaryAction
+        }
+
+        static func getSuccessTapScorePath() -> String {
+            return getSuccessPath() + tapScore
+        }
+
+        static func getSuccessTapDiscountItemPath() -> String {
+            return getSuccessPath() + tapDiscountItem
+        }
+
+        static func getSuccessTapDownloadAppPath() -> String {
+            return getSuccessPath() + tapDownloadApp
+        }
+
+        static func getSuccessTapCrossSellingPath() -> String {
+            return getSuccessPath() + tapCrossSelling
+        }
+
+        static func getSuccessTapSeeAllDiscountsPath() -> String {
+            return getSuccessPath() + tapSeeAllDiscounts
         }
 
         static func getFurtherActionPath() -> String {

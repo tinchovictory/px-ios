@@ -42,6 +42,9 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         super.viewDidAppear(animated)
         animateScrollView()
         animateRing()
+        if !String.isNullOrEmpty(viewModel.getTrackingPath()) {
+            trackScreen(path: viewModel.getTrackingPath(), properties: viewModel.getTrackingProperties())
+        }
     }
 
     private func animateScrollView() {
