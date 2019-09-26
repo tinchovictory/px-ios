@@ -156,7 +156,7 @@ extension PXNewCustomView {
 
         let iconView = UIView()
         iconView.translatesAutoresizingMaskIntoConstraints = false
-        iconView.backgroundColor = ThemeManager.shared.iconBackgroundColor()
+        iconView.backgroundColor = .white
         iconView.layer.cornerRadius = IMAGE_HEIGHT/2
         iconView.layer.masksToBounds = true
         iconView.layer.borderWidth = 1
