@@ -12,7 +12,7 @@ struct PXCrossSellingItem: Decodable {
     let title: String
     let icon: String
     let contentId: String
-    let action: PointsAndDiscountsAction
+    let action: PXPointsAndDiscountsAction
 
     enum CodingKeys: String, CodingKey {
         case title

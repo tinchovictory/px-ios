@@ -9,5 +9,5 @@ import Foundation
 
 struct DownloadAction: Decodable {
     let title: String
-    let action: PointsAndDiscountsAction
+    let action: PXPointsAndDiscountsAction
 }

@@ -1,5 +1,5 @@
 //
-//  PointsAction.swift
+//  PXPointsAndDiscountsAction.swift
 //  MercadoPagoSDK
 //
 //  Created by Esteban Adrian Boffa on 28/08/2019.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PointsAndDiscountsAction: Decodable {
+struct PXPointsAndDiscountsAction: Decodable {
 
     let label: String
     let target: String
