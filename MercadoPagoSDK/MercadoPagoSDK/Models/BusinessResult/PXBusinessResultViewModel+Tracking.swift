@@ -27,7 +27,7 @@ extension PXBusinessResultViewModel {
         properties[has_split] = amountHelper.isSplitPayment
         properties[currency_id] = SiteManager.shared.getCurrency().id
         properties[discount_coupon_amount] = amountHelper.getDiscountCouponAmountForTracking()
-        properties = PXCongratsTracking.trackProperties(dataProtocol: self, properties: properties)
+        properties = PXCongratsTracking.getProperties(dataProtocol: self, properties: properties)
 
         if let rawAmount = amountHelper.getPaymentData().getRawAmount() {
             properties[raw_amount] = rawAmount.decimalValue
