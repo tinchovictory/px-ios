@@ -31,14 +31,14 @@ extension MercadoPagoCheckout: PXOneTapResultHandlerProtocol {
         self.finish()
     }
 
-    func finishOneTap(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts:PointsAndDiscounts?) {
+    func finishOneTap(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts: PointsAndDiscounts?) {
         self.setPaymentResult(paymentResult: paymentResult)
         self.viewModel.instructionsInfo = instructionsInfo
         self.viewModel.pointsAndDiscounts = pointsAndDiscounts
         self.executeNextStep()
     }
 
-    func finishOneTap(businessResult: PXBusinessResult, paymentData: PXPaymentData, splitAccountMoney: PXPaymentData?, pointsAndDiscounts:PointsAndDiscounts?) {
+    func finishOneTap(businessResult: PXBusinessResult, paymentData: PXPaymentData, splitAccountMoney: PXPaymentData?, pointsAndDiscounts: PointsAndDiscounts?) {
         self.viewModel.businessResult = businessResult
         self.viewModel.paymentData = paymentData
         self.viewModel.splitAccountMoney = splitAccountMoney
