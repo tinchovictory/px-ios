@@ -62,13 +62,13 @@
 
 -(void)startPaymentWithCheckoutStore:(PXCheckoutStore *)checkoutStore errorHandler:(id<PXPaymentProcessorErrorHandler>)errorHandler successWithBasePayment:(void (^)(id<PXBasePayment> _Nonnull))successWithBasePayment {
 
-    // CustomComponentText* component = [[CustomComponentText alloc] init];
+    CustomComponentText* component = [[CustomComponentText alloc] init];
 
     //PAYMENT ID ARGENTINO
 //    PXBusinessResult* result = [[PXBusinessResult alloc] initWithReceiptId:@"1879867544" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:[component render] bottomCustomView: nil paymentStatus:@"approved" paymentStatusDetail:@""];
 
     // PAYMENT ID BRASIL (Test New Congrats)
-    PXBusinessResult* result = [[PXBusinessResult alloc] initWithReceiptId:@"5148665090" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:nil bottomCustomView: nil paymentStatus:@"approved" paymentStatusDetail:@"" paymentMethodId: [[[checkoutStore getPaymentData] getPaymentMethod] getId] paymentTypeId: [[[checkoutStore getPaymentData] getPaymentMethod] paymentTypeId] importantView: nil];
+    PXBusinessResult* result = [[PXBusinessResult alloc] initWithReceiptId:@"5148665090" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:nil bottomCustomView: nil paymentStatus:@"approved" paymentStatusDetail:@"" paymentMethodId: [[[checkoutStore getPaymentData] getPaymentMethod] getId] paymentTypeId: [[[checkoutStore getPaymentData] getPaymentMethod] paymentTypeId] importantView: [component render]];
 
     /*
      // Credits Log
