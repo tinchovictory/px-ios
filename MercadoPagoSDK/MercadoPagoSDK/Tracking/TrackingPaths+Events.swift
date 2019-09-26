@@ -68,6 +68,7 @@ extension TrackingPaths.Events {
     }
 }
 
+// MARK: Congrats events paths.
 enum EventsPaths: String {
     case tapScore = "/tap_score"
     case tapDiscountItem = "/tap_discount_item"
