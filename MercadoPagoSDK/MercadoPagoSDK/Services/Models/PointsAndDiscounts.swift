@@ -8,7 +8,6 @@
 import Foundation
 
 struct PointsAndDiscounts: Decodable {
-
     let points: Points?
     let discounts: Discounts?
     let crossSelling: [PXCrossSellingItem]?
