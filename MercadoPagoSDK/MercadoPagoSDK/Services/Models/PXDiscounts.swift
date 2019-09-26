@@ -13,7 +13,7 @@ struct PXDiscounts: Decodable {
     let subtitle: String?
     let discountsAction: PXPointsAndDiscountsAction
     let downloadAction: PXDownloadAction
-    let items: [DiscountsItem]
+    let items: [PXDiscountsItem]
 
     enum CodingKeys: String, CodingKey {
         case title
