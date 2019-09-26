@@ -77,6 +77,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     }
 
     func renderContentView() {
+        //CONTENT VIEW
         let contentView = UIView()
         contentView.backgroundColor = .pxWhite
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -87,10 +88,30 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
+        //FOOTER VIEW
+        let footerView = viewModel.buildFooterView()
+        scrollView.addSubview(footerView)
+
+        //Footer View Layout
+        NSLayoutConstraint.activate([
+            footerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            footerView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        //Calculate content view min height
+        self.view.layoutIfNeeded()
+        let scrollViewMinHeight: CGFloat = PXLayout.getScreenHeight() - footerView.frame.height - PXLayout.getSafeAreaTopInset() - PXLayout.getSafeAreaBottomInset()
+        NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: scrollViewMinHeight)
+        ])
+
+        //Load content views
         for data in viewModel.getViews() {
             if let ringView = data.view as? MLBusinessLoyaltyRingView {
                 self.ringView = ringView
@@ -103,7 +124,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
             ])
         }
-        PXLayout.pinLastSubviewToBottom(view: contentView)
+        PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
     }
 }
 
