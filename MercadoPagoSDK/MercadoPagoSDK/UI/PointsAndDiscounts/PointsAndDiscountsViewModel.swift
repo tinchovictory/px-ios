@@ -9,9 +9,9 @@ import Foundation
 
 struct PointsAndDiscountsViewModel {
 
-    let pointsAndDiscounts: PointsAndDiscounts
+    let pointsAndDiscounts: PXPointsAndDiscounts
 
-    init(_ withModel: PointsAndDiscounts) {
+    init(_ withModel: PXPointsAndDiscounts) {
         self.pointsAndDiscounts = withModel
     }
 }

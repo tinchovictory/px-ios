@@ -1,5 +1,5 @@
 //
-//  PointsAndDiscounts.swift
+//  PXPointsAndDiscounts.swift
 //  MercadoPagoSDK
 //
 //  Created by Esteban Adrian Boffa on 22/08/2019.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PointsAndDiscounts: Decodable {
+struct PXPointsAndDiscounts: Decodable {
 
     let points: Points?
     let discounts: Discounts?
@@ -33,7 +33,7 @@ struct PointsAndDiscounts: Decodable {
         self.init(points: points, discounts: discounts, crossSelling: crossSelling)
     }
 
-    static func fromJSON(data: Data) throws -> PointsAndDiscounts {
-        return try JSONDecoder().decode(PointsAndDiscounts.self, from: data)
+    static func fromJSON(data: Data) throws -> PXPointsAndDiscounts {
+        return try JSONDecoder().decode(PXPointsAndDiscounts.self, from: data)
     }
 }
