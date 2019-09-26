@@ -56,25 +56,27 @@ class PXNewResultUtil {
         guard let discounts = discounts else {
             return nil
         }
-        if MLBusinessAppDataService().isMpAlreadyInstalled() {
+
+        let dataService = MLBusinessAppDataService()
+        if dataService.isMpAlreadyInstalled() {
             let button = PXOutlinedSecondaryButton()
             button.buttonTitle = discounts.discountsAction.label
 
             button.add(for: .touchUpInside) {
                 //open deep link
                 PXDeepLinkManager.open(discounts.discountsAction.target)
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapSeeAllDiscountsPath())
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else if MLBusinessAppDataService().isMeli() {
+        } else {
             let downloadAppDelegate = PXDownloadAppData(discounts: discounts)
             let downloadAppView = MLBusinessDownloadAppView(downloadAppDelegate)
             downloadAppView.addTapAction { (deepLink) in
                 //open deep link
                 PXDeepLinkManager.open(deepLink)
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapDownloadAppPath())
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        } else {
-            return nil
         }
     }
 
@@ -221,9 +223,8 @@ extension PXNewResultUtil {
         }
         let paymentMethodName = paymentMethod.name ?? ""
         if let issuer = paymentData.getIssuer(), let issuerName = issuer.name, !issuerName.isEmpty, issuerName.lowercased() != paymentMethodName.lowercased() {
-
             let issuerAttributedString = NSMutableAttributedString(string: issuerName, attributes: PXNewCustomView.subtitleAttributes)
-
+            
             return issuerAttributedString
         }
         return nil
