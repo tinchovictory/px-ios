@@ -69,6 +69,8 @@ internal extension PXPaymentFlow {
             paymentId = businessResult.getPaymentId()
         }
 
+        let campaignId: String? = nil
+
         guard let safePaymentId = paymentId else {
             print("Points and Discounts - Payment Id does no exist")
             self.model.shouldSearchPointsAndDiscounts = false
@@ -78,7 +80,7 @@ internal extension PXPaymentFlow {
 
         model.shouldSearchPointsAndDiscounts = false
         let platform = MLBusinessAppDataService().getAppIdentifier().rawValue
-        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: [safePaymentId], platform: platform, callback: { [weak self] (pointsAndBenef) in
+        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: [safePaymentId], campaignId: campaignId, platform: platform, callback: { [weak self] (pointsAndBenef) in
                 guard let strongSelf = self else { return }
                 strongSelf.model.pointsAndDiscounts = pointsAndBenef
                 strongSelf.executeNextStep()
