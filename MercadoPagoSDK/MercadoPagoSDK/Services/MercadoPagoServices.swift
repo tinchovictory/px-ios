@@ -70,10 +70,10 @@ internal class MercadoPagoServices: NSObject {
         let service: CustomService = CustomService(baseURL: url, URI: uri)
 
         var params = MercadoPagoServices.getParamsAccessTokenAndPaymentIdsAndPlatform(payerAccessToken, paymentIds, platform)
-        params.paramsAppend(key: ApiParams.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
+        params.paramsAppend(key: ApiParam.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
 
         if let campaignId = campaignId {
-            params.paramsAppend(key: ApiParams.CAMPAIGN_ID, value: campaignId)
+            params.paramsAppend(key: ApiParam.CAMPAIGN_ID, value: campaignId)
         }
 
         service.getPointsAndDiscounts(body: nil, params: params, success: callback, failure: failure)
@@ -266,7 +266,7 @@ internal class MercadoPagoServices: NSObject {
         var params: String = ""
 
         if let payerAccessToken = payerAccessToken, !payerAccessToken.isEmpty {
-            params.paramsAppend(key: ApiParams.PAYER_ACCESS_TOKEN, value: payerAccessToken)
+            params.paramsAppend(key: ApiParam.PAYER_ACCESS_TOKEN, value: payerAccessToken)
         }
 
         if let paymentIds = paymentIds {
@@ -277,11 +277,11 @@ internal class MercadoPagoServices: NSObject {
                 }
                 paymentIdsString.append(paymentId)
             }
-            params.paramsAppend(key: ApiParams.PAYMENT_IDS, value: paymentIdsString)
+            params.paramsAppend(key: ApiParam.PAYMENT_IDS, value: paymentIdsString)
         }
 
         if let platform = platform {
-            params.paramsAppend(key: ApiParams.PLATFORM, value: platform)
+            params.paramsAppend(key: ApiParam.PLATFORM, value: platform)
         }
 
         return params
