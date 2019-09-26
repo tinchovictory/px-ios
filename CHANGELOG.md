@@ -1,3 +1,8 @@
+# v4.22
+🚀Private Release - 4.22 🚀
+MercadoPagoSDKV4 - Private Version
+- Points and Discounts feature
+
 # v4.21.2
 🚀Private Release - 4.21.2 🚀
 MercadoPagoSDKV4 - Private Version
