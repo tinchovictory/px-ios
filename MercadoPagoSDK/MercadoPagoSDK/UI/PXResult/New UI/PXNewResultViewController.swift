@@ -16,6 +16,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
     private lazy var navigationTitleStatusStep: Int = 0
 
+    private let statusBarHeight = PXLayout.getStatusBarHeight()
+
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
 
@@ -77,6 +79,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     }
 
     func renderContentView() {
+        //CONTENT VIEW
         let contentView = UIView()
         contentView.backgroundColor = .pxWhite
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -87,10 +90,53 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
+        //FOOTER VIEW
+        let footerContentView = UIView()
+        footerContentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(footerContentView)
+
+        let dividingView = MLBusinessDividingLineView()
+        let footerView = viewModel.buildFooterView()
+        footerContentView.addSubview(dividingView)
+        footerContentView.addSubview(footerView)
+
+        //Dividing View Layout
+        NSLayoutConstraint.activate([
+            dividingView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
+            dividingView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
+            dividingView.topAnchor.constraint(equalTo: footerContentView.topAnchor),
+            dividingView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        //Footer View Layout
+        NSLayoutConstraint.activate([
+            footerView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
+            footerView.topAnchor.constraint(equalTo: dividingView.bottomAnchor),
+            footerView.bottomAnchor.constraint(equalTo: footerContentView.bottomAnchor),
+            footerView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        //Footer Content View Layout
+        NSLayoutConstraint.activate([
+            footerContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            footerContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            footerContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            footerContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            footerContentView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        //Calculate content view min height
+        self.view.layoutIfNeeded()
+        let scrollViewMinHeight: CGFloat = PXLayout.getScreenHeight() - footerView.frame.height - PXLayout.getSafeAreaTopInset() - PXLayout.getSafeAreaBottomInset()
+        NSLayoutConstraint.activate([
+            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: scrollViewMinHeight)
+        ])
+
+        //Load content views
         for data in viewModel.getViews() {
             if let ringView = data.view as? MLBusinessLoyaltyRingView {
                 self.ringView = ringView
@@ -103,7 +149,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
             ])
         }
-        PXLayout.pinLastSubviewToBottom(view: contentView)
+        PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
     }
 }
 
@@ -133,7 +179,12 @@ extension PXNewResultViewController: UIScrollViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        // Elastic header min height
+        if -scrollView.contentOffset.y < statusBarHeight {
+            elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: statusBarHeight)
+        } else {
+            elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        }
     }
 }
 

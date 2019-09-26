@@ -318,10 +318,6 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         //Separator View
         views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: 0, horizontalMargin: 0))
 
-        //Footer View
-        let footerView = buildFooterView()
-        views.append(ResultViewData(view: footerView, verticalMargin: 0, horizontalMargin: 0))
-
         return views
     }
 }
