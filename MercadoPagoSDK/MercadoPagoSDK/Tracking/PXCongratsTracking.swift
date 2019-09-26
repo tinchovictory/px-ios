@@ -17,7 +17,7 @@ protocol PXCongratsTrackingDataProtocol: NSObjectProtocol {
     func getCampaignId() -> String?
 }
 
-@objc final class PXCongratsTracking: NSObject {
+final class PXCongratsTracking {
     enum TrackingKeys: String {
         case hasBottomView  = "has_bottom_view"
         case hasTopView = "has_top_view"
@@ -28,7 +28,7 @@ protocol PXCongratsTrackingDataProtocol: NSObjectProtocol {
         case campaignId = "campaign_id"
     }
 
-    class func trackProperties(dataProtocol: PXCongratsTrackingDataProtocol, properties: [String: Any]) -> [String: Any] {
+    class func getProperties(dataProtocol: PXCongratsTrackingDataProtocol, properties: [String: Any]) -> [String: Any] {
         var congratsProperties = properties
         congratsProperties[TrackingKeys.hasBottomView.rawValue] = dataProtocol.hasBottomView()
         congratsProperties[TrackingKeys.hasTopView.rawValue] = dataProtocol.hasTopView()
@@ -44,6 +44,6 @@ protocol PXCongratsTrackingDataProtocol: NSObjectProtocol {
         var properties: [String: Any] = [:]
         properties["index"] = index
         properties["campaign_id"] = trackId
-        MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapDiscountItemPath(), properties: properties)
+        MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapDiscountItemPath(), properties: properties)
     }
 }

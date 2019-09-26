@@ -364,7 +364,7 @@ extension PXBusinessResultViewModel {
         pointsView.addTapAction { (deepLink) in
             //open deep link
             PXDeepLinkManager.open(deepLink)
-            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapScorePath())
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapScorePath())
         }
         return pointsView
     }
@@ -399,7 +399,7 @@ extension PXBusinessResultViewModel {
             itemView.addTapAction { (deepLink) in
                 //open deep link
                 PXDeepLinkManager.open(deepLink)
-                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapCrossSellingPath())
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapCrossSellingPath())
             }
             itemsViews.append(itemView)
         }

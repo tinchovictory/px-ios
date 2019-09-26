@@ -65,7 +65,7 @@ class PXNewResultUtil {
             button.add(for: .touchUpInside) {
                 //open deep link
                 PXDeepLinkManager.open(discounts.discountsAction.target)
-                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapSeeAllDiscountsPath())
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapSeeAllDiscountsPath())
             }
             return ResultViewData(view: button, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         } else {
@@ -74,7 +74,7 @@ class PXNewResultUtil {
             downloadAppView.addTapAction { (deepLink) in
                 //open deep link
                 PXDeepLinkManager.open(deepLink)
-                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Screens.PaymentResult.getSuccessTapDownloadAppPath())
+                MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapDownloadAppPath())
             }
             return ResultViewData(view: downloadAppView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
         }
