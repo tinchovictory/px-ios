@@ -9,7 +9,7 @@ import Foundation
 
 struct Points: Decodable {
 
-    let progress: PointsProgress
+    let progress: PXPointsProgress
     let title: String
     let action: PointsAndDiscountsAction
 

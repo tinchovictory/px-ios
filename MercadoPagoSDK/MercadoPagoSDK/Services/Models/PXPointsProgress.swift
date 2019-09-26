@@ -1,5 +1,5 @@
 //
-//  PointsProgress.swift
+//  PXPointsProgress.swift
 //  MercadoPagoSDK
 //
 //  Created by Esteban Adrian Boffa on 28/08/2019.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PointsProgress: Decodable {
+struct PXPointsProgress: Decodable {
 
     let percentage: Double
     let levelColor: String
