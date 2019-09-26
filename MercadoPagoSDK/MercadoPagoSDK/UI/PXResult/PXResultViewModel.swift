@@ -294,9 +294,6 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
             views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
         }
 
-        //Separator View
-        views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: 0, horizontalMargin: 0))
-
         return views
     }
 }

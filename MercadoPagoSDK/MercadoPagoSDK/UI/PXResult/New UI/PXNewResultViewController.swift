@@ -94,16 +94,39 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         //FOOTER VIEW
+        let footerContentView = UIView()
+        footerContentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(footerContentView)
+
+        let dividingView = MLBusinessDividingLineView()
         let footerView = viewModel.buildFooterView()
-        scrollView.addSubview(footerView)
+        footerContentView.addSubview(dividingView)
+        footerContentView.addSubview(footerView)
+
+        //Dividing View Layout
+        NSLayoutConstraint.activate([
+            dividingView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
+            dividingView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
+            dividingView.topAnchor.constraint(equalTo: footerContentView.topAnchor),
+            dividingView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
 
         //Footer View Layout
         NSLayoutConstraint.activate([
-            footerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            footerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
-            footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            footerView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
+            footerView.topAnchor.constraint(equalTo: dividingView.bottomAnchor),
+            footerView.bottomAnchor.constraint(equalTo: footerContentView.bottomAnchor),
             footerView.widthAnchor.constraint(equalTo: view.widthAnchor)
+        ])
+
+        //Footer Content View Layout
+        NSLayoutConstraint.activate([
+            footerContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            footerContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            footerContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            footerContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            footerContentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
         //Calculate content view min height
