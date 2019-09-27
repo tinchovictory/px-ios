@@ -108,19 +108,19 @@ extension PXBusinessResultViewModel: PXCongratsTrackingDataProtocol {
     }
 
     func getDiscountsCount() -> Int? {
-        return PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts)?.getItems().count
+        guard let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) else { return nil }
+        return discounts.getItems().isEmpty ? 0 : discounts.getItems().count
     }
 
-    func getCampaignsIds() -> String {
+    func getCampaignsIds() -> String? {
+        guard let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) else { return nil }
         var campaignsIdsArray: [String] = []
-        if let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) {
-            for item in discounts.getItems() {
-                if let id = item.trackIdForItem() {
-                    campaignsIdsArray.append(id)
-                }
+        for item in discounts.getItems() {
+            if let id = item.trackIdForItem() {
+                campaignsIdsArray.append(id)
             }
         }
-        return campaignsIdsArray.joined(separator: ", ")
+        return campaignsIdsArray.isEmpty ? "" : campaignsIdsArray.joined(separator: ", ")
     }
 
     func getCampaignId() -> String? {
