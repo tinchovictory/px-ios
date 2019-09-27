@@ -107,9 +107,9 @@ extension PXBusinessResultViewModel: PXCongratsTrackingDataProtocol {
         return PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points)?.getRingNumber()
     }
 
-    func getDiscountsCount() -> Int? {
-        guard let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) else { return nil }
-        return discounts.getItems().count
+    func getDiscountsCount() -> Int {
+        guard let numberOfDiscounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts)?.getItems().count else { return 0 }
+        return numberOfDiscounts
     }
 
     func getCampaignsIds() -> String? {
