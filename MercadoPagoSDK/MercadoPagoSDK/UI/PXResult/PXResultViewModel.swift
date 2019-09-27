@@ -74,20 +74,20 @@ extension PXResultViewModel: PXCongratsTrackingDataProtocol {
         return PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points)?.getRingNumber()
     }
 
-    func getDiscountsCount() -> Int? {
-        return PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts)?.getItems().count
+    func getDiscountsCount() -> Int {
+        guard let numberOfDiscounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts)?.getItems().count else { return 0 }
+        return numberOfDiscounts
     }
 
-    func getCampaignsIds() -> String {
+    func getCampaignsIds() -> String? {
+        guard let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) else { return nil }
         var campaignsIdsArray: [String] = []
-        if let discounts = PXNewResultUtil.getDataForDiscountsView(discounts: pointsAndDiscounts?.discounts) {
-            for item in discounts.getItems() {
-                if let id = item.trackIdForItem() {
-                    campaignsIdsArray.append(id)
-                }
+        for item in discounts.getItems() {
+            if let id = item.trackIdForItem() {
+                campaignsIdsArray.append(id)
             }
         }
-        return campaignsIdsArray.joined(separator: ", ")
+        return campaignsIdsArray.isEmpty ? "" : campaignsIdsArray.joined(separator: ", ")
     }
 
     func getCampaignId() -> String? {

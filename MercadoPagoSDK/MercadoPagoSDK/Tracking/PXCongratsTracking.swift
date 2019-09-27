@@ -12,8 +12,8 @@ protocol PXCongratsTrackingDataProtocol: NSObjectProtocol {
     func hasTopView() -> Bool
     func hasImportantView() -> Bool
     func getScoreLevel() -> Int?
-    func getDiscountsCount() -> Int?
-    func getCampaignsIds() -> String
+    func getDiscountsCount() -> Int
+    func getCampaignsIds() -> String?
     func getCampaignId() -> String?
 }
 

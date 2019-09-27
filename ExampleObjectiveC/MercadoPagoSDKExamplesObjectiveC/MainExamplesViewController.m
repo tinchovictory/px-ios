@@ -75,6 +75,9 @@
     PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"bh31umv10flg01nmhg60"];
     [advancedConfig setDiscountParamsConfiguration: disca];
 
+    PXTrackingConfiguration *trackingConfig = [[PXTrackingConfiguration alloc] initWithTrackListener: self flowName:@"instore" flowDetails:nil sessionId:@"3783874"];
+    [self.checkoutBuilder setTrackingConfigurationWithConfig: trackingConfig];
+
     // Add theme to advanced config.
 //    MeliTheme *meliTheme = [[MeliTheme alloc] init];
 //    [advancedConfig setTheme:meliTheme];
