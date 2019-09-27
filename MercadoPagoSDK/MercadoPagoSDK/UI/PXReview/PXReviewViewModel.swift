@@ -13,26 +13,47 @@ class PXReviewViewModel: NSObject {
     static let ERROR_DELTA = 0.001
     public static var CUSTOMER_ID = ""
 
+    private weak var escProtocol: MercadoPagoESC?
     internal var amountHelper: PXAmountHelper
     var paymentOptionSelected: PaymentMethodOption
     var advancedConfiguration: PXAdvancedConfiguration
     var userLogged: Bool
 
-    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption, advancedConfig: PXAdvancedConfiguration, userLogged: Bool) {
+    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, escProtocol: MercadoPagoESC?) {
         PXReviewViewModel.CUSTOMER_ID = ""
         self.amountHelper = amountHelper
         self.paymentOptionSelected = paymentOptionSelected
         self.advancedConfiguration = advancedConfig
         self.userLogged = userLogged
+        self.escProtocol = escProtocol
+    }
+
+    func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
+        // Validation is mandatory for AccountMoney or other payment method != (credit or debit card).
+        if !isPaymentMethodDebitOrCredit() { return true }
+
+        // No validation. No ESC saved card ids.
+        guard let savedCardIds = escProtocol?.getSavedCardIds() else { return false }
+
+        if let targetCardId = withCardId {
+            return savedCardIds.contains(targetCardId)
+        } else if let currentCard = paymentOptionSelected as? PXCardInformation {
+            return savedCardIds.contains(currentCard.getCardId())
+        }
+        return true
     }
 }
 
 // MARK: - Logic.
 extension PXReviewViewModel {
-
     // Logic.
     func isPaymentMethodSelectedCard() -> Bool {
         return self.amountHelper.getPaymentData().hasPaymentMethod() && self.amountHelper.getPaymentData().getPaymentMethod()!.isCard
+    }
+
+    func isPaymentMethodDebitOrCredit() -> Bool {
+        guard let pMethod = amountHelper.getPaymentData().getPaymentMethod() else { return false }
+        return pMethod.isDebitCard || pMethod.isCreditCard
     }
 
     func isPaymentMethodSelected() -> Bool {
@@ -104,7 +125,6 @@ extension PXReviewViewModel {
 
 // MARK: - Getters
 extension PXReviewViewModel {
-
     func getTotalAmount() -> Double {
         return self.amountHelper.amountToPay
     }
