@@ -1,3 +1,8 @@
+# v4.22.1
+🚀Private Release - 4.22.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats hot fix
+
 # v4.22
 🚀Private Release - 4.22 🚀
 MercadoPagoSDKV4 - Private Version
