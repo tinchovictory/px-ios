@@ -100,27 +100,26 @@ internal extension MPXTracker {
                     metadata["flow"] = flowName
                 }
                 metadata[SessionService.SESSION_ID_KEY] = getSessionID()
+                metadata["checkout_type"] = PXTrackingStore.sharedInstance.getChoType()
             } else {
                 if let extraInfo = metadata["extra_info"] as? [String: Any] {
                     var frictionExtraInfo: [String: Any] = extraInfo
                     frictionExtraInfo["flow_detail"] = flowDetails
                     frictionExtraInfo["flow"] = flowName
                     frictionExtraInfo[SessionService.SESSION_ID_KEY] = getSessionID()
+                    frictionExtraInfo["checkout_type"] = PXTrackingStore.sharedInstance.getChoType()
                     metadata["extra_info"] = frictionExtraInfo
                 } else {
                     var frictionExtraInfo: [String: Any] = [:]
                     frictionExtraInfo["flow_detail"] = flowDetails
                     frictionExtraInfo["flow"] = flowName
                     frictionExtraInfo[SessionService.SESSION_ID_KEY] = getSessionID()
+                    frictionExtraInfo["checkout_type"] = PXTrackingStore.sharedInstance.getChoType()
                     metadata["extra_info"] = frictionExtraInfo
                 }
             }
             metadata["security_enabled"] = PXConfiguratorManager.hasSecurityValidation()
             metadata["session_time"] = PXTrackingStore.sharedInstance.getSecondsAfterInit()
-            if let choType = PXTrackingStore.sharedInstance.getChoType() {
-                metadata["checkout_type"] = choType
-                print("checkout_type: \(choType) " + path)
-            }
             trackListenerInterfase.trackEvent(screenName: path, action: "", result: "", extraParams: metadata)
         }
     }
