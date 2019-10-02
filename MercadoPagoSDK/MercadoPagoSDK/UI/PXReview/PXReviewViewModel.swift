@@ -29,18 +29,26 @@ class PXReviewViewModel: NSObject {
     }
 
     func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
-        // Validation is mandatory for AccountMoney or other payment method != (credit or debit card).
+        // Validation is mandatory for payment methods != (credit or debit card).
         if !isPaymentMethodDebitOrCredit() { return true }
 
-        // No validation. No ESC saved card ids.
-        guard let savedCardIds = escProtocol?.getSavedCardIds() else { return false }
+        // If escProtocol implementation is null, ESC is not supported.
+        // We should´t validate with Biometric.
+        guard let escImplementation = escProtocol else { return false }
 
-        if let targetCardId = withCardId {
-            return savedCardIds.contains(targetCardId)
-        } else if let currentCard = paymentOptionSelected as? PXCardInformation {
-            return savedCardIds.contains(currentCard.getCardId())
+        if escImplementation.hasESCEnable() {
+            let savedCardIds = escImplementation.getSavedCardIds()
+            // If we found cardId in ESC, we should validate with biometric.
+            if let targetCardId = withCardId {
+                return savedCardIds.contains(targetCardId)
+            } else if let currentCard = paymentOptionSelected as? PXCardInformation {
+                return savedCardIds.contains(currentCard.getCardId())
+            }
         }
-        return true
+
+        // ESC is not enabled or cardId not found.
+        // We should´t validate with Biometric.
+        return false
     }
 }
 
