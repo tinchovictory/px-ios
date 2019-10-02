@@ -302,7 +302,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
 
     func reviewConfirmViewModel() -> PXReviewViewModel {
         disableChangePaymentMethodIfNeed()
-        return PXReviewViewModel(amountHelper: self.amountHelper, paymentOptionSelected: self.paymentOptionSelected!, advancedConfig: advancedConfig, userLogged: !String.isNullOrEmpty(privateKey))
+        return PXReviewViewModel(amountHelper: self.amountHelper, paymentOptionSelected: self.paymentOptionSelected!, advancedConfig: advancedConfig, userLogged: !String.isNullOrEmpty(privateKey), escProtocol: self.escManager)
     }
 
     func resultViewModel() -> PXResultViewModel {
