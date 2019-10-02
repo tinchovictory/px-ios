@@ -1,3 +1,11 @@
+# v4.23
+🚀Private Release - 4.23 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats improvements
+- Handler for Biometric and ESC
+- Business Result receiptIdList and shouldShowReceipt
+
+
 # v4.22.1
 🚀Private Release - 4.22.1 🚀
 MercadoPagoSDKV4 - Private Version
