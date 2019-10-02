@@ -50,7 +50,8 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
     }
 
     func getPaymentId() -> String? {
-       return  businessResult.getReceiptId()
+        guard let firstPaymentId = businessResult.getReceiptIdList()?.first  else { return businessResult.getReceiptId() }
+        return firstPaymentId
     }
 
     func isCallForAuth() -> Bool {
@@ -344,7 +345,8 @@ extension PXBusinessResultViewModel {
 
     //Receipt View
     func buildReceiptView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: businessResult.getReceiptId()) else {
+        guard let targetReceiptId = businessResult.getReceiptId() else { return nil }
+        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: targetReceiptId), businessResult.mustShowReceipt() else {
             return nil
         }
         let view = PXNewCustomView(data: data)
