@@ -62,25 +62,22 @@ internal extension PXPaymentFlow {
 
     func getPointsAndDiscounts() {
 
-        var paymentId: String?
-        if let paymentResult = model.paymentResult {
-            paymentId = paymentResult.paymentId
+        var paymentIds: [String]?
+        if let paymentResultId = model.paymentResult?.paymentId {
+            paymentIds?.append(paymentResultId)
         } else if let businessResult = model.businessResult {
-            paymentId = businessResult.getPaymentId()
+            if let receiptLists = businessResult.getReceiptIdList() {
+                paymentIds = receiptLists
+            } else if let receiptId = businessResult.getReceiptId() {
+                paymentIds?.append(receiptId)
+            }
         }
 
         let campaignId: String? = model.amountHelper?.campaign?.id?.stringValue
 
-        guard let safePaymentId = paymentId else {
-            print("Points and Discounts - Payment Id does no exist")
-            self.model.shouldSearchPointsAndDiscounts = false
-            self.executeNextStep()
-            return
-        }
-
         model.shouldSearchPointsAndDiscounts = false
         let platform = MLBusinessAppDataService().getAppIdentifier().rawValue
-        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: [safePaymentId], campaignId: campaignId, platform: platform, callback: { [weak self] (pointsAndBenef) in
+        model.mercadoPagoServicesAdapter.getPointsAndDiscounts(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_POINTS_URI, paymentIds: paymentIds, campaignId: campaignId, platform: platform, callback: { [weak self] (pointsAndBenef) in
                 guard let strongSelf = self else { return }
                 strongSelf.model.pointsAndDiscounts = pointsAndBenef
                 strongSelf.executeNextStep()
