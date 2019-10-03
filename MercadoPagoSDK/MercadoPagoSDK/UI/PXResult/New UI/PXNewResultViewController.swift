@@ -20,12 +20,14 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
+    let betaViewModel: BetaResultViewModel
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
     init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
         self.viewModel = viewModel
         self.viewModel.setCallback(callback: callback)
+        self.betaViewModel = BetaModel()
         super.init(nibName: nil, bundle: nil)
         self.shouldHideNavigationBar = true
     }
@@ -208,5 +210,73 @@ extension PXNewResultViewController {
 
     private func animateRing() {
         perform(#selector(self.doAnimateRing), with: self, afterDelay: 0.3)
+    }
+}
+
+// MARK: BETA View Model
+extension PXNewResultViewController {
+    //HEADER
+    func buildHeaderView() -> UIView {
+        let headerData = PXNewResultHeaderData(color: betaViewModel.getHeaderColor(),
+                                               title: betaViewModel.getHeaderTitle(),
+                                               icon: betaViewModel.getHeaderIcon(),
+                                               iconURL: betaViewModel.getHeaderURLIcon(),
+                                               badgeImage: betaViewModel.getHeaderBadgeImage(),
+                                               closeAction: nil)
+        return PXNewResultHeader(data: headerData)
+    }
+
+    //RECEIPT
+    func buildReceiptView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: betaViewModel.getReceiptId()), betaViewModel.mustShowReceipt() else {
+            return nil
+        }
+
+        return PXNewCustomView(data: data)
+    }
+
+    //POINTS AND DISCOUNTS
+    ////POINTS
+    func buildPointsView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForPointsView(points: betaViewModel.getPoints()) else {
+            return nil
+        }
+        let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
+
+        if let tapAction = betaViewModel.getPointsTapAction() {
+            pointsView.addTapAction(tapAction)
+        }
+
+        return pointsView
+    }
+    ////DISCOUNTS
+    func buildDiscountsView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: betaViewModel.getDiscounts()) else {
+            return nil
+        }
+        let discountsView = MLBusinessDiscountBoxView(data)
+
+        if let tapAction = betaViewModel.getDiscountsTapAction() {
+            discountsView.addTapAction(tapAction)
+        }
+
+        return discountsView
+    }
+
+    ////CROSS SELLING
+    func buildCrossSellingViews() -> [UIView]? {
+        guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: betaViewModel.getCrossSellingItems()) else {
+            return nil
+        }
+        var itemsViews = [UIView]()
+        for itemData in data {
+            let itemView = MLBusinessCrossSellingBoxView(itemData)
+            if let tapAction = betaViewModel.getCrossSellingTapAction() {
+                itemView.addTapAction(action: tapAction)
+            }
+
+            itemsViews.append(itemView)
+        }
+        return itemsViews
     }
 }
