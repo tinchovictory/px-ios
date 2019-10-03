@@ -57,6 +57,9 @@ protocol BetaResultViewModel {
     func getCrossSellingItems() -> [PXCrossSellingItem]?
     func getCrossSellingTapAction() -> ((_ deepLink: String) -> Void)?
 
+    //INSTRUCTIONS
+    func getInstructions() -> PXInstructions?
+
     //PAYMENT METHOD
     func getPaymentData() -> PXPaymentData?
     func getAmountHelper() -> PXAmountHelper?
@@ -68,6 +71,16 @@ protocol BetaResultViewModel {
     //FOOTER
     func getMainAction() -> PXAction?
     func getSecondaryAction() -> PXAction?
+
+    //CUSTOM VIEWS
+    ////IMPORTANT
+    func getImportantView() -> UIView?
+
+    ////TOP CUSTOM
+    func getTopCustomView() -> UIView?
+
+    ////BOTTOM CUSTOM
+    func getBottomCustomView() -> UIView?
 }
 
 class BetaModel: BetaResultViewModel {
@@ -123,6 +136,10 @@ class BetaModel: BetaResultViewModel {
         return nil
     }
 
+    func getInstructions() -> PXInstructions? {
+        return nil
+    }
+
     func getPaymentData() -> PXPaymentData? {
         return nil
     }
@@ -147,5 +164,15 @@ class BetaModel: BetaResultViewModel {
         return nil
     }
 
+    func getImportantView() -> UIView? {
+        return nil
+    }
 
+    func getTopCustomView() -> UIView? {
+        return nil
+    }
+
+    func getBottomCustomView() -> UIView? {
+        return nil
+    }
 }

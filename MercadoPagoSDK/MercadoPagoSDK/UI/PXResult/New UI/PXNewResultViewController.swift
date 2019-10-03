@@ -279,4 +279,52 @@ extension PXNewResultViewController {
         }
         return itemsViews
     }
+
+    //INSTRUCTIONS
+    func buildInstructionsView() -> UIView? {
+        guard let instructions = betaViewModel.getInstructions() else {
+            return nil
+        }
+
+        //TODO: Ver esto
+        return nil
+    }
+
+    //PAYMENT METHOD
+    func buildPaymentMethodView() -> UIView? {
+        guard let paymentData = betaViewModel.getPaymentData() else {
+            return nil
+        }
+        guard let amountHelper = betaViewModel.getAmountHelper() else {
+            return nil
+        }
+        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+            return nil
+        }
+
+        let view = PXNewCustomView(data: data)
+        return view
+    }
+
+    //FOOTER
+    func buildFooterView() -> UIView {
+        let footerProps = PXFooterProps(buttonAction: betaViewModel.getMainAction(), linkAction: betaViewModel.getSecondaryAction())
+        return PXFooterComponent(props: footerProps).render()
+    }
+
+    //CUSTOM
+    ////IMPORTANT
+    func buildImportantView() -> UIView? {
+        return betaViewModel.getImportantView()
+    }
+
+    ////TOP CUSTOM
+    func buildTopCustomView() -> UIView? {
+        return betaViewModel.getTopCustomView()
+    }
+
+    ////BOTTOM CUSTOM
+    func buildBottomCustomView() -> UIView? {
+        return betaViewModel.getBottomCustomView()
+    }
 }
