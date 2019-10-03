@@ -280,6 +280,8 @@
 // Receipt
 " de " = " of ";
 "Número de operación " = "Transaction number ";
+"a las" = "at";
+"hs" = "";
 
 //Months
 "January" = "January";
