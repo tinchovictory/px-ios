@@ -25,7 +25,7 @@ class PXNewResultUtil {
         let attributedTitle = NSAttributedString(string: "Operación".localized + " #" + paymentId, attributes: PXNewCustomView.titleAttributes)
 
         let date = Date()
-        let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date), attributes: PXNewCustomView.subtitleAttributes)
+        let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date, addTime: true), attributes: PXNewCustomView.subtitleAttributes)
 
         let icon = ResourceManager.shared.getImage("receipt_icon")
 
