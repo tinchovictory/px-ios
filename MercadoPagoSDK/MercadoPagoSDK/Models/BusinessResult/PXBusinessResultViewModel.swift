@@ -417,3 +417,125 @@ extension PXBusinessResultViewModel {
         return footerView
     }
 }
+
+// MARK: BETA View Model
+extension PXBusinessResultViewModel: BetaResultViewModel {
+    func getHeaderColor() -> UIColor {
+        return primaryResultColor()
+    }
+
+    func getHeaderTitle() -> String {
+        return getAttributedTitle().string
+    }
+
+    func getHeaderIcon() -> UIImage? {
+        return getHeaderDefaultIcon()
+    }
+
+    func getHeaderURLIcon() -> String? {
+        return businessResult.getImageUrl()
+    }
+
+    func getHeaderBadgeImage() -> UIImage? {
+        return getBadgeImage()
+    }
+
+    func getHeaderCloseAction() -> (() -> Void)? {
+        let action = { [weak self] in
+            if let callback = self?.callback {
+                callback(PaymentResult.CongratsState.cancel_EXIT)
+            }
+        }
+        return action
+    }
+
+    func mustShowReceipt() -> Bool {
+        return businessResult.mustShowReceipt()
+    }
+
+    func getReceiptId() -> String? {
+        return businessResult.getReceiptId()
+    }
+
+    func getPoints() -> PXPoints? {
+        return pointsAndDiscounts?.points
+    }
+
+    func getPointsTapAction() -> ((String) -> Void)? {
+        let action: (String) -> Void = { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapScorePath())
+        }
+        return action
+    }
+
+    func getDiscounts() -> PXDiscounts? {
+        return pointsAndDiscounts?.discounts
+    }
+
+    func getDiscountsTapAction() -> ((Int, String?, String?) -> Void)? {
+        let action: (Int, String?, String?) -> Void = { (index, deepLink, trackId) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            PXCongratsTracking.trackTapDiscountItemEvent(index, trackId)
+        }
+        return action
+    }
+
+    func getCrossSellingItems() -> [PXCrossSellingItem]? {
+        return pointsAndDiscounts?.crossSelling
+    }
+
+    func getCrossSellingTapAction() -> ((String) -> Void)? {
+        let action: (String) -> Void = { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapCrossSellingPath())
+        }
+        return action
+    }
+
+    func getInstructions() -> PXInstructions? {
+        return nil
+    }
+
+    func getPaymentData() -> PXPaymentData? {
+        return paymentData
+    }
+
+    func getAmountHelper() -> PXAmountHelper? {
+        return amountHelper
+    }
+
+    func getSplitPaymentData() -> PXPaymentData? {
+        return nil
+    }
+
+    func getSplitAmountHelper() -> PXAmountHelper? {
+        return nil
+    }
+
+    func getFooterMainAction() -> PXAction? {
+        return businessResult.getMainAction()
+    }
+
+    func getFooterSecondaryAction() -> PXAction? {
+        let linkAction = businessResult.getSecondaryAction() != nil ? businessResult.getSecondaryAction() : PXCloseLinkAction()
+        return linkAction
+    }
+
+    func getImportantView() -> UIView? {
+        return self.businessResult.getImportantCustomView()
+    }
+
+    func getTopCustomView() -> UIView? {
+        return self.businessResult.getTopCustomView()
+    }
+
+    func getBottomCustomView() -> UIView? {
+        return self.businessResult.getBottomCustomView()
+    }
+
+
+}

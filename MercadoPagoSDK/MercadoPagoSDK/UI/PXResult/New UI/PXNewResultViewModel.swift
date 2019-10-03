@@ -38,7 +38,8 @@ protocol BetaResultViewModel {
     func getHeaderTitle() -> String
     func getHeaderIcon() -> UIImage?
     func getHeaderURLIcon() -> String?
-    func getHeaderBadgeImage() -> UIImage
+    func getHeaderBadgeImage() -> UIImage?
+    func getHeaderCloseAction() -> (() -> Void)?
 
     //RECEIPT
     func mustShowReceipt() -> Bool
@@ -69,8 +70,8 @@ protocol BetaResultViewModel {
     func getSplitAmountHelper() -> PXAmountHelper?
 
     //FOOTER
-    func getMainAction() -> PXAction?
-    func getSecondaryAction() -> PXAction?
+    func getFooterMainAction() -> PXAction?
+    func getFooterSecondaryAction() -> PXAction?
 
     //CUSTOM VIEWS
     ////IMPORTANT
@@ -100,8 +101,12 @@ class BetaModel: BetaResultViewModel {
         return nil
     }
 
-    func getHeaderBadgeImage() -> UIImage {
+    func getHeaderBadgeImage() -> UIImage? {
         return UIImage()
+    }
+
+    func getHeaderCloseAction() -> (() -> Void)? {
+        return nil
     }
 
     func mustShowReceipt() -> Bool {
@@ -156,11 +161,11 @@ class BetaModel: BetaResultViewModel {
         return nil
     }
 
-    func getMainAction() -> PXAction? {
+    func getFooterMainAction() -> PXAction? {
         return nil
     }
 
-    func getSecondaryAction() -> PXAction? {
+    func getFooterSecondaryAction() -> PXAction? {
         return nil
     }
 
