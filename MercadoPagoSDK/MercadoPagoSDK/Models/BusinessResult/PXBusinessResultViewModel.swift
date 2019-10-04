@@ -318,7 +318,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return bodyComponent?.hasInstructions() ?? false
     }
 
-    func getInstructions() -> PXInstructions? {
+    func getInstructionsView() -> UIView? {
         return nil
     }
 

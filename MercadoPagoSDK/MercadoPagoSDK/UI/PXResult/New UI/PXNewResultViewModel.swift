@@ -41,7 +41,7 @@ protocol PXNewResultViewModelInterface {
 
     //INSTRUCTIONS
     func hasInstructions() -> Bool
-    func getInstructions() -> PXInstructions?
+    func getInstructionsView() -> UIView?
 
     //PAYMENT METHOD
     func getPaymentData() -> PXPaymentData?

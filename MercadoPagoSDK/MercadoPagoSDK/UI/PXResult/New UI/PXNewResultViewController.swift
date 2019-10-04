@@ -292,9 +292,6 @@ extension PXNewResultViewController {
             views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
         }
 
-        //Separator View
-        views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: 0, horizontalMargin: 0))
-
         return views
     }
 }
@@ -373,12 +370,7 @@ extension PXNewResultViewController {
 
     //INSTRUCTIONS
     func buildInstructionsView() -> UIView? {
-        guard let instructions = viewModel.getInstructions() else {
-            return nil
-        }
-
-        //TODO: Ver esto
-        return nil
+        return viewModel.getInstructionsView()
     }
 
     //PAYMENT METHOD

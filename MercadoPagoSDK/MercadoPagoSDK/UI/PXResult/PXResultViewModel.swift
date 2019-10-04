@@ -302,8 +302,11 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return bodyComponent?.hasInstructions() ?? false
     }
 
-    func getInstructions() -> PXInstructions? {
-        return nil
+    func getInstructionsView() -> UIView? {
+        guard let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() else {
+            return nil
+        }
+        return bodyComponent.render()
     }
 
     func getPaymentData() -> PXPaymentData? {
@@ -342,4 +345,3 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return buildBottomCustomView()
     }
 }
-
