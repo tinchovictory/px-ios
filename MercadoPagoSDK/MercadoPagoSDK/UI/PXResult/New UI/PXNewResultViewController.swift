@@ -20,13 +20,11 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
-    let betaViewModel: PXNewResultViewModelInterface
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
     init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
         self.viewModel = viewModel
-        self.betaViewModel = viewModel
         self.viewModel.setCallback(callback: callback)
         super.init(nibName: nil, bundle: nil)
         self.shouldHideNavigationBar = true
@@ -139,7 +137,6 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         //Load content views
-//        let views = viewModel.getViews()
         let views = getContentViews()
         for data in views {
             if let ringView = data.view as? MLBusinessLoyaltyRingView {
@@ -215,7 +212,7 @@ extension PXNewResultViewController {
     }
 }
 
-// MARK: Get views beta model
+// MARK: Get content views
 extension PXNewResultViewController {
     func getContentViews() -> [ResultViewData] {
         var views = [ResultViewData]()
@@ -281,12 +278,12 @@ extension PXNewResultViewController {
         }
 
         //Payment Method View
-        if !betaViewModel.hasInstructions(), let PMView = buildPaymentMethodView() {
+        if !viewModel.hasInstructions(), let PMView = buildPaymentMethodView() {
             views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
         //Split Payment View
-        if !betaViewModel.hasInstructions(), let splitView = buildSplitPaymentMethodView() {
+        if !viewModel.hasInstructions(), let splitView = buildSplitPaymentMethodView() {
             views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
         }
 
@@ -302,22 +299,22 @@ extension PXNewResultViewController {
     }
 }
 
-// MARK: BETA View Model
+// MARK: Views builders
 extension PXNewResultViewController {
     //HEADER
     func buildHeaderView() -> UIView {
-        let headerData = PXNewResultHeaderData(color: betaViewModel.getHeaderColor(),
-                                               title: betaViewModel.getHeaderTitle(),
-                                               icon: betaViewModel.getHeaderIcon(),
-                                               iconURL: betaViewModel.getHeaderURLIcon(),
-                                               badgeImage: betaViewModel.getHeaderBadgeImage(),
+        let headerData = PXNewResultHeaderData(color: viewModel.getHeaderColor(),
+                                               title: viewModel.getHeaderTitle(),
+                                               icon: viewModel.getHeaderIcon(),
+                                               iconURL: viewModel.getHeaderURLIcon(),
+                                               badgeImage: viewModel.getHeaderBadgeImage(),
                                                closeAction: nil)
         return PXNewResultHeader(data: headerData)
     }
 
     //RECEIPT
     func buildReceiptView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: betaViewModel.getReceiptId()), betaViewModel.mustShowReceipt() else {
+        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: viewModel.getReceiptId()), viewModel.mustShowReceipt() else {
             return nil
         }
 
@@ -327,12 +324,12 @@ extension PXNewResultViewController {
     //POINTS AND DISCOUNTS
     ////POINTS
     func buildPointsView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForPointsView(points: betaViewModel.getPoints()) else {
+        guard let data = PXNewResultUtil.getDataForPointsView(points: viewModel.getPoints()) else {
             return nil
         }
         let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
 
-        if let tapAction = betaViewModel.getPointsTapAction() {
+        if let tapAction = viewModel.getPointsTapAction() {
             pointsView.addTapAction(tapAction)
         }
 
@@ -340,12 +337,12 @@ extension PXNewResultViewController {
     }
     ////DISCOUNTS
     func buildDiscountsView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: betaViewModel.getDiscounts()) else {
+        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
             return nil
         }
         let discountsView = MLBusinessDiscountBoxView(data)
 
-        if let tapAction = betaViewModel.getDiscountsTapAction() {
+        if let tapAction = viewModel.getDiscountsTapAction() {
             discountsView.addTapAction(tapAction)
         }
 
@@ -354,18 +351,18 @@ extension PXNewResultViewController {
 
     ////DISCOUNTS ACCESSORY VIEW
     func buildDiscountsAccessoryView() -> ResultViewData? {
-        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: betaViewModel.getDiscounts())
+        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: viewModel.getDiscounts())
     }
 
     ////CROSS SELLING
     func buildCrossSellingViews() -> [UIView]? {
-        guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: betaViewModel.getCrossSellingItems()) else {
+        guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: viewModel.getCrossSellingItems()) else {
             return nil
         }
         var itemsViews = [UIView]()
         for itemData in data {
             let itemView = MLBusinessCrossSellingBoxView(itemData)
-            if let tapAction = betaViewModel.getCrossSellingTapAction() {
+            if let tapAction = viewModel.getCrossSellingTapAction() {
                 itemView.addTapAction(action: tapAction)
             }
 
@@ -376,7 +373,7 @@ extension PXNewResultViewController {
 
     //INSTRUCTIONS
     func buildInstructionsView() -> UIView? {
-        guard let instructions = betaViewModel.getInstructions() else {
+        guard let instructions = viewModel.getInstructions() else {
             return nil
         }
 
@@ -386,10 +383,10 @@ extension PXNewResultViewController {
 
     //PAYMENT METHOD
     func buildPaymentMethodView() -> UIView? {
-        guard let paymentData = betaViewModel.getPaymentData() else {
+        guard let paymentData = viewModel.getPaymentData() else {
             return nil
         }
-        guard let amountHelper = betaViewModel.getAmountHelper() else {
+        guard let amountHelper = viewModel.getAmountHelper() else {
             return nil
         }
         guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
@@ -402,10 +399,10 @@ extension PXNewResultViewController {
 
     //SPLIT PAYMENT METHOD
     func buildSplitPaymentMethodView() -> UIView? {
-        guard let paymentData = betaViewModel.getSplitPaymentData() else {
+        guard let paymentData = viewModel.getSplitPaymentData() else {
             return nil
         }
-        guard let amountHelper = betaViewModel.getSplitAmountHelper() else {
+        guard let amountHelper = viewModel.getSplitAmountHelper() else {
             return nil
         }
         guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
@@ -418,23 +415,23 @@ extension PXNewResultViewController {
 
     //FOOTER
     func buildFooterView() -> UIView {
-        let footerProps = PXFooterProps(buttonAction: betaViewModel.getFooterMainAction(), linkAction: betaViewModel.getFooterSecondaryAction())
+        let footerProps = PXFooterProps(buttonAction: viewModel.getFooterMainAction(), linkAction: viewModel.getFooterSecondaryAction())
         return PXFooterComponent(props: footerProps).render()
     }
 
     //CUSTOM
     ////IMPORTANT
     func buildImportantView() -> UIView? {
-        return betaViewModel.getImportantView()
+        return viewModel.getImportantView()
     }
 
     ////TOP CUSTOM
     func buildTopCustomView() -> UIView? {
-        return betaViewModel.getTopCustomView()
+        return viewModel.getTopCustomView()
     }
 
     ////BOTTOM CUSTOM
     func buildBottomCustomView() -> UIView? {
-        return betaViewModel.getBottomCustomView()
+        return viewModel.getBottomCustomView()
     }
 }
