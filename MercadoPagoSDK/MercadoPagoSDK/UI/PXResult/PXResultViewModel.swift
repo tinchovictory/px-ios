@@ -67,7 +67,7 @@ extension PXResultViewModel: PXCongratsTrackingDataProtocol {
     }
 
     func hasImportantView() -> Bool {
-        return buildImportantCustomView() != nil ? true : false
+        return false
     }
 
     func getScoreLevel() -> Int? {
@@ -213,52 +213,8 @@ extension PXResultViewModel {
     }
 }
 
-// MARK: New Result View Model Interface
-extension PXResultViewModel: PXNewResultViewModelInterface {
-    func buildHeaderView() -> UIView {
-        return UIView()
-    }
-
-    func buildFooterView() -> UIView {
-        return UIView()
-    }
-
-    func buildImportantCustomView() -> UIView? {
-        return UIView()
-    }
-
-    func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView? {
-        return UIView()
-    }
-
-    func buildPointsViews() -> UIView? {
-        return UIView()
-    }
-
-    func buildDiscountsView() -> UIView? {
-        return UIView()
-    }
-
-    func buildDiscountsAccessoryView() -> ResultViewData? {
-        return ResultViewData(view: UIView(), verticalMargin: PXLayout.L_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-    }
-
-    func buildCrossSellingViews() -> [UIView]? {
-        return [UIView()]
-    }
-
-    func buildReceiptView() -> UIView? {
-        return UIView()
-    }
-
-
-    func getViews() -> [ResultViewData] {
-        return [ResultViewData]()
-    }
-}
-
 // MARK: BETA View Model
-extension PXResultViewModel: BetaResultViewModel {
+extension PXResultViewModel: PXNewResultViewModelInterface {
     func getHeaderColor() -> UIColor {
         return primaryResultColor()
     }

@@ -20,13 +20,13 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
-    let betaViewModel: BetaResultViewModel
+    let betaViewModel: PXNewResultViewModelInterface
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
-    init(viewModel: PXNewResultViewModelInterface, betaViewModel: BetaResultViewModel = BetaModel(), callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
+    init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
         self.viewModel = viewModel
-        self.betaViewModel = betaViewModel
+        self.betaViewModel = viewModel
         self.viewModel.setCallback(callback: callback)
         super.init(nibName: nil, bundle: nil)
         self.shouldHideNavigationBar = true
@@ -39,7 +39,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupScrollView()
-        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
+        addElasticHeader(headerBackgroundColor: viewModel.getHeaderColor())
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -61,7 +61,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private func setupScrollView() {
         view.removeAllSubviews()
         view.addSubview(scrollView)
-        view.backgroundColor = viewModel.primaryResultColor()
+        view.backgroundColor = viewModel.getHeaderColor()
         scrollView.backgroundColor = .pxWhite
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
