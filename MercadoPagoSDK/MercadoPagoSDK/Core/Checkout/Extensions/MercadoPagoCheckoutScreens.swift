@@ -221,7 +221,7 @@ extension MercadoPagoCheckout {
 
         let resultViewModel = self.viewModel.resultViewModel()
         if self.viewModel.paymentResult?.isApproved() ?? false || viewModel.instructionsInfo != nil {
-            congratsViewController = PXNewResultViewController(viewModel: resultViewModel, callback: congratsViewControllerCallback)
+            congratsViewController = PXNewResultViewController(viewModel: resultViewModel, betaViewModel: resultViewModel, callback: congratsViewControllerCallback)
         } else {
             congratsViewController = PXResultViewController(viewModel: resultViewModel, callback: congratsViewControllerCallback)
         }

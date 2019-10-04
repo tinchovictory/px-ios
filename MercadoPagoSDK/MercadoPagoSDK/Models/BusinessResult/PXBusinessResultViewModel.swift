@@ -269,10 +269,8 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return UIView()
     }
 
-
     func getViews() -> [ResultViewData] {
-        var views = [ResultViewData]()
-        return views
+        return [ResultViewData]()
     }
 }
 

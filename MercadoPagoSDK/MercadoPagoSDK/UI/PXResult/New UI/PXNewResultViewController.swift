@@ -101,7 +101,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         scrollView.addSubview(footerContentView)
 
         let dividingView = MLBusinessDividingLineView()
-        let footerView = viewModel.buildFooterView()
+        let footerView = buildFooterView()
         footerContentView.addSubview(dividingView)
         footerContentView.addSubview(footerView)
 

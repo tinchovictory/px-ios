@@ -217,96 +217,12 @@ extension PXResultViewModel {
 extension PXResultViewModel: PXNewResultViewModelInterface {
 
     func getViews() -> [ResultViewData] {
-        var views = [ResultViewData]()
-
-        //Header View
-        let headerView = buildHeaderView()
-        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
-
-        //Instructions View
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
-            views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Important View
-        if let importantView = buildImportantCustomView() {
-            views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Points and Discounts
-        let pointsView = buildPointsViews()
-        let discountsView = buildDiscountsView()
-
-        //Points
-        if let pointsView = pointsView {
-            views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
-        }
-
-        //Discounts
-        if let discountsView = discountsView {
-            if pointsView != nil {
-                //Dividing Line
-                views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
-            }
-            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
-
-            //Discounts Accessory View
-            if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
-                views.append(discountsAccessoryViewData)
-            }
-        }
-
-        //Cross Selling View
-        if let crossSellingViews = buildCrossSellingViews() {
-            var margin: CGFloat = 0
-            if discountsView != nil && pointsView == nil {
-                margin = PXLayout.M_MARGIN
-            } else if discountsView == nil && pointsView != nil {
-                margin = PXLayout.XXS_MARGIN
-            }
-            for crossSellingView in crossSellingViews {
-                views.append(ResultViewData(view: crossSellingView, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
-            }
-        }
-
-        //Top Custom View
-        if let topCustomView = buildTopCustomView() {
-            views.append(ResultViewData(view: topCustomView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Receipt View
-        if let receiptView = buildReceiptView() {
-            views.append(ResultViewData(view: receiptView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Payment Method View
-        if !hasInstructions(), let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
-            views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Split Payment View
-        if !hasInstructions(), let splitPaymentData = paymentResult.splitAccountMoney, let splitView = buildPaymentMethodView(paymentData: splitPaymentData) {
-            views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        //Bottom Custom View
-        if let bottomCustomView = buildBottomCustomView() {
-            views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
-        return views
+        return [ResultViewData]()
     }
 }
 
 // MARK: New Result View Model Builders
 extension PXResultViewModel {
-    //Instructions Logic
-    func hasInstructions() -> Bool {
-        let bodyComponent = buildBodyComponent() as? PXBodyComponent
-        return bodyComponent?.hasInstructions() ?? false
-
-    }
-
     //Header View
     func buildHeaderView() -> UIView {
         let data = PXNewResultUtil.getDataForHeaderView(color: primaryResultColor(), title: titleHeader(forNewResult: true).string, icon: iconImageHeader(), iconURL: nil, badgeImage: badgeImage(), closeAction: { [weak self] in
@@ -403,3 +319,134 @@ extension PXResultViewModel {
     }
 
 }
+
+// MARK: BETA View Model
+extension PXResultViewModel: BetaResultViewModel {
+    func getHeaderColor() -> UIColor {
+        return primaryResultColor()
+    }
+
+    func getHeaderTitle() -> String {
+        return titleHeader(forNewResult: true).string
+    }
+
+    func getHeaderIcon() -> UIImage? {
+        return iconImageHeader()
+    }
+
+    func getHeaderURLIcon() -> String? {
+        return nil
+    }
+
+    func getHeaderBadgeImage() -> UIImage? {
+        return badgeImage()
+    }
+
+    func getHeaderCloseAction() -> (() -> Void)? {
+        let action = { [weak self] in
+            if let callback = self?.callback {
+                if let url = self?.getBackUrl() {
+                    self?.openURL(url: url, success: { (_) in
+                        callback(PaymentResult.CongratsState.cancel_EXIT)
+                    })
+                } else {
+                    callback(PaymentResult.CongratsState.cancel_EXIT)
+                }
+            }
+        }
+        return action
+    }
+
+    func mustShowReceipt() -> Bool {
+        return hasReceiptComponent()
+    }
+
+    func getReceiptId() -> String? {
+        return paymentResult.paymentId
+    }
+
+    func getPoints() -> PXPoints? {
+        return pointsAndDiscounts?.points
+    }
+
+    func getPointsTapAction() -> ((String) -> Void)? {
+        let action: (String) -> Void = { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapScorePath())
+        }
+        return action
+    }
+
+    func getDiscounts() -> PXDiscounts? {
+        return pointsAndDiscounts?.discounts
+    }
+
+    func getDiscountsTapAction() -> ((Int, String?, String?) -> Void)? {
+        let action: (Int, String?, String?) -> Void = { (index, deepLink, trackId) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            PXCongratsTracking.trackTapDiscountItemEvent(index, trackId)
+        }
+        return action
+    }
+
+    func getCrossSellingItems() -> [PXCrossSellingItem]? {
+        return pointsAndDiscounts?.crossSelling
+    }
+
+    func getCrossSellingTapAction() -> ((String) -> Void)? {
+        let action: (String) -> Void = { (deepLink) in
+            //open deep link
+            PXDeepLinkManager.open(deepLink)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapCrossSellingPath())
+        }
+        return action
+    }
+
+    func hasInstructions() -> Bool {
+        let bodyComponent = buildBodyComponent() as? PXBodyComponent
+        return bodyComponent?.hasInstructions() ?? false
+    }
+
+    func getInstructions() -> PXInstructions? {
+        return nil
+    }
+
+    func getPaymentData() -> PXPaymentData? {
+        return paymentResult.paymentData
+    }
+
+    func getAmountHelper() -> PXAmountHelper? {
+        return amountHelper
+    }
+
+    func getSplitPaymentData() -> PXPaymentData? {
+        return nil
+    }
+
+    func getSplitAmountHelper() -> PXAmountHelper? {
+        return nil
+    }
+
+    func getFooterMainAction() -> PXAction? {
+        return getActionButton()
+    }
+
+    func getFooterSecondaryAction() -> PXAction? {
+        return getActionLink()
+    }
+
+    func getImportantView() -> UIView? {
+        return nil
+    }
+
+    func getTopCustomView() -> UIView? {
+        return buildTopCustomView()
+    }
+
+    func getBottomCustomView() -> UIView? {
+        return buildBottomCustomView()
+    }
+}
+
