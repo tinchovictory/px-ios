@@ -329,7 +329,6 @@ extension PXBusinessResultViewModel {
     func hasInstructions() -> Bool {
         let bodyComponent = buildBodyComponent() as? PXBodyComponent
         return bodyComponent?.hasInstructions() ?? false
-
     }
 
     //Header View
@@ -536,6 +535,4 @@ extension PXBusinessResultViewModel: BetaResultViewModel {
     func getBottomCustomView() -> UIView? {
         return self.businessResult.getBottomCustomView()
     }
-
-
 }

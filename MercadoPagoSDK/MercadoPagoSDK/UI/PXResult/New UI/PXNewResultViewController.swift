@@ -24,10 +24,10 @@ class PXNewResultViewController: MercadoPagoUIViewController {
 
     internal var changePaymentMethodCallback: (() -> Void)?
 
-    init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
+    init(viewModel: PXNewResultViewModelInterface, betaViewModel: BetaResultViewModel = BetaModel(), callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
         self.viewModel = viewModel
+        self.betaViewModel = betaViewModel
         self.viewModel.setCallback(callback: callback)
-        self.betaViewModel = BetaModel()
         super.init(nibName: nil, bundle: nil)
         self.shouldHideNavigationBar = true
     }
@@ -139,7 +139,9 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         //Load content views
-        for data in viewModel.getViews() {
+//        let views = viewModel.getViews()
+        let views = getContentViews()
+        for data in views {
             if let ringView = data.view as? MLBusinessLoyaltyRingView {
                 self.ringView = ringView
             }
@@ -213,6 +215,93 @@ extension PXNewResultViewController {
     }
 }
 
+// MARK: Get views beta model
+extension PXNewResultViewController {
+    func getContentViews() -> [ResultViewData] {
+        var views = [ResultViewData]()
+
+        //Header View
+        let headerView = buildHeaderView()
+        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
+
+        //Instructions View
+        if let instructionsView = buildInstructionsView() {
+            views.append(ResultViewData(view: instructionsView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Important View
+        if let importantView = buildImportantView() {
+            views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Points and Discounts
+        let pointsView = buildPointsView()
+        let discountsView = buildDiscountsView()
+
+        //Points
+        if let pointsView = pointsView {
+            views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+        }
+
+        //Discounts
+        if let discountsView = discountsView {
+            if pointsView != nil {
+                //Dividing Line
+                views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            }
+            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+
+            //Discounts Accessory View
+            if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
+                views.append(discountsAccessoryViewData)
+            }
+        }
+
+        //Cross Selling View
+        if let crossSellingViews = buildCrossSellingViews() {
+            var margin: CGFloat = 0
+            if discountsView != nil && pointsView == nil {
+                margin = PXLayout.M_MARGIN
+            } else if discountsView == nil && pointsView != nil {
+                margin = PXLayout.XXS_MARGIN
+            }
+            for crossSellingView in crossSellingViews {
+                views.append(ResultViewData(view: crossSellingView, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
+            }
+        }
+
+        //Top Custom View
+        if let topCustomView = buildTopCustomView() {
+            views.append(ResultViewData(view: topCustomView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Receipt View
+        if let receiptView = buildReceiptView() {
+            views.append(ResultViewData(view: receiptView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Payment Method View
+        if !betaViewModel.hasInstructions(), let PMView = buildPaymentMethodView() {
+            views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Split Payment View
+        if !betaViewModel.hasInstructions(), let splitView = buildSplitPaymentMethodView() {
+            views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Bottom Custom View
+        if let bottomCustomView = buildBottomCustomView() {
+            views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Separator View
+        views.append(ResultViewData(view: MLBusinessDividingLineView(), verticalMargin: 0, horizontalMargin: 0))
+
+        return views
+    }
+}
+
 // MARK: BETA View Model
 extension PXNewResultViewController {
     //HEADER
@@ -263,6 +352,11 @@ extension PXNewResultViewController {
         return discountsView
     }
 
+    ////DISCOUNTS ACCESSORY VIEW
+    func buildDiscountsAccessoryView() -> ResultViewData? {
+        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: betaViewModel.getDiscounts())
+    }
+
     ////CROSS SELLING
     func buildCrossSellingViews() -> [UIView]? {
         guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: betaViewModel.getCrossSellingItems()) else {
@@ -296,6 +390,22 @@ extension PXNewResultViewController {
             return nil
         }
         guard let amountHelper = betaViewModel.getAmountHelper() else {
+            return nil
+        }
+        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+            return nil
+        }
+
+        let view = PXNewCustomView(data: data)
+        return view
+    }
+
+    //SPLIT PAYMENT METHOD
+    func buildSplitPaymentMethodView() -> UIView? {
+        guard let paymentData = betaViewModel.getSplitPaymentData() else {
+            return nil
+        }
+        guard let amountHelper = betaViewModel.getSplitAmountHelper() else {
             return nil
         }
         guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {

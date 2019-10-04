@@ -59,6 +59,7 @@ protocol BetaResultViewModel {
     func getCrossSellingTapAction() -> ((_ deepLink: String) -> Void)?
 
     //INSTRUCTIONS
+    func hasInstructions() -> Bool
     func getInstructions() -> PXInstructions?
 
     //PAYMENT METHOD
@@ -139,6 +140,10 @@ class BetaModel: BetaResultViewModel {
 
     func getCrossSellingTapAction() -> ((String) -> Void)? {
         return nil
+    }
+
+    func hasInstructions() -> Bool {
+        return false
     }
 
     func getInstructions() -> PXInstructions? {
