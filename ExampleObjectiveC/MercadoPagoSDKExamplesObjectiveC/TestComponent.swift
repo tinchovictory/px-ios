@@ -62,9 +62,8 @@ extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
         if let pmName = store.getPaymentData().getPaymentMethod()?.name, pmName == "Visa" {
             var views: [UIView] = []
             for i in 1...3 {
-                if let view = getView(text: "\(pmName) - \(i)", color: .blue) {
-                    views.append(view)
-                }
+                let view = getView(text: "\(pmName) - \(i)", color: .blue)
+                views.append(view)
             }
             return views
         }
@@ -75,9 +74,8 @@ extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
         if let pmName = store.getPaymentData().getPaymentMethod()?.name, pmName == "Mastercard" {
             var views: [UIView] = []
             for i in 1...3 {
-                if let view = getView(text: "\(pmName) - \(i)", color: .blue) {
-                    views.append(view)
-                }
+                let view = getView(text: "\(pmName) - \(i)", color: .blue)
+                views.append(view)
             }
             return views
         }
