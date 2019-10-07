@@ -235,7 +235,7 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
     }
 }
 
-// MARK: BETA View Model
+// MARK: New Result View Model Interface
 extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     func getHeaderColor() -> UIColor {
         return primaryResultColor()

@@ -213,7 +213,7 @@ extension PXResultViewModel {
     }
 }
 
-// MARK: BETA View Model
+// MARK: New Result View Model Interface
 extension PXResultViewModel: PXNewResultViewModelInterface {
     func getHeaderColor() -> UIColor {
         return primaryResultColor()
