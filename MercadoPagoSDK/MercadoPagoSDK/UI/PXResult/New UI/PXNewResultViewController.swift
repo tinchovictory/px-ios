@@ -305,7 +305,7 @@ extension PXNewResultViewController {
                                                icon: viewModel.getHeaderIcon(),
                                                iconURL: viewModel.getHeaderURLIcon(),
                                                badgeImage: viewModel.getHeaderBadgeImage(),
-                                               closeAction: nil)
+                                               closeAction: viewModel.getHeaderCloseAction())
         return PXNewResultHeader(data: headerData)
     }
 

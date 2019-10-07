@@ -338,10 +338,16 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
     }
 
     func getTopCustomView() -> UIView? {
-        return buildTopCustomView()
+        if paymentResult.isApproved() {
+            return preference.getTopCustomView()
+        }
+        return nil
     }
 
     func getBottomCustomView() -> UIView? {
-        return buildBottomCustomView()
+        if paymentResult.isApproved() {
+            return preference.getBottomCustomView()
+        }
+        return nil
     }
 }

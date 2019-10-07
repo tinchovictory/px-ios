@@ -40,9 +40,9 @@ import UIKit
 // MARK: Mock configurations (Ex-preferences).
 extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
     static public func getPaymentResultConfiguration() -> PXPaymentResultConfiguration {
-        let top = TestComponent()
-        let bottom = TestComponent()
-        let paymentConfig = PXPaymentResultConfiguration(topView: top.getView(), bottomView: bottom.getView())
+        let top = CustomComponentText()
+        let bottom = CustomComponentText()
+        let paymentConfig = PXPaymentResultConfiguration(topView: top.render(), bottomView: bottom.render())
         return paymentConfig
     }
 
@@ -62,8 +62,9 @@ extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
         if let pmName = store.getPaymentData().getPaymentMethod()?.name, pmName == "Visa" {
             var views: [UIView] = []
             for i in 1...3 {
-                let view = getView(text: "\(pmName) - \(i)", color: .blue)
-                views.append(view)
+                if let view = getView(text: "\(pmName) - \(i)", color: .blue) {
+                    views.append(view)
+                }
             }
             return views
         }
@@ -74,8 +75,9 @@ extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
         if let pmName = store.getPaymentData().getPaymentMethod()?.name, pmName == "Mastercard" {
             var views: [UIView] = []
             for i in 1...3 {
-                let view = getView(text: "\(pmName) - \(i)", color: .gray)
-                views.append(view)
+                if let view = getView(text: "\(pmName) - \(i)", color: .blue) {
+                    views.append(view)
+                }
             }
             return views
         }
