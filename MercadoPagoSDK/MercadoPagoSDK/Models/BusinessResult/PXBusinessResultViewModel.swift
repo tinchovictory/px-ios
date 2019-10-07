@@ -319,7 +319,10 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     }
 
     func getInstructionsView() -> UIView? {
-        return nil
+        guard let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() else {
+            return nil
+        }
+        return bodyComponent.render()
     }
 
     func getPaymentData() -> PXPaymentData? {
@@ -331,11 +334,11 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     }
 
     func getSplitPaymentData() -> PXPaymentData? {
-        return nil
+        return amountHelper.splitAccountMoney
     }
 
     func getSplitAmountHelper() -> PXAmountHelper? {
-        return nil
+        return amountHelper
     }
 
     func getFooterMainAction() -> PXAction? {

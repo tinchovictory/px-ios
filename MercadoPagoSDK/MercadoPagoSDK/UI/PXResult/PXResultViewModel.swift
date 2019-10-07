@@ -318,11 +318,11 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
     }
 
     func getSplitPaymentData() -> PXPaymentData? {
-        return nil
+        return paymentResult.splitAccountMoney
     }
 
     func getSplitAmountHelper() -> PXAmountHelper? {
-        return nil
+        return amountHelper
     }
 
     func getFooterMainAction() -> PXAction? {
