@@ -224,7 +224,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
 
         //Instructions View
-        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, bodyComponent.hasInstructions() {
+        if let bodyComponent = buildBodyComponent() as? PXBodyComponent, (bodyComponent.hasInstructions() || paymentResult.isRejected() || paymentResult.isPending()) {
             views.append(ResultViewData(view: bodyComponent.render(), verticalMargin: 0, horizontalMargin: 0))
         }
 
@@ -280,7 +280,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         }
 
         //Payment Method View
-        if !hasInstructions(), let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData) {
+        if !hasInstructions(), let paymentData = paymentResult.paymentData, let PMView = buildPaymentMethodView(paymentData: paymentData), paymentResult.isApproved() {
             views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
