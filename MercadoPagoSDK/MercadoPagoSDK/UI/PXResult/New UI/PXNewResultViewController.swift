@@ -94,39 +94,17 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         //FOOTER VIEW
-        let footerContentView = UIView()
-        footerContentView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(footerContentView)
-
-        let dividingView = MLBusinessDividingLineView()
         let footerView = buildFooterView()
-        footerContentView.addSubview(dividingView)
-        footerContentView.addSubview(footerView)
-
-        //Dividing View Layout
-        NSLayoutConstraint.activate([
-            dividingView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
-            dividingView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
-            dividingView.topAnchor.constraint(equalTo: footerContentView.topAnchor),
-            dividingView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
+        footerView.addSeparatorLineToTop(height: 1)
+        scrollView.addSubview(footerView)
 
         //Footer View Layout
         NSLayoutConstraint.activate([
-            footerView.leadingAnchor.constraint(equalTo: footerContentView.leadingAnchor),
-            footerView.trailingAnchor.constraint(equalTo: footerContentView.trailingAnchor),
-            footerView.topAnchor.constraint(equalTo: dividingView.bottomAnchor),
-            footerView.bottomAnchor.constraint(equalTo: footerContentView.bottomAnchor),
+            footerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             footerView.widthAnchor.constraint(equalTo: view.widthAnchor)
-        ])
-
-        //Footer Content View Layout
-        NSLayoutConstraint.activate([
-            footerContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            footerContentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            footerContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
-            footerContentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            footerContentView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
 
         //Calculate content view min height
@@ -242,11 +220,13 @@ extension PXNewResultViewController {
 
         //Discounts
         if let discountsView = discountsView {
+            var margin = PXLayout.M_MARGIN
             if pointsView != nil {
                 //Dividing Line
                 views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+                margin -= 8
             }
-            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+            views.append(ResultViewData(view: discountsView, verticalMargin: margin, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
             if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
