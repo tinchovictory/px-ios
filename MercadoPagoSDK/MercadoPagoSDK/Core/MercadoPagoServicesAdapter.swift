@@ -33,7 +33,7 @@ internal class MercadoPagoServicesAdapter {
 
         mercadoPagoServices.getCheckoutPreference(checkoutPreferenceId: checkoutPreferenceId, callback: { (pxCheckoutPreference) in
             guard let siteId = pxCheckoutPreference.siteId else {
-                // TODO: faltal error?
+                failure( NSError(domain:"mercadopago.sdk.MercadoPagoServicesAdapter", code:9999, userInfo:["message": "siteId is nil"]) )
                 return
             }
             SiteManager.shared.setSite(siteId: siteId)
@@ -72,9 +72,9 @@ internal class MercadoPagoServicesAdapter {
 
         var excludedPaymentTypesIds = exclusions.excludedPaymentTypesIds
         if let eParams = extraParams, !eParams.hasPaymentProcessor {
-        // Only until our backend can pay with account money.
-        // Add exclusion for account money.
-        excludedPaymentTypesIds.append(PXPaymentTypes.ACCOUNT_MONEY.rawValue)
+            // Only until our backend can pay with account money.
+            // Add exclusion for account money.
+            excludedPaymentTypesIds.append(PXPaymentTypes.ACCOUNT_MONEY.rawValue)
         }
 
         mercadoPagoServices.getPaymentMethodSearch(amount: amount, excludedPaymentTypesIds: exclusions.excludedPaymentTypesIds, excludedPaymentMethodsIds: exclusions.excludedPaymentMethodsIds, cardsWithEsc: oneTapInfo.cardsWithEsc, supportedPlugins: oneTapInfo.supportedPlugins, defaultPaymentMethod: extraParams?.defaultPaymentMethod, payer: payer, site: pxSite, differentialPricingId: extraParams?.differentialPricingId, defaultInstallments: extraParams?.defaultInstallments, expressEnabled: expressValue, splitEnabled: splitValue, discountParamsConfiguration: discountParamsConfiguration, marketplace: marketplace, charges: charges, maxInstallments: extraParams?.maxInstallments, callback: { (pxPaymentMethodSearch) in
@@ -153,10 +153,7 @@ internal class MercadoPagoServicesAdapter {
 
     open func getSummaryAmount(bin: String?, amount: Double, issuer: PXIssuer?, paymentMethodId: String, payment_type_id: String, differentialPricingId: String?, siteId: String?, marketplace: String?, discountParamsConfiguration: PXDiscountParamsConfiguration?, payer: PXPayer, defaultInstallments: Int?, charges: [PXPaymentTypeChargeRule]?, maxInstallments: Int?, callback: @escaping (PXSummaryAmount) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
 
-        mercadoPagoServices.getSummaryAmount(bin: bin, amount: amount, issuerId: issuer?.id, paymentMethodId: paymentMethodId, payment_type_id: payment_type_id, differentialPricingId: differentialPricingId, siteId: siteId, marketplace: marketplace, discountParamsConfiguration: discountParamsConfiguration, payer: payer, defaultInstallments: defaultInstallments, charges: charges, maxInstallments: maxInstallments, callback: { [weak self] (summaryAmount) in
-                guard let strongSelf = self else {
-                    return
-                }
+        mercadoPagoServices.getSummaryAmount(bin: bin, amount: amount, issuerId: issuer?.id, paymentMethodId: paymentMethodId, payment_type_id: payment_type_id, differentialPricingId: differentialPricingId, siteId: siteId, marketplace: marketplace, discountParamsConfiguration: discountParamsConfiguration, payer: payer, defaultInstallments: defaultInstallments, charges: charges, maxInstallments: maxInstallments, callback: { (summaryAmount) in
                 callback(summaryAmount)
             }, failure: failure)
     }
