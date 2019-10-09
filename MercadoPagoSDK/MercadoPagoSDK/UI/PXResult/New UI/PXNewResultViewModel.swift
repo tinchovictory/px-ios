@@ -14,20 +14,59 @@ struct ResultViewData {
 }
 
 protocol PXNewResultViewModelInterface {
-    func getViews() -> [ResultViewData]
+    //HEADER
+    func getHeaderColor() -> UIColor
+    func getHeaderTitle() -> String
+    func getHeaderIcon() -> UIImage?
+    func getHeaderURLIcon() -> String?
+    func getHeaderBadgeImage() -> UIImage?
+    func getHeaderCloseAction() -> (() -> Void)?
+
+    //RECEIPT
+    func mustShowReceipt() -> Bool
+    func getReceiptId() -> String?
+
+    //POINTS AND DISCOUNTS
+    ////POINTS
+    func getPoints() -> PXPoints?
+    func getPointsTapAction() -> ((_ deepLink: String) -> Void)?
+
+    ////DISCOUNTS
+    func getDiscounts() -> PXDiscounts?
+    func getDiscountsTapAction() -> ((_ index: Int, _ deepLink: String?, _ trackId: String?) -> Void)?
+
+    ////CROSS SELLING
+    func getCrossSellingItems() -> [PXCrossSellingItem]?
+    func getCrossSellingTapAction() -> ((_ deepLink: String) -> Void)?
+
+    //INSTRUCTIONS
+    func hasInstructions() -> Bool
+    func getInstructionsView() -> UIView?
+
+    //PAYMENT METHOD
+    func getPaymentData() -> PXPaymentData?
+    func getAmountHelper() -> PXAmountHelper?
+
+    //SPLIT PAYMENT METHOD
+    func getSplitPaymentData() -> PXPaymentData?
+    func getSplitAmountHelper() -> PXAmountHelper?
+
+    //FOOTER
+    func getFooterMainAction() -> PXAction?
+    func getFooterSecondaryAction() -> PXAction?
+
+    //CUSTOM VIEWS
+    ////IMPORTANT
+    func getImportantView() -> UIView?
+
+    ////TOP CUSTOM
+    func getTopCustomView() -> UIView?
+
+    ////BOTTOM CUSTOM
+    func getBottomCustomView() -> UIView?
+
+    //CALLBACKS & TRACKING
     func setCallback(callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void)
-    func primaryResultColor() -> UIColor
-    func buildHeaderView() -> UIView
-    func buildFooterView() -> UIView
-    func buildImportantCustomView() -> UIView?
-    func buildTopCustomView() -> UIView?
-    func buildBottomCustomView() -> UIView?
-    func buildPaymentMethodView(paymentData: PXPaymentData) -> UIView?
-    func buildPointsViews() -> UIView?
-    func buildDiscountsView() -> UIView?
-    func buildDiscountsAccessoryView() -> ResultViewData?
-    func buildCrossSellingViews() -> [UIView]?
-    func buildReceiptView() -> UIView?
     func getTrackingProperties() -> [String: Any]
     func getTrackingPath() -> String
 }
