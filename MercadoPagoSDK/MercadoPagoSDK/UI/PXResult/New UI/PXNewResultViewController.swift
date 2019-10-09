@@ -37,7 +37,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupScrollView()
-        addElasticHeader(headerBackgroundColor: viewModel.primaryResultColor())
+        addElasticHeader(headerBackgroundColor: viewModel.getHeaderColor())
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -59,7 +59,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     private func setupScrollView() {
         view.removeAllSubviews()
         view.addSubview(scrollView)
-        view.backgroundColor = viewModel.primaryResultColor()
+        view.backgroundColor = viewModel.getHeaderColor()
         scrollView.backgroundColor = .pxWhite
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -99,7 +99,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         scrollView.addSubview(footerContentView)
 
         let dividingView = MLBusinessDividingLineView()
-        let footerView = viewModel.buildFooterView()
+        let footerView = buildFooterView()
         footerContentView.addSubview(dividingView)
         footerContentView.addSubview(footerView)
 
@@ -137,7 +137,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         ])
 
         //Load content views
-        for data in viewModel.getViews() {
+        let views = getContentViews()
+        for data in views {
             if let ringView = data.view as? MLBusinessLoyaltyRingView {
                 self.ringView = ringView
             }
@@ -208,5 +209,221 @@ extension PXNewResultViewController {
 
     private func animateRing() {
         perform(#selector(self.doAnimateRing), with: self, afterDelay: 0.3)
+    }
+}
+
+// MARK: Get content views
+extension PXNewResultViewController {
+    func getContentViews() -> [ResultViewData] {
+        var views = [ResultViewData]()
+
+        //Header View
+        let headerView = buildHeaderView()
+        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
+
+        //Instructions View
+        if let instructionsView = buildInstructionsView() {
+            views.append(ResultViewData(view: instructionsView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Important View
+        if let importantView = buildImportantView() {
+            views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Points and Discounts
+        let pointsView = buildPointsView()
+        let discountsView = buildDiscountsView()
+
+        //Points
+        if let pointsView = pointsView {
+            views.append(ResultViewData(view: pointsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+        }
+
+        //Discounts
+        if let discountsView = discountsView {
+            if pointsView != nil {
+                //Dividing Line
+                views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+            }
+            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+
+            //Discounts Accessory View
+            if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
+                views.append(discountsAccessoryViewData)
+            }
+        }
+
+        //Cross Selling View
+        if let crossSellingViews = buildCrossSellingViews() {
+            var margin: CGFloat = 0
+            if discountsView != nil && pointsView == nil {
+                margin = PXLayout.M_MARGIN
+            } else if discountsView == nil && pointsView != nil {
+                margin = PXLayout.XXS_MARGIN
+            }
+            for crossSellingView in crossSellingViews {
+                views.append(ResultViewData(view: crossSellingView, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
+            }
+        }
+
+        //Top Custom View
+        if let topCustomView = buildTopCustomView() {
+            views.append(ResultViewData(view: topCustomView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Receipt View
+        if let receiptView = buildReceiptView() {
+            views.append(ResultViewData(view: receiptView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Payment Method View
+        if !viewModel.hasInstructions(), let PMView = buildPaymentMethodView() {
+            views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Split Payment View
+        if !viewModel.hasInstructions(), let splitView = buildSplitPaymentMethodView() {
+            views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        //Bottom Custom View
+        if let bottomCustomView = buildBottomCustomView() {
+            views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
+        }
+
+        return views
+    }
+}
+
+// MARK: Views builders
+extension PXNewResultViewController {
+    //HEADER
+    func buildHeaderView() -> UIView {
+        let headerData = PXNewResultHeaderData(color: viewModel.getHeaderColor(),
+                                               title: viewModel.getHeaderTitle(),
+                                               icon: viewModel.getHeaderIcon(),
+                                               iconURL: viewModel.getHeaderURLIcon(),
+                                               badgeImage: viewModel.getHeaderBadgeImage(),
+                                               closeAction: viewModel.getHeaderCloseAction())
+        return PXNewResultHeader(data: headerData)
+    }
+
+    //RECEIPT
+    func buildReceiptView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForReceiptView(paymentId: viewModel.getReceiptId()), viewModel.mustShowReceipt() else {
+            return nil
+        }
+
+        return PXNewCustomView(data: data)
+    }
+
+    //POINTS AND DISCOUNTS
+    ////POINTS
+    func buildPointsView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForPointsView(points: viewModel.getPoints()) else {
+            return nil
+        }
+        let pointsView = MLBusinessLoyaltyRingView(data, fillPercentProgress: false)
+
+        if let tapAction = viewModel.getPointsTapAction() {
+            pointsView.addTapAction(tapAction)
+        }
+
+        return pointsView
+    }
+    ////DISCOUNTS
+    func buildDiscountsView() -> UIView? {
+        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
+            return nil
+        }
+        let discountsView = MLBusinessDiscountBoxView(data)
+
+        if let tapAction = viewModel.getDiscountsTapAction() {
+            discountsView.addTapAction(tapAction)
+        }
+
+        return discountsView
+    }
+
+    ////DISCOUNTS ACCESSORY VIEW
+    func buildDiscountsAccessoryView() -> ResultViewData? {
+        return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: viewModel.getDiscounts())
+    }
+
+    ////CROSS SELLING
+    func buildCrossSellingViews() -> [UIView]? {
+        guard let data = PXNewResultUtil.getDataForCrossSellingView(crossSellingItems: viewModel.getCrossSellingItems()) else {
+            return nil
+        }
+        var itemsViews = [UIView]()
+        for itemData in data {
+            let itemView = MLBusinessCrossSellingBoxView(itemData)
+            if let tapAction = viewModel.getCrossSellingTapAction() {
+                itemView.addTapAction(action: tapAction)
+            }
+
+            itemsViews.append(itemView)
+        }
+        return itemsViews
+    }
+
+    //INSTRUCTIONS
+    func buildInstructionsView() -> UIView? {
+        return viewModel.getInstructionsView()
+    }
+
+    //PAYMENT METHOD
+    func buildPaymentMethodView() -> UIView? {
+        guard let paymentData = viewModel.getPaymentData() else {
+            return nil
+        }
+        guard let amountHelper = viewModel.getAmountHelper() else {
+            return nil
+        }
+        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+            return nil
+        }
+
+        let view = PXNewCustomView(data: data)
+        return view
+    }
+
+    //SPLIT PAYMENT METHOD
+    func buildSplitPaymentMethodView() -> UIView? {
+        guard let paymentData = viewModel.getSplitPaymentData() else {
+            return nil
+        }
+        guard let amountHelper = viewModel.getSplitAmountHelper() else {
+            return nil
+        }
+        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+            return nil
+        }
+
+        let view = PXNewCustomView(data: data)
+        return view
+    }
+
+    //FOOTER
+    func buildFooterView() -> UIView {
+        let footerProps = PXFooterProps(buttonAction: viewModel.getFooterMainAction(), linkAction: viewModel.getFooterSecondaryAction())
+        return PXFooterComponent(props: footerProps).render()
+    }
+
+    //CUSTOM
+    ////IMPORTANT
+    func buildImportantView() -> UIView? {
+        return viewModel.getImportantView()
+    }
+
+    ////TOP CUSTOM
+    func buildTopCustomView() -> UIView? {
+        return viewModel.getTopCustomView()
+    }
+
+    ////BOTTOM CUSTOM
+    func buildBottomCustomView() -> UIView? {
+        return viewModel.getBottomCustomView()
     }
 }
