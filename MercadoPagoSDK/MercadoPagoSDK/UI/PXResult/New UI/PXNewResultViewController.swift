@@ -220,11 +220,13 @@ extension PXNewResultViewController {
 
         //Discounts
         if let discountsView = discountsView {
+            var margin = PXLayout.M_MARGIN
             if pointsView != nil {
                 //Dividing Line
                 views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+                margin -= 8
             }
-            views.append(ResultViewData(view: discountsView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.M_MARGIN))
+            views.append(ResultViewData(view: discountsView, verticalMargin: margin, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
             if let discountsAccessoryViewData = buildDiscountsAccessoryView() {
