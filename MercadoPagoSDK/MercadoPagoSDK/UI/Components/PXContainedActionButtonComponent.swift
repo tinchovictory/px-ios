@@ -33,7 +33,7 @@ internal class PXContainedActionButtonProps {
     init(title: String, action:  @escaping (() -> Void), animationDelegate: PXAnimatedButtonDelegate? = nil, termsInfo: PXTermsDto? = nil) {
         self.title = title
         self.action = action
-        self.backgroundColor = .white
+        self.backgroundColor = ThemeManager.shared.whiteColor()
         self.animationDelegate = animationDelegate
         self.termsInfo = termsInfo
     }

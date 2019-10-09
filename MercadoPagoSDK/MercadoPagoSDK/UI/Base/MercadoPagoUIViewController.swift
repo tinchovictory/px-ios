@@ -34,6 +34,7 @@ internal class MercadoPagoUIViewController: UIViewController, UIGestureRecognize
 
     override open func viewDidLoad() {
         super.viewDidLoad()
+        ThemeManager.shared.updateTraitCollection(traitCollection)
         self.loadMPStyles()
     }
 
@@ -66,6 +67,11 @@ internal class MercadoPagoUIViewController: UIViewController, UIGestureRecognize
         if shouldHideNavigationBar {
             navigationController?.setNavigationBarHidden(false, animated: false)
         }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        ThemeManager.shared.updateTraitCollection(traitCollection)
     }
 
     func totalContentViewHeigth() -> CGFloat {

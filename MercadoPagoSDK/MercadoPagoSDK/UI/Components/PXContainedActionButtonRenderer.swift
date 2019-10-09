@@ -31,7 +31,7 @@ class PXContainedActionButtonRenderer: NSObject {
         containedButtonView.button?.animationDelegate = containedButton.props.animationDelegate
         containedButtonView.addSubview(button)
 
-        containedButtonView.backgroundColor = .white
+        containedButtonView.backgroundColor = ThemeManager.shared.whiteColor()
         containedButtonView.layer.shadowOffset = CGSize(width: 0, height: 0)
         containedButtonView.layer.shadowColor = UIColor.black.cgColor
         containedButtonView.layer.shadowRadius = 4

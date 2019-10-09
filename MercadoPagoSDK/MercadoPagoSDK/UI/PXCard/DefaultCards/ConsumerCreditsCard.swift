@@ -138,7 +138,7 @@ extension ConsumerCreditsCard {
 
     private func getTermsAndConditionsTextView() -> UITextView {
         let termsAndConditionsText = UITextView()
-        termsAndConditionsText.linkTextAttributes = [.foregroundColor: UIColor.white]
+        termsAndConditionsText.linkTextAttributes = [.foregroundColor: ThemeManager.shared.whiteColor()]
         termsAndConditionsText.delegate = self
         termsAndConditionsText.isUserInteractionEnabled = true
         termsAndConditionsText.isEditable = false

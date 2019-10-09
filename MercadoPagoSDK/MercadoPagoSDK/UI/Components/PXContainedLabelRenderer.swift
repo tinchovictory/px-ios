@@ -13,7 +13,7 @@ class PXContainedLabelRenderer: NSObject {
     func render(_ containedLabel: PXContainedLabelComponent) -> PXContainedLabelView {
         let containedLabelView = PXContainedLabelView()
         containedLabelView.translatesAutoresizingMaskIntoConstraints = false
-        containedLabelView.backgroundColor = .white
+        containedLabelView.backgroundColor = ThemeManager.shared.whiteColor()
 
         //Label
         containedLabelView.mainLabel = buildLabel(with: containedLabel.props.labelText)

@@ -15,7 +15,7 @@ class PXBankDealComponentRenderer: NSObject {
     func render(_ component: PXBankDealComponent) -> PXBankDealComponentView {
         let bankDealComponentView = PXBankDealComponentView()
         bankDealComponentView.translatesAutoresizingMaskIntoConstraints = false
-        bankDealComponentView.backgroundColor = .white
+        bankDealComponentView.backgroundColor = ThemeManager.shared.whiteColor()
 
         //Image View
         let image = PXUIImage(url: component.props.imageUrl, placeholder: component.props.placeholder, fallback: component.props.placeholder)

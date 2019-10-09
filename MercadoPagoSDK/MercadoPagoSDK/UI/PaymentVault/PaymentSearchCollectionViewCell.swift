@@ -36,7 +36,7 @@ class PaymentSearchCollectionViewCell: UICollectionViewCell {
             addWarningBadge()
         }
 
-        backgroundColor = .white
+        backgroundColor = ThemeManager.shared.whiteColor()
         titleSearch.textColor = UIColor.black
         layoutIfNeeded()
     }

@@ -41,4 +41,8 @@ import Foundation
     public func statusBarStyle() -> UIStatusBarStyle {
         return .lightContent
     }
+
+    func shouldSupportDarkMode() -> Bool {
+        return true
+    }
 }

@@ -46,7 +46,7 @@ class PXBankDealsViewController: MercadoPagoUIViewController, UICollectionViewDa
         self.view.addSubview(collectionView)
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = ThemeManager.shared.whiteColor()
 
         //Register Cells
         collectionView.register(PXBankDealCollectionCell.self, forCellWithReuseIdentifier: PXBankDealCollectionCell.REUSE_IDENTIFIER)

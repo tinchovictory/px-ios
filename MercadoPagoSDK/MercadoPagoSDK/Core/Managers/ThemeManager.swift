@@ -18,6 +18,8 @@ class ThemeManager {
             initialize()
         }
     }
+    
+    private var currentTrait: UITraitCollection?
 
     fileprivate var currentStylesheet = MLStyleSheetManager.styleSheet
     fileprivate var fontName: String = ".SFUIDisplay-Regular"
@@ -25,6 +27,16 @@ class ThemeManager {
     fileprivate var fontSemiBoldName: String = ".SFUIDisplay-SemiBold"
 
     var navigationControllerMemento: NavigationControllerMemento?
+
+    private func isDarkMode() -> Bool {
+        guard let supportDark = currentTheme.shouldSupportDarkMode?() else { return false }
+        if #available(iOS 13, *) {
+            if let trait = currentTrait, trait.userInterfaceStyle == .dark {
+                return supportDark
+            }
+        }
+        return false
+    }
 }
 
 // MARK: - Public methods
@@ -55,6 +67,10 @@ extension ThemeManager {
         if let externalSemiBoldFont = theme.semiBoldFontName?() {
             fontSemiBoldName = externalSemiBoldFont
         }
+    }
+
+    func updateTraitCollection(_ trait: UITraitCollection?) {
+        self.currentTrait = trait
     }
 
     func getCurrentTheme() -> PXTheme {
@@ -97,7 +113,10 @@ extension ThemeManager {
     }
 
     func whiteColor() -> UIColor {
-        return currentStylesheet.whiteColor
+        if isDarkMode() {
+            return .black
+        }
+        return .white
     }
 
     func successColor() -> UIColor {
@@ -113,6 +132,9 @@ extension ThemeManager {
     }
 
     func secondaryColor() -> UIColor {
+        if isDarkMode() {
+            return .black
+        }
         return currentStylesheet.secondaryColor
     }
 
@@ -137,26 +159,44 @@ extension ThemeManager {
 extension ThemeManager: PXTheme {
 
     func navigationBar() -> PXThemeProperty {
+        if isDarkMode() {
+            return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+        }
         return currentTheme.navigationBar()
     }
 
     func loadingComponent() -> PXThemeProperty {
+        if isDarkMode() {
+            return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+        }
         return currentTheme.loadingComponent()
     }
 
     func highlightBackgroundColor() -> UIColor {
+        if isDarkMode() {
+            return .darkGray
+        }
         return currentTheme.highlightBackgroundColor()
     }
 
     func detailedBackgroundColor() -> UIColor {
+        if isDarkMode() {
+             return .darkGray
+         }
         return currentTheme.detailedBackgroundColor()
     }
 
     func statusBarStyle() -> UIStatusBarStyle {
+        if isDarkMode() {
+            return .lightContent
+         }
         return currentTheme.statusBarStyle()
     }
 
     func getMainColor() -> UIColor {
+        if isDarkMode() {
+            return .black
+         }
         if let theme = currentTheme as? PXDefaultTheme {
             return theme.primaryColor
         }
@@ -178,6 +218,9 @@ extension ThemeManager: PXTheme {
     }
 
     func getTitleColorForReviewConfirmNavigation() -> UIColor {
+        if isDarkMode() {
+            return .white
+        }
 
         if currentTheme is PXDefaultTheme {
             return getMainColor()
@@ -191,6 +234,9 @@ extension ThemeManager: PXTheme {
     }
 
     func modalComponent() -> PXThemeProperty {
+        if isDarkMode() {
+             return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+         }
         return PXThemeProperty(backgroundColor: currentStylesheet.modalBackgroundColor, tintColor: currentStylesheet.modalTintColor)
     }
 }

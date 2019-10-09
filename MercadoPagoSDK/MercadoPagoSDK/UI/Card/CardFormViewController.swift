@@ -509,7 +509,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44)
         let onlyOnePaymentMethodLabel = MPCardFormToolbarLabel(frame: frame)
         onlyOnePaymentMethodLabel.backgroundColor = color
-        onlyOnePaymentMethodLabel.textColor = UIColor.white
+        onlyOnePaymentMethodLabel.textColor = ThemeManager.shared.whiteColor()
         onlyOnePaymentMethodLabel.text = message
         onlyOnePaymentMethodLabel.font = Utils.getLightFont(size: 14)
         setTextBox(isError: isError, inputAccessoryView: onlyOnePaymentMethodLabel)

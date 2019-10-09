@@ -28,7 +28,7 @@ class SimpleInputComponent: UIView, PXComponent {
         self.numeric = numeric
         self.placeholder = placeholder
         self.textFieldDelegate = textFieldDelegate
-        self.backgroundColor = .white
+        self.backgroundColor = ThemeManager.shared.whiteColor()
         self.setupView()
     }
     required init?(coder aDecoder: NSCoder) {
@@ -147,7 +147,7 @@ class CompositeInputComponent: SimpleInputComponent, UIPickerViewDataSource, UIP
     }
     func getPicker() -> UIPickerView {
         let pickerView = UIPickerView(frame: CGRect(x: 0, y: 150, width: self.frame.width, height: PICKER_HEIGHT))
-        pickerView.backgroundColor = UIColor.white
+        pickerView.backgroundColor = ThemeManager.shared.whiteColor()
         pickerView.showsSelectionIndicator = true
         pickerView.dataSource = self
         pickerView.delegate = self

@@ -51,4 +51,9 @@ import Foundation
      Optional method to set your custom  semi-bold font.
      */
     @objc optional func semiBoldFontName() -> String?
+
+    /**
+     Optional method to support dark mode.
+    */
+    @objc optional func shouldSupportDarkMode() -> Bool
 }

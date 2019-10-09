@@ -18,7 +18,7 @@ class CardAvailableView: UIView {
 
     init(frame: CGRect, paymentMethod: PXPaymentMethod) {
         super.init(frame: frame)
-        self.backgroundColor = .white
+        self.backgroundColor = ThemeManager.shared.whiteColor()
 
         let image = ResourceManager.shared.getImageForPaymentMethod(withDescription: paymentMethod.id, defaultColor: false)
         setImageView(image: image)

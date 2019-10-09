@@ -121,9 +121,9 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
             }
         }
         let pickerView = UIPickerView(frame: CGRect(x: 0, y: 150, width: view.frame.width, height: 216))
-        pickerView.backgroundColor = UIColor.white
+        pickerView.backgroundColor = ThemeManager.shared.whiteColor()
         pickerView.showsSelectionIndicator = true
-        pickerView.backgroundColor = UIColor.white
+        pickerView.backgroundColor = ThemeManager.shared.whiteColor()
         pickerView.showsSelectionIndicator = true
         pickerView.dataSource = self
         pickerView.delegate = self

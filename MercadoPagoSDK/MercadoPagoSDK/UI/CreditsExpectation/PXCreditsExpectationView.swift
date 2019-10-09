@@ -28,7 +28,7 @@ final class PXCreditsExpectationView: PXBodyView {
     }
 
     func createSubviews() {
-        self.backgroundColor = .white
+        self.backgroundColor = ThemeManager.shared.whiteColor()
         self.translatesAutoresizingMaskIntoConstraints = false
 
         // Title

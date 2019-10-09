@@ -60,7 +60,7 @@ class PXOneTapSplitPaymentView: PXComponentView {
 
     private func render() {
         removeAllSubviews()
-        self.backgroundColor = .white
+        self.backgroundColor = ThemeManager.shared.whiteColor()
         let splitSwitch = UISwitch()
         self.splitPaymentSwitch = splitSwitch
         splitSwitch.addTarget(self, action: #selector(PXOneTapSplitPaymentView.switchStateChanged(_:)), for: UIControl.Event.valueChanged)

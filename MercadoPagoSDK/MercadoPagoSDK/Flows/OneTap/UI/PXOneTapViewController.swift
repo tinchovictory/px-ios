@@ -52,6 +52,10 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationBar()
@@ -228,7 +232,7 @@ extension PXOneTapViewController {
 
     private func getWhiteView() -> UIView {
         let whiteView = UIView()
-        whiteView.backgroundColor = .white
+        whiteView.backgroundColor = ThemeManager.shared.whiteColor()
         return whiteView
     }
 

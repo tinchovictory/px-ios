@@ -105,7 +105,7 @@ internal class PaymentVaultViewController: MercadoPagoUIScrollViewController, UI
             self.callbackCancel = callbackCancel
         }
 
-       self.collectionSearch.backgroundColor = UIColor.white
+        self.collectionSearch.backgroundColor = ThemeManager.shared.whiteColor()
     }
 
     @objc func updateCoupon(_ notification: Notification) {

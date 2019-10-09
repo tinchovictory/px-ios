@@ -181,7 +181,7 @@ extension PXResultViewController {
         let receiptComponent = viewModel.buildReceiptComponent()
         if let receiptView = receiptComponent?.render() {
             if receiptView.backgroundColor == nil {
-                receiptView.backgroundColor = .white
+                receiptView.backgroundColor = ThemeManager.shared.whiteColor()
             }
             return receiptView
         }
@@ -236,6 +236,7 @@ extension PXResultViewController {
     func buildTopCustomView() -> UIView? {
         if let customView = self.viewModel.buildTopCustomView() {
             if customView.backgroundColor == nil {
+                // TODO: Review Dark/White mode with customs views.
                 customView.backgroundColor = .white
             }
             return customView

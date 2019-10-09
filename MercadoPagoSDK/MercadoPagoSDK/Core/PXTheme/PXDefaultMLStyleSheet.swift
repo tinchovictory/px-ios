@@ -36,7 +36,7 @@ class PXDefaultMLStyleSheet: NSObject, MLStyleSheetProtocol {
         secondaryColorPressed = withPrimaryColor
         secondaryColorDisabled = lightGreyColor
         modalBackgroundColor = withPrimaryColor
-        modalTintColor = .white
+        modalTintColor = ThemeManager.shared.whiteColor()
     }
 
     func regularSystemFont(ofSize fontSize: CGFloat) -> UIFont {

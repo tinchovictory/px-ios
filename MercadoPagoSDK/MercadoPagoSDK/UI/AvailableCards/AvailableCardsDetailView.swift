@@ -75,7 +75,7 @@ class AvailableCardsDetailView: UIView {
 
     func getHeaderView() -> UIView {
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: self.frame.size.width, height: AvailableCardsDetailView.HEADER_SCROLL_HEIGHT))
-        headerView.backgroundColor = .white
+        headerView.backgroundColor = ThemeManager.shared.whiteColor()
         return headerView
     }
 

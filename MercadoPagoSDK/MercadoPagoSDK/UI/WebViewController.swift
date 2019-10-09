@@ -39,7 +39,7 @@ class WebViewController: MercadoPagoUIViewController, UIWebViewDelegate {
 
         self.webView.delegate = self
         self.webView.translatesAutoresizingMaskIntoConstraints = false
-        self.webView.backgroundColor = .white
+        self.webView.backgroundColor = ThemeManager.shared.whiteColor()
         self.view.addSubview(webView)
         PXLayout.pinLeft(view: webView).isActive = true
         PXLayout.pinRight(view: webView).isActive = true

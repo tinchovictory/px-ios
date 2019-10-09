@@ -27,7 +27,7 @@ class PXComponentContainerViewController: MercadoPagoUIViewController {
 
     init(adjustInsets: Bool = true) {
         scrollView = UIScrollView()
-        scrollView.backgroundColor = .white
+        scrollView.backgroundColor = ThemeManager.shared.whiteColor()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.delaysContentTouches = true
         scrollView.canCancelContentTouches = false
