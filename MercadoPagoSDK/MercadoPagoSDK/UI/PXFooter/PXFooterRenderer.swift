@@ -64,7 +64,7 @@ final class PXFooterRenderer: NSObject {
             fooView.linkButton = linkButton
             fooView.addSubview(linkButton)
             if topView != fooView {
-               PXLayout.put(view: linkButton, onBottomOf: topView, withMargin: PXLayout.S_MARGIN).isActive = true
+               PXLayout.put(view: linkButton, onBottomOf: topView, withMargin: PXLayout.XXS_MARGIN).isActive = true
             } else {
                 PXLayout.pinTop(view: linkButton, to: fooView, withMargin: PXLayout.S_MARGIN).isActive = true
             }
