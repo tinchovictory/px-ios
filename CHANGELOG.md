@@ -1,3 +1,11 @@
+# v4.24
+🚀Private Release - 4.24 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats improvements
+- Fix warnings and possible leaks
+- Fix bug oneTap installmentsView
+
+
 # v4.23
 🚀Private Release - 4.23 🚀
 MercadoPagoSDKV4 - Private Version
