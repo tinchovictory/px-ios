@@ -40,7 +40,7 @@ class PXNewResultHeader: UIView {
     let BADGE_VERTICAL_OFFSET: CGFloat = 0.0
 
     //Close Button
-    let CLOSE_BUTTON_SIZE: CGFloat = 14
+    let CLOSE_BUTTON_SIZE: CGFloat = 44
 
     //Text
     static let TITLE_FONT_SIZE: CGFloat = PXLayout.L_FONT
@@ -67,10 +67,8 @@ class PXNewResultHeader: UIView {
             button.add(for: .touchUpInside, {
                 closeAction()
             })
-            PXLayout.setHeight(owner: button, height: CLOSE_BUTTON_SIZE).isActive = true
-            PXLayout.setWidth(owner: button, width: CLOSE_BUTTON_SIZE).isActive = true
             PXLayout.pinTop(view: button, withMargin: PXLayout.M_MARGIN).isActive = true
-            PXLayout.pinLeft(view: button, withMargin: PXLayout.L_MARGIN).isActive = true
+            PXLayout.pinLeft(view: button, withMargin: PXLayout.S_MARGIN).isActive = true
         }
 
         //Title Label
@@ -123,11 +121,13 @@ class PXNewResultHeader: UIView {
     func buildCloseButton() -> UIButton {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        let image = ResourceManager.shared.getImage("close-button")
+        let image = ResourceManager.shared.getImage("result-close-button")
         let margin: CGFloat = 0
         button.contentEdgeInsets = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
         button.setImage(image, for: .normal)
         button.accessibilityIdentifier = "result_close_button"
+        PXLayout.setHeight(owner: button, height: CLOSE_BUTTON_SIZE).isActive = true
+        PXLayout.setWidth(owner: button, width: CLOSE_BUTTON_SIZE).isActive = true
         return button
     }
 
@@ -142,7 +142,7 @@ class PXNewResultHeader: UIView {
         circleImage.enableFadeIn()
         circleImage.contentMode = .scaleAspectFill
         circleImage.image = image
-        circleImage.backgroundColor = .clear
+        circleImage.backgroundColor = .white
         PXLayout.setHeight(owner: circleImage, height: IMAGE_WIDTH).isActive = true
         PXLayout.setWidth(owner: circleImage, width: IMAGE_HEIGHT).isActive = true
         return circleImage
