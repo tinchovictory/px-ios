@@ -210,11 +210,8 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         PXLayout.centerVertically(view: cardBack!, to: cardView, withMargin: 0).isActive = true
         PXLayout.centerHorizontally(view: cardBack!, to: cardView).isActive = true
         cardBack!.isHidden = true
-
-        textBox.backgroundColor = .clear
-        textBox.superview?.backgroundColor = .clear
-        view.backgroundColor = .clear
     }
+
     @objc func keyboardWillShow(notification: Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             self.keyboardHeightConstraint.constant = keyboardSize.height - 40
