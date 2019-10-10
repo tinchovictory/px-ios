@@ -20,7 +20,7 @@ final class PXTotalRowRenderer {
     func render(_ totalRowComponent: PXTotalRowComponent) -> UIView {
         let totalRowView = PXTotalRowView()
         totalRowView.translatesAutoresizingMaskIntoConstraints = false
-        totalRowView.backgroundColor = .white
+        totalRowView.backgroundColor = ThemeManager.shared.secondaryBackgroundColor()
         totalRowView.layer.shadowOffset = CGSize(width: 0, height: 0)
         totalRowView.layer.shadowColor = UIColor.black.cgColor
         totalRowView.layer.shadowRadius = 4

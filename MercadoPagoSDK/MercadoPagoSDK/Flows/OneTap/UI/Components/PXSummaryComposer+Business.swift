@@ -49,7 +49,7 @@ extension PXSummaryComposer {
 
     //MARK: style
     func summaryColor() -> UIColor {
-        return isDefaultStatusBarStyle ? UIColor.black : ThemeManager.shared.whiteColor()
+        return isDefaultStatusBarStyle ? UIColor.black : .white
     }
     
     func yourPurchaseSummaryTitle() -> String {
@@ -61,7 +61,7 @@ extension PXSummaryComposer {
     }
 
     func discountColor() -> UIColor {
-        return isDefaultStatusBarStyle ? ThemeManager.shared.noTaxAndDiscountLabelTintColor() : ThemeManager.shared.whiteColor()
+        return isDefaultStatusBarStyle ? ThemeManager.shared.noTaxAndDiscountLabelTintColor() : .white
     }
 
     func helpIcon(color: UIColor, alpha: CGFloat = 1) -> UIImage? {

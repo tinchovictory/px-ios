@@ -15,13 +15,14 @@ final class PXOneTapInstallmentsSelectorCell: UITableViewCell {
         self.data = data
         self.selectionStyle = .default
         let selectedView = UIView()
-        selectedView.backgroundColor = #colorLiteral(red: 0.96, green: 0.96, blue: 0.96, alpha: 1.0)
+        selectedView.backgroundColor = ThemeManager.shared.selectionHoverColor()
         self.selectedBackgroundView = selectedView
 
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.attributedText = data.title
         titleLabel.textAlignment = .left
+        titleLabel.textColor = ThemeManager.shared.boldLabelTintColor()
         contentView.addSubview(titleLabel)
         PXLayout.pinLeft(view: titleLabel, withMargin: PXLayout.M_MARGIN).isActive = true
         PXLayout.centerVertically(view: titleLabel).isActive = true

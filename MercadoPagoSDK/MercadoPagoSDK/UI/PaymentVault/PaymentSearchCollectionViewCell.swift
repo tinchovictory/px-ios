@@ -37,7 +37,7 @@ class PaymentSearchCollectionViewCell: UICollectionViewCell {
         }
 
         backgroundColor = ThemeManager.shared.whiteColor()
-        titleSearch.textColor = UIColor.black
+        titleSearch.textColor = ThemeManager.shared.boldLabelTintColor()
         layoutIfNeeded()
     }
 

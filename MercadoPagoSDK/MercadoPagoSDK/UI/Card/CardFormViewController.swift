@@ -153,7 +153,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         textBox.borderActiveColor = ThemeManager.shared.secondaryColor()
         textBox.autocorrectionType = UITextAutocorrectionType.no
         textBox.keyboardType = UIKeyboardType.numberPad
-        textBox.keyboardAppearance = .light
+        textBox.keyboardAppearance = ThemeManager.shared.getKeyboardAppearance()
         textBox.addTarget(self, action: #selector(CardFormViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         setupInputAccessoryView()
         textBox.delegate = self
@@ -210,6 +210,10 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         PXLayout.centerVertically(view: cardBack!, to: cardView, withMargin: 0).isActive = true
         PXLayout.centerHorizontally(view: cardBack!, to: cardView).isActive = true
         cardBack!.isHidden = true
+
+        textBox.backgroundColor = .clear
+        textBox.superview?.backgroundColor = .clear
+        view.backgroundColor = .clear
     }
     @objc func keyboardWillShow(notification: Notification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
@@ -498,7 +502,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
             if self.viewModel.customerCard != nil || self.viewModel.token != nil {
                 navItem!.leftBarButtonItem?.isEnabled = false
             }
-
+            toolbar.barStyle = ThemeManager.shared.getToolbarStyle()
             textBox.delegate = self
             self.toolbar = toolbar
         }

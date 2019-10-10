@@ -137,7 +137,9 @@ extension PXOneTapInstallmentInfoView {
     func render(_ width: CGFloat) {
         removeAllSubviews()
         setupSlider(width: width)
-        setupFadeImages()
+        if !ThemeManager.shared.isDarkMode() {
+            setupFadeImages()
+        }
         setupChevron()
         setupTitleLabel()
         PXLayout.setHeight(owner: self, height: PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT).isActive = true

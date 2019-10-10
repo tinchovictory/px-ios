@@ -86,10 +86,10 @@
     [advancedConfig setTheme:mpTheme];
 
     // Add ReviewConfirm configuration to advanced config.
-    [advancedConfig setReviewConfirmConfiguration: [self getReviewScreenConfiguration]];
+    // [advancedConfig setReviewConfirmConfiguration: [self getReviewScreenConfiguration]];
 
     // Add ReviewConfirm Dynamic views configuration to advanced config.
-    [advancedConfig setReviewConfirmDynamicViewsConfiguration:[self getReviewScreenDynamicViewsConfigurationObject]];
+    // [advancedConfig setReviewConfirmDynamicViewsConfiguration:[self getReviewScreenDynamicViewsConfigurationObject]];
 
     // Add ReviewConfirm Dynamic View Controller configuration to advanced config.
 //    TestComponent *dynamicViewControllersConfigObject = [self getReviewScreenDynamicViewControllerConfigurationObject];

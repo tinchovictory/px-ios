@@ -40,9 +40,9 @@ class PayerCostRowTableViewCell: UITableViewCell {
         }
         var installmentNumber = String(format: "%i", payerCost.installments)
         installmentNumber = "\(installmentNumber) x "
-        let totalAmount = Utils.getAttributedAmount(payerCost.installmentAmount, thousandSeparator: currency.getThousandsSeparatorOrDefault(), decimalSeparator: currency.getDecimalSeparatorOrDefault(), currencySymbol: currency.getCurrencySymbolOrDefault(), color: UIColor.black, centsFontSize: 14, baselineOffset: 5)
+        let totalAmount = Utils.getAttributedAmount(payerCost.installmentAmount, thousandSeparator: currency.getThousandsSeparatorOrDefault(), decimalSeparator: currency.getDecimalSeparatorOrDefault(), currencySymbol: currency.getCurrencySymbolOrDefault(), color: ThemeManager.shared.boldLabelTintColor(), centsFontSize: 14, baselineOffset: 5)
 
-        let atribute = [NSAttributedString.Key.font: Utils.getFont(size: 20), NSAttributedString.Key.foregroundColor: UIColor.black]
+        let atribute = [NSAttributedString.Key.font: Utils.getFont(size: 20), NSAttributedString.Key.foregroundColor: ThemeManager.shared.boldLabelTintColor()]
         let installmentLabel = NSMutableAttributedString(string: installmentNumber, attributes: atribute)
 
         installmentLabel.append(totalAmount)
@@ -53,7 +53,7 @@ class PayerCostRowTableViewCell: UITableViewCell {
         let lineFrame = CGRect(origin: CGPoint(x: 0, y: Int(height)), size: CGSize(width: width, height: 0.5))
         let line = UIView(frame: lineFrame)
         line.alpha = 0.6
-        line.backgroundColor = UIColor.px_grayLight()
+        line.backgroundColor = ThemeManager.shared.dividingLineColor()
         addSubview(line)
     }
 

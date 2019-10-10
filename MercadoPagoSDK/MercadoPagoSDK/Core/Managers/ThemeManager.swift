@@ -18,7 +18,6 @@ class ThemeManager {
             initialize()
         }
     }
-    
     private var currentTrait: UITraitCollection?
 
     fileprivate var currentStylesheet = MLStyleSheetManager.styleSheet
@@ -26,17 +25,9 @@ class ThemeManager {
     fileprivate var fontLightName: String = ".SFUIDisplay-Light"
     fileprivate var fontSemiBoldName: String = ".SFUIDisplay-SemiBold"
 
-    var navigationControllerMemento: NavigationControllerMemento?
+    private let secondaryDarkModeBackgroundColor: UIColor = #colorLiteral(red: 0.04408342391, green: 0.04382953793, blue: 0.04428381473, alpha: 1)
 
-    private func isDarkMode() -> Bool {
-        guard let supportDark = currentTheme.shouldSupportDarkMode?() else { return false }
-        if #available(iOS 13, *) {
-            if let trait = currentTrait, trait.userInterfaceStyle == .dark {
-                return supportDark
-            }
-        }
-        return false
-    }
+    var navigationControllerMemento: NavigationControllerMemento?
 }
 
 // MARK: - Public methods
@@ -69,10 +60,6 @@ extension ThemeManager {
         }
     }
 
-    func updateTraitCollection(_ trait: UITraitCollection?) {
-        self.currentTrait = trait
-    }
-
     func getCurrentTheme() -> PXTheme {
         return currentTheme
     }
@@ -88,11 +75,27 @@ extension ThemeManager {
     func getSemiBoldFontName() -> String {
         return fontSemiBoldName
     }
+
+    func updateTraitCollection(_ trait: UITraitCollection?) {
+        self.currentTrait = trait
+    }
+
+    func isDarkMode() -> Bool {
+        guard let supportDark = currentTheme.shouldSupportDarkMode?() else { return false }
+        if #available(iOS 13, *) {
+            if let trait = currentTrait, trait.userInterfaceStyle == .dark {
+                return supportDark
+            }
+        }
+        return false
+    }
 }
 
 extension ThemeManager {
-
     func boldLabelTintColor() -> UIColor {
+        if isDarkMode() {
+            return .white
+        }
         return currentStylesheet.blackColor
     }
 
@@ -132,9 +135,6 @@ extension ThemeManager {
     }
 
     func secondaryColor() -> UIColor {
-        if isDarkMode() {
-            return .black
-        }
         return currentStylesheet.secondaryColor
     }
 
@@ -153,37 +153,36 @@ extension ThemeManager {
     func disabledCardGray() -> UIColor {
         return #colorLiteral(red: 0.2862745098, green: 0.2862745098, blue: 0.2862745098, alpha: 1)
     }
+
+    func selectionHoverColor() -> UIColor {
+        if isDarkMode() {
+            return secondaryDarkModeBackgroundColor
+        }
+        return #colorLiteral(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
+    }
+
+    func dividingLineColor() -> UIColor {
+        if isDarkMode() {
+            return #colorLiteral(red: 0.172208488, green: 0.1730124652, blue: 0.174952805, alpha: 1)
+        }
+        return currentStylesheet.midGreyColor
+    }
 }
 
 // MARK: - UI design exceptions
 extension ThemeManager: PXTheme {
-
     func navigationBar() -> PXThemeProperty {
         if isDarkMode() {
-            return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+            return PXThemeProperty(backgroundColor: secondaryDarkModeBackgroundColor, tintColor: .white)
         }
         return currentTheme.navigationBar()
     }
 
     func loadingComponent() -> PXThemeProperty {
         if isDarkMode() {
-            return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+            return PXThemeProperty(backgroundColor: .black, tintColor: .white)
         }
         return currentTheme.loadingComponent()
-    }
-
-    func highlightBackgroundColor() -> UIColor {
-        if isDarkMode() {
-            return .darkGray
-        }
-        return currentTheme.highlightBackgroundColor()
-    }
-
-    func detailedBackgroundColor() -> UIColor {
-        if isDarkMode() {
-             return .darkGray
-         }
-        return currentTheme.detailedBackgroundColor()
     }
 
     func statusBarStyle() -> UIStatusBarStyle {
@@ -195,8 +194,8 @@ extension ThemeManager: PXTheme {
 
     func getMainColor() -> UIColor {
         if isDarkMode() {
-            return .black
-         }
+            return secondaryDarkModeBackgroundColor
+        }
         if let theme = currentTheme as? PXDefaultTheme {
             return theme.primaryColor
         }
@@ -229,21 +228,51 @@ extension ThemeManager: PXTheme {
         if let highlightNavigationTint = currentTheme.highlightNavigationTintColor?() {
             return highlightNavigationTint
         }
-
         return boldLabelTintColor()
     }
 
     func modalComponent() -> PXThemeProperty {
         if isDarkMode() {
-             return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
-         }
+            return PXThemeProperty(backgroundColor: UIColor.black, tintColor: .white)
+        }
         return PXThemeProperty(backgroundColor: currentStylesheet.modalBackgroundColor, tintColor: currentStylesheet.modalTintColor)
+    }
+
+    func secondaryBackgroundColor() -> UIColor {
+        if isDarkMode() {
+            return secondaryDarkModeBackgroundColor
+        }
+        return .white
+    }
+
+    func highlightBackgroundColor() -> UIColor {
+        if isDarkMode() {
+            return secondaryDarkModeBackgroundColor
+        }
+        return currentTheme.highlightBackgroundColor()
+    }
+
+    func detailedBackgroundColor() -> UIColor {
+        if isDarkMode() {
+            return .black
+        }
+        return currentTheme.detailedBackgroundColor()
+    }
+}
+
+// MARK: - Keyboard & Toolbar
+extension ThemeManager {
+    func getKeyboardAppearance() -> UIKeyboardAppearance {
+        return isDarkMode() ? UIKeyboardAppearance.dark : UIKeyboardAppearance.light
+    }
+
+    func getToolbarStyle() -> UIBarStyle {
+        return isDarkMode() ? UIBarStyle.black : UIBarStyle.default
     }
 }
 
 // MARK: - UI Theme customization
 extension ThemeManager {
-
     fileprivate func customizeNavigationBar(theme: PXTheme) {
         UINavigationBar.appearance(whenContainedInInstancesOf: [MercadoPagoUIViewController.self]).tintColor = theme.navigationBar().tintColor
         UINavigationBar.appearance(whenContainedInInstancesOf: [MercadoPagoUIViewController.self]).backgroundColor = theme.navigationBar().backgroundColor
@@ -253,7 +282,7 @@ extension ThemeManager {
 
     fileprivate func customizeToolBar() {
         PXToolbar.appearance().tintColor = getAccentColor()
-        PXToolbar.appearance().backgroundColor = lightTintColor()
+        PXToolbar.appearance().backgroundColor = isDarkMode() ? secondaryDarkModeBackgroundColor : lightTintColor()
         PXToolbar.appearance().alpha = 1
     }
 }

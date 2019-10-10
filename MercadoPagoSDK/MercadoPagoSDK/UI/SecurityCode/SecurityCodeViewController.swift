@@ -52,7 +52,7 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
 
         securityCodeTextField.autocorrectionType = UITextAutocorrectionType.no
         securityCodeTextField.keyboardType = UIKeyboardType.numberPad
-        securityCodeTextField.keyboardAppearance = .light
+        securityCodeTextField.keyboardAppearance = ThemeManager.shared.getKeyboardAppearance()
         securityCodeTextField.addTarget(self, action: #selector(SecurityCodeViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         securityCodeTextField.delegate = self
         completeCvvLabel()
@@ -111,7 +111,7 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
         let frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.size.width, height: 44)
         let toolbar = PXToolbar(frame: frame)
 
-        toolbar.barStyle = UIBarStyle.default
+        toolbar.barStyle = ThemeManager.shared.getToolbarStyle()
         toolbar.isUserInteractionEnabled = true
 
         let buttonNext = UIBarButtonItem(title: "card_form_next_button".localized_beta, style: .plain, target: self, action: #selector(self.continueAction))

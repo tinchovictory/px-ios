@@ -204,6 +204,8 @@ class PayerInfoViewController: MercadoPagoUIViewController, UITextFieldDelegate,
 
         toolbar.items = [flexibleSpace, buttonPrev, flexibleSpace, buttonNext, flexibleSpace]
 
+        toolbar.barStyle = ThemeManager.shared.getToolbarStyle()
+
         return toolbar
     }
 

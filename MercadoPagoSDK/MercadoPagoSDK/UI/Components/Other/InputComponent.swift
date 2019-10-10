@@ -135,6 +135,7 @@ class CompositeInputComponent: SimpleInputComponent, UIPickerViewDataSource, UIP
         if let placeholder = placeholder {
             inputTextField.placeholder = placeholder
         }
+        inputTextField.keyboardAppearance = ThemeManager.shared.getKeyboardAppearance()
         self.addSubview(dropDownTextField)
         self.addSubview(inputTextField)
         self.frame.size.height = getHeight()
@@ -162,6 +163,7 @@ class CompositeInputComponent: SimpleInputComponent, UIPickerViewDataSource, UIP
         doneButton.setTitleTextAttributes([NSAttributedString.Key.font: font], for: UIControl.State())
         toolBar.setItems([spaceButton, doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
+        toolBar.barStyle = ThemeManager.shared.getToolbarStyle()
         return toolBar
     }
 

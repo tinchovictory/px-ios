@@ -140,6 +140,8 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
         toolBar.setItems([spaceButton, doneButton], animated: false)
         toolBar.isUserInteractionEnabled = true
 
+        toolbar?.barStyle = ThemeManager.shared.getToolbarStyle()
+
         textField.inputView = pickerView
         textField.inputAccessoryView = toolBar
     }
@@ -330,6 +332,7 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
 // MARK: Identification type keyboard fix
 extension IdentificationViewController {
     private func updateKeyboard() {
+        numberTextField.keyboardAppearance = ThemeManager.shared.getKeyboardAppearance()
         guard let identificationType = identificationType else {
             numberTextField.keyboardType = .default
             return

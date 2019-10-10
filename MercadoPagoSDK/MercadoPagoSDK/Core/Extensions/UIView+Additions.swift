@@ -13,7 +13,7 @@ internal extension UIView {
         let lineFrame = CGRect(origin: CGPoint(x: horizontalMargin, y: 0), size: CGSize(width: width, height: height))
         let line = UIView(frame: lineFrame)
         line.alpha = 0.6
-        line.backgroundColor = UIColor.UIColorFromRGB(0xEEEEEE)
+        line.backgroundColor = ThemeManager.shared.dividingLineColor()
         addSubview(line)
     }
 
@@ -40,7 +40,11 @@ internal extension UIView {
     @objc func addSeparatorLineToBottom(height: CGFloat, horizontalMarginPercentage: CGFloat = 100, color: UIColor = .UIColorFromRGB(0xEEEEEE)) {
         let line = UIView()
         line.translatesAutoresizingMaskIntoConstraints = false
-        line.backgroundColor = color
+        if ThemeManager.shared.isDarkMode() {
+            line.backgroundColor = ThemeManager.shared.dividingLineColor()
+        } else {
+            line.backgroundColor = color
+        }
         self.addSubview(line)
         PXLayout.pinBottom(view: line).isActive = true
         PXLayout.matchWidth(ofView: line, withPercentage: horizontalMarginPercentage).isActive = true
@@ -53,14 +57,18 @@ internal extension UIView {
         let lineFrame = CGRect(origin: CGPoint(x: horizontalMargin, y: posY), size: CGSize(width: width, height: height))
         let line = UIView(frame: lineFrame)
         line.alpha = 0.6
-        line.backgroundColor = UIColor(red: 0.00, green: 0.00, blue: 0.00, alpha: 0.4)
+        line.backgroundColor = ThemeManager.shared.dividingLineColor()
         addSubview(line)
     }
 
     @objc func addLine(yCoordinate: CGFloat, height: CGFloat, horizontalMarginPercentage: CGFloat = 100, color: UIColor = .UIColorFromRGB(0xEEEEEE)) {
         let line = UIView()
         line.translatesAutoresizingMaskIntoConstraints = false
-        line.backgroundColor = color
+        if ThemeManager.shared.isDarkMode() {
+            line.backgroundColor = ThemeManager.shared.dividingLineColor()
+        } else {
+            line.backgroundColor = color
+        }
         self.addSubview(line)
         PXLayout.pinBottom(view: line, withMargin: yCoordinate).isActive = true
         PXLayout.matchWidth(ofView: line, withPercentage: horizontalMarginPercentage).isActive = true

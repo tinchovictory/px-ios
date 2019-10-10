@@ -154,7 +154,7 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
             let titleCell = tableView.dequeueReusableCell(withIdentifier: "titleNib", for: indexPath as IndexPath) as! AdditionalStepTitleTableViewCell
             titleCell.selectionStyle = .none
             titleCell.setTitle(string: self.getNavigationBarTitle())
-            titleCell.backgroundColor = UIColor.primaryColor()
+            titleCell.backgroundColor = ThemeManager.shared.getMainColor()
             self.titleCell = titleCell
 
             return titleCell
@@ -178,7 +178,7 @@ extension AdditionalStepViewController: UITableViewDelegate, UITableViewDataSour
 
         } else if viewModel.isBankInterestCellFor(indexPath: indexPath) {
             let bankInsterestCell = tableView.dequeueReusableCell(withIdentifier: "bankInsterestNib", for: indexPath as IndexPath) as! BankInsterestTableViewCell
-            bankInsterestCell.backgroundColor = UIColor.primaryColor()
+            bankInsterestCell.backgroundColor = ThemeManager.shared.getMainColor()
             return bankInsterestCell
 
         } else if viewModel.isBodyCellFor(indexPath: indexPath) {

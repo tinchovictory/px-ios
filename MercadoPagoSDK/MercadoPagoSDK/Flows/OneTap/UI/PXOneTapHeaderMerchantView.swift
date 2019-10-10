@@ -69,7 +69,7 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         titleLabel.numberOfLines = 2
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.font = Utils.getSemiBoldFont(size: PXLayout.M_FONT)
-        titleLabel.textColor = ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
+        titleLabel.textColor = getTextColor()
         titleLabel.textAlignment = .center
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         containerView.addSubview(titleLabel)
@@ -86,7 +86,7 @@ class PXOneTapHeaderMerchantView: PXComponentView {
             subTitleLabel.lineBreakMode = .byTruncatingTail
             subTitleLabel.setContentHuggingPriority(.defaultLow, for: .vertical)
             subTitleLabel.font = Utils.getFont(size: PXLayout.XXXS_FONT)
-            subTitleLabel.textColor = ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
+            subTitleLabel.textColor = getTextColor()
             subTitleLabel.textAlignment = .center
             containerView.addSubview(subTitleLabel)
             layout.makeConstraints(containerView, imageContainerView, titleLabel, subTitleLabel)
@@ -99,6 +99,13 @@ class PXOneTapHeaderMerchantView: PXComponentView {
         }
 
         isUserInteractionEnabled = true
+    }
+
+    private func getTextColor() -> UIColor {
+        if ThemeManager.shared.isDarkMode() {
+            return .white
+        }
+        return ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
     }
 }
 
