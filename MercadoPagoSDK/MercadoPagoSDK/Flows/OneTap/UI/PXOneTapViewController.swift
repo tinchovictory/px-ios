@@ -525,6 +525,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
         installmentsSelectorView.expand(animator: pxAnimator) {
             self.installmentInfoRow?.enableTap()
         }
+        installmentsSelectorView.tableView.reloadData()
     }
 }
 
