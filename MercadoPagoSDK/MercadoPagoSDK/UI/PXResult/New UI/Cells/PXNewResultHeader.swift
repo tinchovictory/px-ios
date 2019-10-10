@@ -142,7 +142,7 @@ class PXNewResultHeader: UIView {
         circleImage.enableFadeIn()
         circleImage.contentMode = .scaleAspectFill
         circleImage.image = image
-        circleImage.backgroundColor = .clear
+        circleImage.backgroundColor = .pxWhite
         PXLayout.setHeight(owner: circleImage, height: IMAGE_WIDTH).isActive = true
         PXLayout.setWidth(owner: circleImage, width: IMAGE_HEIGHT).isActive = true
         return circleImage
