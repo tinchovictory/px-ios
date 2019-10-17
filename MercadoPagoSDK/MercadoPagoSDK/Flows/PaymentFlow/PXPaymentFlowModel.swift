@@ -20,14 +20,12 @@ internal final class PXPaymentFlowModel: NSObject {
     var pointsAndDiscounts: PXPointsAndDiscounts?
     var businessResult: PXBusinessResult?
 
-    let escManager: MercadoPagoESC?
     var productId: String?
     var shouldSearchPointsAndDiscounts: Bool = true
 
-    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?) {
+    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter) {
         self.paymentPlugin = paymentPlugin
         self.mercadoPagoServicesAdapter = mercadoPagoServicesAdapter
-        self.escManager = escManager
     }
 
     enum Steps: String {
@@ -152,35 +150,38 @@ internal extension PXPaymentFlowModel {
         guard let token = amountHelper?.getPaymentData().getToken() else {
             return
         }
-        let isApprovedPayment: Bool = status == PXPaymentStatus.APPROVED.rawValue
-
-        if !isApprovedPayment {
+        let escModule = PXConfiguratorManager.escProtocol
+        switch status {
+        case PXPaymentStatus.APPROVED.rawValue:
+            if let esc = token.esc {
+                // If payment was approved
+                if token.hasCardId() {
+                    escModule.saveESC(config: PXConfiguratorManager.escConfig, cardId: token.cardId, esc: esc)
+                } else {
+                    escModule.saveESC(config: PXConfiguratorManager.escConfig, firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits, esc: esc)
+                }
+            }
+            break
+        default:
             if token.hasCardId() {
                 guard let errorPaymentType = errorPaymentType else {
-                    escManager?.deleteESC(cardId: token.cardId)
+                    escModule.deleteESC(config: PXConfiguratorManager.escConfig, cardId: token.cardId)
                     return
                 }
                 // If it has error Payment Type, check if the error was from a card
                 if let isCard = PXPaymentTypes(rawValue: errorPaymentType)?.isCard(), isCard {
-                    escManager?.deleteESC(cardId: token.cardId)
+                    escModule.deleteESC(config: PXConfiguratorManager.escConfig, cardId: token.cardId)
                 }
             } else {
                 // Case if it's a new card
                 guard let errorPaymentType = errorPaymentType else {
-                    escManager?.deleteESC(firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits)
+                    escModule.deleteESC(config: PXConfiguratorManager.escConfig, firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits)
                     return
                 }
                 // If it has error Payment Type, check if the error was from a card
                 if let isCard = PXPaymentTypes(rawValue: errorPaymentType)?.isCard(), isCard {
-                    escManager?.deleteESC(firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits)
+                    escModule.deleteESC(config: PXConfiguratorManager.escConfig, firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits)
                 }
-            }
-        } else if let esc = token.esc {
-            // If payment was approved
-            if token.hasCardId() {
-                escManager?.saveESC(cardId: token.cardId, esc: esc)
-            } else {
-                escManager?.saveESC(firstSixDigits: token.firstSixDigits, lastFourDigits: token.lastFourDigits, esc: esc)
             }
         }
     }

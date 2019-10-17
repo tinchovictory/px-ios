@@ -18,10 +18,9 @@ Pod::Spec.new do |s|
     s.dependency 'MLCardDrawer', '~> 1.0'
     s.dependency 'MLBusinessComponents', '~> 1.0'
   end
-  
+
   s.subspec 'ESC' do |esc|
     esc.dependency 'MercadoPagoSDKV4/Default'
-    esc.dependency 'MLESCManager', '~> 2.0.3' 
     esc.pod_target_xcconfig = {
       'OTHER_SWIFT_FLAGS[config=Debug]' => '-D PX_PRIVATE_POD',
       'OTHER_SWIFT_FLAGS[config=Release]' => '-D PX_PRIVATE_POD',

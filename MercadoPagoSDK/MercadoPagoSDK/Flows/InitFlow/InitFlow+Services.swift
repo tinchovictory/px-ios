@@ -66,7 +66,8 @@ extension InitFlow {
             pluginIds.append(plugin.getId())
         }
 
-        let cardIdsWithEsc = model.getESCService()?.getSavedCardIds()
+        let escModule = PXConfiguratorManager.escProtocol
+        let cardIdsWithEsc = escModule.getSavedCardIds(config: PXConfiguratorManager.escConfig)
         let exclusions: MercadoPagoServicesAdapter.PaymentSearchExclusions = (model.getExcludedPaymentTypesIds(), model.getExcludedPaymentMethodsIds())
         let oneTapInfo: MercadoPagoServicesAdapter.PaymentSearchOneTapInfo = (cardIdsWithEsc, pluginIds)
 
