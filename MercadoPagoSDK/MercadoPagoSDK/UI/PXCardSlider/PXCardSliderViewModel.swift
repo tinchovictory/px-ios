@@ -26,6 +26,8 @@ final class PXCardSliderViewModel {
     var isCredits: Bool {
         return self.paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
     }
+    var issuerImageUrl: String?
+    var paymentMethodImageUrl: String?
 
     init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: CreditsViewModel? = nil, isDisabled: Bool) {
         self.paymentMethodId = paymentMethodId
@@ -43,6 +45,15 @@ final class PXCardSliderViewModel {
     }
 }
 
+// MARK: Setters.
+extension PXCardSliderViewModel {
+    func setRemoteImages(paymentMethodUrl: String?, issuerUrl: String?) {
+        self.paymentMethodImageUrl = paymentMethodUrl
+        self.issuerImageUrl = issuerUrl
+    }
+}
+
+// MARK: Getters.
 extension PXCardSliderViewModel: PaymentMethodOption {
     func getPaymentType() -> String {
         return paymentTypeId ?? ""

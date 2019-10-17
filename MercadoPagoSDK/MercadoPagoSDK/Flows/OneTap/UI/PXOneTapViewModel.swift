@@ -105,6 +105,9 @@ extension PXOneTapViewModel {
                     let isDisabled = self.disabledOption?.getDisabledCardId() == targetCardData.cardId
                     let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, targetIssuerId, templateCard, cardData, payerCost, selectedPayerCost, targetCardData.cardId, showArrow, amountConfiguration: amountConfiguration, isDisabled: isDisabled)
 
+                    // Set remote payment method and issuer images
+                    viewModelCard.setRemoteImages(paymentMethodUrl: targetCardData.cardUI?.paymentMethodImageUrl, issuerUrl: targetCardData.cardUI?.issuerImageUrl)
+
                     viewModelCard.displayMessage = displayMessage
                     sliderModel.append(viewModelCard)
                 }
