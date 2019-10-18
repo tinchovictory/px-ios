@@ -1,3 +1,11 @@
+# v4.25
+🚀Private Release - 4.25 🚀
+MercadoPagoSDKV4 - Private Version
+- Remove ESCManager files and pod dependency
+- Change ESCManager for PXESCProtocol
+- Replace UIWebView with WKWebView
+- Fix bug rut Chile
+
 # v4.24
 🚀Private Release - 4.24 🚀
 MercadoPagoSDKV4 - Private Version
