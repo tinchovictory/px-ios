@@ -28,11 +28,7 @@ struct MLBusinessAppDataService {
 // MARK: Public methods.
 extension MLBusinessAppDataService {
     func getAppIdentifier() -> AppIdentifier {
-        var appIdentifier: AppIdentifier = .other
-        if isMeliOrMp() {
-            appIdentifier = isMeli() ? .meli : .mp
-        }
-        return appIdentifier
+        return isMp() ? .mp : .meli
     }
 
     func getAppVersion() -> String {
@@ -46,10 +42,6 @@ extension MLBusinessAppDataService {
 
     func isMp() -> Bool {
         return getAppName().contains(mpName)
-    }
-
-    func isMeliOrMp() -> Bool {
-        return isMeli() || isMp()
     }
 
     func isMeliAlreadyInstalled() -> Bool {
