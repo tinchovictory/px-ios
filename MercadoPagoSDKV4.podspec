@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
     s.dependency 'MLBusinessComponents', '~> 1.0'
   end
   
+  
   s.subspec 'ESC' do |esc|
     esc.dependency 'MercadoPagoSDKV4/Default'
     esc.dependency 'MLESCManager', '~> 2.0.3' 
