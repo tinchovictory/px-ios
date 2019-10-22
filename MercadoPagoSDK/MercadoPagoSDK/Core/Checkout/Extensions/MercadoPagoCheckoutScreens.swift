@@ -220,12 +220,7 @@ extension MercadoPagoCheckout {
     }
 
         let resultViewModel = self.viewModel.resultViewModel()
-        if self.viewModel.paymentResult?.isApproved() ?? false || viewModel.instructionsInfo != nil {
-            congratsViewController = PXNewResultViewController(viewModel: resultViewModel, callback: congratsViewControllerCallback)
-        } else {
-            congratsViewController = PXResultViewController(viewModel: resultViewModel, callback: congratsViewControllerCallback)
-        }
-
+        congratsViewController = PXNewResultViewController(viewModel: resultViewModel, callback: congratsViewControllerCallback)
         viewModel.pxNavigationHandler.pushViewController(viewController: congratsViewController, animated: false)
     }
 
@@ -241,12 +236,7 @@ extension MercadoPagoCheckout {
 
         let viewModel = PXBusinessResultViewModel(businessResult: businessResult, paymentData: self.viewModel.paymentData, amountHelper: self.viewModel.amountHelper, pointsAndDiscounts: self.viewModel.pointsAndDiscounts)
 
-        if businessResult.isApproved() {
-            congratsViewController = PXNewResultViewController(viewModel: viewModel, callback: congratsViewControllerCallback)
-        } else {
-            congratsViewController = PXResultViewController(viewModel: viewModel, callback: congratsViewControllerCallback)
-        }
-
+        congratsViewController = PXNewResultViewController(viewModel: viewModel, callback: congratsViewControllerCallback)
         self.viewModel.pxNavigationHandler.pushViewController(viewController: congratsViewController, animated: false)
     }
 
