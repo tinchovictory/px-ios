@@ -17,7 +17,7 @@ extension MercadoPagoCheckoutViewModel {
         initFlowProperties.paymentData = self.paymentData
         initFlowProperties.paymentMethodPlugins = self.paymentMethodPlugins
         initFlowProperties.paymentPlugin = self.paymentPlugin
-        initFlowProperties.paymentMethodSearchResult = self.search
+        initFlowProperties.paymentMethodSearchResult = search
         initFlowProperties.chargeRules = self.chargeRules
         initFlowProperties.serviceAdapter = self.mercadoPagoServicesAdapter
         initFlowProperties.advancedConfig = self.getAdvancedConfiguration()
@@ -28,12 +28,12 @@ extension MercadoPagoCheckoutViewModel {
         configureBiometricModule()
 
         // Create init flow.
-        initFlow = InitFlow(flowProperties: initFlowProperties, finishCallback: { [weak self] (checkoutPreference, paymentMethodSearchResponse)  in
+        initFlow = InitFlow(flowProperties: initFlowProperties, finishCallback: { [weak self] (checkoutPreference, initSearch)  in
             self?.checkoutPreference = checkoutPreference
-            self?.updateCheckoutModel(paymentMethodSearch: paymentMethodSearchResponse)
+            self?.updateCheckoutModel(paymentMethodSearch: initSearch)
             PXTrackingStore.sharedInstance.addData(forKey: PXTrackingStore.cardIdsESC, value: self?.getCardsIdsWithESC() ?? [])
 
-            let selectedDiscountConfigurartion = paymentMethodSearchResponse.selectedDiscountConfiguration
+            let selectedDiscountConfigurartion = initSearch.selectedDiscountConfiguration
             self?.attemptToApplyDiscount(selectedDiscountConfigurartion)
 
             self?.initFlowProtocol?.didFinishInitFlow()

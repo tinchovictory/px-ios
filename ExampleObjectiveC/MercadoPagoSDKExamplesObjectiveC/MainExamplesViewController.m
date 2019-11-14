@@ -190,11 +190,11 @@
 
 -(void)addCharges {
     NSMutableArray* chargesArray = [[NSMutableArray alloc] init];
-    PXPaymentTypeChargeRule* chargeCredit = [[PXPaymentTypeChargeRule alloc] initWithPaymentMethdodId:@"payment_method_plugin" amountCharge:10.5];
+    PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentMethdodId:@"account_money" amountCharge:20];
     PXPaymentTypeChargeRule* chargeDebit = [[PXPaymentTypeChargeRule alloc] initWithPaymentMethdodId:@"debit_card" amountCharge:8];
-    [chargesArray addObject:chargeCredit];
+    [chargesArray addObject:chargeAccountMoney];
     [chargesArray addObject:chargeDebit];
-    // [self.paymentConfig addChargeRulesWithCharges:chargesArray];
+    [self.paymentConfig addChargeRulesWithCharges:chargesArray];
 }
 
 -(void)setCheckoutPref_CreditCardNotExcluded {
