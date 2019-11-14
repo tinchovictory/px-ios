@@ -1,3 +1,8 @@
+# v4.26
+🚀Private Release - 4.26 🚀
+MercadoPagoSDKV4 - Private Version
+- New init endpoint
+
 # v4.24.3
 🚀Private Release - 4.24.3 🚀
 MercadoPagoSDKV4 - Private Version
