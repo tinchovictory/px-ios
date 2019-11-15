@@ -8,7 +8,7 @@
 import Foundation
 
 struct PXVariant: Decodable {
-    let id: String
+    let id: Int
     let name: String
     let availableFeatures: [PXAvailableFeatures]
 

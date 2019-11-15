@@ -8,7 +8,7 @@
 import Foundation
 
 struct PXExperiment: Decodable {
-    let id: String
+    let id: Int
     let name: String
     let variant: PXVariant
 }
