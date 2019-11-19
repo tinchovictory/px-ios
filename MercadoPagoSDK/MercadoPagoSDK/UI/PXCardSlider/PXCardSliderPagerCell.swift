@@ -50,18 +50,19 @@ extension PXCardSliderPagerCell {
         addWarningBadge(isDisabled)
     }
 
-    func renderEmptyCard(cardSize: CGSize) {
+    func renderEmptyCard(title: PXText? = nil, cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
         containerView.backgroundColor = .clear
-        cardHeader = MLCardDrawerController(EmptyCard(), PXCardDataFactory(), false)
+        let emptyCard = EmptyCard(title: title)
+        cardHeader = MLCardDrawerController(emptyCard, PXCardDataFactory(), false)
         cardHeader?.view.frame = CGRect(origin: CGPoint.zero, size: cardSize)
         cardHeader?.animated(false)
         cardHeader?.show()
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            EmptyCard.render(containerView: containerView)
+            emptyCard.render(containerView: containerView)
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }

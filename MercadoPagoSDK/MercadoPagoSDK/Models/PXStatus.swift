@@ -7,7 +7,7 @@
 
 import Foundation
 
-open class PXStatus: NSObject, Codable {
+public struct PXStatus: Codable {
     let mainMessage: PXText?
     let secondaryMessage: PXText?
     let enabled: Bool
