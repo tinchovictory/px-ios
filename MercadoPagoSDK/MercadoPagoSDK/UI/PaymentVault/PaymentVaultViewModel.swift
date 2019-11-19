@@ -15,7 +15,6 @@ class PaymentVaultViewModel: NSObject {
     var email: String
     var paymentMethodOptions: [PaymentMethodOption]
     var customerPaymentOptions: [CustomerPaymentMethod]?
-    var paymentMethodPlugins = [PXPaymentMethodPlugin]()
     var paymentMethods: [PXPaymentMethod]!
     var defaultPaymentOption: PXPaymentMethodSearchItem?
     var disabledOption: PXDisabledOption?
@@ -30,13 +29,12 @@ class PaymentVaultViewModel: NSObject {
 
     internal var isRoot = true
 
-    init(amountHelper: PXAmountHelper, paymentMethodOptions: [PaymentMethodOption], customerPaymentOptions: [CustomerPaymentMethod]?, paymentMethodPlugins: [PXPaymentMethodPlugin], paymentMethods: [PXPaymentMethod], groupName: String? = nil, isRoot: Bool, email: String, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, callbackCancel: (() -> Void)? = nil, advancedConfiguration: PXAdvancedConfiguration, disabledOption: PXDisabledOption?) {
+    init(amountHelper: PXAmountHelper, paymentMethodOptions: [PaymentMethodOption], customerPaymentOptions: [CustomerPaymentMethod]?, paymentMethods: [PXPaymentMethod], groupName: String? = nil, isRoot: Bool, email: String, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, callbackCancel: (() -> Void)? = nil, advancedConfiguration: PXAdvancedConfiguration, disabledOption: PXDisabledOption?) {
         self.amountHelper = amountHelper
         self.email = email
         self.groupName = groupName
         self.paymentMethodOptions = paymentMethodOptions
         self.customerPaymentOptions = customerPaymentOptions
-        self.paymentMethodPlugins = paymentMethodPlugins
         self.paymentMethods = paymentMethods
         self.isRoot = isRoot
         self.mercadoPagoServicesAdapter = mercadoPagoServicesAdapter
@@ -49,10 +47,6 @@ class PaymentVaultViewModel: NSObject {
 
 // MARK: Logic
 extension PaymentVaultViewModel {
-
-    func hasPaymentMethodsPlugins() -> Bool {
-        return isRoot && !paymentMethodPlugins.isEmpty
-    }
 
     func shouldGetCustomerCardsInfo() -> Bool {
        return false
@@ -121,8 +115,6 @@ extension PaymentVaultViewModel {
         var customerPaymentOptionsDrawable = [PaymentOptionDrawable]()
         var paymentOptionsDrawable = [PaymentOptionDrawable]()
 
-        buildTopBottomPaymentPluginsAsDrawable(&topPluginsDrawable, &bottomPluginsDrawable)
-
         // Populate customer payment options.
         customerPaymentOptionsDrawable = buildCustomerPaymentOptionsAsDrawable()
 
@@ -134,19 +126,6 @@ extension PaymentVaultViewModel {
         displayItems.append(contentsOf: customerPaymentOptionsDrawable)
         displayItems.append(contentsOf: paymentOptionsDrawable)
         displayItems.append(contentsOf: bottomPluginsDrawable)
-    }
-
-    fileprivate func buildTopBottomPaymentPluginsAsDrawable(_ topPluginsDrawable: inout [PaymentOptionDrawable], _ bottomPluginsDrawable: inout [PaymentOptionDrawable]) {
-        // Populate payments methods plugins.
-        if hasPaymentMethodsPlugins() {
-            for plugin in paymentMethodPlugins {
-                if plugin.displayOrder == .TOP {
-                    topPluginsDrawable.append(plugin)
-                } else {
-                    bottomPluginsDrawable.append(plugin)
-                }
-            }
-        }
     }
 
     fileprivate func buildCustomerPaymentOptionsAsDrawable() -> [PaymentOptionDrawable] {
@@ -186,13 +165,6 @@ extension PaymentVaultViewModel {
 
 // MARK: Counters
 extension PaymentVaultViewModel {
-
-    func getPaymentMethodPluginCount() -> Int {
-        if !Array.isNullOrEmpty(paymentMethodPlugins) && self.isRoot {
-            return paymentMethodPlugins.count
-        }
-        return 0
-    }
 
     func getDisplayedPaymentMethodsCount() -> Int {
         return displayItems.count

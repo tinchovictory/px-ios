@@ -14,7 +14,6 @@ final class PXOneTapViewModel: PXReviewViewModel {
     // Publics
     var expressData: [PXOneTapDto]?
     var paymentMethods: [PXPaymentMethod] = [PXPaymentMethod]()
-    var paymentMethodPlugins: [PXPaymentMethodPlugin]?
     var items: [PXItem] = [PXItem]()
 
     var splitPaymentEnabled: Bool = false
@@ -271,9 +270,6 @@ extension PXOneTapViewModel {
     }
 
     func getPaymentMethod(targetId: String) -> PXPaymentMethod? {
-        if let plugins = paymentMethodPlugins, let pluginsPms = plugins.filter({ return $0.getId() == targetId }).first {
-            return pluginsPms.toPaymentMethod()
-        }
         return paymentMethods.filter({ return $0.id == targetId }).first
     }
 

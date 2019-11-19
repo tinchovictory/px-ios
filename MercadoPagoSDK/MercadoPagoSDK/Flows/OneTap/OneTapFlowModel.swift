@@ -116,7 +116,6 @@ internal extension OneTapFlowModel {
         viewModel.expressData = search.oneTap
         viewModel.paymentMethods = search.availablePaymentMethods
         viewModel.items = checkoutPreference.items
-        viewModel.paymentMethodPlugins = paymentMethodPlugins
         viewModel.additionalInfoSummary = checkoutPreference.pxAdditionalInfo?.pxSummary
         return viewModel
     }
