@@ -15,7 +15,6 @@ class PXCardSliderPagerCell: FSPagerViewCell {
 
     private lazy var cornerRadius: CGFloat = 11
     private var cardHeader: MLCardDrawerController?
-    private var warningBadgeIcon: UIView!
 
     @IBOutlet weak var containerView: UIView!
 
@@ -47,7 +46,6 @@ extension PXCardSliderPagerCell {
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
-        addWarningBadge(isDisabled)
     }
 
     func renderEmptyCard(title: PXText? = nil, cardSize: CGSize) {
@@ -84,7 +82,6 @@ extension PXCardSliderPagerCell {
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
-        addWarningBadge(isDisabled)
     }
 
 
@@ -109,19 +106,6 @@ extension PXCardSliderPagerCell {
             consumerCreditCard.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
-        }
-        addWarningBadge(isDisabled)
-    }
-
-    func addWarningBadge(_ isDisabled: Bool) {
-        if isDisabled {
-            let image = ResourceManager.shared.getImage("warning_badge")
-            warningBadgeIcon = UIImageView(image: image)
-            containerView.insertSubview(warningBadgeIcon, at: 10)
-            PXLayout.setHeight(owner: warningBadgeIcon, height: 60).isActive = true
-            PXLayout.setWidth(owner: warningBadgeIcon, width: 60).isActive = true
-            PXLayout.pinTop(view: warningBadgeIcon, withMargin: -28).isActive = true
-            PXLayout.pinRight(view: warningBadgeIcon, withMargin: PXLayout.S_MARGIN).isActive = true
         }
     }
 
