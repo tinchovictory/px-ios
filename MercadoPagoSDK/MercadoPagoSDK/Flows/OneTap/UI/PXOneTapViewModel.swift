@@ -51,7 +51,7 @@ extension PXOneTapViewModel {
 
                 //Check if AC is disabled after payment
                 let isDisabled = self.disabledOption?.isAccountMoneyDisabled() ?? false
-                statusConfig = isDisabled ? getDisabledOptionConfig(isAccountMoney: true) : statusConfig
+                statusConfig = isDisabled ? getDisabledOptionStatus(isAccountMoney: true) : statusConfig
 
                 let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", AccountMoneyCard(), cardData, [PXPayerCost](), nil, accountMoney.getId(), false, amountConfiguration: amountConfiguration, status: statusConfig)
                 viewModelCard.setAccountMoney(accountMoneyBalance: accountMoney.availableBalance)
@@ -115,7 +115,7 @@ extension PXOneTapViewModel {
 
                     //Check if card is disabled after payment
                     let isDisabled = self.disabledOption?.getDisabledCardId() == targetCardData.cardId
-                    statusConfig = isDisabled ? getDisabledOptionConfig(isAccountMoney: false) : statusConfig
+                    statusConfig = isDisabled ? getDisabledOptionStatus(isAccountMoney: false) : statusConfig
 
                     let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, targetIssuerId, templateCard, cardData, payerCost, selectedPayerCost, targetCardData.cardId, showArrow, amountConfiguration: amountConfiguration, status: statusConfig)
 
@@ -349,7 +349,7 @@ extension PXOneTapViewModel {
         return NSAttributedString(string: amount, attributes: attributes)
     }
 
-    func getDisabledOptionConfig(isAccountMoney: Bool) -> PXStatus {
+    func getDisabledOptionStatus(isAccountMoney: Bool) -> PXStatus {
         let amDisclaimer = "disabled_disclaimer_am"
         let cardDisclaimer = "disabled_disclaimer_am"
         let mainMessageString = isAccountMoney ? amDisclaimer.localized_beta : cardDisclaimer.localized_beta
