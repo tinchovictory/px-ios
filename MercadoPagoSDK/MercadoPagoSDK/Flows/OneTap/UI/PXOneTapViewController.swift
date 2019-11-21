@@ -392,6 +392,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
         let shouldDisplay = validData && targetModel.status.enabled
         if shouldDisplay {
             displayCard(targetModel: targetModel)
+            loadingButtonComponent?.setEnabled()
         } else {
             loadingButtonComponent?.setDisabled()
             headerView?.updateModel(viewModel.getHeaderViewModel(selectedCard: nil))
