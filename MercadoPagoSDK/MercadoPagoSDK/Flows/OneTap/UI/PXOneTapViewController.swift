@@ -424,8 +424,12 @@ extension PXOneTapViewController: PXCardSliderProtocol {
         }
     }
 
-    func disabledCardDidTap(isAccountMoney: Bool) {
-        let vc = PXDisabledViewController(isAccountMoney: isAccountMoney)
+    func disabledCardDidTap(status: PXStatus) {
+        showDisabledCardModal(status: status)
+    }
+
+    func showDisabledCardModal(status: PXStatus) {
+        let vc = PXDisabledViewController(isAccountMoney: false)
         PXComponentFactory.Modal.show(viewController: vc, title: nil)
     }
 
@@ -444,6 +448,10 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
 // MARK: Installment Row Info delegate.
 extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapInstallmentsSelectorProtocol {
+    func disabledCardTapped(status: PXStatus) {
+        showDisabledCardModal(status: status)
+    }
+
     func payerCostSelected(_ payerCost: PXPayerCost) {
         // Update cardSliderViewModel
         if let infoRow = installmentInfoRow, viewModel.updateCardSliderViewModel(newPayerCost: payerCost, forIndex: infoRow.getActiveRowIndex()) {

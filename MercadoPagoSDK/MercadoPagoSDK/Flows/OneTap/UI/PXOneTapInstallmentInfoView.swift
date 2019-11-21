@@ -83,6 +83,19 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         PXLayout.pinRight(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
         PXLayout.centerVertically(view: label).isActive = true
         PXLayout.matchHeight(ofView: label).isActive = true
+
+        if !itemModel.status.enabled {
+            let helperIcon = ResourceManager.shared.getImage("helper_ico_blue")
+            let helperImageView = UIImageView(image: helperIcon)
+            helperImageView.contentMode = UIView.ContentMode.scaleAspectFit
+            cell.addSubview(helperImageView)
+            PXLayout.centerVertically(view: helperImageView).isActive = true
+            PXLayout.setWidth(owner: helperImageView, width: 24).isActive = true
+            PXLayout.setHeight(owner: helperImageView, height: 24).isActive = true
+            let rightMargin = false ? 0 : PXLayout.M_MARGIN + PXLayout.XXXS_MARGIN
+            PXLayout.pinRight(view: helperImageView, withMargin: rightMargin).isActive = true
+        }
+
         return cell
     }
 }
@@ -202,24 +215,29 @@ extension PXOneTapInstallmentInfoView {
     }
 
     @objc func toggleInstallments() {
-        if let currentIndex = getCurrentIndex(), let currentModel = model, tapEnabled, currentModel.indices.contains(currentIndex), currentModel[currentIndex].shouldShowArrow {
-            if let installmentData = currentModel[currentIndex].installmentData {
-                if arrowImage.tag != colapsedTag {
-                    delegate?.hideInstallments()
-                    UIView.animate(withDuration: 0.3) { [weak self] in
-                        self?.arrowImage.transform = CGAffineTransform.identity
-                        self?.pagerView.alpha = 1
-                        self?.titleLabel.alpha = 0
+        if let currentIndex = getCurrentIndex(), let currentModel = model, currentModel.indices.contains(currentIndex) {
+            let cardStatus = currentModel[currentIndex].status
+            if !cardStatus.enabled {
+                delegate?.disabledCardTapped(status: cardStatus)
+            } else if currentModel[currentIndex].shouldShowArrow, tapEnabled {
+                if let installmentData = currentModel[currentIndex].installmentData {
+                    if arrowImage.tag != colapsedTag {
+                        delegate?.hideInstallments()
+                        UIView.animate(withDuration: 0.3) { [weak self] in
+                            self?.arrowImage.transform = CGAffineTransform.identity
+                            self?.pagerView.alpha = 1
+                            self?.titleLabel.alpha = 0
+                        }
+                        arrowImage.tag = colapsedTag
+                    } else {
+                        delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: currentModel[currentIndex].selectedPayerCost)
+                        UIView.animate(withDuration: 0.3) { [weak self] in
+                            self?.arrowImage.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
+                            self?.pagerView.alpha = 0
+                            self?.titleLabel.alpha = 1
+                        }
+                        arrowImage.tag = 1
                     }
-                    arrowImage.tag = colapsedTag
-                } else {
-                    delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: currentModel[currentIndex].selectedPayerCost)
-                    UIView.animate(withDuration: 0.3) { [weak self] in
-                        self?.arrowImage.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
-                        self?.pagerView.alpha = 0
-                        self?.titleLabel.alpha = 1
-                    }
-                    arrowImage.tag = 1
                 }
             }
         }
