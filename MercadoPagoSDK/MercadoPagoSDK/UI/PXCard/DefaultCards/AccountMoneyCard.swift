@@ -24,7 +24,7 @@ class AccountMoneyCard: NSObject, CustomCardDrawerUI {
 }
 
 extension AccountMoneyCard {
-    static func render(containerView: UIView, balanceText: String, isDisabled: Bool, size: CGSize) {
+    static func render(containerView: UIView, isDisabled: Bool, size: CGSize) {
         let amImage = UIImageView()
         amImage.backgroundColor = .clear
         amImage.contentMode = .scaleAspectFit
@@ -50,19 +50,6 @@ extension AccountMoneyCard {
         PXLayout.pinTop(view: patternView).isActive = true
         PXLayout.pinRight(view: patternView).isActive = true
 
-        let label = UILabel()
-        label.text = " \(balanceText)   "
-        label.font = Utils.getFont(size: PXLayout.XXS_FONT)
-        label.textColor = UIColor.white
-        label.textAlignment = .center
-        label.layer.cornerRadius = 5
-        label.layer.borderWidth = 1
-        label.layer.borderColor = UIColor.white.withAlphaComponent(0.5).cgColor
-        containerView.addSubview(label)
-        PXLayout.pinLeft(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
-        PXLayout.pinBottom(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
-        PXLayout.setHeight(owner: label, height: PXLayout.L_MARGIN).isActive = true
-
         let amLogo = UIImageView()
         amLogo.backgroundColor = .clear
         amLogo.contentMode = .scaleAspectFit
@@ -72,6 +59,6 @@ extension AccountMoneyCard {
         PXLayout.setWidth(owner: amLogo, width: size.height * 0.60).isActive = true
         PXLayout.setHeight(owner: amLogo, height: size.height * 0.35).isActive = true
         PXLayout.pinTop(view: amLogo, withMargin: PXLayout.XXXS_MARGIN).isActive = true
-        PXLayout.pinLeft(view: amLogo, to: label, withMargin: 0).isActive = true
+        PXLayout.pinLeft(view: amLogo, withMargin: PXLayout.S_MARGIN).isActive = true
     }
 }

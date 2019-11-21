@@ -66,7 +66,7 @@ extension PXCardSliderPagerCell {
         }
     }
 
-    func renderAccountMoneyCard(balanceText: String, isDisabled: Bool, cardSize: CGSize) {
+    func renderAccountMoneyCard(isDisabled: Bool, cardSize: CGSize) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
@@ -78,7 +78,7 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            AccountMoneyCard.render(containerView: containerView, balanceText: balanceText, isDisabled: isDisabled, size: cardSize)
+            AccountMoneyCard.render(containerView: containerView, isDisabled: isDisabled, size: cardSize)
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true
         }
