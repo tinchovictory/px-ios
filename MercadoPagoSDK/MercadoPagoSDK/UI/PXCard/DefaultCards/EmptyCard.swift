@@ -41,7 +41,8 @@ extension EmptyCard {
         PXLayout.centerHorizontally(view: circleView).isActive = true
 
         let label = UILabel()
-        label.attributedText = title?.getAttributedString(fontSize: PXLayout.XXS_FONT)
+        let textColor = ThemeManager.shared.getAccentColor()
+        label.attributedText = title?.getAttributedString(fontSize: PXLayout.XXS_FONT, textColor: textColor)
         label.textAlignment = .center
         containerView.addSubview(label)
         PXLayout.pinLeft(view: label, withMargin: 0).isActive = true
