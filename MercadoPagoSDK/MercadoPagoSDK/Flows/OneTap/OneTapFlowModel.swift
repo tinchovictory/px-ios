@@ -35,6 +35,9 @@ final internal class OneTapFlowModel: PXFlowModel {
     var paymentFlow: PXPaymentFlow?
     weak var paymentResultHandler: PXPaymentResultHandlerProtocol?
 
+    // One Tap Flow
+    weak var oneTapFlow: OneTapFlow?
+
     var chargeRules: [PXPaymentTypeChargeRule]?
 
     var invalidESC: Bool = false
@@ -111,8 +114,8 @@ internal extension OneTapFlowModel {
         return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
     }
 
-    func reviewConfirmViewModel() -> PXOneTapViewModel {
-        let viewModel = PXOneTapViewModel(amountHelper: self.amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfiguration, userLogged: false, disabledOption: disabledOption, escProtocol: self.escManager)
+    func oneTapViewModel() -> PXOneTapViewModel {
+        let viewModel = PXOneTapViewModel(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfiguration, userLogged: false, disabledOption: disabledOption, escProtocol: escManager, currentFlow: oneTapFlow)
         viewModel.expressData = search.oneTap
         viewModel.paymentMethods = search.availablePaymentMethods
         viewModel.items = checkoutPreference.items

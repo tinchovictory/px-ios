@@ -22,11 +22,19 @@ final class PXOneTapViewModel: PXReviewViewModel {
     var additionalInfoSummary: PXAdditionalInfoSummary?
     var disabledOption: PXDisabledOption?
 
-    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?) {
+    weak var currentFlow: OneTapFlow?
+
+    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?, currentFlow: OneTapFlow?) {
         self.disabledOption = disabledOption
+        self.currentFlow = currentFlow
         super.init(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfig, userLogged: userLogged, escProtocol: escProtocol)
     }
 
+    override func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
+        guard let oneTapFlow = currentFlow else { return false }
+        oneTapFlow.model.readyToPay = true
+        return !oneTapFlow.shouldShowSecurityCodeScreen()
+    }
 }
 
 // MARK: ViewModels Publics.

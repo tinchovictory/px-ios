@@ -28,6 +28,7 @@ class PXReviewViewModel: NSObject {
         self.escProtocol = escProtocol
     }
 
+    @discardableResult
     func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
         // Validation is mandatory for payment methods != (credit or debit card).
         if !isPaymentMethodDebitOrCredit() { return true }
