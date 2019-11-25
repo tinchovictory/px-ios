@@ -36,7 +36,7 @@ extension PXOneTapViewModel {
         guard let oneTapNode = expressData else { return }
         for targetNode in oneTapNode {
 
-            var statusConfig = targetNode.status
+            let statusConfig = getStatusConfig(currentStatus: targetNode.status, isAccountMoney: targetNode.accountMoney != nil, cardId: targetNode.oneTapCard?.cardId)
 
             // Add New Card
             if let newCard = targetNode.newCard {
@@ -48,10 +48,6 @@ extension PXOneTapViewModel {
                 let displayTitle = accountMoney.cardTitle ?? ""
                 let cardData = PXCardDataFactory().create(cardName: displayTitle, cardNumber: "", cardCode: "", cardExpiration: "")
                 let amountConfiguration = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod(accountMoney.getId())
-
-                //Check if AC is disabled after payment
-                let isDisabled = self.disabledOption?.isAccountMoneyDisabled() ?? false
-                statusConfig = isDisabled ? getDisabledOptionStatus(isAccountMoney: true) : statusConfig
 
                 let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", AccountMoneyCard(), cardData, [PXPayerCost](), nil, accountMoney.getId(), false, amountConfiguration: amountConfiguration, status: statusConfig)
                 viewModelCard.setAccountMoney(accountMoneyBalance: accountMoney.availableBalance)
@@ -112,10 +108,6 @@ extension PXOneTapViewModel {
                     }
 
                     let selectedPayerCost = amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(targetCardData.cardId, splitPaymentEnabled: defaultEnabledSplitPayment)
-
-                    //Check if card is disabled after payment
-                    let isDisabled = self.disabledOption?.getDisabledCardId() == targetCardData.cardId
-                    statusConfig = isDisabled ? getDisabledOptionStatus(isAccountMoney: false) : statusConfig
 
                     let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, targetIssuerId, templateCard, cardData, payerCost, selectedPayerCost, targetCardData.cardId, showArrow, amountConfiguration: amountConfiguration, status: statusConfig)
 
@@ -350,16 +342,16 @@ extension PXOneTapViewModel {
         return NSAttributedString(string: amount, attributes: attributes)
     }
 
-    func getDisabledOptionStatus(isAccountMoney: Bool) -> PXStatus {
-        let amDisclaimer = "disabled_disclaimer_am"
-        let cardDisclaimer = "disabled_disclaimer_am"
-        let mainMessageString = isAccountMoney ? amDisclaimer.localized_beta : cardDisclaimer.localized_beta
-        let mainMessage = PXText(message: mainMessageString, backgroundColor: nil, textColor: nil, weight: nil)
+    func getStatusConfig(currentStatus: PXStatus, isAccountMoney: Bool, cardId: String?) -> PXStatus {
+        guard let disabledOption = disabledOption else { return currentStatus }
 
-        let secondaryMessageString = ""
-        let secondaryMessage = PXText(message: secondaryMessageString, backgroundColor: nil, textColor: nil, weight: nil)
-
-        return PXStatus(mainMessage: mainMessage, secondaryMessage: secondaryMessage, enabled: false)
+        if disabledOption.isAccountMoneyDisabled(), isAccountMoney {
+            return disabledOption.getStatus() ?? currentStatus
+        } else if disabledOption.getDisabledCardId() == cardId {
+            return disabledOption.getStatus() ?? currentStatus
+        } else {
+            return currentStatus
+        }
     }
 
     func getExternalViewControllerForSubtitle() -> UIViewController? {

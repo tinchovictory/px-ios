@@ -427,21 +427,21 @@
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>We rejected your payment.\nTry paying with a different payment method.</string>
+		<string>We rejected your payment.\n\nTry paying with a different payment method.</string>
 	</dict>
 	<key>disabled_CC_REJECTED_BLACKLIST</key>
 	<dict>
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>We rejected the payment with this card.\nTry paying with a different payment method.</string>
+		<string>We rejected the payment with this card.\n\nTry paying with a different payment method.</string>
 	</dict>
 	<key>disabled_CC_REJECTED_INSUFFICIENT_AMOUNT</key>
 	<dict>
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>Your funds are insufficient or you exceeded the purchase limit.\nTry paying with a different payment method.</string>
+		<string>Your funds are insufficient or you exceeded the purchase limit.\n\nTry paying with a different payment method.</string>
 	</dict>
 	<key>disabled_main_message</key>
 	<dict>

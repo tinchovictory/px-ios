@@ -21,18 +21,22 @@ public struct PXStatus: Codable {
     static func getStatusFor(statusDetail: String) -> PXStatus? {
         let mainText = PXText(message: "disabled_main_message".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
 
+        var secondaryString = ""
+
         switch statusDetail {
         case PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK:
-            let secondaryText = PXText(message: "disabled_CC_REJECTED_HIGH_RISK".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
-            return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
+            secondaryString = "disabled_CC_REJECTED_HIGH_RISK".localized_beta
         case PXPayment.StatusDetails.REJECTED_BLACKLIST:
-            let secondaryText = PXText(message: "disabled_CC_REJECTED_BLACKLIST".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
-            return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
+            secondaryString = "disabled_CC_REJECTED_BLACKLIST".localized_beta
         case PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT:
-            let secondaryText = PXText(message: "disabled_CC_REJECTED_INSUFFICIENT_AMOUNT".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
-            return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
+            secondaryString = "disabled_CC_REJECTED_INSUFFICIENT_AMOUNT".localized_beta
         default:
             return nil
         }
+
+        let secondaryMessage = secondaryString.replacingOccurrences(of: "\\n", with: "\n")
+        let secondaryText = PXText(message: secondaryMessage, backgroundColor: nil, textColor: nil, weight: nil)
+
+        return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
     }
 }

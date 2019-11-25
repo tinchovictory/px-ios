@@ -666,21 +666,21 @@
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>Recusamos seu pagamento.\nTente pagar com outro meio.</string>
+		<string>Recusamos seu pagamento.\n\nTente pagar com outro meio.</string>
 	</dict>
 	<key>disabled_CC_REJECTED_BLACKLIST</key>
 	<dict>
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>Recusamos seu pagamento com este cartão.\nTente pagar com outro meio.</string>
+		<string>Recusamos seu pagamento com este cartão.\n\nTente pagar com outro meio.</string>
 	</dict>
 	<key>disabled_CC_REJECTED_INSUFFICIENT_AMOUNT</key>
 	<dict>
 		<key>comment</key>
 		<string></string>
 		<key>value</key>
-		<string>Seus fundos são insuficientes ou você excedeu o limite de compra.\nTente pagar com outro meio.</string>
+		<string>Seus fundos são insuficientes ou você excedeu o limite de compra.\n\nTente pagar com outro meio.</string>
 	</dict>
 	<key>disabled_main_message</key>
 	<dict>
