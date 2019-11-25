@@ -69,10 +69,15 @@ internal class MercadoPagoServices: NSObject {
         let service: CustomService = CustomService(baseURL: url, URI: uri)
 
         var params = MercadoPagoServices.getParamsAccessTokenAndPaymentIdsAndPlatform(payerAccessToken, paymentIds, platform)
+
         params.paramsAppend(key: ApiParam.API_VERSION, value: PXServicesURLConfigs.API_VERSION)
 
         if let campaignId = campaignId {
             params.paramsAppend(key: ApiParam.CAMPAIGN_ID, value: campaignId)
+        }
+
+        if let flowName = MPXTracker.sharedInstance.getFlowName() {
+            params.paramsAppend(key: ApiParam.FLOW_NAME, value: flowName)
         }
 
         service.getPointsAndDiscounts(body: nil, params: params, success: callback, failure: failure)
