@@ -21,6 +21,8 @@ final class OneTapFlow: NSObject, PXFlow {
         resultHandler = oneTapResultHandler
         advancedConfig = advancedConfiguration
         model = OneTapFlowModel(paymentData: paymentData, checkoutPreference: checkoutPreference, search: search, paymentOptionSelected: paymentOptionSelected, chargeRules: chargeRules, mercadoPagoServicesAdapter: mercadoPagoServicesAdapter, advancedConfiguration: advancedConfiguration, paymentConfigurationService: paymentConfigurationService, disabledOption: disabledOption, escManager: escManager)
+        super.init()
+        model.oneTapFlow = self
     }
 
     deinit {
@@ -86,6 +88,11 @@ final class OneTapFlow: NSObject, PXFlow {
 
     func setPaymentMethodPlugins(_ plugins: [PXPaymentMethodPlugin]?) {
         model.paymentMethodPlugins = plugins
+    }
+
+    func needSecurityCodeValidation() -> Bool {
+        model.readyToPay = true
+        return model.nextStep() == .screenSecurityCode
     }
 }
 
