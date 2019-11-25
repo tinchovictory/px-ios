@@ -661,5 +661,33 @@
 		<key>value</key>
 		<string>Tarjeta no disponible para este pago</string>
 	</dict>
+	<key>disabled_CC_REJECTED_HIGH_RISK</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Rechazamos tu pago.\nIntenta pagar con otro medio.</string>
+	</dict>
+	<key>disabled_CC_REJECTED_BLACKLIST</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Rechazamos tu pago con esta tarjeta.\nIntenta pagar con otro medio.</string>
+	</dict>
+	<key>disabled_CC_REJECTED_INSUFFICIENT_AMOUNT</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Tus fondos son insuficientes o superaste el límite de compra.\nIntenta pagar con otro medio.</string>
+	</dict>
+	<key>disabled_main_message</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>No puedes usar este medio de pago</string>
+	</dict>
 </dict>
 </plist>

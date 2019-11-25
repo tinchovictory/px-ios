@@ -422,5 +422,33 @@
 		<key>value</key>
 		<string>Card unavailable for this payment</string>
 	</dict>
+	<key>disabled_CC_REJECTED_HIGH_RISK</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>We rejected your payment.\nTry paying with a different payment method.</string>
+	</dict>
+	<key>disabled_CC_REJECTED_BLACKLIST</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>We rejected the payment with this card.\nTry paying with a different payment method.</string>
+	</dict>
+	<key>disabled_CC_REJECTED_INSUFFICIENT_AMOUNT</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>Your funds are insufficient or you exceeded the purchase limit.\nTry paying with a different payment method.</string>
+	</dict>
+	<key>disabled_main_message</key>
+	<dict>
+		<key>comment</key>
+		<string></string>
+		<key>value</key>
+		<string>You can not use this payment method</string>
+	</dict>
 </dict>
 </plist>
