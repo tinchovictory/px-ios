@@ -136,7 +136,8 @@ extension PXOneTapViewModel {
             let selectedPayerCost = sliderNode.selectedPayerCost
             let installment = PXInstallment(issuer: nil, payerCosts: payerCost, paymentMethodId: nil, paymentTypeId: nil)
 
-            if !sliderNode.status.enabled, let disabledMessage = sliderNode.status.mainMessage?.getAttributedString(fontSize: installmentsRowMessageFontSize) {
+            let disabledMessage = sliderNode.status.mainMessage?.getAttributedString(fontSize: installmentsRowMessageFontSize, textColor: ThemeManager.shared.getAccentColor())
+            if !sliderNode.status.enabled, let disabledMessage = disabledMessage {
                 let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage,
                                                                          installmentData: nil,
                                                                          selectedPayerCost: nil,
