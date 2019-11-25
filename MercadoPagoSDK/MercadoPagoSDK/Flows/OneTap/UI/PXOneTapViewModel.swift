@@ -22,6 +22,7 @@ final class PXOneTapViewModel: PXReviewViewModel {
     var additionalInfoSummary: PXAdditionalInfoSummary?
     var disabledOption: PXDisabledOption?
 
+    // Current flow.
     weak var currentFlow: OneTapFlow?
 
     public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?, currentFlow: OneTapFlow?) {
@@ -32,8 +33,7 @@ final class PXOneTapViewModel: PXReviewViewModel {
 
     override func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
         guard let oneTapFlow = currentFlow else { return false }
-        oneTapFlow.model.readyToPay = true
-        return !oneTapFlow.shouldShowSecurityCodeScreen()
+        return !oneTapFlow.needSecurityCodeValidation()
     }
 }
 
