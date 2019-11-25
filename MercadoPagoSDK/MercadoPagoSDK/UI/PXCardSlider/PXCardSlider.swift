@@ -179,4 +179,9 @@ extension PXCardSlider: PXTermsAndConditionViewDelegate {
     func shouldOpenTermsCondition(_ title: String, url: URL) {
         termsAndCondDelegate?.shouldOpenTermsCondition(title, url: url)
     }
+
+    func goToItemAt(index: Int, animated: Bool) {
+        pagerView.scrollToItem(at: index, animated: animated)
+        pageControl.currentPage = index
+    }
 }
