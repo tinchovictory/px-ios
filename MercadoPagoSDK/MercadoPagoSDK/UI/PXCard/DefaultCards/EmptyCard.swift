@@ -42,7 +42,7 @@ extension EmptyCard {
 
         let label = UILabel()
         let textColor = ThemeManager.shared.getAccentColor()
-        label.attributedText = title?.getAttributedString(fontSize: PXLayout.XXS_FONT, textColor: textColor)
+        label.attributedText = title?.getAttributedString(fontSize: PXLayout.XXS_FONT, textColor: textColor, backgroundColor: .clear)
         label.textAlignment = .center
         containerView.addSubview(label)
         PXLayout.pinLeft(view: label, withMargin: 0).isActive = true
