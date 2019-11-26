@@ -96,8 +96,14 @@ extension PaymentVaultViewModel {
 
 // MARK: Disabled methods
 extension PaymentVaultViewModel {
-    func shouldDisableAccountMoney() -> Bool {
-        return disabledOption?.isAccountMoneyDisabled() ?? false
+    func isPMDisabled(paymentMethodId: String?) -> Bool {
+        guard let disabledOption = disabledOption else {return false}
+        return disabledOption.isPMDisabled(paymentMethodId: paymentMethodId)
+    }
+
+    func isCardIdDisabled(cardId: String?) -> Bool {
+        guard let disabledOption = disabledOption else {return false}
+        return disabledOption.isCardIdDisabled(cardId: cardId)
     }
 
     func getDisabledCardID() -> String? {
@@ -136,10 +142,9 @@ extension PaymentVaultViewModel {
                 if let customerPaymentOptions = customerPaymentOptions, customerPaymentOptions.indices.contains(customerPaymentMethodIndex) {
                     let customerPaymentOption = customerPaymentOptions[customerPaymentMethodIndex]
 
-                    let isAM = customerPaymentOption.getPaymentMethodId() == PXPaymentTypes.ACCOUNT_MONEY.rawValue
-                    let disableAM = isAM && shouldDisableAccountMoney()
-                    let disableCC = customerPaymentOption.getCardId() == getDisabledCardID()
-                    let disableCustomerOption = disableAM || disableCC
+                    let disablePM = isPMDisabled(paymentMethodId: customerPaymentOption.getPaymentMethodId())
+                    let disableCC = isCardIdDisabled(cardId: customerPaymentOption.getCardId())
+                    let disableCustomerOption = disablePM || disableCC
                     if disableCustomerOption {
                         customerPaymentOption.setDisabled(true)
                     }

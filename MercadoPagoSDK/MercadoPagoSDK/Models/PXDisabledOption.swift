@@ -9,33 +9,45 @@ import Foundation
 
 internal struct PXDisabledOption {
 
+    private var disabledPaymentMethodId: String?
     private var disabledCardId: String?
-    private var disabledAccountMoney: Bool = false
     private var status: PXStatus?
+    private let disabledStatusDetails: [String] = [PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK,
+                                                   PXPayment.StatusDetails.REJECTED_HIGH_RISK,
+                                                   PXPayment.StatusDetails.REJECTED_BLACKLIST,
+                                                   PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT]
 
     init(paymentResult: PaymentResult?) {
         if let paymentResult = paymentResult {
             status = PXStatus.getStatusFor(statusDetail: paymentResult.statusDetail)
 
-            if let cardId = paymentResult.cardId,
-                paymentResult.statusDetail == PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK ||
-                    paymentResult.statusDetail == PXPayment.StatusDetails.REJECTED_BLACKLIST || paymentResult.statusDetail == PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT {
-                disabledCardId = cardId
-            }
+            guard let paymentMethod = paymentResult.paymentData?.getPaymentMethod() else {return}
+            guard disabledStatusDetails.contains(paymentResult.statusDetail) else {return}
 
-            if paymentResult.paymentData?.getPaymentMethod()?.isAccountMoney ?? false,
-                paymentResult.statusDetail == PXPayment.StatusDetails.REJECTED_HIGH_RISK || paymentResult.statusDetail == PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT {
-                disabledAccountMoney = true
+            if !paymentMethod.isCard {
+                disabledPaymentMethodId = paymentMethod.getId()
+            } else if let cardId = paymentResult.paymentData?.token?.cardId {
+                disabledCardId = cardId
             }
         }
     }
 
-    public func getDisabledCardId() -> String? {
-        return disabledCardId
+    public func isPMDisabled(paymentMethodId: String?) -> Bool {
+        guard let disabledPaymentMethodId = disabledPaymentMethodId, let paymentMethodId = paymentMethodId else {return false}
+        return disabledPaymentMethodId == paymentMethodId
     }
 
-    public func isAccountMoneyDisabled() -> Bool {
-        return disabledAccountMoney
+    public func isCardIdDisabled(cardId: String?) -> Bool {
+        guard let disabledCardId = disabledCardId, let cardId = cardId else {return false}
+        return disabledCardId == cardId
+    }
+
+    public func getDisabledPaymentMethodId() -> String? {
+        return disabledPaymentMethodId
+    }
+
+    public func getDisabledCardId() -> String? {
+        return disabledCardId
     }
 
     public func getStatus() -> PXStatus? {

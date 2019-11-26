@@ -31,12 +31,33 @@ final class PXOneTapViewModel: PXReviewViewModel {
 
 // MARK: ViewModels Publics.
 extension PXOneTapViewModel {
+    func rearrangeDisabledOption(_ oneTapNodes: [PXOneTapDto], disabledOption: PXDisabledOption?) -> [PXOneTapDto] {
+        guard let disabledOption = disabledOption else {return oneTapNodes}
+        var rearrangedNodes = [PXOneTapDto]()
+        var disabledNode: PXOneTapDto?
+        for node in oneTapNodes {
+            if disabledOption.isCardIdDisabled(cardId: node.oneTapCard?.cardId) || disabledOption.isPMDisabled(paymentMethodId: node.paymentMethodId) {
+                disabledNode = node
+            } else {
+                rearrangedNodes.append(node)
+            }
+        }
+
+        if let disabledNode = disabledNode {
+            rearrangedNodes.append(disabledNode)
+        }
+        return rearrangedNodes
+    }
+
     func createCardSliderViewModel() {
         var sliderModel: [PXCardSliderViewModel] = []
         guard let oneTapNode = expressData else { return }
-        for targetNode in oneTapNode {
 
-            let statusConfig = getStatusConfig(currentStatus: targetNode.status, isAccountMoney: targetNode.accountMoney != nil, cardId: targetNode.oneTapCard?.cardId)
+        // Rearrange disabled options
+        let reArrangedNodes = rearrangeDisabledOption(oneTapNode, disabledOption: disabledOption)
+        for targetNode in reArrangedNodes {
+
+            let statusConfig = getStatusConfig(currentStatus: targetNode.status, cardId: targetNode.oneTapCard?.cardId, paymentMethodId: targetNode.paymentMethodId)
 
             // Add New Card
             if let newCard = targetNode.newCard {
@@ -343,12 +364,10 @@ extension PXOneTapViewModel {
         return NSAttributedString(string: amount, attributes: attributes)
     }
 
-    func getStatusConfig(currentStatus: PXStatus, isAccountMoney: Bool, cardId: String?) -> PXStatus {
+    func getStatusConfig(currentStatus: PXStatus, cardId: String?, paymentMethodId: String?) -> PXStatus {
         guard let disabledOption = disabledOption else { return currentStatus }
 
-        if disabledOption.isAccountMoneyDisabled(), isAccountMoney {
-            return disabledOption.getStatus() ?? currentStatus
-        } else if disabledOption.getDisabledCardId() == cardId {
+        if disabledOption.isCardIdDisabled(cardId: cardId) || disabledOption.isPMDisabled(paymentMethodId: paymentMethodId) {
             return disabledOption.getStatus() ?? currentStatus
         } else {
             return currentStatus
