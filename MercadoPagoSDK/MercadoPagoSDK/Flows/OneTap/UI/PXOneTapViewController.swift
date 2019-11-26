@@ -436,6 +436,8 @@ extension PXOneTapViewController: PXCardSliderProtocol {
             //Go to first card
             self.slider.goToItemAt(index: 0, animated: false)
         })
+
+        trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
     }
 
     func addPaymentMethodCardDidTap() {

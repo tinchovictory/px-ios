@@ -22,6 +22,26 @@ extension PXOneTapViewModel {
         return dic
     }
 
+    func getAvailablePaymentMethodsQuantityForTracking() -> Int {
+        var availablePMQuantity = 0
+        if let expressData = expressData {
+            for expressItem in expressData where expressItem.status.enabled == true && expressItem.newCard == nil {
+                availablePMQuantity += 1
+            }
+        }
+        return availablePMQuantity
+    }
+
+    func getDisabledPaymentMethodsQuantityForTracking() -> Int {
+        var disabledPMQuantity = 0
+        if let expressData = expressData {
+            for expressItem in expressData where expressItem.status.enabled == false && expressItem.newCard == nil {
+                disabledPMQuantity += 1
+            }
+        }
+        return disabledPMQuantity
+    }
+
     func getInstallmentsScreenProperties(installmentData: PXInstallment, selectedCard: PXCardSliderViewModel) -> [String: Any] {
         var properties: [String: Any] = [:]
         properties["payment_method_id"] = amountHelper.getPaymentData().paymentMethod?.id
@@ -73,8 +93,11 @@ extension PXOneTapViewModel {
     func getOneTapScreenProperties() -> [String: Any] {
         var properties: [String: Any] = [:]
         let availablePaymentMethods = getAvailablePaymentMethodForTracking()
+        let availablePMQuantity = getAvailablePaymentMethodsQuantityForTracking()
+        let disabledPMQuantity = getDisabledPaymentMethodsQuantityForTracking()
         properties["available_methods"] = availablePaymentMethods
-        properties["available_methods_quantity"] = availablePaymentMethods.count
+        properties["available_methods_quantity"] = availablePMQuantity
+        properties["disabled_methods_quantity"] = disabledPMQuantity
         properties["preference_amount"] = amountHelper.preferenceAmount
         properties["discount"] = amountHelper.getDiscountForTracking()
 
