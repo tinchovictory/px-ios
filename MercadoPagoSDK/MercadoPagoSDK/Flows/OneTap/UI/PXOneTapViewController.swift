@@ -431,7 +431,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
     func showDisabledCardModal(status: PXStatus) {
         let vc = PXOneTapDisabledViewController(text: status.secondaryMessage?.message)
-        let buttonTitle = "disabled_screen_change_method_action".localized_beta
+        let buttonTitle = "px_dialog_detail_payment_method_disable_link".localized_beta
         PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: {
             //Go to first card
             self.slider.goToItemAt(index: 0, animated: false)

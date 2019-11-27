@@ -19,7 +19,7 @@ internal struct PXDisabledOption {
 
     init(paymentResult: PaymentResult?) {
         if let paymentResult = paymentResult {
-            status = PXStatus.getStatusFor(statusDetail: paymentResult.statusDetail)
+            status = getStatusFor(statusDetail: paymentResult.statusDetail)
 
             guard let paymentMethod = paymentResult.paymentData?.getPaymentMethod() else {return}
             guard disabledStatusDetails.contains(paymentResult.statusDetail) else {return}
@@ -32,6 +32,33 @@ internal struct PXDisabledOption {
         }
     }
 
+    func getStatusFor(statusDetail: String) -> PXStatus? {
+        let mainText = PXText(message: "disabled_main_message".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
+
+        var secondaryString = ""
+
+        switch statusDetail {
+        case PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK:
+            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized_beta
+        case PXPayment.StatusDetails.REJECTED_HIGH_RISK:
+            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized_beta
+        case PXPayment.StatusDetails.REJECTED_BLACKLIST:
+            secondaryString = "px_dialog_detail_payment_method_disable_black_list".localized_beta
+        case PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT:
+            secondaryString = "px_dialog_detail_payment_method_disable_insufficient_amount".localized_beta
+        default:
+            return nil
+        }
+
+        let secondaryMessage = secondaryString.replacingOccurrences(of: "\\n", with: "\n")
+        let secondaryText = PXText(message: secondaryMessage, backgroundColor: nil, textColor: nil, weight: nil)
+
+        return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
+    }
+}
+
+// MARK: Getters and public methods
+extension PXDisabledOption {
     public func isPMDisabled(paymentMethodId: String?) -> Bool {
         guard let disabledPaymentMethodId = disabledPaymentMethodId, let paymentMethodId = paymentMethodId else {return false}
         return disabledPaymentMethodId == paymentMethodId
