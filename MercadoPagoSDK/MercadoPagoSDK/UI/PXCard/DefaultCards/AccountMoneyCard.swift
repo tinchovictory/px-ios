@@ -37,18 +37,20 @@ extension AccountMoneyCard {
         PXLayout.pinTop(view: amImage).isActive = true
         PXLayout.pinRight(view: amImage).isActive = true
 
-        let patternView = UIImageView()
-        patternView.contentMode = .scaleAspectFit
-        patternView.image = ResourceManager.shared.getImage("amPattern")
-        containerView.addSubview(patternView)
+        if !isDisabled {
+            let patternView = UIImageView()
+            patternView.contentMode = .scaleAspectFit
+            patternView.image = ResourceManager.shared.getImage("amPattern")
+            containerView.addSubview(patternView)
 
-        let height = size.height
-        let width = height * 1.1
+            let height = size.height
+            let width = height * 1.1
 
-        PXLayout.setHeight(owner: patternView, height: height).isActive = true
-        PXLayout.setWidth(owner: patternView, width: width).isActive = true
-        PXLayout.pinTop(view: patternView).isActive = true
-        PXLayout.pinRight(view: patternView).isActive = true
+            PXLayout.setHeight(owner: patternView, height: height).isActive = true
+            PXLayout.setWidth(owner: patternView, width: width).isActive = true
+            PXLayout.pinTop(view: patternView).isActive = true
+            PXLayout.pinRight(view: patternView).isActive = true
+        }
 
         let amLogo = UIImageView()
         amLogo.backgroundColor = .clear

@@ -60,7 +60,7 @@ class PXDisabledViewController: UIViewController {
 
 class PXOneTapDisabledViewController: UIViewController {
 
-    init(text: String? = "") {
+    init(text: String) {
         super.init(nibName: nil, bundle: nil)
 
         let description = UILabel()

@@ -36,7 +36,7 @@ extension PXCardSlider: FSPagerViewDataSource {
                     // AM card.
                     cell.renderAccountMoneyCard(isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize)
 
-                  } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
+                } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
                     cell.delegate = self
                     cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize)
                 } else {
