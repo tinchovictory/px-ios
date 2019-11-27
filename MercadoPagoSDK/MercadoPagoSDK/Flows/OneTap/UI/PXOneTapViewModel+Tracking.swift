@@ -11,11 +11,13 @@ extension PXOneTapViewModel {
     func getAvailablePaymentMethodForTracking() -> [Any] {
         var dic: [Any] = []
         if let expressData = expressData {
-            for expressItem in expressData {
+            for expressItem in expressData where expressItem.newCard == nil {
                 if expressItem.oneTapCard != nil {
                     dic.append(expressItem.getCardForTracking(amountHelper: amountHelper))
                 } else if expressItem.accountMoney != nil {
                     dic.append(expressItem.getAccountMoneyForTracking())
+                } else {
+                    dic.append(expressItem.getPaymentMethodForTracking())
                 }
             }
         }
