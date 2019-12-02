@@ -27,7 +27,10 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
     var ownOverlayImage: UIImage? = ResourceManager.shared.getImage("creditsOverlayMask")
     var ownGradient: CAGradientLayer = CAGradientLayer()
 
-    init(_ creditsViewModel: CreditsViewModel) {
+    init(_ creditsViewModel: CreditsViewModel, isDisabled: Bool) {
+        if isDisabled {
+            ownOverlayImage = ResourceManager.shared.getImage("Overlay")
+        }
         ownGradient = ConsumerCreditsCard.getCustomGradient(creditsViewModel)
     }
     static func getCustomGradient(_ creditsViewModel: CreditsViewModel) -> CAGradientLayer {

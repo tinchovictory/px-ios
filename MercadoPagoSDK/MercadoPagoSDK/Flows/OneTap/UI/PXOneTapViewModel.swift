@@ -141,7 +141,7 @@ extension PXOneTapViewModel {
 
                 let creditsViewModel = CreditsViewModel(consumerCredits)
 
-                let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig)
+                let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: !targetNode.status.enabled), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig)
 
                 sliderModel.append(viewModelCard)
             }
