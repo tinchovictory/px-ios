@@ -45,7 +45,7 @@ extension InitFlow {
 
         //Add headers
         var headers: [String: String] = [:]
-        if let prodId = self.model.properties.productId {
+        if let prodId = model.properties.productId {
             headers[MercadoPagoService.HeaderField.productId.rawValue] = prodId
         }
 

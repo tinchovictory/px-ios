@@ -147,12 +147,12 @@ extension ConsumerCreditsCard {
         }
 
         for linkablePhrase in phrases {
-            if let customLink = linkablePhrase.link {
-                let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
-                attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
-                attributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)
-            } else if let customHtml = linkablePhrase.html {
-                let customLink = HtmlStorage.shared.set(customHtml)
+            var customLink = linkablePhrase.link
+            if customLink == nil, let customHtml = linkablePhrase.html {
+                let htmlLink = HtmlStorage.shared.set(customHtml)
+                customLink = htmlLink
+            }
+            if let customLink = customLink {
                 let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
                 attributedString.addAttribute(NSAttributedString.Key.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: tycLinkRange)
                 attributedString.addAttribute(NSAttributedString.Key.link, value: customLink, range: tycLinkRange)

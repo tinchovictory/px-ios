@@ -87,7 +87,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         if !itemModel.status.enabled {
             let helperIcon = ResourceManager.shared.getImage("helper_ico_blue")
             let helperImageView = UIImageView(image: helperIcon)
-            helperImageView.contentMode = UIView.ContentMode.scaleAspectFit
+            helperImageView.contentMode = .scaleAspectFit
             cell.addSubview(helperImageView)
             PXLayout.centerVertically(view: helperImageView).isActive = true
             PXLayout.setWidth(owner: helperImageView, width: 24).isActive = true
