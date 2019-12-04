@@ -640,13 +640,6 @@
 		<key>value</key>
 		<string>Não se preocupe, você pode usar outro meio para concluir o pagamento.</string>
 	</dict>
-	<key>px_dialog_detail_payment_method_disable_link</key>
-	<dict>
-		<key>comment</key>
-		<string></string>
-		<key>value</key>
-		<string>Pagar com outro meio</string>
-	</dict>
 	<key>disabled_disclaimer_am</key>
 	<dict>
 		<key>comment</key>
@@ -660,34 +653,6 @@
 		<string></string>
 		<key>value</key>
 		<string>Cartão indisponível para este pagamento</string>
-	</dict>
-	<key>px_dialog_detail_payment_method_disable_high_risk</key>
-	<dict>
-		<key>comment</key>
-		<string></string>
-		<key>value</key>
-		<string>Recusamos seu pagamento.\n\nTente pagar com outro meio.</string>
-	</dict>
-	<key>px_dialog_detail_payment_method_disable_black_list</key>
-	<dict>
-		<key>comment</key>
-		<string></string>
-		<key>value</key>
-		<string>Recusamos seu pagamento com este cartão.\n\nTente pagar com outro meio.</string>
-	</dict>
-	<key>px_dialog_detail_payment_method_disable_insufficient_amount</key>
-	<dict>
-		<key>comment</key>
-		<string></string>
-		<key>value</key>
-		<string>Seus fundos são insuficientes ou você excedeu o limite de compra.\n\nTente pagar com outro meio.</string>
-	</dict>
-	<key>px_payment_method_disable_title</key>
-	<dict>
-		<key>comment</key>
-		<string></string>
-		<key>value</key>
-		<string>Não é possível pagar com essa opção</string>
 	</dict>
 </dict>
 </plist>
