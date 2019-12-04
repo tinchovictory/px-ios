@@ -115,7 +115,7 @@ import Foundation
         self.payer = PXPayer(email: payerEmail)
     }
 
-    internal init(id: String, items: [PXItem], payer: PXPayer, paymentPreference: PXPaymentPreference?, siteId: String, expirationDateTo: Date?, expirationDateFrom: Date?, site: PXSite?, differentialPricing: PXDifferentialPricing?, marketplace: String?, branchId: String?, processingModes: [String] = PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODES, collectorId: String?, orderId: String?, merchantOrderId: String?) {
+    internal init(id: String, items: [PXItem], payer: PXPayer, paymentPreference: PXPaymentPreference?, siteId: String, expirationDateTo: Date?, expirationDateFrom: Date?, site: PXSite?, differentialPricing: PXDifferentialPricing?, marketplace: String?, branchId: String?, processingModes: [String] = PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODES, collectorId: String?, orderId: String? = nil, merchantOrderId: String? = nil) {
         self.id = id
         self.items = items
         self.payer = payer
