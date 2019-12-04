@@ -44,7 +44,7 @@ class PXDisabledViewController: UIViewController {
 
         let dismissButton = PXSecondaryButton()
         dismissButton.translatesAutoresizingMaskIntoConstraints = false
-        dismissButton.buttonTitle = buttonText.localized_beta
+        dismissButton.buttonTitle = buttonText.localized
         view.addSubview(dismissButton)
         _ = PXLayout.put(view: dismissButton, onBottomOf: description, withMargin: PXLayout.S_MARGIN, relation: .equal)
         _ = PXLayout.pinLeft(view: dismissButton, to: view, withMargin: PXLayout.S_MARGIN).isActive = true

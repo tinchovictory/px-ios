@@ -33,19 +33,19 @@ internal struct PXDisabledOption {
     }
 
     func getStatusFor(statusDetail: String) -> PXStatus? {
-        let mainText = PXText(message: "disabled_main_message".localized_beta, backgroundColor: nil, textColor: nil, weight: nil)
+        let mainText = PXText(message: "px_disabled_main_message".localized, backgroundColor: nil, textColor: nil, weight: nil)
 
         var secondaryString = ""
 
         switch statusDetail {
         case PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK:
-            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized_beta
+            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized
         case PXPayment.StatusDetails.REJECTED_HIGH_RISK:
-            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized_beta
+            secondaryString = "px_dialog_detail_payment_method_disable_high_risk".localized
         case PXPayment.StatusDetails.REJECTED_BLACKLIST:
-            secondaryString = "px_dialog_detail_payment_method_disable_black_list".localized_beta
+            secondaryString = "px_dialog_detail_payment_method_disable_black_list".localized
         case PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT:
-            secondaryString = "px_dialog_detail_payment_method_disable_insufficient_amount".localized_beta
+            secondaryString = "px_dialog_detail_payment_method_disable_insufficient_amount".localized
         default:
             return nil
         }

@@ -432,10 +432,13 @@ extension PXOneTapViewController: PXCardSliderProtocol {
     func showDisabledCardModal(status: PXStatus) {
         guard let message = status.secondaryMessage?.message else {return}
         let vc = PXOneTapDisabledViewController(text: message)
-        let buttonTitle = "px_dialog_detail_payment_method_disable_link".localized_beta
+        let buttonTitle = "px_dialog_detail_payment_method_disable_link".localized
         PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: {
-            //Go to first card
+            //Select first item
             self.slider.goToItemAt(index: 0, animated: false)
+            if let card = self.viewModel.getCardSliderViewModel().first {
+                self.newCardDidSelected(targetModel: card)
+            }
         })
 
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
