@@ -93,6 +93,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
             PXLayout.setWidth(owner: helperImageView, width: 24).isActive = true
             PXLayout.setHeight(owner: helperImageView, height: 24).isActive = true
             PXLayout.pinRight(view: helperImageView, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+            PXLayout.put(view: helperImageView, rightOf: label, withMargin: PXLayout.XXXS_MARGIN, relation: .greaterThanOrEqual).isActive = true
         }
 
         return cell
