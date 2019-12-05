@@ -1,3 +1,8 @@
+# v4.27.1
+🚀Private Release - 4.27.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Charge rule message support
+
 # v4.27
 🚀Private Release - 4.27 🚀
 MercadoPagoSDKV4 - Private Version
