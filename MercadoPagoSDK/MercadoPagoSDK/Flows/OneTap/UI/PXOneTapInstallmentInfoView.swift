@@ -9,6 +9,7 @@ import UIKit
 
 final class PXOneTapInstallmentInfoView: PXComponentView {
     static let DEFAULT_ROW_HEIGHT: CGFloat = 50
+    static let HIGH_ROW_HEIGHT: CGFloat = 78
     private let titleLabel = UILabel()
     private let colapsedTag: Int = 2
     private var arrowImage: UIImageView = UIImageView()
@@ -83,6 +84,16 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         PXLayout.pinLeft(view: label, withMargin: PXLayout.XXXS_MARGIN).isActive = true
         PXLayout.centerVertically(view: label).isActive = true
         PXLayout.matchHeight(ofView: label).isActive = true
+
+        let benefitsLabel = UILabel()
+        benefitsLabel.numberOfLines = 1
+        benefitsLabel.translatesAutoresizingMaskIntoConstraints = false
+        benefitsLabel.attributedText = itemModel.benefitText
+        benefitsLabel.textAlignment = .right
+        cell.addSubview(benefitsLabel)
+        PXLayout.pinRight(view: benefitsLabel, withMargin: PXLayout.XXXL_MARGIN).isActive = true
+        PXLayout.centerVertically(view: benefitsLabel).isActive = true
+        PXLayout.matchHeight(ofView: benefitsLabel).isActive = true
 
         if !itemModel.status.enabled {
             let helperIcon = ResourceManager.shared.getImage("helper_ico_blue")

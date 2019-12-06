@@ -7,11 +7,12 @@
 
 import Foundation
 
-typealias PXOneTapInstallmentsSelectorData = (title: NSAttributedString, value: NSAttributedString, isSelected: Bool)
+typealias PXOneTapInstallmentsSelectorData = (title: NSAttributedString, topValue: NSAttributedString?, bottomValue: NSAttributedString?, isSelected: Bool)
 
 final class PXOneTapInstallmentsSelectorViewModel {
     let installmentData: PXInstallment
     let selectedPayerCost: PXPayerCost?
+    var selectedRowHeight: CGFloat?
 
     init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?) {
         self.installmentData = installmentData
@@ -38,37 +39,31 @@ final class PXOneTapInstallmentsSelectorViewModel {
     }
 
     func heightForRowAt(_ indexPath: IndexPath) -> CGFloat {
-        return PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
+        if let selectedRowHeight = selectedRowHeight {
+            return selectedRowHeight
+        }
+        let filteredPayerCosts = installmentData.payerCosts.filter { (payerCost) -> Bool in
+            let hasReimbursementText = payerCost.reimbursementText != nil
+            let hasInterestText = payerCost.interestText != nil
+
+            return hasReimbursementText && hasInterestText
+        }
+        if filteredPayerCosts.first != nil {
+            selectedRowHeight = PXOneTapInstallmentInfoView.HIGH_ROW_HEIGHT
+            return PXOneTapInstallmentInfoView.HIGH_ROW_HEIGHT
+        } else {
+            selectedRowHeight = PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
+            return PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
+        }
     }
 
     func getDataFor(payerCost: PXPayerCost, isSelected: Bool) -> PXOneTapInstallmentsSelectorData {
         let currency = SiteManager.shared.getCurrency()
-        let showDescription = MercadoPagoCheckout.showPayerCostDescription()
 
         var title: NSAttributedString = NSAttributedString(string: "")
-        var value: NSAttributedString = NSAttributedString(string: "")
+        let topValue = payerCost.interestText?.getAttributedString(fontSize: PXLayout.XS_FONT)
+        let bottomValue = payerCost.reimbursementText?.getAttributedString(fontSize: PXLayout.XS_FONT)
 
-        if payerCost.installments == 1 {
-            value = NSAttributedString(string: "")
-        } else if payerCost.hasInstallmentsRate() {
-            let attributedTotal = NSMutableAttributedString(attributedString: NSAttributedString(string: "(", attributes: [NSAttributedString.Key.foregroundColor: UIColor.px_grayLight()]))
-            attributedTotal.append(Utils.getAttributedAmount(payerCost.totalAmount, currency: currency, color: UIColor.px_grayLight(), fontSize: 15, baselineOffset: 3))
-            attributedTotal.append(NSAttributedString(string: ")", attributes: [NSAttributedString.Key.foregroundColor: UIColor.px_grayLight()]))
-
-            if showDescription == false {
-                value = NSAttributedString(string: "")
-            } else {
-                value = attributedTotal
-            }
-
-        } else {
-            if showDescription == false {
-                value = NSAttributedString(string: "")
-            } else {
-                value = NSAttributedString(string: "Sin interés".localized, attributes: [NSAttributedString.Key.foregroundColor: ThemeManager.shared.noTaxAndDiscountLabelTintColor()])
-            }
-
-        }
         var installmentNumber = String(format: "%i", payerCost.installments)
         installmentNumber = "\(installmentNumber) x "
         let totalAmount = Utils.getAttributedAmount(payerCost.installmentAmount, thousandSeparator: currency.getThousandsSeparatorOrDefault(), decimalSeparator: currency.getDecimalSeparatorOrDefault(), currencySymbol: currency.getCurrencySymbolOrDefault(), color: UIColor.black, centsFontSize: 14, baselineOffset: 5)
@@ -79,7 +74,7 @@ final class PXOneTapInstallmentsSelectorViewModel {
         installmentLabel.append(totalAmount)
         title = installmentLabel
 
-        return PXOneTapInstallmentsSelectorData(title, value, isSelected)
+        return PXOneTapInstallmentsSelectorData(title, topValue, bottomValue, isSelected)
     }
 
     func getPayerCostForRowAt(_ indexPath: IndexPath) -> PXPayerCost? {

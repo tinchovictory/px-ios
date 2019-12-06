@@ -9,13 +9,15 @@ import Foundation
 
 final class PXOneTapInstallmentInfoViewModel {
     var text: NSAttributedString
+    var benefitText: NSAttributedString?
     var installmentData: PXInstallment?
     var selectedPayerCost: PXPayerCost?
     var shouldShowArrow: Bool
     var status: PXStatus
 
-    init(text: NSAttributedString, installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, shouldShowArrow: Bool, status: PXStatus) {
+    init(text: NSAttributedString, benefitText: NSAttributedString?, installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, shouldShowArrow: Bool, status: PXStatus) {
         self.text = text
+        self.benefitText = benefitText
         self.installmentData = installmentData
         self.selectedPayerCost = selectedPayerCost
         self.shouldShowArrow = shouldShowArrow

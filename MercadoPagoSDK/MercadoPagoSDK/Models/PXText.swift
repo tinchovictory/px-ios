@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PXText: Codable {
+public struct PXText: Codable {
     let message: String?
     let backgroundColor: String?
     let textColor: String?
