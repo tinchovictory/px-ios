@@ -76,7 +76,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         cell.removeAllSubviews()
 
         var benefitsLabel: UILabel?
-        if let benefitText = itemModel.benefitText {
+        if let benefitText = itemModel.headerText {
             let label = UILabel()
             benefitsLabel = label
             label.numberOfLines = 1
