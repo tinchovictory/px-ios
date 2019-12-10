@@ -62,22 +62,46 @@ final class PXOneTapInstallmentsSelectorViewModel {
         }
     }
 
+    func getTotalAmountFormetted(payerCost: PXPayerCost, currency: PXCurrency, showDescription: Bool) -> NSAttributedString? {
+        let fontSize = PXLayout.XS_FONT
+        let fontColor = UIColor.px_grayLight()
+        let attributes: [NSAttributedString.Key: AnyObject] = [
+            NSAttributedString.Key.font: Utils.getFont(size: fontSize),
+            NSAttributedString.Key.foregroundColor: fontColor
+        ]
+
+        if payerCost.installments != 1 {
+            let formattedAmount = Utils.getAttributedAmount(payerCost.totalAmount, currency: currency, color: fontColor, fontSize: fontSize, centsFontSize: fontSize, baselineOffset: 0)
+
+            let string = showDescription ? "(\(formattedAmount.string))" : ""
+            return NSAttributedString(string: string, attributes: attributes)
+        }
+        return nil
+    }
+
+    func getRowTitle(payerCost: PXPayerCost, currency: PXCurrency) -> NSAttributedString {
+        let fontSize = PXLayout.XS_FONT
+        let fontColor = UIColor.black
+        let attributes: [NSAttributedString.Key: AnyObject] = [
+            NSAttributedString.Key.font: Utils.getFont(size: fontSize),
+            NSAttributedString.Key.foregroundColor: fontColor
+        ]
+
+        let formattedTotalAmount = Utils.getAttributedAmount(payerCost.installmentAmount, thousandSeparator: currency.getThousandsSeparatorOrDefault(), decimalSeparator: currency.getDecimalSeparatorOrDefault(), currencySymbol: currency.getCurrencySymbolOrDefault(), color: fontColor, fontSize: fontSize, centsFontSize: fontSize, baselineOffset: 0)
+
+        let string = "\(payerCost.installments) x \(formattedTotalAmount.string)"
+        return NSAttributedString(string: string, attributes: attributes)
+    }
+
     func getDataFor(payerCost: PXPayerCost, isSelected: Bool) -> PXOneTapInstallmentsSelectorData {
         let currency = SiteManager.shared.getCurrency()
 
-        var title: NSAttributedString = NSAttributedString(string: "")
-        let topValue = getInterestText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XS_FONT)
-        let bottomValue = getReimbursementText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XS_FONT)
+        let title = getRowTitle(payerCost: payerCost, currency: currency)
+        let totalAmount = getTotalAmountFormetted(payerCost: payerCost, currency: currency, showDescription: MercadoPagoCheckout.showPayerCostDescription())
 
-        var installmentNumber = String(format: "%i", payerCost.installments)
-        installmentNumber = "\(installmentNumber) x "
-        let totalAmount = Utils.getAttributedAmount(payerCost.installmentAmount, thousandSeparator: currency.getThousandsSeparatorOrDefault(), decimalSeparator: currency.getDecimalSeparatorOrDefault(), currencySymbol: currency.getCurrencySymbolOrDefault(), color: UIColor.black, centsFontSize: 14, baselineOffset: 5)
-
-        let atribute = [NSAttributedString.Key.font: Utils.getFont(size: 20), NSAttributedString.Key.foregroundColor: UIColor.black]
-        let installmentLabel = NSMutableAttributedString(string: installmentNumber, attributes: atribute)
-
-        installmentLabel.append(totalAmount)
-        title = installmentLabel
+        //Top & Bottom value
+        let topValue = getInterestText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XS_FONT) ?? totalAmount
+        let bottomValue = getReimbursementText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XXS_FONT)
 
         return PXOneTapInstallmentsSelectorData(title, topValue, bottomValue, isSelected)
     }
