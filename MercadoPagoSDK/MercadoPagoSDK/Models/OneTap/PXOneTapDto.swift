@@ -7,6 +7,11 @@
 
 import Foundation
 
+public struct PXBenefits: Codable {
+    let installments: PXText?
+    let reimbursement: PXText?
+}
+
 /// :nodoc:
 open class PXOneTapDto: NSObject, Codable {
     open var paymentMethodId: String
@@ -15,11 +20,10 @@ open class PXOneTapDto: NSObject, Codable {
     open var oneTapCreditsInfo: PXOneTapCreditsDto?
     open var accountMoney: PXAccountMoneyDto?
     open var newCard: PXOneTapNewCardDto?
-    open var benefitText: PXText?
-    open var topText: PXText?
+    open var benefits: PXBenefits?
     open var status: PXStatus
 
-    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefitText: PXText? = nil, topText: PXText? = nil) {
+    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil) {
         self.paymentMethodId = paymentMethodId ?? ""
         self.paymentTypeId = paymentTypeId
         self.oneTapCard = oneTapCard
@@ -27,8 +31,7 @@ open class PXOneTapDto: NSObject, Codable {
         self.accountMoney = accountMoney
         self.newCard = newCard
         self.status = status
-        self.benefitText = benefitText
-        self.topText = topText
+        self.benefits = benefits
     }
 
     public enum PXOneTapDtoKeys: String, CodingKey {
@@ -39,8 +42,7 @@ open class PXOneTapDto: NSObject, Codable {
         case accountMoney = "account_money"
         case newCard = "new_card"
         case status
-        case benefitText = "benefit"
-        case topText = "top_message"
+        case benefits = "benefits"
     }
 
     required public convenience init(from decoder: Decoder) throws {
@@ -52,9 +54,8 @@ open class PXOneTapDto: NSObject, Codable {
         let aMoney: PXAccountMoneyDto? = try container.decodeIfPresent(PXAccountMoneyDto.self, forKey: .accountMoney)
         let newCard: PXOneTapNewCardDto? = try container.decodeIfPresent(PXOneTapNewCardDto.self, forKey: .newCard)
         let status: PXStatus = try container.decode(PXStatus.self, forKey: .status)
-        let benefitText: PXText? = try container.decodeIfPresent(PXText.self, forKey: .benefitText)
-        let topText: PXText? = try container.decodeIfPresent(PXText.self, forKey: .topText)
-        self.init(paymentMethodId: paymentMethodId, paymentTypeId: paymentTypeId, oneTapCard: oneTapCard, oneTapCreditsInfo: oneTapCreditsInfo, accountMoney: aMoney, newCard: newCard, status: status, benefitText: benefitText, topText: topText)
+        let benefits: PXBenefits? = try container.decodeIfPresent(PXBenefits.self, forKey: .benefits)
+        self.init(paymentMethodId: paymentMethodId, paymentTypeId: paymentTypeId, oneTapCard: oneTapCard, oneTapCreditsInfo: oneTapCreditsInfo, accountMoney: aMoney, newCard: newCard, status: status, benefits: benefits)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -66,8 +67,7 @@ open class PXOneTapDto: NSObject, Codable {
         try container.encodeIfPresent(self.accountMoney, forKey: .accountMoney)
         try container.encodeIfPresent(self.newCard, forKey: .newCard)
         try container.encode(self.status, forKey: .status)
-        try container.encode(self.benefitText, forKey: .benefitText)
-        try container.encode(self.topText, forKey: .topText)
+        try container.encode(self.benefits, forKey: .benefits)
     }
 
     open func toJSONString() throws -> String? {

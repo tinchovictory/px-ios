@@ -75,6 +75,20 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         let itemModel = model[index]
         cell.removeAllSubviews()
 
+        var benefitsLabel: UILabel?
+        if let benefitText = itemModel.benefitText {
+            let label = UILabel()
+            benefitsLabel = label
+            label.numberOfLines = 1
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.attributedText = benefitText
+            label.textAlignment = .right
+            cell.addSubview(label)
+            PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
+            PXLayout.centerVertically(view: label).isActive = true
+            PXLayout.matchHeight(ofView: label).isActive = true
+        }
+
         let label = UILabel()
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -85,15 +99,12 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         PXLayout.centerVertically(view: label).isActive = true
         PXLayout.matchHeight(ofView: label).isActive = true
 
-        let benefitsLabel = UILabel()
-        benefitsLabel.numberOfLines = 1
-        benefitsLabel.translatesAutoresizingMaskIntoConstraints = false
-        benefitsLabel.attributedText = itemModel.benefitText
-        benefitsLabel.textAlignment = .right
-        cell.addSubview(benefitsLabel)
-        PXLayout.pinRight(view: benefitsLabel, withMargin: PXLayout.XXXL_MARGIN).isActive = true
-        PXLayout.centerVertically(view: benefitsLabel).isActive = true
-        PXLayout.matchHeight(ofView: benefitsLabel).isActive = true
+        if let benefitsLabel = benefitsLabel {
+            PXLayout.put(view: label, leftOf: benefitsLabel, withMargin: PXLayout.XXXS_MARGIN).isActive = true
+        } else {
+            PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
+        }
+
 
         if !itemModel.status.enabled {
             let helperIcon = ResourceManager.shared.getImage("helper_ico_blue")
@@ -175,7 +186,7 @@ extension PXOneTapInstallmentInfoView {
         PXLayout.centerVertically(view: arrowImage).isActive = true
         PXLayout.pinTop(view: arrowImage).isActive = true
         PXLayout.pinBottom(view: arrowImage).isActive = true
-        PXLayout.setWidth(owner: arrowImage, width: 72).isActive = true
+        PXLayout.setWidth(owner: arrowImage, width: 56).isActive = true
         PXLayout.pinRight(view: arrowImage, withMargin: 0).isActive = true
         arrowImage.tag = colapsedTag
 
