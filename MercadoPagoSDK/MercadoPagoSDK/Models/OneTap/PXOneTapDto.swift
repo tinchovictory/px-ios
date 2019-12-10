@@ -7,9 +7,28 @@
 
 import Foundation
 
+public struct PXIntallmentsConfiguration: Codable {
+    let appliedInstallments: [Int]
+    let card: PXText?
+    let installmentRow: PXText?
+
+    enum CodingKeys: String, CodingKey {
+        case appliedInstallments = "applied_installments"
+        case card
+        case installmentRow = "installment_row"
+    }
+}
+
 public struct PXBenefits: Codable {
-    let installments: PXText?
-    let reimbursement: PXText?
+    let installmentsHeader: PXText?
+    let interestFree: PXIntallmentsConfiguration?
+    let reimbursement: PXIntallmentsConfiguration?
+
+    enum CodingKeys: String, CodingKey {
+        case installmentsHeader = "installments_header"
+        case interestFree = "interest_free"
+        case reimbursement
+    }
 }
 
 /// :nodoc:

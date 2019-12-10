@@ -12,11 +12,16 @@ typealias PXOneTapInstallmentsSelectorData = (title: NSAttributedString, topValu
 final class PXOneTapInstallmentsSelectorViewModel {
     let installmentData: PXInstallment
     let selectedPayerCost: PXPayerCost?
+    let interestConfiguration: PXIntallmentsConfiguration?
+    let reimbursementConfiguration: PXIntallmentsConfiguration?
+
     var selectedRowHeight: CGFloat?
 
-    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?) {
+    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?, interestConfiguration: PXIntallmentsConfiguration?, reimbursementConfiguration: PXIntallmentsConfiguration?) {
         self.installmentData = installmentData
         self.selectedPayerCost = selectedPayerCost
+        self.interestConfiguration = interestConfiguration
+        self.reimbursementConfiguration = reimbursementConfiguration
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -43,8 +48,8 @@ final class PXOneTapInstallmentsSelectorViewModel {
             return selectedRowHeight
         }
         let filteredPayerCosts = installmentData.payerCosts.filter { (payerCost) -> Bool in
-            let hasReimbursementText = payerCost.reimbursementText != nil
-            let hasInterestText = payerCost.interestText != nil
+            let hasReimbursementText = getReimbursementText(payerCost: payerCost) != nil
+            let hasInterestText = getInterestText(payerCost: payerCost) != nil
 
             return hasReimbursementText && hasInterestText
         }
@@ -61,8 +66,8 @@ final class PXOneTapInstallmentsSelectorViewModel {
         let currency = SiteManager.shared.getCurrency()
 
         var title: NSAttributedString = NSAttributedString(string: "")
-        let topValue = payerCost.interestText?.getAttributedString(fontSize: PXLayout.XS_FONT)
-        let bottomValue = payerCost.reimbursementText?.getAttributedString(fontSize: PXLayout.XS_FONT)
+        let topValue = getInterestText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XS_FONT)
+        let bottomValue = getReimbursementText(payerCost: payerCost)?.getAttributedString(fontSize: PXLayout.XS_FONT)
 
         var installmentNumber = String(format: "%i", payerCost.installments)
         installmentNumber = "\(installmentNumber) x "
@@ -79,5 +84,27 @@ final class PXOneTapInstallmentsSelectorViewModel {
 
     func getPayerCostForRowAt(_ indexPath: IndexPath) -> PXPayerCost? {
         return installmentData.payerCosts[indexPath.row]
+    }
+
+    func getReimbursementText(payerCost: PXPayerCost) -> PXText? {
+        guard let reimbursementConfiguration = reimbursementConfiguration else {
+            return nil
+        }
+
+        if reimbursementConfiguration.appliedInstallments.contains(payerCost.installments) {
+            return reimbursementConfiguration.installmentRow
+        }
+        return nil
+    }
+
+    func getInterestText(payerCost: PXPayerCost) -> PXText? {
+        guard let interestConfiguration = interestConfiguration else {
+            return nil
+        }
+
+        if interestConfiguration.appliedInstallments.contains(payerCost.installments) {
+            return interestConfiguration.installmentRow
+        }
+        return nil
     }
 }

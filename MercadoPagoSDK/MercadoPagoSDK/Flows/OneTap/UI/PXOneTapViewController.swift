@@ -73,6 +73,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        slider.showBottomMessageIfNeeded(index: 0, targetIndex: 0)
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapPath(), properties: viewModel.getOneTapScreenProperties())
     }
 
@@ -514,7 +515,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
 
         self.installmentsSelectorView?.removeFromSuperview()
         self.installmentsSelectorView?.layoutIfNeeded()
-        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost)
+        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost, interestConfiguration: nil, reimbursementConfiguration: nil)
         let installmentsSelectorView = PXOneTapInstallmentsSelectorView(viewModel: viewModel)
         installmentsSelectorView.delegate = self
         self.installmentsSelectorView = installmentsSelectorView

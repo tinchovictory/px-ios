@@ -22,10 +22,8 @@ open class PXPayerCost: NSObject, Codable {
     open var processingMode: String?
     open var paymentMethodOptionId: String?
     open var agreements: [PXAgreement] = []
-    open var reimbursementText: PXText?
-    open var interestText: PXText?
 
-    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String?, paymentMethodOptionId: String?, agreements: [PXAgreement] = [], reimbursementText: PXText? = nil, interestText: PXText? = nil) {
+    public init(installmentRate: Double, labels: [String], minAllowedAmount: Double, maxAllowedAmount: Double, recommendedMessage: String?, installmentAmount: Double, totalAmount: Double, installments: Int, processingMode: String?, paymentMethodOptionId: String?, agreements: [PXAgreement] = []) {
         self.installmentRate = installmentRate
         self.labels = labels
         self.minAllowedAmount = minAllowedAmount
@@ -37,8 +35,6 @@ open class PXPayerCost: NSObject, Codable {
         self.processingMode = processingMode
         self.paymentMethodOptionId = paymentMethodOptionId
         self.agreements = agreements
-        self.reimbursementText = reimbursementText
-        self.interestText = interestText
     }
 
     public enum PXPayerCostKeys: String, CodingKey {
@@ -53,8 +49,6 @@ open class PXPayerCost: NSObject, Codable {
         case processingMode = "processing_mode"
         case paymentMethodOptionId = "payment_method_option_id"
         case agreements
-        case reimbursementText = "reimbursement"
-        case interestText = "interest"
     }
 
     required public convenience init(from decoder: Decoder) throws {
@@ -70,10 +64,8 @@ open class PXPayerCost: NSObject, Codable {
         let processingMode: String? = try container.decodeIfPresent(String.self, forKey: .processingMode)
         let paymentMethodOptionId: String? = try container.decodeIfPresent(String.self, forKey: .paymentMethodOptionId)
         let agreements: [PXAgreement] = try container.decodeIfPresent([PXAgreement].self, forKey: .agreements) ?? []
-        let reimbursementText: PXText? = try container.decodeIfPresent(PXText.self, forKey: .reimbursementText)
-        let interestText: PXText? = try container.decodeIfPresent(PXText.self, forKey: .interestText)
 
-        self.init(installmentRate: installmentRate, labels: labels, minAllowedAmount: minAllowedAmount, maxAllowedAmount: maxAllowedAmount, recommendedMessage: recommendedMessage, installmentAmount: installmentAmount, totalAmount: totalAmount, installments: installments,processingMode: processingMode, paymentMethodOptionId: paymentMethodOptionId, agreements: agreements, reimbursementText: reimbursementText, interestText: interestText)
+        self.init(installmentRate: installmentRate, labels: labels, minAllowedAmount: minAllowedAmount, maxAllowedAmount: maxAllowedAmount, recommendedMessage: recommendedMessage, installmentAmount: installmentAmount, totalAmount: totalAmount, installments: installments,processingMode: processingMode, paymentMethodOptionId: paymentMethodOptionId, agreements: agreements)
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -89,8 +81,6 @@ open class PXPayerCost: NSObject, Codable {
         try container.encodeIfPresent(self.processingMode, forKey: .processingMode)
         try container.encodeIfPresent(self.paymentMethodOptionId, forKey: .paymentMethodOptionId)
         try container.encodeIfPresent(self.agreements, forKey: .agreements)
-        try container.encodeIfPresent(self.reimbursementText, forKey: .reimbursementText)
-        try container.encodeIfPresent(self.interestText, forKey: .interestText)
     }
 
     open func toJSONString() throws -> String? {
