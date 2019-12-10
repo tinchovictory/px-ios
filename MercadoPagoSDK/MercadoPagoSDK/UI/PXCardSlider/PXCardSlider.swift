@@ -74,6 +74,12 @@ extension PXCardSlider: FSPagerViewDelegate {
 
     func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
         pageControl.currentPage = targetIndex
+        for cellIndex in 0...model.count {
+            if let currentCell = pagerView.cellForItem(at: cellIndex) as? PXCardSliderPagerCell {
+                currentCell.showBottomMessageView(cellIndex == targetIndex)
+            }
+        }
+
         if selectedIndex != targetIndex {
             PXFeedbackGenerator.selectionFeedback()
             selectedIndex = targetIndex
