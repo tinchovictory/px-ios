@@ -14,10 +14,10 @@ final class PXOneTapInstallmentInfoViewModel {
     var selectedPayerCost: PXPayerCost?
     var shouldShowArrow: Bool
     var status: PXStatus
-    let interestConfiguration: PXIntallmentsConfiguration?
-    let reimbursementConfiguration: PXIntallmentsConfiguration?
+    let interestConfiguration: PXInstallmentsConfiguration?
+    let reimbursementConfiguration: PXInstallmentsConfiguration?
 
-    init(text: NSAttributedString, headerText: NSAttributedString?, installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, shouldShowArrow: Bool, status: PXStatus, interestConfiguration: PXIntallmentsConfiguration?, reimbursementConfiguration: PXIntallmentsConfiguration?) {
+    init(text: NSAttributedString, headerText: NSAttributedString?, installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, shouldShowArrow: Bool, status: PXStatus, interestConfiguration: PXInstallmentsConfiguration?, reimbursementConfiguration: PXInstallmentsConfiguration?) {
         self.text = text
         self.headerText = headerText
         self.installmentData = installmentData

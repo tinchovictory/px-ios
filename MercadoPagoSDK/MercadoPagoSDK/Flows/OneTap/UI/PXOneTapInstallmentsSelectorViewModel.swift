@@ -12,12 +12,12 @@ typealias PXOneTapInstallmentsSelectorData = (title: NSAttributedString, topValu
 final class PXOneTapInstallmentsSelectorViewModel {
     let installmentData: PXInstallment
     let selectedPayerCost: PXPayerCost?
-    let interest: PXIntallmentsConfiguration?
-    let reimbursement: PXIntallmentsConfiguration?
+    let interest: PXInstallmentsConfiguration?
+    let reimbursement: PXInstallmentsConfiguration?
 
     var selectedRowHeight: CGFloat?
 
-    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?, interest: PXIntallmentsConfiguration?, reimbursement: PXIntallmentsConfiguration?) {
+    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?, interest: PXInstallmentsConfiguration?, reimbursement: PXInstallmentsConfiguration?) {
         self.installmentData = installmentData
         self.selectedPayerCost = selectedPayerCost
         self.interest = interest

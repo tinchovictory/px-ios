@@ -501,7 +501,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
         })
     }
 
-    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, interest: PXIntallmentsConfiguration?, reimbursement: PXIntallmentsConfiguration?) {
+    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, interest: PXInstallmentsConfiguration?, reimbursement: PXInstallmentsConfiguration?) {
         guard let installmentData = installmentData, let installmentInfoRow = installmentInfoRow else {
             return
         }

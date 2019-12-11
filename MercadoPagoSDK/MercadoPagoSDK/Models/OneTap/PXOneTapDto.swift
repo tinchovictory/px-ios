@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PXIntallmentsConfiguration: Codable {
+public struct PXInstallmentsConfiguration: Codable {
     let appliedInstallments: [Int]
     let card: PXText?
     let installmentRow: PXText?
@@ -21,8 +21,8 @@ public struct PXIntallmentsConfiguration: Codable {
 
 public struct PXBenefits: Codable {
     let installmentsHeader: PXText?
-    let interestFree: PXIntallmentsConfiguration?
-    let reimbursement: PXIntallmentsConfiguration?
+    let interestFree: PXInstallmentsConfiguration?
+    let reimbursement: PXInstallmentsConfiguration?
 
     enum CodingKeys: String, CodingKey {
         case installmentsHeader = "installments_header"

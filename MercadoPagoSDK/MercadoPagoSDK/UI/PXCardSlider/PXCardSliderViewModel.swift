@@ -85,11 +85,11 @@ extension PXCardSliderViewModel: PaymentMethodOption {
         return userDidSelectPayerCost ? nil : benefits?.installmentsHeader
     }
 
-    func getReimbursement() -> PXIntallmentsConfiguration? {
+    func getReimbursement() -> PXInstallmentsConfiguration? {
         return benefits?.reimbursement
     }
 
-    func getInterestFree() -> PXIntallmentsConfiguration? {
+    func getInterestFree() -> PXInstallmentsConfiguration? {
         return benefits?.interestFree
     }
 }

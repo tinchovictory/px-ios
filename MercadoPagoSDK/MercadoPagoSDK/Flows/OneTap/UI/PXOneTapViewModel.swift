@@ -177,14 +177,7 @@ extension PXOneTapViewModel {
             let disabledMessage: NSAttributedString = sliderNode.status.mainMessage?.getAttributedString(fontSize: installmentsRowMessageFontSize, textColor: ThemeManager.shared.getAccentColor()) ?? "".toAttributedString()
 
             if !sliderNode.status.enabled {
-                let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage,
-                                                                         headerText: nil,
-                                                                         installmentData: nil,
-                                                                         selectedPayerCost: nil,
-                                                                         shouldShowArrow: false,
-                                                                         status: sliderNode.status,
-                                                                         interestConfiguration: interestConfig,
-                                                                         reimbursementConfiguration: reimbursementConfig)
+                let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage, headerText: nil, installmentData: nil, selectedPayerCost: nil, shouldShowArrow: false, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
                 model.append(disabledInfoModel)
             } else if sliderNode.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
                 // If it's debit and has split, update split message
