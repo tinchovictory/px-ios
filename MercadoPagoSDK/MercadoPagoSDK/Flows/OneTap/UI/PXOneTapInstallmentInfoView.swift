@@ -76,7 +76,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         cell.removeAllSubviews()
 
         var benefitsLabel: UILabel?
-        if let benefitText = itemModel.headerText {
+        if let benefitText = itemModel.benefits?.installmentsHeader?.getAttributedString(fontSize: PXLayout.XXXS_FONT) {
             let label = UILabel()
             benefitsLabel = label
             label.numberOfLines = 1
@@ -260,7 +260,7 @@ extension PXOneTapInstallmentInfoView {
                         }, completion: completion)
                         arrowImage.tag = colapsedTag
                     } else {
-                        delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: selectedModel.selectedPayerCost, interest: selectedModel.interestConfiguration, reimbursement: selectedModel.reimbursementConfiguration)
+                        delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: selectedModel.selectedPayerCost, interest: selectedModel.benefits?.interestFree, reimbursement: selectedModel.benefits?.reimbursement)
                         UIView.animate(withDuration: 0.3, animations: { [weak self] in
                             let rotationAngle = (180.0 * CGFloat(Double.pi)) / 180.0
                             self?.arrowImage.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotationAngle, 1.0, 0.0, 0.0)

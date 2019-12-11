@@ -169,31 +169,26 @@ extension PXOneTapViewModel {
             let selectedPayerCost = sliderNode.selectedPayerCost
             let installment = PXInstallment(issuer: nil, payerCosts: payerCost, paymentMethodId: nil, paymentTypeId: nil)
 
-            //Benefits
-            let installmentsHeaderMessage: NSAttributedString? = sliderNode.getIntallmentsHeaderMessage()?.getAttributedString(fontSize: PXLayout.XXXS_FONT)
-            let reimbursementConfig = sliderNode.getReimbursement()
-            let interestConfig = sliderNode.getInterestFree()
-
             let disabledMessage: NSAttributedString = sliderNode.status.mainMessage?.getAttributedString(fontSize: installmentsRowMessageFontSize, textColor: ThemeManager.shared.getAccentColor()) ?? "".toAttributedString()
 
             if !sliderNode.status.enabled {
-                let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage, headerText: nil, installmentData: nil, selectedPayerCost: nil, shouldShowArrow: false, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
+                let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage, installmentData: nil, selectedPayerCost: nil, shouldShowArrow: false, status: sliderNode.status, benefits: sliderNode.benefits)
                 model.append(disabledInfoModel)
             } else if sliderNode.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
                 // If it's debit and has split, update split message
                 if let amountToPay = sliderNode.selectedPayerCost?.totalAmount {
                     let displayMessage = getSplitMessageForDebit(amountToPay: amountToPay)
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits)
                     model.append(installmentInfoModel)
                 }
 
             } else {
                 if let displayMessage = sliderNode.displayMessage {
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits)
                     model.append(installmentInfoModel)
                 } else {
                     let isDigitalCurrency: Bool = sliderNode.creditsViewModel != nil
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits)
                     model.append(installmentInfoModel)
                 }
             }
