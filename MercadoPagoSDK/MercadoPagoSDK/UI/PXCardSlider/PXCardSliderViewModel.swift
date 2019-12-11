@@ -27,10 +27,10 @@ final class PXCardSliderViewModel {
         return self.paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
     }
     var bottomMessage: String?
-    var installmentsHeaderMessage: NSAttributedString?
+    var benefits: PXBenefits?
     var userDidSelectPayerCost: Bool = false
 
-    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: CreditsViewModel? = nil, status: PXStatus, bottomMessage: String? = nil, installmentsHeaderMessage: NSAttributedString?) {
+    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: CreditsViewModel? = nil, status: PXStatus, bottomMessage: String? = nil, benefits: PXBenefits?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.issuerId = issuerId
@@ -44,7 +44,7 @@ final class PXCardSliderViewModel {
         self.creditsViewModel = creditsViewModel
         self.status = status
         self.bottomMessage = bottomMessage
-        self.installmentsHeaderMessage = installmentsHeaderMessage
+        self.benefits = benefits
     }
 }
 
@@ -81,8 +81,16 @@ extension PXCardSliderViewModel: PaymentMethodOption {
         return PXPaymentTypes.ACCOUNT_MONEY.rawValue != paymentMethodId
     }
 
-    func getIntallmentsHeaderMessage() -> NSAttributedString? {
-        return userDidSelectPayerCost ? nil : installmentsHeaderMessage
+    func getIntallmentsHeaderMessage() -> PXText? {
+        return userDidSelectPayerCost ? nil : benefits?.installmentsHeader
+    }
+
+    func getReimbursement() -> PXIntallmentsConfiguration? {
+        return benefits?.reimbursement
+    }
+
+    func getInterestFree() -> PXIntallmentsConfiguration? {
+        return benefits?.interestFree
     }
 }
 
