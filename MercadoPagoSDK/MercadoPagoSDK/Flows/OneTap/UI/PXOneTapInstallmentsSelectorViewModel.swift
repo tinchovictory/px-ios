@@ -12,16 +12,16 @@ typealias PXOneTapInstallmentsSelectorData = (title: NSAttributedString, topValu
 final class PXOneTapInstallmentsSelectorViewModel {
     let installmentData: PXInstallment
     let selectedPayerCost: PXPayerCost?
-    let interestConfiguration: PXIntallmentsConfiguration?
-    let reimbursementConfiguration: PXIntallmentsConfiguration?
+    let interest: PXIntallmentsConfiguration?
+    let reimbursement: PXIntallmentsConfiguration?
 
     var selectedRowHeight: CGFloat?
 
-    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?, interestConfiguration: PXIntallmentsConfiguration?, reimbursementConfiguration: PXIntallmentsConfiguration?) {
+    init(installmentData: PXInstallment, selectedPayerCost: PXPayerCost?, interest: PXIntallmentsConfiguration?, reimbursement: PXIntallmentsConfiguration?) {
         self.installmentData = installmentData
         self.selectedPayerCost = selectedPayerCost
-        self.interestConfiguration = interestConfiguration
-        self.reimbursementConfiguration = reimbursementConfiguration
+        self.interest = interest
+        self.reimbursement = reimbursement
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
@@ -49,9 +49,7 @@ final class PXOneTapInstallmentsSelectorViewModel {
         }
         let filteredPayerCosts = installmentData.payerCosts.filter { (payerCost) -> Bool in
             let hasReimbursementText = getReimbursementText(payerCost: payerCost) != nil
-            let hasInterestText = getInterestText(payerCost: payerCost) != nil
-
-            return hasReimbursementText && hasInterestText
+            return hasReimbursementText
         }
         if filteredPayerCosts.first != nil {
             selectedRowHeight = PXOneTapInstallmentInfoView.HIGH_ROW_HEIGHT
@@ -111,7 +109,7 @@ final class PXOneTapInstallmentsSelectorViewModel {
     }
 
     func getReimbursementText(payerCost: PXPayerCost) -> PXText? {
-        guard let reimbursementConfiguration = reimbursementConfiguration else {
+        guard let reimbursementConfiguration = reimbursement else {
             return nil
         }
 
@@ -122,7 +120,7 @@ final class PXOneTapInstallmentsSelectorViewModel {
     }
 
     func getInterestText(payerCost: PXPayerCost) -> PXText? {
-        guard let interestConfiguration = interestConfiguration else {
+        guard let interestConfiguration = interest else {
             return nil
         }
 

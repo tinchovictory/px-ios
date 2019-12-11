@@ -501,7 +501,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
         })
     }
 
-    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?) {
+    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, interest: PXIntallmentsConfiguration?, reimbursement: PXIntallmentsConfiguration?) {
         guard let installmentData = installmentData, let installmentInfoRow = installmentInfoRow else {
             return
         }
@@ -515,7 +515,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
 
         self.installmentsSelectorView?.removeFromSuperview()
         self.installmentsSelectorView?.layoutIfNeeded()
-        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost, interestConfiguration: nil, reimbursementConfiguration: nil)
+        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost, interest: interest, reimbursement: reimbursement)
         let installmentsSelectorView = PXOneTapInstallmentsSelectorView(viewModel: viewModel)
         installmentsSelectorView.delegate = self
         self.installmentsSelectorView = installmentsSelectorView

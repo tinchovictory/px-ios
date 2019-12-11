@@ -161,10 +161,24 @@ extension PXOneTapViewModel {
         cardSliderViewModel = sliderModel
     }
 
+    func getReimbursementConfig(at index: Int) -> PXIntallmentsConfiguration? {
+        guard let oneTapDto = expressData?[index] else {
+            return nil
+        }
+        return oneTapDto.benefits?.reimbursement
+    }
+
+    func getInterestConfig(at index: Int) -> PXIntallmentsConfiguration? {
+        guard let oneTapDto = expressData?[index] else {
+            return nil
+        }
+        return oneTapDto.benefits?.interestFree
+    }
+
     func getInstallmentInfoViewModel() -> [PXOneTapInstallmentInfoViewModel] {
         var model: [PXOneTapInstallmentInfoViewModel] = [PXOneTapInstallmentInfoViewModel]()
         let sliderViewModel = getCardSliderViewModel()
-        for sliderNode in sliderViewModel {
+        for (index, sliderNode) in sliderViewModel.enumerated() {
             let payerCost = sliderNode.payerCost
             let selectedPayerCost = sliderNode.selectedPayerCost
             let installment = PXInstallment(issuer: nil, payerCosts: payerCost, paymentMethodId: nil, paymentTypeId: nil)
@@ -172,29 +186,34 @@ extension PXOneTapViewModel {
             let installmentsHeaderMessage: NSAttributedString? = sliderNode.getIntallmentsHeaderMessage()
             let disabledMessage: NSAttributedString = sliderNode.status.mainMessage?.getAttributedString(fontSize: installmentsRowMessageFontSize, textColor: ThemeManager.shared.getAccentColor()) ?? "".toAttributedString()
 
+            let reimbursementConfig = getReimbursementConfig(at: index)
+            let interestConfig = getInterestConfig(at: index)
+
             if !sliderNode.status.enabled {
                 let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage,
                                                                          headerText: nil,
                                                                          installmentData: nil,
                                                                          selectedPayerCost: nil,
                                                                          shouldShowArrow: false,
-                                                                         status: sliderNode.status)
+                                                                         status: sliderNode.status,
+                                                                         interestConfiguration: interestConfig,
+                                                                         reimbursementConfiguration: reimbursementConfig)
                 model.append(disabledInfoModel)
             } else if sliderNode.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
                 // If it's debit and has split, update split message
                 if let amountToPay = sliderNode.selectedPayerCost?.totalAmount {
                     let displayMessage = getSplitMessageForDebit(amountToPay: amountToPay)
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
                     model.append(installmentInfoModel)
                 }
 
             } else {
                 if let displayMessage = sliderNode.displayMessage {
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: displayMessage, headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
                     model.append(installmentInfoModel)
                 } else {
                     let isDigitalCurrency: Bool = sliderNode.creditsViewModel != nil
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), headerText: installmentsHeaderMessage, installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, interestConfiguration: interestConfig, reimbursementConfiguration: reimbursementConfig)
                     model.append(installmentInfoModel)
                 }
             }

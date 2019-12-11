@@ -244,7 +244,8 @@ extension PXOneTapInstallmentInfoView {
             if !cardStatus.enabled {
                 delegate?.disabledCardTapped(status: cardStatus)
             } else if currentModel[currentIndex].shouldShowArrow, tapEnabled {
-                if let installmentData = currentModel[currentIndex].installmentData {
+                let selectedModel = currentModel[currentIndex]
+                if let installmentData = selectedModel.installmentData {
                     if arrowImage.tag != colapsedTag {
                         delegate?.hideInstallments()
                         UIView.animate(withDuration: 0.3) { [weak self] in
@@ -254,7 +255,7 @@ extension PXOneTapInstallmentInfoView {
                         }
                         arrowImage.tag = colapsedTag
                     } else {
-                        delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: currentModel[currentIndex].selectedPayerCost)
+                        delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: selectedModel.selectedPayerCost, interest: selectedModel.interestConfiguration, reimbursement: selectedModel.reimbursementConfiguration)
                         UIView.animate(withDuration: 0.3) { [weak self] in
                             let rotationAngle = (180.0 * CGFloat(Double.pi)) / 180.0
                             self?.arrowImage.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotationAngle, 1.0, 0.0, 0.0)
