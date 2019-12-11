@@ -66,7 +66,7 @@ extension PXOneTapViewModel {
         for targetNode in reArrangedNodes {
 
             //Charge rule message when amount is zero
-            let chargeRuleMessage = getCardBottomMessage(node: targetNode)
+            let chargeRuleMessage = getCardBottomMessage(paymentTypeId: targetNode.paymentTypeId, benefits: targetNode.benefits)
             let benefits = targetNode.benefits
 
             let statusConfig = getStatusConfig(currentStatus: targetNode.status, cardId: targetNode.oneTapCard?.cardId, paymentMethodId: targetNode.paymentMethodId)
@@ -267,6 +267,12 @@ extension PXOneTapViewModel {
         return cardSliderViewModel
     }
 
+    func updateCardSliderModel(at index: Int, bottomMessage: String?) {
+        if cardSliderViewModel.indices.contains(index) {
+            cardSliderViewModel[index].bottomMessage = bottomMessage
+        }
+    }
+
     func updateAllCardSliderModels(splitPaymentEnabled: Bool) {
         for index in cardSliderViewModel.indices {
             _ = updateCardSliderSplitPaymentPreference(splitPaymentEnabled: splitPaymentEnabled, forIndex: index)
@@ -321,8 +327,8 @@ extension PXOneTapViewModel {
         return getChargeRuleViewController() != nil
     }
 
-    func getCardBottomMessage(node: PXOneTapDto) -> String? {
-        if let chargeRuleMessage = getChargeRuleBottomMessage(node.paymentTypeId) {
+    func getCardBottomMessage(paymentTypeId: String?, benefits: PXBenefits?) -> String? {
+        if let chargeRuleMessage = getChargeRuleBottomMessage(paymentTypeId) {
             return chargeRuleMessage
         }
 
@@ -330,12 +336,12 @@ extension PXOneTapViewModel {
             return nil
         }
 
-        guard let reimbursementAppliedInstallments = node.benefits?.reimbursement?.appliedInstallments else {
+        guard let reimbursementAppliedInstallments = benefits?.reimbursement?.appliedInstallments else {
             return nil
         }
 
         if reimbursementAppliedInstallments.contains(selectedInstallments) {
-            return node.benefits?.reimbursement?.card?.message
+            return benefits?.reimbursement?.card?.message
         }
 
         return nil

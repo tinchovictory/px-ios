@@ -176,7 +176,12 @@ extension PXOneTapInstallmentInfoView {
         setupChevron()
         setupTitleLabel()
         PXLayout.setHeight(owner: self, height: PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT).isActive = true
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleInstallments)))
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleInstallmentsWrapper)))
+    }
+
+    @objc
+    func toggleInstallmentsWrapper() {
+        toggleInstallments()
     }
 
     private func setupChevron() {
@@ -238,7 +243,7 @@ extension PXOneTapInstallmentInfoView {
         pagerView.scrollToOffset(offset, animated: false)
     }
 
-    @objc func toggleInstallments() {
+    @objc func toggleInstallments(completion: ((Bool) -> Void)? = nil) {
         if let currentIndex = getCurrentIndex(), let currentModel = model, currentModel.indices.contains(currentIndex) {
             let cardStatus = currentModel[currentIndex].status
             if !cardStatus.enabled {
@@ -248,20 +253,20 @@ extension PXOneTapInstallmentInfoView {
                 if let installmentData = selectedModel.installmentData {
                     if arrowImage.tag != colapsedTag {
                         delegate?.hideInstallments()
-                        UIView.animate(withDuration: 0.3) { [weak self] in
+                        UIView.animate(withDuration: 0.3, animations: { [weak self] in
                             self?.arrowImage.layer.transform = CATransform3DIdentity
                             self?.pagerView.alpha = 1
                             self?.titleLabel.alpha = 0
-                        }
+                        }, completion: completion)
                         arrowImage.tag = colapsedTag
                     } else {
                         delegate?.showInstallments(installmentData: installmentData, selectedPayerCost: selectedModel.selectedPayerCost, interest: selectedModel.interestConfiguration, reimbursement: selectedModel.reimbursementConfiguration)
-                        UIView.animate(withDuration: 0.3) { [weak self] in
+                        UIView.animate(withDuration: 0.3, animations: { [weak self] in
                             let rotationAngle = (180.0 * CGFloat(Double.pi)) / 180.0
                             self?.arrowImage.layer.transform = CATransform3DRotate(CATransform3DIdentity, rotationAngle, 1.0, 0.0, 0.0)
                             self?.pagerView.alpha = 0
                             self?.titleLabel.alpha = 1
-                        }
+                        }, completion: completion)
                         arrowImage.tag = 1
                     }
                 }

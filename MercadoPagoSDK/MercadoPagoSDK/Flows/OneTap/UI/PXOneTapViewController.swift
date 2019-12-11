@@ -465,6 +465,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
     }
 
     func payerCostSelected(_ payerCost: PXPayerCost) {
+        let selectedIndex = slider.getSelectedIndex()
         // Update cardSliderViewModel
         if let infoRow = installmentInfoRow, viewModel.updateCardSliderViewModel(newPayerCost: payerCost, forIndex: infoRow.getActiveRowIndex()) {
             // Update selected payer cost.
@@ -473,8 +474,15 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             // Update installmentInfoRow viewModel
             installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
             PXFeedbackGenerator.heavyImpactFeedback()
+
+            //Update card bottom message
+            let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits)
+            viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
+            slider.update(viewModel.getCardSliderViewModel())
         }
-        installmentInfoRow?.toggleInstallments()
+        installmentInfoRow?.toggleInstallments(completion: { [weak self] (_) in
+            self?.slider.showBottomMessageIfNeeded(index: selectedIndex, targetIndex: selectedIndex)
+        })
     }
 
     func hideInstallments() {
