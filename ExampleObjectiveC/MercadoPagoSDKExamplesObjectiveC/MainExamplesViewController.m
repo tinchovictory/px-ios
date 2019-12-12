@@ -24,81 +24,84 @@
 
 - (IBAction)checkoutFlow:(id)sender {
 
-    self.navigationController.navigationBar.translucent = NO;
-    self.navigationController.navigationBar.opaque = YES;
-
-    self.pref = nil;
-
-    // Setear una preferencia hecha a mano
+    //CHECKOUT PREFERENCE
     [self setCheckoutPref];
     [self setCheckoutPrefAdditionalInfo];
 
 
-    //PROCESADORA
+    //BUILDER
+    //  Procesadora
     self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-d1c95375-5137-4eb7-868e-da3ca8067d79" checkoutPreference:self.pref paymentConfiguration:[self getPaymentConfiguration]];
 
-    //PAGO NORMAL
+    //  Pago normal
 //    self.checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-c4f42ada-0fea-42a1-9b13-31e67096dcd3" preferenceId:@"272097319-a9040a88-5971-4fcd-92d5-6eeb4612abce"];
 
-    //ACCESS TOKEN BRASIL
+
+    //ACCESS TOKENS
+    //  Brasil
     [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-1505-092415-b89a7cdcec6cc6c3916deab0c56c7136-472129472"];
 
-    //ACCESS TOKEN ARGENTINO
+    //  Argentina
     [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-7092-091314-cc8f836a12b9bf78b16e77e4409ed873-470735636"];
 
-    // AdvancedConfig
-    PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
-    [advancedConfig setExpressEnabled:YES];
-//    [advancedConfig setProductIdWithId:@"bh31umv10flg01nmhg60"];
-
-    PXDiscountParamsConfiguration* disca = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"bh31umv10flg01nmhg60"];
-    [advancedConfig setDiscountParamsConfiguration: disca];
 
     PXTrackingConfiguration *trackingConfig = [[PXTrackingConfiguration alloc] initWithTrackListener: self flowName:@"instore" flowDetails:nil sessionId:@"3783874"];
     [self.checkoutBuilder setTrackingConfigurationWithConfig: trackingConfig];
 
-    // Add theme to advanced config.
+    //ADVANCED CONFIG
+    [self.checkoutBuilder setAdvancedConfigurationWithConfig: [self getAdvancedConfiguration]];
+
+    //LANGUAGE CONFIG
+    [self.checkoutBuilder setLanguage:@"es"];
+
+    //CUSTOM TRANSLATIONS
+    [self setCustomTranslations];
+
+    //CREATE CHECKOUT
+    MercadoPagoCheckout *mpCheckout = [[MercadoPagoCheckout alloc] initWithBuilder:self.checkoutBuilder];
+
+    //LAZY INIT
+    [mpCheckout startWithLazyInitProtocol:self];
+}
+
+-(PXAdvancedConfiguration *)getAdvancedConfiguration {
+    PXAdvancedConfiguration* advancedConfig = [[PXAdvancedConfiguration alloc] init];
+
+    //ONE TAP
+    [advancedConfig setExpressEnabled:YES];
+
+    //PRODUCT ID
+    [advancedConfig setProductIdWithId:@"bh31umv10flg01nmhg60"];
+
+    //DISCOUNT PARAMS
+    PXDiscountParamsConfiguration* discountParamsConfig = [[PXDiscountParamsConfiguration alloc] initWithLabels:[NSArray arrayWithObjects: @"1", @"2", nil] productId:@"bh31umv10flg01nmhg60"];
+    [advancedConfig setDiscountParamsConfiguration: discountParamsConfig];
+
+    //THEME
+    //  mercado libre
 //    MeliTheme *meliTheme = [[MeliTheme alloc] init];
 //    [advancedConfig setTheme:meliTheme];
 
+    //  mercado pago
     MPTheme *mpTheme = [[MPTheme alloc] init];
     [advancedConfig setTheme:mpTheme];
 
-    // Add ReviewConfirm configuration to advanced config.
+    //REVIEW CONFIGURATION
+    //  Review screen
     [advancedConfig setReviewConfirmConfiguration: [self getReviewScreenConfiguration]];
 
-    // Add ReviewConfirm Dynamic views configuration to advanced config.
+    //  Dynamic Views
     [advancedConfig setReviewConfirmDynamicViewsConfiguration:[self getReviewScreenDynamicViewsConfigurationObject]];
 
-    // Add ReviewConfirm Dynamic View Controller configuration to advanced config.
+    //  Dynamic View Controller
 //    TestComponent *dynamicViewControllersConfigObject = [self getReviewScreenDynamicViewControllerConfigurationObject];
 //    [advancedConfig setDynamicViewControllersConfiguration: [NSArray arrayWithObjects: dynamicViewControllersConfigObject, nil]];
 //    [advancedConfig setReviewConfirmDynamicViewsConfiguration:[self getReviewScreenDynamicViewsConfigurationObject]];
 
-    // Add PaymentResult configuration to advanced config.
+    //PAYMENT RESULT
     [advancedConfig setPaymentResultConfiguration: [self getPaymentResultConfiguration]];
 
-    // Set advanced comnfig
-    [self.checkoutBuilder setAdvancedConfigurationWithConfig:advancedConfig];
-
-
-    // CDP color.
-    //[self.mpCheckout setDefaultColor:[UIColor colorWithRed:0.49 green:0.17 blue:0.55 alpha:1.0]];
-
-    [self.checkoutBuilder setLanguage:@"es"];
-
-    // Add custom translation objc-compatible example.
-
-    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyTotal_to_pay_onetap withTranslation:@"Total row en onetap"];
-
-    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button withTranslation:@"Enviar dinero"];
-
-    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button_progress withTranslation:@"Enviado dinero"];
-
-    MercadoPagoCheckout *mpCheckout = [[MercadoPagoCheckout alloc] initWithBuilder:self.checkoutBuilder];
-
-    //[mpCheckout startWithLazyInitProtocol:self];
-    [mpCheckout startWithLazyInitProtocol:self];
+    return advancedConfig;
 }
 
 // ReviewConfirm
@@ -136,6 +139,16 @@
     return self.paymentConfig;
 }
 
+// Custom translations
+-(void)setCustomTranslations {
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyTotal_to_pay_onetap withTranslation:@"Total row en onetap"];
+
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button withTranslation:@"Enviar dinero"];
+
+    [self.checkoutBuilder addCustomTranslation:PXCustomTranslationKeyPay_button_progress withTranslation:@"Enviado dinero"];
+}
+
+// Payment Type charges
 -(void)addCharges {
     NSMutableArray* chargesArray = [[NSMutableArray alloc] init];
     PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"account_money" amountCharge:20 detailModal:nil];
