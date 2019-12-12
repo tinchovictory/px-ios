@@ -29,10 +29,8 @@
 
     self.pref = nil;
 
-    ///  PASO 2: SETEAR CHECKOUTPREF, PAYMENTDATA Y PAYMENTRESULT
-
     // Setear una preferencia hecha a mano
-    [self setCheckoutPref_CreditCardNotExcluded];
+    [self setCheckoutPref];
     [self setCheckoutPrefAdditionalInfo];
 
 
@@ -140,32 +138,29 @@
 
 -(void)addCharges {
     NSMutableArray* chargesArray = [[NSMutableArray alloc] init];
-    PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentMethdodId:@"account_money" amountCharge:20];
-    PXPaymentTypeChargeRule* chargeDebit = [[PXPaymentTypeChargeRule alloc] initWithPaymentMethdodId:@"debit_card" amountCharge:8];
+    PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"account_money" amountCharge:20 detailModal:nil];
+    PXPaymentTypeChargeRule* chargeDebit = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"debit_card" amountCharge:8 detailModal:nil];
     PXPaymentTypeChargeRule* chargeZeroCreditCard = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"credit_card" message:@"Ahorro con tu banco"];
 
     [chargesArray addObject:chargeAccountMoney];
     [chargesArray addObject:chargeDebit];
-    [chargesArray addObject:chargeZeroCreditCard];
+//    [chargesArray addObject:chargeZeroCreditCard];
     [self.paymentConfig addChargeRulesWithCharges:chargesArray];
 }
 
--(void)setCheckoutPref_CreditCardNotExcluded {
+-(void)setCheckoutPref {
     PXItem *item = [[PXItem alloc] initWithTitle:@"title" quantity:1 unitPrice:3500.0];
 
     NSArray *items = [NSArray arrayWithObjects:item, nil];
 
     self.pref = [[PXCheckoutPreference alloc] initWithSiteId:@"MLA" payerEmail:@"sara@gmail.com" items:items];
-//    [self.pref addExcludedPaymentType:@"ticket"];
+    [self.pref setMaxInstallments:18];
+    [self.pref setGatewayProcessingModes: [NSArray arrayWithObjects: @"gateway", @"aggregator", nil]];
 }
 
 -(void)setCheckoutPrefAdditionalInfo {
     // Example SP support for custom additional info.
     self.pref.additionalInfo = @"{\"px_summary\":{\"title\":\"Recarga Claro\",\"image_url\":\"https://www.rondachile.cl/wordpress/wp-content/uploads/2018/03/Logo-Claro-1.jpg\",\"subtitle\":\"Celular 1159199234\",\"purpose\":\"Tu recarga\"}}";
-}
-
--(void)setCheckoutPref_WithId {
-    self.pref = [[PXCheckoutPreference alloc] initWithPreferenceId: @"242624092-2a26fccd-14dd-4456-9161-5f2c44532f1d"];
 }
 
 - (void)didFinishWithCheckout:(MercadoPagoCheckout * _Nonnull)checkout {
