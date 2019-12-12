@@ -54,15 +54,14 @@ final class PXOneTapInstallmentsSelectorViewModel {
         if filteredPayerCosts.first != nil {
             selectedRowHeight = PXOneTapInstallmentInfoView.HIGH_ROW_HEIGHT
             return PXOneTapInstallmentInfoView.HIGH_ROW_HEIGHT
-        } else {
-            selectedRowHeight = PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
-            return PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
         }
+        selectedRowHeight = PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
+        return PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT
     }
 
     func getTotalAmountFormetted(payerCost: PXPayerCost, currency: PXCurrency, showDescription: Bool) -> NSAttributedString? {
         let fontSize = PXLayout.XS_FONT
-        let fontColor = UIColor.px_grayLight()
+        let fontColor = ThemeManager.shared.greyColor()
         let attributes: [NSAttributedString.Key: AnyObject] = [
             NSAttributedString.Key.font: Utils.getFont(size: fontSize),
             NSAttributedString.Key.foregroundColor: fontColor
