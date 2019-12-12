@@ -188,7 +188,7 @@ extension PXOneTapViewModel {
                     model.append(installmentInfoModel)
                 } else {
                     let isDigitalCurrency: Bool = sliderNode.creditsViewModel != nil
-                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits)
+                    let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency, interestFreeConfig: sliderNode.benefits?.interestFree), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits)
                     model.append(installmentInfoModel)
                 }
             }
@@ -367,7 +367,7 @@ extension PXOneTapViewModel {
 // MARK: Privates.
 extension PXOneTapViewModel {
 
-    private func getInstallmentInfoAttrText(_ payerCost: PXPayerCost?, _ isDigitalCurrency: Bool = false) -> NSMutableAttributedString {
+    private func getInstallmentInfoAttrText(_ payerCost: PXPayerCost?, _ isDigitalCurrency: Bool = false, interestFreeConfig: PXInstallmentsConfiguration?) -> NSMutableAttributedString {
         let text: NSMutableAttributedString = NSMutableAttributedString(string: "")
 
         if let payerCostData = payerCost {
@@ -380,11 +380,9 @@ extension PXOneTapViewModel {
             text.append(firstAttributedString)
 
             // Second attr
-            if payerCostData.installmentRate == 0, payerCostData.installments != 1 {
-                let secondAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.noTaxAndDiscountLabelTintColor()]
-                let secondText = " Sin interés".localized
-                let secondAttributedString = NSAttributedString(string: secondText, attributes: secondAttributes)
-                text.append(secondAttributedString)
+            if let interestFreeConfig = interestFreeConfig, interestFreeConfig.appliedInstallments.contains(payerCostData.installments), let rowMessage = interestFreeConfig.installmentRow?.getAttributedString(fontSize: installmentsRowMessageFontSize) {
+                text.append(String.SPACE.toAttributedString())
+                text.append(rowMessage)
             }
 
             // Third attr
