@@ -1,3 +1,9 @@
+# v4.28.1
+🚀Private Release - 4.28.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Benefits support
+- Installments UI enhancements
+
 # v4.28
 🚀Public Release - 4.28 🚀
 MercadoPagoSDKV4 - Public Version
