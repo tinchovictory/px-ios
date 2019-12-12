@@ -60,6 +60,12 @@ extension PXCardSlider: FSPagerViewDataSource {
         }
         return FSPagerViewCell()
     }
+
+    func showBottomMessageIfNeeded(index: Int, targetIndex: Int) {
+        if let currentCell = pagerView.cellForItem(at: index) as? PXCardSliderPagerCell {
+            currentCell.showBottomMessageView(index == targetIndex)
+        }
+    }
 }
 
 // MARK: Delegate
@@ -75,9 +81,7 @@ extension PXCardSlider: FSPagerViewDelegate {
     func pagerViewWillEndDragging(_ pagerView: FSPagerView, targetIndex: Int) {
         pageControl.currentPage = targetIndex
         for cellIndex in 0...model.count {
-            if let currentCell = pagerView.cellForItem(at: cellIndex) as? PXCardSliderPagerCell {
-                currentCell.showBottomMessageView(cellIndex == targetIndex)
-            }
+            showBottomMessageIfNeeded(index: cellIndex, targetIndex: targetIndex)
         }
 
         if selectedIndex != targetIndex {
