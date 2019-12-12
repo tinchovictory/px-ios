@@ -7,30 +7,6 @@
 
 import Foundation
 
-public struct PXInstallmentsConfiguration: Codable {
-    let appliedInstallments: [Int]
-    let card: PXText?
-    let installmentRow: PXText?
-
-    enum CodingKeys: String, CodingKey {
-        case appliedInstallments = "applied_installments"
-        case card
-        case installmentRow = "installment_row"
-    }
-}
-
-public struct PXBenefits: Codable {
-    let installmentsHeader: PXText?
-    let interestFree: PXInstallmentsConfiguration?
-    let reimbursement: PXInstallmentsConfiguration?
-
-    enum CodingKeys: String, CodingKey {
-        case installmentsHeader = "installments_header"
-        case interestFree = "interest_free"
-        case reimbursement
-    }
-}
-
 /// :nodoc:
 open class PXOneTapDto: NSObject, Codable {
     open var paymentMethodId: String
