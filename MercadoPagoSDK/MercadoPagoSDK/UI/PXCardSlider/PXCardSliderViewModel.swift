@@ -81,8 +81,8 @@ extension PXCardSliderViewModel: PaymentMethodOption {
         return PXPaymentTypes.ACCOUNT_MONEY.rawValue != paymentMethodId
     }
 
-    func getIntallmentsHeaderMessage() -> PXText? {
-        return userDidSelectPayerCost ? nil : benefits?.installmentsHeader
+    func shouldShowInstallmentsHeader() -> Bool {
+        return !userDidSelectPayerCost
     }
 
     func getReimbursement() -> PXInstallmentsConfiguration? {
