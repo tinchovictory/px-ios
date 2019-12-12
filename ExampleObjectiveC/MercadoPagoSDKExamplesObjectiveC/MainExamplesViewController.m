@@ -27,30 +27,11 @@
     self.navigationController.navigationBar.translucent = NO;
     self.navigationController.navigationBar.opaque = YES;
 
-
-
     self.pref = nil;
-
-    ///  PASO 1: SETEAR PREFERENCIAS
-
-    // Setear ServicePreference
-    // [self setServicePreference];
 
     ///  PASO 2: SETEAR CHECKOUTPREF, PAYMENTDATA Y PAYMENTRESULT
 
     // Setear una preferencia hecha a mano
-    //[self setCheckoutPref_CardsNotExcluded];
-
-
-    // self.pref.preferenceId = @"243962506-ca09fbc6-7fa6-461d-951c-775b37d19abc";
-    //Differential pricing
-    // self.pref.preferenceId = @"99628543-518e6477-ac0d-4f4a-8097-51c2fcc00b71";
-    /* self.mpCheckout = [[MercadoPagoCheckout alloc] initWithPublicKey:@"TEST-4763b824-93d7-4ca2-a7f7-93539c3ee5bd"
-                                                         accessToken:nil checkoutPreference:self.pref paymentData:self.paymentData paymentResult:self.paymentResult navigationController:self.navigationController]; */
-
-//    self.pref.preferenceId = @"99628543-518e6477-ac0d-4f4a-8097-51c2fcc00b71";
-//
-
     [self setCheckoutPref_CreditCardNotExcluded];
     [self setCheckoutPrefAdditionalInfo];
 
@@ -99,33 +80,12 @@
     // Add PaymentResult configuration to advanced config.
     [advancedConfig setPaymentResultConfiguration: [self getPaymentResultConfiguration]];
 
-    // Disable bank deals
-    //[advancedConfig setBankDealsEnabled:NO];
-
     // Set advanced comnfig
     [self.checkoutBuilder setAdvancedConfigurationWithConfig:advancedConfig];
 
-    // Enable to test one tap
-//    [self.checkoutBuilder setPrivateKeyWithKey:@"TEST-1458038826212807-062020-ff9273c67bc567320eae1a07d1c2d5b5-246046416"];
-    // CDP color.
-    // [self.checkoutComponents setDefaultColor:[UIColor colorWithRed:0.49 green:0.17 blue:0.55 alpha:1.0]];
-
-    // [self.mpCheckout discountNotAvailable];
-
-
-
-    // [self.mpCheckout setDiscount:discount withCampaign:campaign];
 
     // CDP color.
     //[self.mpCheckout setDefaultColor:[UIColor colorWithRed:0.49 green:0.17 blue:0.55 alpha:1.0]];
-
-    //[self setHooks];
-    
-    //[self setPaymentMethodPlugins];
-
-    //[self setPaymentPlugin];
-
-    // [self.mpCheckout discountNotAvailable];
 
     [self.checkoutBuilder setLanguage:@"es"];
 
@@ -174,18 +134,8 @@
                                 @"PaymentMethodPlugins" bundle:[NSBundle mainBundle]];
     PaymentPluginViewController *paymentProcessorPlugin = [storyboard instantiateViewControllerWithIdentifier:@"paymentPlugin"];
     self.paymentConfig = [[PXPaymentConfiguration alloc] initWithSplitPaymentProcessor:paymentProcessorPlugin];
-    [self addPaymentMethodPluginToPaymentConfig];
     [self addCharges];
     return self.paymentConfig;
-}
-
--(void)addPaymentMethodPluginToPaymentConfig {
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:
-                                @"PaymentMethodPlugins" bundle:[NSBundle mainBundle]];
-
-    PXPaymentMethodPlugin * bitcoinPaymentMethodPlugin = [[PXPaymentMethodPlugin alloc] initWithPaymentMethodPluginId:@"account_money" name:@"Bitcoin" image:[UIImage imageNamed:@"bitcoin_payment"] description:@"Estas usando dinero invertido"];
-
-    [self.paymentConfig addPaymentMethodPluginWithPlugin:bitcoinPaymentMethodPlugin];
 }
 
 -(void)addCharges {
@@ -217,9 +167,6 @@
 -(void)setCheckoutPref_WithId {
     self.pref = [[PXCheckoutPreference alloc] initWithPreferenceId: @"242624092-2a26fccd-14dd-4456-9161-5f2c44532f1d"];
 }
-
-
--(IBAction)startCardManager:(id)sender  {}
 
 - (void)didFinishWithCheckout:(MercadoPagoCheckout * _Nonnull)checkout {
     [checkout startWithNavigationController:self.navigationController lifeCycleProtocol:self];
