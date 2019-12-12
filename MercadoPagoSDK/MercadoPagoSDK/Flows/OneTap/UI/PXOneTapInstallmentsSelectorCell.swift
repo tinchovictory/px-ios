@@ -26,34 +26,30 @@ final class PXOneTapInstallmentsSelectorCell: UITableViewCell {
         PXLayout.pinLeft(view: titleLabel, withMargin: PXLayout.M_MARGIN).isActive = true
         PXLayout.centerVertically(view: titleLabel).isActive = true
 
-        let valueLabelsContainer = PXComponentView()
-        valueLabelsContainer.clipsToBounds = true
+        let valueLabelsContainer = UIStackView()
+        valueLabelsContainer.translatesAutoresizingMaskIntoConstraints = false
+        valueLabelsContainer.axis = .vertical
 
         let topValueLabel = UILabel()
         topValueLabel.translatesAutoresizingMaskIntoConstraints = false
         topValueLabel.numberOfLines = 1
         topValueLabel.attributedText = data.topValue
         topValueLabel.textAlignment = .right
-        valueLabelsContainer.addSubviewToBottom(topValueLabel)
-        PXLayout.pinLeft(view: topValueLabel, withMargin: PXLayout.ZERO_MARGIN).isActive = true
-        PXLayout.pinRight(view: topValueLabel, withMargin: PXLayout.M_MARGIN).isActive = true
+        valueLabelsContainer.addArrangedSubview(topValueLabel)
 
         let bottomValueLabel = UILabel()
         bottomValueLabel.translatesAutoresizingMaskIntoConstraints = false
         bottomValueLabel.numberOfLines = 1
         bottomValueLabel.attributedText = data.bottomValue
         bottomValueLabel.textAlignment = .right
-        valueLabelsContainer.addSubviewToBottom(bottomValueLabel)
-        PXLayout.pinLeft(view: bottomValueLabel, withMargin: PXLayout.ZERO_MARGIN).isActive = true
-        PXLayout.pinRight(view: bottomValueLabel, withMargin: PXLayout.M_MARGIN).isActive = true
+        valueLabelsContainer.addArrangedSubview(bottomValueLabel)
 
         //Value labels content view layout
         contentView.addSubview(valueLabelsContainer)
-        PXLayout.pinRight(view: valueLabelsContainer, withMargin: PXLayout.ZERO_MARGIN).isActive = true
+        PXLayout.pinRight(view: valueLabelsContainer, withMargin: PXLayout.M_MARGIN).isActive = true
         PXLayout.centerVertically(view: valueLabelsContainer).isActive = true
         PXLayout.setHeight(owner: valueLabelsContainer, height: 39).isActive = true
         PXLayout.put(view: valueLabelsContainer, rightOf: titleLabel, withMargin: PXLayout.XXS_MARGIN).isActive = true
-        valueLabelsContainer.pinLastSubviewToBottom(withMargin: PXLayout.ZERO_MARGIN)
 
         if data.isSelected {
             let selectedIndicatorView = UIView()
