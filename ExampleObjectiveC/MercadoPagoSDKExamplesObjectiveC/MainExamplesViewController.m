@@ -151,9 +151,13 @@
 // Payment Type charges
 -(void)addCharges {
     NSMutableArray* chargesArray = [[NSMutableArray alloc] init];
-    PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"account_money" amountCharge:20 detailModal:nil];
     PXPaymentTypeChargeRule* chargeDebit = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"debit_card" amountCharge:8 detailModal:nil];
     PXPaymentTypeChargeRule* chargeZeroCreditCard = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"credit_card" message:@"Ahorro con tu banco"];
+
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:@"Test charge view"
+                                      message:@"This is a test account money charge with VC"
+                                   preferredStyle:UIAlertControllerStyleAlert];
+    PXPaymentTypeChargeRule* chargeAccountMoney = [[PXPaymentTypeChargeRule alloc] initWithPaymentTypeId:@"account_money" amountCharge:20 detailModal: controller];
 
     [chargesArray addObject:chargeAccountMoney];
     [chargesArray addObject:chargeDebit];
