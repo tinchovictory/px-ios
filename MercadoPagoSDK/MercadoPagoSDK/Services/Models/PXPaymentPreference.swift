@@ -80,7 +80,9 @@ open class PXPaymentPreference: NSObject, Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: PXPaymentPreferenceKeys.self)
         try container.encodeIfPresent(self.defaultInstallments, forKey: .defaultInstallments)
-        try container.encodeIfPresent(self.maxAcceptedInstallments, forKey: .maxAcceptedInstallments)
+        if maxAcceptedInstallments > 0 {
+            try container.encode(maxAcceptedInstallments, forKey: .maxAcceptedInstallments)
+        }
         try container.encodeIfPresent(getExclusionsFormatted(exclusions: self.excludedPaymentMethodIds), forKey: .excludedPaymentMethodIds)
         try container.encodeIfPresent(getExclusionsFormatted(exclusions: self.excludedPaymentTypeIds), forKey: .excludedPaymentTypeIds)
         try container.encodeIfPresent(self.defaultPaymentMethodId, forKey: .defaultPaymentMethodId)

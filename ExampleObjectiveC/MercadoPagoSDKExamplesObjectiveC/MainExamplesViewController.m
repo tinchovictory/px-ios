@@ -167,7 +167,6 @@
     NSArray *items = [NSArray arrayWithObjects:item, nil];
 
     self.pref = [[PXCheckoutPreference alloc] initWithSiteId:@"MLA" payerEmail:@"sara@gmail.com" items:items];
-    [self.pref setMaxInstallments:18];
     [self.pref setGatewayProcessingModes: [NSArray arrayWithObjects: @"gateway", @"aggregator", nil]];
 }
 
