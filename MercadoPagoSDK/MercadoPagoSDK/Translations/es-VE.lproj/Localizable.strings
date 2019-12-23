@@ -207,7 +207,7 @@
 
 "¿Cómo quieres pagar?"="¿Cómo quieres pagar?";
 "Cancelar Pago"="Cancelar Pago";
-"Términos y Condiciones"="Términos y Condiciones";
+"terms_and_conditions_title"="Términos y condiciones";
 "Con dinero en cuenta" = "Con dinero en cuenta";
 
 // PaymentTypes para RyC

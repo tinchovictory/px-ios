@@ -68,7 +68,6 @@
 "Revisa si está todo bien..." = "Revisa si está todo bien...";
 "¿Cómo quieres pagar?"="¿Cómo quieres pagar?";
 "Cancelar Pago"="Cancelar Pago";
-"Términos y Condiciones"="Términos y Condiciones";
 "Procesando tu pago" = "Procesando tu pago";
 "¿Con qué tarjeta?"="¿Con qué tarjeta?";
 "Producto" = "Producto";
@@ -189,7 +188,7 @@
 "onetap_purchase_summary_title" = "Tu compra";
 "onetap_purchase_summary_charges" = "Cargos";
 "onetap_select_installment_title" = "Selecciona la cuota";
-"terms_and_conditions_title" = "Términos y Condiciones";
+"terms_and_conditions_title" = "Términos y condiciones";
 "disabled_title_am" = "Tu dinero en Mercado Pago no está disponible ahora";
 "disabled_title_card" = "Esta tarjeta no está disponible ahora";
 "disabled_description_am" = "No te preocupes, puedes usar otro medio para completar el pago.";

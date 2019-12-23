@@ -13,7 +13,7 @@ protocol PXTermsAndConditionViewDelegate: NSObjectProtocol {
 }
 
 class PXTermsAndConditionView: PXComponentView {
-    var SCREEN_TITLE = "Términos y Condiciones"
+    var SCREEN_TITLE = "terms_and_conditions_title"
     internal let DEFAULT_CREDITS_HEIGHT = CGFloat(80)
 
     private let termsAndConditionsText: MPTextView = MPTextView()

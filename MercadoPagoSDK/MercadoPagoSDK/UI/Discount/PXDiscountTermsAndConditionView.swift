@@ -15,7 +15,7 @@ final class PXDiscountTermsAndConditionView: PXTermsAndConditionView {
     init(amountHelper: PXAmountHelper, shouldAddMargins: Bool = true) {
         self.amountHelper = amountHelper
         super.init(shouldAddMargins: shouldAddMargins)
-        self.SCREEN_TITLE = "Términos y Condiciones"
+        self.SCREEN_TITLE = "terms_and_conditions_title"
     }
 
     required init?(coder aDecoder: NSCoder) {

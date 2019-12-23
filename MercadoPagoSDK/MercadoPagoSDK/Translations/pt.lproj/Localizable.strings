@@ -56,7 +56,7 @@
 
 " y " = " e ";
 
-"Términos y condiciones" = "Termos e condições";
+"terms_and_conditions_title" = "Termos e condições";
 
 "Datos de tu tarjeta" = "Dados do seu cartão";
 
@@ -208,7 +208,6 @@
 "¿Cómo quieres pagar?"="Como você prefere pagar?";
 "Cancelar Pago"="Cancelar pagamento";
 
-"Términos y Condiciones"="Termos e Condições";
 "Verifique su conexión a internet e intente nuevamente"="Sem conexão";
 
 
