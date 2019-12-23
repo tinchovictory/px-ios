@@ -184,7 +184,7 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 
         if paymentMethod.isCard {
             if let lastFourDigits = (self.paymentData.token?.lastFourDigits) {
-                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
+                pmDescription = paymentMethodName + " " + "terminada en".localized + " " + lastFourDigits
             }
             if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
                 descriptionDetail = paymentMethodIssuerName.toAttributedString()

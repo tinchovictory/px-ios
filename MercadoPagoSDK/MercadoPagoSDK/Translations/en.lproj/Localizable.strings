@@ -44,7 +44,6 @@
 "También enviamos el código a tu email" = "También enviamos el código a tu email";
 "Te enviaremos este comprobante a %0" = "We will send you the data to %0";
 "Dinero en cuenta de MercadoPago" = "Account Money of MercadoPago";
-"Terminada en " = "Ending in ";
 "En tu estado de cuenta verás el cargo como %0" = "On your statement you will see the charge as %0";
 "Comprobante" = "Ticket";
 
@@ -171,10 +170,7 @@
 
 //CONGRATS
 
-"terminada en "="ending in ";
-"terminada en "="ending in ";
-"Terminada en " = "Ending in ";
-" terminada en " = " ending in ";
+"terminada en"="ending in";
 "Sin interés"="Interest free";
 "Sin\u{00a0}interés"="Interest\u{00a0}free";
 "Uy, no pudimos procesar el pago"="Oops, we could not process your payment";

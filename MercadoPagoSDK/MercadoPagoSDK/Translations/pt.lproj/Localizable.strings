@@ -134,8 +134,6 @@
 //--Aproved
 "Comprobante"="Comprovante";
 
-"terminada en "="terminado em ";
-"Terminada en " = "Terminado em ";
 "¡Listo! Se acreditó tu pago" = "Pronto! O seu pagamento foi aprovado";
 "En tu estado de cuenta verás el cargo como %0" = "Você verá o pagamento na fatura do seu cartão de crédito como %0";
 "Te enviaremos este comprobante a %0" = "Enviaremos os dados para %0";
@@ -189,7 +187,6 @@
 "En menos de 1 hora te enviaremos por e-mail el resultado."="Em menos de 1 hora, nós enviaremos o resultado por e-mail.";
 "En poquitas horas te diremos por e-mail si se acreditó o si necesitamos más información."="Em menos de 1 hora, nós enviaremos o resultado por e-mail.";
 //-- Revisa y confirma
-" terminada en " = " terminado em ";
 "Revisa tu pago" = "Rever o seu pagamento";
 "Revisa si está todo bien" = "Revise se está tudo correto";
 "Total" = "Total";

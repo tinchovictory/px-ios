@@ -49,7 +49,6 @@
 "También enviamos el código a tu email" = "También enviamos el código a tu email";
 "Te enviaremos este comprobante a %0" = "Te enviaremos este comprobante a %0";
 "Dinero en cuenta de MercadoPago" = "Dinero en cuenta de MercadoPago";
-"Terminada en " = "Terminada en ";
 "En tu estado de cuenta verás el cargo como %0" = "En tu estado de cuenta verás el cargo como %0";
 "Comprobante" = "Comprobante";
 
@@ -186,7 +185,7 @@
 
 "Comprobante"="Comprobante";
 
-"terminada en "="terminada en ";
+"terminada en"="terminada en";
 "Sin interés"="Sin interés";
 "Sin\u{00a0}interés"="Sin\u{00a0}interés";
 "Uy, no pudimos procesar el pago"="Uy, no pudimos procesar el pago";

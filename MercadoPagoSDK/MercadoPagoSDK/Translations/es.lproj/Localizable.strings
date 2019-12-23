@@ -7,7 +7,6 @@
 "Hubo un error" = "Hubo un error";
 "Continuar"= "Continuar";
 "¡Listo! Se acreditó tu pago" = "¡Listo! Se acreditó tu pago";
-"Terminada en " = "Terminada en ";
 "En tu estado de cuenta verás el cargo como %0" = "En tu estado de cuenta verás el cargo como %0";
 "Estamos procesando el pago" = "Estamos procesando el pago";
 "¿Qué puedo hacer?" = "¿Qué puedo hacer?";
@@ -52,7 +51,7 @@
 "¿Qué puedo hacer?" = "¿Qué puedo hacer?";
 "Pagar con otro medio" = "Pagar con otro medio";
 "Estamos procesando el pago"="Estamos procesando el pago";
-"terminada en "="terminada en ";
+"terminada en"="terminada en";
 "Sin interés"="Sin interés";
 "Sin\u{00a0}interés"="Sin\u{00a0}interés";
 "Uy, no pudimos procesar el pago"="Uy, no pudimos procesar el pago";

@@ -107,7 +107,7 @@ internal class PXBodyComponent: PXComponentizable {
 
         if paymentMethod.isCard {
             if let lastFourDigits = (paymentData.token?.lastFourDigits) {
-                pmDescription = paymentMethodName + " " + "terminada en ".localized + lastFourDigits
+                pmDescription = paymentMethodName + " " + "terminada en".localized + " " + lastFourDigits
             }
             if paymentMethodIssuerName.lowercased() != paymentMethodName.lowercased() && !paymentMethodIssuerName.isEmpty {
                 descriptionDetail = paymentMethodIssuerName.toAttributedString()
