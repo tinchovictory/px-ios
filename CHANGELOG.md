@@ -1,3 +1,113 @@
+# v4.28.2
+🚀Private Release - 4.28.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Max installments fix
+- Double rounded fix
+- One Tap header UI fix
+
+# v4.28.1
+🚀Private Release - 4.28.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Benefits support
+- Installments UI enhancements
+
+# v4.28
+🚀Public Release - 4.28 🚀
+MercadoPagoSDKV4 - Public Version
+- Parity with external version
+
+# v4.27.2
+🚀Private Release - 4.27.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Order ID & Merchant Order ID fix 
+
+# v4.27.1
+🚀Private Release - 4.27.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Charge rule message support
+
+# v4.27
+🚀Private Release - 4.27 🚀
+MercadoPagoSDKV4 - Private Version
+- Disabled payment methods support
+
+# v4.26.1
+🚀Private Release - 4.26.1 🚀
+MercadoPagoSDKV4 - Private Version
+- PXExperiments ID fix
+
+# v4.26
+🚀Private Release - 4.26 🚀
+MercadoPagoSDKV4 - Private Version
+- New init endpoint
+
+# v4.24.3
+🚀Private Release - 4.24.3 🚀
+MercadoPagoSDKV4 - Private Version
+- Payment IDs fix
+
+# v4.24.2
+🚀Private Release - 4.24.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Rut Fix
+- Congrats improvements
+
+
+# v4.24
+🚀Private Release - 4.24 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats improvements
+- Fix warnings and possible leaks
+- Fix bug oneTap installmentsView
+
+
+# v4.23
+🚀Private Release - 4.23 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats improvements
+- Handler for Biometric and ESC
+- Business Result receiptIdList and shouldShowReceipt
+
+
+# v4.22.1
+🚀Private Release - 4.22.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats hot fix
+
+# v4.22
+🚀Private Release - 4.22 🚀
+MercadoPagoSDKV4 - Private Version
+- Points and Discounts feature
+
+# v4.21.2
+🚀Private Release - 4.21.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Change access level PXBiometricConfig
+
+# v4.21.1
+🚀Private Release - 4.21.1 🚀
+MercadoPagoSDKV4 - Private Version
+- iOS 13 navigation bar - Meli compatibility
+
+
+# v4.21
+🚀Private Release - 4.21 🚀
+MercadoPagoSDKV4 - Private Version
+- Add collector id to checkout pref
+- Add importantView to sign business result
+- FIX / One tap title label fix
+
+# v4.20.0
+🚀Private Release - 4.20.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix onetap summary animation
+- Fix identification type
+- Tracking improvements
+- Deprecate iOS 9 Support
+- Biometric abstraction and default implementation
+- Add productId to addCardFlow
+- General improvements
+
 # v4.19.0
 🚀Private Release - 4.19.0 🚀
 MercadoPagoSDKV4 - Private Version

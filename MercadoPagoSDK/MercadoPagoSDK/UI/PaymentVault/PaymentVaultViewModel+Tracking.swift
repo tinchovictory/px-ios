@@ -11,17 +11,9 @@ extension PaymentVaultViewModel {
     func getAvailablePaymentMethodForTracking() -> [Any] {
         var dic: [Any] = []
         if isRoot {
-            for plugin in paymentMethodPlugins {
-                var pluginDic: [String: Any] = [:]
-                pluginDic["payment_method_type"] = plugin.paymentMethodPluginId
-                pluginDic["payment_method_id"] = plugin.paymentMethodPluginId
-                dic.append(pluginDic)
-            }
             if let customerPaymentOptions = customerPaymentOptions {
-                for savedCard in customerPaymentOptions {
-                    if let customerPM = savedCard as? CustomerPaymentMethod {
-                        dic.append(customerPM.getCustomerPaymentMethodForTrancking())
-                    }
+                for savedCard: CustomerPaymentMethod in customerPaymentOptions {
+                    dic.append(savedCard.getCustomerPaymentMethodForTrancking())
                 }
             }
         }
@@ -43,8 +35,10 @@ extension PaymentVaultViewModel {
 
     func getScreenProperties() -> [String: Any] {
         var properties: [String: Any] = ["discount": amountHelper.getDiscountForTracking()]
+        let availablePaymentMethods = getAvailablePaymentMethodForTracking()
         properties["preference_amount"] = amountHelper.preferenceAmount
-        properties["available_methods"] = getAvailablePaymentMethodForTracking()
+        properties["available_methods"] = availablePaymentMethods
+        properties["available_methods_quantity"] = availablePaymentMethods.count
         var itemsDic: [Any] = []
         for item in amountHelper.preference.items {
             itemsDic.append(item.getItemForTracking())

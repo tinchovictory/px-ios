@@ -22,12 +22,15 @@ final class PXCardSliderViewModel {
     var displayMessage: NSAttributedString?
     var amountConfiguration: PXAmountConfiguration?
     let creditsViewModel: CreditsViewModel?
-    var isDisabled: Bool
+    let status: PXStatus
     var isCredits: Bool {
         return self.paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
     }
+    var bottomMessage: String?
+    var benefits: PXBenefits?
+    var userDidSelectPayerCost: Bool = false
 
-    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: CreditsViewModel? = nil, isDisabled: Bool) {
+    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: CreditsViewModel? = nil, status: PXStatus, bottomMessage: String? = nil, benefits: PXBenefits?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.issuerId = issuerId
@@ -36,10 +39,12 @@ final class PXCardSliderViewModel {
         self.payerCost = payerCost
         self.selectedPayerCost = selectedPayerCost
         self.cardId = cardId
-        self.shouldShowArrow = isDisabled ? false : shouldShowArrow
+        self.shouldShowArrow = !status.enabled ? false : shouldShowArrow
         self.amountConfiguration = amountConfiguration
         self.creditsViewModel = creditsViewModel
-        self.isDisabled = isDisabled
+        self.status = status
+        self.bottomMessage = bottomMessage
+        self.benefits = benefits
     }
 }
 
@@ -74,6 +79,18 @@ extension PXCardSliderViewModel: PaymentMethodOption {
 
     func isCustomerPaymentMethod() -> Bool {
         return PXPaymentTypes.ACCOUNT_MONEY.rawValue != paymentMethodId
+    }
+
+    func shouldShowInstallmentsHeader() -> Bool {
+        return !userDidSelectPayerCost
+    }
+
+    func getReimbursement() -> PXInstallmentsConfiguration? {
+        return benefits?.reimbursement
+    }
+
+    func getInterestFree() -> PXInstallmentsConfiguration? {
+        return benefits?.interestFree
     }
 }
 

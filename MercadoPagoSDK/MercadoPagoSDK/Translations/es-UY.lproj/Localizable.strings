@@ -188,6 +188,7 @@
 
 "terminada en "="terminada en ";
 "Sin interés"="Sin interés";
+"Sin\u{00a0}interés"="Sin\u{00a0}interés";
 "Uy, no pudimos procesar el pago"="Uy, no pudimos procesar el pago";
 "Algún dato de tu %1$s es incorrecto."="Algún dato de tu %1$s es incorrecto.";
 "El teléfono está al dorso de tu tarjeta"="El teléfono está al dorso de tu tarjeta";
@@ -259,6 +260,8 @@
 // Receipt
 " de " = " de ";
 "Número de operación " = "Número de operación ";
+"a las" = "a las";
+"hs" = "hs";
 
 //Months
 "January" = "Enero";
@@ -281,3 +284,11 @@
 "días hábiles" = "días hábiles";
 "hora" = "hora";
 "horas" = "horas";
+
+// Disabled payment methods
+"px_disabled_main_message" = "No puedes usar este medio de pago";
+"px_dialog_detail_payment_method_disable_link" = "Pagar con otro medio";
+"px_dialog_detail_payment_method_disable_high_risk" = "Rechazamos tu pago.\n\nIntenta pagar con otro medio.";
+"px_dialog_detail_payment_method_disable_black_list" = "Rechazamos tu pago con esta tarjeta.\n\nIntenta pagar con otro medio.";
+"px_dialog_detail_payment_method_disable_insufficient_amount" = "Tus fondos son insuficientes o superaste el límite de compra.\n\nIntenta pagar con otro medio.";
+"px_payment_method_disable_title" = "No puedes usar este medio de pago";

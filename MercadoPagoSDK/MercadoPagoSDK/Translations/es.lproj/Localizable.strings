@@ -54,6 +54,17 @@
 "Estamos procesando el pago"="Estamos procesando el pago";
 "terminada en "="terminada en ";
 "Sin interés"="Sin interés";
+"Sin\u{00a0}interés"="Sin\u{00a0}interés";
+"Uy, no pudimos procesar el pago"="Uy, no pudimos procesar el pago";
+"Algún dato de tu %1$s es incorrecto."="Algún dato de tu %1$s es incorrecto.";
+"El teléfono está al dorso de tu tarjeta"="El teléfono está al dorso de tu tarjeta";
+"Debes autorizar el pago ante tu tarjeta"="Debes autorizar el pago ante tu tarjeta";
+"Debes autorizar ante %1$s el pago de " = "Debes autorizar ante %1$s el pago de ";
+" a Mercado Pago" = " a Mercado Pago";
+"Ya hablé con %1$s y me autorizó" = "Ya hablé con %1$s y me autorizó";
+
+"En menos de 1 hora te enviaremos por e-mail el resultado."="En menos de 1 hora te enviaremos por e-mail el resultado.";
+"En poquitas horas te diremos por e-mail si se acreditó o si necesitamos más información."="En poquitas horas te diremos por e-mail si se acreditó o si necesitamos más información.";
 "Total"="Total";
 "Revisa si está todo bien..." = "Revisa si está todo bien...";
 "¿Cómo quieres pagar?"="¿Cómo quieres pagar?";
@@ -71,6 +82,24 @@
 "Algo salió mal..." = "Algo salió mal...";
 " de " = " de ";
 "Número de operación " = "Número de operación ";
+"a las" = "a las";
+"hs" = "hs";
+
+//Months
+"January" = "Enero";
+"February" = "Febrero";
+"March" = "Marzo";
+"April" = "Abril";
+"May" = "Mayo";
+"June" = "Junio";
+"July" = "Julio";
+"August" = "Agosto";
+"September" = "Septiembre";
+"October" = "Octubre";
+"November" = "Noviembre";
+"December" = "Diciembre";
+
+// Accreditation
 "Se acreditará instantáneamente" = "Se acreditará instantáneamente";
 "Se acreditará en" = "Se acreditará en";
 "día hábil" = "día hábil";
@@ -171,3 +200,11 @@
 "disabled_screen_change_method_action" = "Pagar con otro medio";
 "disabled_disclaimer_am" = " Medio no disponible para este pago";
 "disabled_disclaimer_card" = "Tarjeta no disponible para este pago";
+
+// Disabled payment methods
+"px_disabled_main_message" = "No puedes usar este medio de pago";
+"px_dialog_detail_payment_method_disable_link" = "Pagar con otro medio";
+"px_dialog_detail_payment_method_disable_high_risk" = "Rechazamos tu pago.\n\nIntenta pagar con otro medio.";
+"px_dialog_detail_payment_method_disable_black_list" = "Rechazamos tu pago con esta tarjeta.\n\nIntenta pagar con otro medio.";
+"px_dialog_detail_payment_method_disable_insufficient_amount" = "Tus fondos son insuficientes o superaste el límite de compra.\n\nIntenta pagar con otro medio.";
+"px_payment_method_disable_title" = "No puedes usar este medio de pago";
