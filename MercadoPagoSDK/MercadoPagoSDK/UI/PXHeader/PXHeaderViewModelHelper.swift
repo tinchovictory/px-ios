@@ -80,7 +80,7 @@ internal extension PXResultViewModel {
         if !preference.showLabelText {
             return nil
         } else {
-            return NSMutableAttributedString(string: "Algo salió mal...".localized, attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.LABEL_FONT_SIZE)])
+            return NSMutableAttributedString(string: "review_and_confirm_toast_error".localized, attributes: [NSAttributedString.Key.font: Utils.getFont(size: PXHeaderRenderer.LABEL_FONT_SIZE)])
         }
 
     }

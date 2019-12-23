@@ -79,7 +79,6 @@
 "Impuestos" = "Impuestos";
 "Envío" = "Envío";
 "¡Apúrate a pagar!" = "¡Apúrate a pagar!";
-"Algo salió mal..." = "Algo salió mal...";
 " de " = " de ";
 "Número de operación " = "Número de operación ";
 "a las" = "a las";
@@ -184,7 +183,6 @@
 "review_and_confirm_toast_error" = "Algo salió mal";
 "add_card_congrats_title" = "¡Listo! Tu tarjeta quedó guardada. Podés usarla cuando quieras.";
 "add_card_go_to_my_cards" = "Ir a Mis tarjetas";
-"add_card_failed_label_text" = "Algo salió mal…";
 "add_card_failed_title" = "No pudimos cargar los datos de tu tarjeta";
 "add_card_try_again" = "Intentar de nuevo";
 "onetap_add_new_card_title" = "Agregar una tarjeta nueva";

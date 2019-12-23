@@ -16,7 +16,7 @@ struct PXHeaderResutlConstants {
     static let REJECTED_HEADER_TITLE = "rejected_default_title"
 
     // Icon subtext
-    static let REJECTED_ICON_SUBTEXT = "Algo salió mal..."
+    static let REJECTED_ICON_SUBTEXT = "review_and_confirm_toast_error"
 }
 
 // MARK: Footer Constants
