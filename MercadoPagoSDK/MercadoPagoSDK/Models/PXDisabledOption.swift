@@ -51,8 +51,9 @@ internal struct PXDisabledOption {
         }
 
         let secondaryMessage = secondaryString.replacingOccurrences(of: "\\n", with: "\n")
-        let secondaryText = PXText(message: secondaryMessage, backgroundColor: nil, textColor: nil, weight: nil)
-
+        let thirdMessage = "px_dialog_detail_different_payment_method".localized
+        let message = secondaryMessage + "\n\n" + thirdMessage
+        let secondaryText = PXText(message: message, backgroundColor: nil, textColor: nil, weight: nil)
         return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
     }
 }
