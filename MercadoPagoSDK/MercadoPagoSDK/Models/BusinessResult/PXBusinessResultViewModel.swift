@@ -195,7 +195,7 @@ class PXBusinessResultViewModel: NSObject, PXResultViewModelInterface {
 
         var disclaimerText: String?
         if let statementDescription = self.businessResult.getStatementDescription() {
-            disclaimerText = ("En tu estado de cuenta verás el cargo como %0".localized as NSString).replacingOccurrences(of: "%0", with: "\(statementDescription)")
+            disclaimerText = ("En tu estado de cuenta verás el cargo como {0}".localized as NSString).replacingOccurrences(of: "{0}", with: "\(statementDescription)")
         }
 
         let bodyProps = PXPaymentMethodProps(paymentMethodIcon: image, title: amountTitle.toAttributedString(), subtitle: subtitle, descriptionTitle: pmDescription.toAttributedString(), descriptionDetail: descriptionDetail, disclaimer: disclaimerText?.toAttributedString(), backgroundColor: .white, lightLabelColor: ThemeManager.shared.labelTintColor(), boldLabelColor: ThemeManager.shared.boldLabelTintColor())

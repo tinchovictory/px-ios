@@ -10,13 +10,13 @@
 "No" = "No";
 
 "Cargando..." = "Loading...";
-"invalid_cvv_length" = "Ingresa los %1$s números del código de seguridad";
+"invalid_cvv_length" = "Ingresa los {0} números del código de seguridad";
 "invalid_field" = "Check this information";
-"invalid_card_length" = "Enter the %1$s card numbers";
+"invalid_card_length" = "Enter the {0} card numbers";
 "invalid_card_length_general" = "Enter all card numbers";
 "security_code" = "Security Code";
-"cod_seg_desc" = "Last %1$s digits code on the back of the card";
-"cod_seg_desc_amex" = "%1$s digits code on the front of the card";
+"cod_seg_desc" = "Last {0} digits code on the back of the card";
+"cod_seg_desc_amex" = "{0} digits code on the front of the card";
 "NOT_INSTALLMENTS_FOUND" = "No interest were found available for an amount of $";
 "PAYMENT_ERROR" = "Payment failed.";
 "No se ha podido obtener los métodos de pago con esta preferencia" = "Payment methods could not be obtained with this preference";
@@ -35,16 +35,16 @@
 // -- CallForAuth
 
 "Debes autorizar ante %p el pago de %t a Mercado Pago" = "You must authorize with %p the payment of %t to Mercado Pago";
-"Ya hable con %0 y me autorizó" = "Already talked with %0 and I am authorized";
+"Ya hable con {0} y me autorizó" = "Already talked with {0} and I am authorized";
 "El teléfono está al dorso de tu tarjeta." = "The phone number is on the back of your card.";
 "Pagar con otro medio" = "Choose another payment method";
 
 // -- Approved
 "¡Listo! Se acreditó tu pago" = "Done! Your payment was accredited";
 "También enviamos el código a tu email" = "También enviamos el código a tu email";
-"Te enviaremos este comprobante a %0" = "We will send you the data to %0";
+"Te enviaremos este comprobante a {0}" = "We will send you the data to {0}";
 "Dinero en cuenta de MercadoPago" = "Account Money of MercadoPago";
-"En tu estado de cuenta verás el cargo como %0" = "On your statement you will see the charge as %0";
+"En tu estado de cuenta verás el cargo como {0}" = "On your statement you will see the charge as {0}";
 "Comprobante" = "Ticket";
 
 // -- Pending
@@ -56,20 +56,20 @@
 "Por favor, intenta pagar con otro medio." = "Please try to pay by other means.";
 "¿Qué puedo hacer?" = "What can I do?";
 "rejected_high_risk_title"="For security reasons, we had to reject your payment";
-"cc_rejected_insufficient_amount_title" = "Yours %0 has insufficient funds";
-"cc_rejected_other_reason_title"="%0 did not process the payment";
+"cc_rejected_insufficient_amount_title" = "Yours {0} has insufficient funds";
+"cc_rejected_other_reason_title"="{0} did not process the payment";
 "cc_rejected_max_attempts_title"= "You reached the limit of attempts allowed";
-"cc_rejected_duplicated_payment_title"="%0 did not process the payment";
-"cc_rejected_card_disabled_title"="Calls to %1$s for activate your card";
-"cc_rejected_bad_filled_other_title"="Some data of your %1$s is incorect";
-"cc_rejected_bad_filled_card_number_title"="Algún dato de tu %0 es incorrecto";
-"cc_rejected_bad_filled_security_code_title"="Algún dato de tu %0 es incorrecto";
+"cc_rejected_duplicated_payment_title"="{0} did not process the payment";
+"cc_rejected_card_disabled_title"="Calls to {0} for activate your card";
+"cc_rejected_bad_filled_other_title"="Some data of your {0} is incorect";
+"cc_rejected_bad_filled_card_number_title"="Algún dato de tu {0} es incorrecto";
+"cc_rejected_bad_filled_security_code_title"="Algún dato de tu {0} es incorrecto";
 "cc_rejected_bad_filled_date_title"="The expiration date is not correct.";
 "cc_rejected_call_for_authorize_title" = "Could not authorize it?";
 "Ingresalo nuevamente" = "Ingresalo nuevamente";
 "review_and_confirm_toast_error"="Something went wrong";
 "El número de identificación es inválido" = "Invalid identification number";
-"cc_rejected_plugin_pm_title" = "%0 did not process the payment";
+"cc_rejected_plugin_pm_title" = "{0} did not process the payment";
 
 "rejected_high_risk_subtitle_credit_card"="If you want to pay with the money from your account, contact Mercado Pago customer service.\n\n Or if you prefer, you can choose other payment method.";
 "cc_rejected_insufficient_amount_subtitle_credit_card" = "Don't worry! You can choose another payment method.";
@@ -87,7 +87,7 @@
 "cc_rejected_max_attempts_subtitle_debit_card"= "Choose another card or another payment method.";
 "cc_rejected_duplicated_payment_subtitle_debit_card"="If you need to repay, use another card or other payment method.";
 "cc_rejected_card_disabled_subtitle_debit_card"="The phone number is on the back of your card.";
-"cc_rejected_bad_filled_card_number_subtitle_debit_card"="The number of your %0 is incorrect.";
+"cc_rejected_bad_filled_card_number_subtitle_debit_card"="The number of your {0} is incorrect.";
 "cc_rejected_bad_filled_security_code_subtitle_debit_card"="The security code is not correct";
 "cc_rejected_bad_filled_date_subtitle_debit_card"="The expiration date is not correct.";
 "cc_rejected_call_for_authorize_subtitle_debit_card" = "";
@@ -110,7 +110,7 @@
 "Ingresa el número de la tarjeta de crédito"="Enter all the numbers of the card";
 "Revisa este dato"="Check this information";
 "Ingresa el nombre y apellido impreso en la tarjeta"="Enter the name and last name printed on the card";
-"Ingresa los %1$s números del código de seguridad"="Enter the %1$s security code numbers";
+"Ingresa los {0} números del código de seguridad"="Enter the {0} security code numbers";
 "Método de pago no soportado"="Payment Method no supported";
 "Solo puedes pagar con "="You can only pay with ";
 "No puedes pagar con esta tarjeta"="Credit card not supported";
@@ -174,13 +174,13 @@
 "Sin interés"="Interest free";
 "Sin\u{00a0}interés"="Interest\u{00a0}free";
 "Uy, no pudimos procesar el pago"="Oops, we could not process your payment";
-"Algún dato de tu %1$s es incorrecto."="Some data of your %1$s is incorect.";
+"Algún dato de tu {0} es incorrecto."="Some data of your {0} is incorect.";
 "El teléfono está al dorso de tu tarjeta"="The phone number is on the back of your card";
 "Debes autorizar el pago ante tu tarjeta"="You must authorize the payment with your card";
-"Debes autorizar ante %1$s el pago de " = "You must authorize with %1$s the payment of ";
+"Debes autorizar ante {0} el pago de " = "You must authorize with {0} the payment of ";
 " a Mercado Pago" = " to Mercado Pago";
-"Ya hablé con %1$s y me autorizó" = "Already talked with %0 and I am authorized";
-"En tu estado de cuenta verás el cargo como %0" = "In your account yo will see the charge as %0";
+"Ya hablé con {0} y me autorizó" = "Already talked with {0} and I am authorized";
+"En tu estado de cuenta verás el cargo como {0}" = "In your account yo will see the charge as {0}";
 
 
 "Total"="Total";

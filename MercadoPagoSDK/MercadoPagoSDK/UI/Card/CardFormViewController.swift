@@ -650,7 +650,7 @@ internal class CardFormViewController: MercadoPagoUIViewController, UITextFieldD
         case cvvLabel! :
             if !self.validateCvv() {
 
-                showMessage(("Ingresa los %1$s números del código de seguridad".localized as NSString).replacingOccurrences(of: "%1$s", with: ((viewModel.getGuessedPM()?.secCodeLenght())! as NSNumber).stringValue))
+                showMessage(("Ingresa los {0} números del código de seguridad".localized as NSString).replacingOccurrences(of: "{0}", with: ((viewModel.getGuessedPM()?.secCodeLenght())! as NSNumber).stringValue))
                 return
             }
             self.confirmPaymentMethod()

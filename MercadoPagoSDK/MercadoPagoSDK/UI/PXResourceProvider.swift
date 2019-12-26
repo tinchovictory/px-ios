@@ -44,14 +44,14 @@ internal class PXResourceProvider {
         let decimalSeparator = currency.getDecimalSeparatorOrDefault()
         let attributtedString = Utils.getAttributedAmount(amount, thousandSeparator: thousandSeparator, decimalSeparator: decimalSeparator, currencySymbol: currencySymbol, color: UIColor.px_white(), fontSize: PXHeaderRenderer.TITLE_FONT_SIZE, centsFontSize: PXHeaderRenderer.TITLE_FONT_SIZE / 2, smallSymbol: true)
         let amountString = attributtedString.string
-        let composedText = initialText.replacingOccurrences(of: "[amount]", with: amountString)
+        let composedText = initialText.replacingOccurrences(of: "{0}", with: amountString)
         return composedText
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_CARD_DISABLED(_ paymentMethodName: String?) -> String {
         if let paymentMethodName = paymentMethodName {
             let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_CARD_DISABLED
-            return key.localized.replacingOccurrences(of: "%1$s", with: paymentMethodName)
+            return key.localized.replacingOccurrences(of: "{0}", with: paymentMethodName)
         } else {
             return error_body_description_base.localized
         }
@@ -111,7 +111,7 @@ internal class PXResourceProvider {
 
         if let paymentMethodName = paymentMethodName {
             let key = error_body_action_text_base + PXPayment.StatusDetails.REJECTED_CALL_FOR_AUTHORIZE
-            return key.localized.replacingOccurrences(of: "%1$s", with: paymentMethodName)
+            return key.localized.replacingOccurrences(of: "{0}", with: paymentMethodName)
         } else {
             return error_body_action_text_base.localized
         }

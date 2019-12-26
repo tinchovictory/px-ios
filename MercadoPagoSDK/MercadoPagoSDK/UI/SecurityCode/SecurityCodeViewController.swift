@@ -91,7 +91,7 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
     @objc func continueAction() {
         securityCodeTextField.resignFirstResponder()
         guard securityCodeTextField.text?.count == viewModel.secCodeLenght() else {
-            let errorMessage: String = ("Ingresa los %1$s números del código de seguridad".localized as NSString).replacingOccurrences(of: "%1$s", with: ((self.viewModel.secCodeLenght()) as NSNumber).stringValue)
+            let errorMessage: String = ("Ingresa los {0} números del código de seguridad".localized as NSString).replacingOccurrences(of: "{0}", with: ((self.viewModel.secCodeLenght()) as NSNumber).stringValue)
             showErrorMessage(errorMessage)
             return
         }

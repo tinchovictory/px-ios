@@ -151,7 +151,7 @@ extension PXDiscountDetailViewController {
         if let maxCouponAmount = amountHelper.maxCouponAmount, !amountHelper.consumedDiscount {
             let attributes = [NSAttributedString.Key.font: Utils.getSemiBoldFont(size: PXLayout.XS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.boldLabelTintColor()]
             let amountAttributedString = Utils.getAttributedAmount(withAttributes: attributes, amount: maxCouponAmount, currency: currency, negativeAmount: false)
-            let string: String = ("discount_detail_modal_disclaimer".localized as NSString).replacingOccurrences(of: "%1$s", with: amountAttributedString.string)
+            let string: String = ("discount_detail_modal_disclaimer".localized as NSString).replacingOccurrences(of: "{0}", with: amountAttributedString.string)
             let attributedString = NSMutableAttributedString(string: string, attributes: attributes)
 
             return attributedString
@@ -167,7 +167,7 @@ extension PXDiscountDetailViewController {
             var message = "unique_discount_detail_modal_footer".localized
             if let expirationDate = amountHelper.campaign?.endDate {
                 let messageDate = "discount_end_date".localized
-                message.append(messageDate.replacingOccurrences(of: "%1s", with: Utils.getFormatedStringDate(expirationDate)))
+                message.append(messageDate.replacingOccurrences(of: "{0}", with: Utils.getFormatedStringDate(expirationDate)))
             }
             return NSAttributedString(string: message, attributes: attributes)
         } else if let maxRedeemPerUser = amountHelper.campaign?.maxRedeemPerUser, maxRedeemPerUser > 1 {
