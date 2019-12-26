@@ -12,7 +12,7 @@ internal extension PXDiscount {
     /// :nodoc:
     override open var description: String {
         if getDiscountDescription() != "" {
-            return getDiscountDescription() + "discount_coupon_detail_description".localized
+            return ("discount_coupon_detail_description".localized as NSString).replacingOccurrences(of: "{0}", with: getDiscountDescription())
         } else {
             return ""
         }

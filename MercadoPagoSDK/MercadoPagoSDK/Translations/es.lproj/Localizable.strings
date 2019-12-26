@@ -115,7 +115,7 @@
 "cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
 "rejected_default_title" = "No pudimos procesar tu pago";
 "discount_coupon_detail_default_concept" = "Descuento";
-"discount_coupon_detail_description" = "de descuento";
+"discount_coupon_detail_description" = "{0} de descuento";
 "payment_result_screen_congrats_copy_button" = "¡Listo! Copiado.";
 "payment_result_screen_congrats_finish_button" = "Continuar";
 "card_form_next_button" = "Continuar";
