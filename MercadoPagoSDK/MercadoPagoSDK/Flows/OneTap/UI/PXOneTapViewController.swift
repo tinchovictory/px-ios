@@ -347,7 +347,7 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
     func didTapCharges() {
         if let vc = viewModel.getChargeRuleViewController() {
-            let defaultTitle = "onetap_purchase_summary_charges".localized
+            let defaultTitle = "Cargos".localized
             let title = vc.title ?? defaultTitle
             PXComponentFactory.Modal.show(viewController: vc, title: title) {
                 if UIDevice.isSmallDevice() {
@@ -433,7 +433,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
     func showDisabledCardModal(status: PXStatus) {
         guard let message = status.secondaryMessage?.message else {return}
         let vc = PXOneTapDisabledViewController(text: message)
-        let buttonTitle = "px_dialog_detail_payment_method_disable_link".localized
+        let buttonTitle = "Pagar con otro medio".localized
         PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: {
             //Select first item
             self.slider.goToItemAt(index: 0, animated: false)

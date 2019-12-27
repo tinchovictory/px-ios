@@ -10,7 +10,7 @@ import Foundation
 
 internal class PXResourceProvider {
 
-    static var error_body_title_base = "error_body_title_"
+    static var error_body_title_base = "¿Qué puedo hacer?"
     static var error_body_title_c4a = "error_body_title_call_for_authorize"
     static var error_body_description_base = "error_body_description_"
     static var error_body_action_text_base = "error_body_action_text_"

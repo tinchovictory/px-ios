@@ -15,9 +15,8 @@ class PXDisabledViewController: UIViewController {
 
         let amTitle = "disabled_title_am"
         let cardTitle = "disabled_title_card"
-        let amDescription = "disabled_description_am"
-        let cardDescription = "disabled_description_card"
-        let buttonText = "px_dialog_detail_payment_method_disable_link"
+        let otherPaymentMethod = "other_payment_method"
+        let buttonText = "Pagar con otro medio"
 
         title.text = isAccountMoney ? amTitle.localized : cardTitle.localized
         view.addSubview(title)
@@ -31,7 +30,7 @@ class PXDisabledViewController: UIViewController {
         _ = PXLayout.pinRight(view: title, to: view, withMargin: PXLayout.M_MARGIN).isActive = true
 
         let description = UILabel()
-        description.text = isAccountMoney ? amDescription.localized : cardDescription.localized
+        description.text = otherPaymentMethod.localized
         view.addSubview(description)
         description.font = Utils.getFont(size: PXLayout.XS_FONT)
         description.textColor = ThemeManager.shared.labelTintColor()

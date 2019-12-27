@@ -16,10 +16,10 @@ class PayerInfoViewController: MercadoPagoUIViewController, UITextFieldDelegate,
 
     let NAME_INPUT_TEXT = "payer_info_name"
     let SURNAME_INPUT_TEXT = "payer_info_surname"
-    let NUMBER_INPUT_TEXT = "payer_info_number"
+    let NUMBER_INPUT_TEXT = "Número"
     let LEGAL_INPUT_TEXT = "payer_info_legal"
-    let TYPE_INPUT_TEXT = "payer_info_type"
-    let CONTINUE_INPUT_TEXT = "card_form_next_button"
+    let TYPE_INPUT_TEXT = "Tipo"
+    let CONTINUE_INPUT_TEXT = "Continuar"
     let PREVIOUS_INPUT_TEXT = "card_form_previous_button"
 
     var currentInput: UIView!

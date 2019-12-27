@@ -244,7 +244,7 @@ internal class IdentificationViewController: MercadoPagoUIViewController, UIText
             toolbar.barStyle = UIBarStyle.default
             toolbar.isUserInteractionEnabled = true
 
-            let buttonNext = UIBarButtonItem(title: "card_form_next_button".localized, style: .plain, target: self, action: #selector(IdentificationViewController.rightArrowKeyTapped))
+            let buttonNext = UIBarButtonItem(title: "Continuar".localized, style: .plain, target: self, action: #selector(IdentificationViewController.rightArrowKeyTapped))
             let buttonPrev = UIBarButtonItem(title: "card_form_previous_button".localized, style: .plain, target: self, action: #selector(IdentificationViewController.leftArrowKeyTapped))
 
             let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
