@@ -34,5 +34,21 @@
             <string>Se acreditará en {0} días hábiles</string>
         </dict>
     </dict>
+    <key>discount</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@variable_0@</string>
+        <key>variable_0</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>d</string>
+            <key>one</key>
+            <string>Descuento</string>
+            <key>other</key>
+            <string>Descuentos</string>
+        </dict>
+    </dict>
 </dict>
 </plist>

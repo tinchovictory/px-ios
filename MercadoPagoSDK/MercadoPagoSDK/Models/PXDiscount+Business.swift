@@ -19,7 +19,7 @@ internal extension PXDiscount {
     }
 
     func getDiscountDescription() -> String {
-        return name ?? "discount_coupon_detail_default_concept".localized
+        return name ?? String(format: "discount".localized, 1)
     }
 
     func getDiscountAmount() -> Double? {

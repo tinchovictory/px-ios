@@ -55,7 +55,6 @@
 "Producto" = "Producto";
 "Mora" = "Mora";
 "Cargos" = "Cargos";
-"Descuentos" = "Descuentos";
 "Impuestos" = "Impuestos";
 "Envío" = "Envío";
 "¡Apúrate a pagar!" = "¡Apúrate a pagar!";
@@ -98,7 +97,6 @@
 "rejected_high_risk_title" = "No puedes usar tu dinero en Mercado Pago para este pago";
 "cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
 "rejected_default_title" = "No pudimos procesar tu pago";
-"discount_coupon_detail_default_concept" = "Descuento";
 "discount_coupon_detail_description" = "{0} de descuento";
 "payment_result_screen_congrats_copy_button" = "¡Listo! Copiado.";
 "card_form_previous_button" = "Anterior";
