@@ -13,9 +13,9 @@
             <key>NSStringFormatValueTypeKey</key>
             <string>d</string>
             <key>one</key>
-            <string>Se acreditará en %d hora</string>
+            <string>Se acreditará en {0} hora</string>
             <key>other</key>
-            <string>Se acreditará en %d horas</string>
+            <string>Se acreditará en {0} horas</string>
         </dict>
     </dict>
     <key>px_accreditation_time_working_day</key>
@@ -29,9 +29,9 @@
             <key>NSStringFormatValueTypeKey</key>
             <string>d</string>
             <key>one</key>
-            <string>Se acreditará en %d día hábil</string>
+            <string>Se acreditará en {0} día hábil</string>
             <key>other</key>
-            <string>Se acreditará en %d días hábiles</string>
+            <string>Se acreditará en {0} días hábiles</string>
         </dict>
     </dict>
 </dict>
