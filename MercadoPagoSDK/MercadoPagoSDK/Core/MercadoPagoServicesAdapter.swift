@@ -29,18 +29,6 @@ internal class MercadoPagoServicesAdapter {
         return 15.0
     }
 
-    func getCheckoutPreference(checkoutPreferenceId: String, callback : @escaping (PXCheckoutPreference) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
-
-        mercadoPagoServices.getCheckoutPreference(checkoutPreferenceId: checkoutPreferenceId, callback: { (pxCheckoutPreference) in
-            guard let siteId = pxCheckoutPreference.siteId else {
-                // TODO: faltal error?
-                return
-            }
-            SiteManager.shared.setSite(siteId: siteId)
-            callback(pxCheckoutPreference)
-            }, failure: failure)
-    }
-
     func getInstructions(paymentId: String, paymentTypeId: String, callback : @escaping (PXInstructions) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
 
         let int64PaymentId = Int64(paymentId) //TODO: FIX
@@ -51,33 +39,24 @@ internal class MercadoPagoServicesAdapter {
     }
 
     typealias PaymentSearchExclusions = (excludedPaymentTypesIds: [String], excludedPaymentMethodsIds: [String])
-    typealias PaymentSearchOneTapInfo = (cardsWithEsc: [String]?, supportedPlugins: [String]?)
     typealias ExtraParams = (defaultPaymentMethod: String?, differentialPricingId: String?, defaultInstallments: String?, expressEnabled: Bool, hasPaymentProcessor: Bool, splitEnabled: Bool, maxInstallments: String?)
 
-    func getPaymentMethodSearch(amount: Double, exclusions: PaymentSearchExclusions, oneTapInfo: PaymentSearchOneTapInfo, payer: PXPayer, site: String, extraParams: ExtraParams?, discountParamsConfiguration: PXDiscountParamsConfiguration?, marketplace: String?, charges: [PXPaymentTypeChargeRule]?, callback : @escaping (PXPaymentMethodSearch) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
+    func getOpenPrefInitSearch(preference: PXCheckoutPreference, cardIdsWithEsc: [String], extraParams: ExtraParams?, discountParamsConfiguration: PXDiscountParamsConfiguration?, flow: String?, charges: [PXPaymentTypeChargeRule], headers: [String: String]?, callback : @escaping (PXInitDTO) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
 
-        payer.setAccessToken(accessToken: mercadoPagoServices.payerAccessToken)
+        let oneTapEnabled: Bool = extraParams?.expressEnabled ?? false
+        let splitEnabled: Bool = extraParams?.splitEnabled ?? false
 
-        let pxSite = getPXSiteFromId(site)
+        mercadoPagoServices.getOpenPrefInitSearch(pref: preference, cardsWithEsc: cardIdsWithEsc, oneTapEnabled: oneTapEnabled, splitEnabled: splitEnabled, discountParamsConfiguration: discountParamsConfiguration, flow: flow, charges: charges, headers: headers, callback: { (pxPaymentMethodSearch) in
+            callback(pxPaymentMethodSearch)
+        }, failure: failure)
+    }
 
-        var expressValue: String = "false"
-        if let eParams = extraParams, eParams.expressEnabled {
-            expressValue = "true"
-        }
+    func getClosedPrefInitSearch(preferenceId: String, cardIdsWithEsc: [String], extraParams: ExtraParams?, discountParamsConfiguration: PXDiscountParamsConfiguration?, flow: String?, charges: [PXPaymentTypeChargeRule], headers: [String: String]?, callback : @escaping (PXInitDTO) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
 
-        var splitValue: String = "false"
-        if let eParams = extraParams, eParams.splitEnabled {
-            splitValue = "true"
-        }
+        let oneTapEnabled: Bool = extraParams?.expressEnabled ?? false
+        let splitEnabled: Bool = extraParams?.splitEnabled ?? false
 
-        var excludedPaymentTypesIds = exclusions.excludedPaymentTypesIds
-        if let eParams = extraParams, !eParams.hasPaymentProcessor {
-        // Only until our backend can pay with account money.
-        // Add exclusion for account money.
-        excludedPaymentTypesIds.append(PXPaymentTypes.ACCOUNT_MONEY.rawValue)
-        }
-
-        mercadoPagoServices.getPaymentMethodSearch(amount: amount, excludedPaymentTypesIds: exclusions.excludedPaymentTypesIds, excludedPaymentMethodsIds: exclusions.excludedPaymentMethodsIds, cardsWithEsc: oneTapInfo.cardsWithEsc, supportedPlugins: oneTapInfo.supportedPlugins, defaultPaymentMethod: extraParams?.defaultPaymentMethod, payer: payer, site: pxSite, differentialPricingId: extraParams?.differentialPricingId, defaultInstallments: extraParams?.defaultInstallments, expressEnabled: expressValue, splitEnabled: splitValue, discountParamsConfiguration: discountParamsConfiguration, marketplace: marketplace, charges: charges, maxInstallments: extraParams?.maxInstallments, callback: { (pxPaymentMethodSearch) in
+        mercadoPagoServices.getClosedPrefInitSearch(preferenceId: preferenceId, cardsWithEsc: cardIdsWithEsc, oneTapEnabled: oneTapEnabled, splitEnabled: splitEnabled, discountParamsConfiguration: discountParamsConfiguration, flow: flow, charges: charges, headers: headers, callback: { (pxPaymentMethodSearch) in
             callback(pxPaymentMethodSearch)
         }, failure: failure)
     }
@@ -153,10 +132,7 @@ internal class MercadoPagoServicesAdapter {
 
     open func getSummaryAmount(bin: String?, amount: Double, issuer: PXIssuer?, paymentMethodId: String, payment_type_id: String, differentialPricingId: String?, siteId: String?, marketplace: String?, discountParamsConfiguration: PXDiscountParamsConfiguration?, payer: PXPayer, defaultInstallments: Int?, charges: [PXPaymentTypeChargeRule]?, maxInstallments: Int?, callback: @escaping (PXSummaryAmount) -> Void, failure: @escaping ((_ error: NSError) -> Void)) {
 
-        mercadoPagoServices.getSummaryAmount(bin: bin, amount: amount, issuerId: issuer?.id, paymentMethodId: paymentMethodId, payment_type_id: payment_type_id, differentialPricingId: differentialPricingId, siteId: siteId, marketplace: marketplace, discountParamsConfiguration: discountParamsConfiguration, payer: payer, defaultInstallments: defaultInstallments, charges: charges, maxInstallments: maxInstallments, callback: { [weak self] (summaryAmount) in
-                guard let strongSelf = self else {
-                    return
-                }
+        mercadoPagoServices.getSummaryAmount(bin: bin, amount: amount, issuerId: issuer?.id, paymentMethodId: paymentMethodId, payment_type_id: payment_type_id, differentialPricingId: differentialPricingId, siteId: siteId, marketplace: marketplace, discountParamsConfiguration: discountParamsConfiguration, payer: payer, defaultInstallments: defaultInstallments, charges: charges, maxInstallments: maxInstallments, callback: { (summaryAmount) in
                 callback(summaryAmount)
             }, failure: failure)
     }

@@ -73,6 +73,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        slider.showBottomMessageIfNeeded(index: 0, targetIndex: 0)
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapPath(), properties: viewModel.getOneTapScreenProperties())
     }
 
@@ -162,7 +163,7 @@ extension PXOneTapViewController {
             PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
 
-        if let selectedCard = selectedCard, selectedCard.isDisabled {
+        if let selectedCard = selectedCard, !selectedCard.status.enabled {
             loadingButtonComponent?.setDisabled()
         }
 
@@ -261,16 +262,16 @@ extension PXOneTapViewController {
     }
 
     private func confirmPayment() {
-        if viewModel.shouldValidateWithBiometric(withCardId: selectedCard?.cardId) {
+        if viewModel.shouldValidateWithBiometric() {
             let biometricModule = PXConfiguratorManager.biometricProtocol
             biometricModule.validate(config: PXConfiguratorManager.biometricConfig, onSuccess: { [weak self] in
                 DispatchQueue.main.async {
                     self?.doPayment()
                 }
-            }) { [weak self] _ in
-                // User abort validation or validation fail.
-                self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
-            }
+                }, onError: { [weak self] _ in
+                    // User abort validation or validation fail.
+                    self?.trackEvent(path: TrackingPaths.Events.getErrorPath())
+            })
         } else {
             doPayment()
         }
@@ -389,9 +390,10 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
         // Add card. - card o credits payment method selected
         let validData = targetModel.cardData != nil || targetModel.isCredits
-        let shouldDisplay = validData && !targetModel.isDisabled
+        let shouldDisplay = validData && targetModel.status.enabled
         if shouldDisplay {
             displayCard(targetModel: targetModel)
+            loadingButtonComponent?.setEnabled()
         } else {
             loadingButtonComponent?.setDisabled()
             headerView?.updateModel(viewModel.getHeaderViewModel(selectedCard: nil))
@@ -424,9 +426,23 @@ extension PXOneTapViewController: PXCardSliderProtocol {
         }
     }
 
-    func disabledCardDidTap(isAccountMoney: Bool) {
-        let vc = PXDisabledViewController(isAccountMoney: isAccountMoney)
-        PXComponentFactory.Modal.show(viewController: vc, title: nil)
+    func disabledCardDidTap(status: PXStatus) {
+        showDisabledCardModal(status: status)
+    }
+
+    func showDisabledCardModal(status: PXStatus) {
+        guard let message = status.secondaryMessage?.message else {return}
+        let vc = PXOneTapDisabledViewController(text: message)
+        let buttonTitle = "px_dialog_detail_payment_method_disable_link".localized
+        PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: {
+            //Select first item
+            self.slider.goToItemAt(index: 0, animated: false)
+            if let card = self.viewModel.getCardSliderViewModel().first {
+                self.newCardDidSelected(targetModel: card)
+            }
+        })
+
+        trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
     }
 
     func addPaymentMethodCardDidTap() {
@@ -444,7 +460,12 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
 // MARK: Installment Row Info delegate.
 extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapInstallmentsSelectorProtocol {
+    func disabledCardTapped(status: PXStatus) {
+        showDisabledCardModal(status: status)
+    }
+
     func payerCostSelected(_ payerCost: PXPayerCost) {
+        let selectedIndex = slider.getSelectedIndex()
         // Update cardSliderViewModel
         if let infoRow = installmentInfoRow, viewModel.updateCardSliderViewModel(newPayerCost: payerCost, forIndex: infoRow.getActiveRowIndex()) {
             // Update selected payer cost.
@@ -453,8 +474,15 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             // Update installmentInfoRow viewModel
             installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
             PXFeedbackGenerator.heavyImpactFeedback()
+
+            //Update card bottom message
+            let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits)
+            viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
+            slider.update(viewModel.getCardSliderViewModel())
         }
-        installmentInfoRow?.toggleInstallments()
+        installmentInfoRow?.toggleInstallments(completion: { [weak self] (_) in
+            self?.slider.showBottomMessageIfNeeded(index: selectedIndex, targetIndex: selectedIndex)
+        })
     }
 
     func hideInstallments() {
@@ -481,7 +509,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
         })
     }
 
-    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?) {
+    func showInstallments(installmentData: PXInstallment?, selectedPayerCost: PXPayerCost?, interest: PXInstallmentsConfiguration?, reimbursement: PXInstallmentsConfiguration?) {
         guard let installmentData = installmentData, let installmentInfoRow = installmentInfoRow else {
             return
         }
@@ -495,7 +523,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
 
         self.installmentsSelectorView?.removeFromSuperview()
         self.installmentsSelectorView?.layoutIfNeeded()
-        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost)
+        let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost, interest: interest, reimbursement: reimbursement)
         let installmentsSelectorView = PXOneTapInstallmentsSelectorView(viewModel: viewModel)
         installmentsSelectorView.delegate = self
         self.installmentsSelectorView = installmentsSelectorView
@@ -525,6 +553,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
         installmentsSelectorView.expand(animator: pxAnimator) {
             self.installmentInfoRow?.enableTap()
         }
+        installmentsSelectorView.tableView.reloadData()
     }
 }
 

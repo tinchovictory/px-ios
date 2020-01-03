@@ -11,17 +11,9 @@ extension PaymentVaultViewModel {
     func getAvailablePaymentMethodForTracking() -> [Any] {
         var dic: [Any] = []
         if isRoot {
-            for plugin in paymentMethodPlugins {
-                var pluginDic: [String: Any] = [:]
-                pluginDic["payment_method_type"] = plugin.paymentMethodPluginId
-                pluginDic["payment_method_id"] = plugin.paymentMethodPluginId
-                dic.append(pluginDic)
-            }
             if let customerPaymentOptions = customerPaymentOptions {
-                for savedCard in customerPaymentOptions {
-                    if let customerPM = savedCard as? CustomerPaymentMethod {
-                        dic.append(customerPM.getCustomerPaymentMethodForTrancking())
-                    }
+                for savedCard: CustomerPaymentMethod in customerPaymentOptions {
+                    dic.append(savedCard.getCustomerPaymentMethodForTrancking())
                 }
             }
         }

@@ -114,7 +114,11 @@ internal class Utils {
         attributedSymbol.append(space)
         attributedSymbol.append(attributedAmount)
         if cents != "00" {
-            attributedSymbol.append(space)
+            if decimalSeparator.isNotEmpty {
+                attributedSymbol.append(decimalSeparator.toAttributedString())
+            } else {
+                attributedSymbol.append(space)
+            }
             attributedSymbol.append(attributedCents)
         }
         return attributedSymbol
@@ -357,8 +361,7 @@ internal class Utils {
     }
 
     class func getMasks(inDictionary dictID: String, withKey key: String) -> [TextMaskFormater]? {
-        let path = ResourceManager.shared.getBundle()!.path(forResource: "IdentificationTypes", ofType: "plist")
-        let dictionary = NSDictionary(contentsOfFile: path!)
+        let dictionary = ResourceManager.shared.getDictionaryForResource(named: "IdentificationTypes")
 
         if let IDtype = dictionary?.value(forKey: dictID) as? NSDictionary {
             if let mask = IDtype.value(forKey: key) as? String, mask != ""{
@@ -388,11 +391,11 @@ internal class Utils {
         }
     }
 
-    static internal func findPaymentMethodSearchItemInGroups(_ paymentMethodSearch: PXPaymentMethodSearch, paymentMethodId: String, paymentTypeId: PXPaymentTypes?) -> PXPaymentMethodSearchItem? {
-        guard paymentMethodSearch.paymentMethodSearchItem != nil
+    static internal func findPaymentMethodSearchItemInGroups(_ paymentMethodSearch: PXInitDTO, paymentMethodId: String, paymentTypeId: PXPaymentTypes?) -> PXPaymentMethodSearchItem? {
+        guard paymentMethodSearch.groups != nil
             else { return nil }
 
-        if let result = Utils.findPaymentMethodSearchItemById(paymentMethodSearch.paymentMethodSearchItem, paymentMethodId: paymentMethodId, paymentTypeId: paymentTypeId) {
+        if let result = Utils.findPaymentMethodSearchItemById(paymentMethodSearch.groups, paymentMethodId: paymentMethodId, paymentTypeId: paymentTypeId) {
             return result
         }
         return nil
@@ -524,8 +527,7 @@ internal class Utils {
     }
 
     internal static func getSetting<T>(identifier: String) -> T? {
-        let path = ResourceManager.shared.getBundle()!.path(forResource: Utils.kSdkSettingsFile, ofType: "plist")
-        let dictPM = NSDictionary(contentsOfFile: path!)
+        let dictPM = ResourceManager.shared.getDictionaryForResource(named: Utils.kSdkSettingsFile)
         return dictPM![identifier] as? T
     }
 

@@ -22,7 +22,7 @@ internal extension PXPaymentFlow {
     }
 
     func createPayment() {
-        guard let paymentData = model.amountHelper?.getPaymentData(), let checkoutPreference = model.checkoutPreference else {
+        guard let _ = model.amountHelper?.getPaymentData(), let _ = model.checkoutPreference else {
             return
         }
 
@@ -62,14 +62,14 @@ internal extension PXPaymentFlow {
 
     func getPointsAndDiscounts() {
 
-        var paymentIds: [String]?
+        var paymentIds = [String]()
         if let paymentResultId = model.paymentResult?.paymentId {
-            paymentIds?.append(paymentResultId)
+            paymentIds.append(paymentResultId)
         } else if let businessResult = model.businessResult {
             if let receiptLists = businessResult.getReceiptIdList() {
                 paymentIds = receiptLists
             } else if let receiptId = businessResult.getReceiptId() {
-                paymentIds?.append(receiptId)
+                paymentIds.append(receiptId)
             }
         }
 
