@@ -9,4 +9,4 @@ source_directories:
       - MercadoPagoSDK/MercadoPagoSDK/Translations/es-AR.lproj
       - MercadoPagoSDK/MercadoPagoSDK/Translations/es-MX.lproj
       - MercadoPagoSDK/MercadoPagoSDK/Translations/es-VE.lproj
-      - MercadoPagoSDK/MercadoPagoSDK/Translations/pt.lproj
+      - MercadoPagoSDK/MercadoPagoSDK/Translations/pt-BR.lproj
