@@ -45,10 +45,9 @@
 "¿Cuál es el tipo de persona?" = "¿Cuál es el tipo de persona?";
 "¿Cuál es tu banco?" = "¿Cuál es tu banco?";
 "Pagar con otro medio" = "Pagar con otro medio";
-"Estamos procesando el pago" = "Estamos procesando el pago";
 "terminada en" = "terminada en";
 "Total" = "Total";
-"¿Cómo quieres pagar?" = "¿Cómo quieres pagar?";
+"¿Cómo quieres pagar?" = "¿Cómo querés pagar?";
 "Procesando tu pago" = "Procesando tu pago";
 "¿Con qué tarjeta?" = "¿Con qué tarjeta?";
 "Producto" = "Producto";
@@ -56,7 +55,7 @@
 "Cargos" = "Cargos";
 "Impuestos" = "Impuestos";
 "Envío" = "Envío";
-"¡Apúrate a pagar!" = "¡Apúrate a pagar!";
+"¡Apúrate a pagar!" = "¡Apurate a pagar!";
 "de" = "de";
 "Número de operación" = "Número de operación";
 "Se acreditará instantáneamente" = "Se acreditará instantáneamente";
@@ -95,12 +94,6 @@
 "cc_rejected_bad_filled_title" = "Algún dato de la tarjeta es inválido";
 "rejected_high_risk_title" = "No puedes usar tu dinero en Mercado Pago para este pago";
 "cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
-"cc_rejected_other_reason_title" = "{0} no procesó el pago";
-"rejected_insufficient_data_title" = "No fue posible procesar su pago";
-"rejected_by_bank_title" = "No fue posible procesar su pago";
-"cc_rejected_plugin_pm_title" = "{0} no procesó el pago";
-"error_body_description_rejected_high_risk" = "Intenta pagar con otro medio.";
-"rejected_by_regulations_title" = "No pudimos procesar tu pago";
 "rejected_default_title" = "No pudimos procesar tu pago";
 "discount_coupon_detail_description" = "{0} de descuento";
 "payment_result_screen_congrats_copy_button" = "¡Listo! Copiado.";
@@ -149,7 +142,7 @@
 "disabled_disclaimer_card" = "Tarjeta no disponible para este pago";
 "a las" = "a las";
 "hs" = "hs";
-"px_dialog_detail_payment_method_disable_high_risk" =  "We rejected your payment.";
+"px_dialog_detail_payment_method_disable_high_risk" = "We rejected your payment.";
 "px_dialog_detail_payment_method_disable_black_list" = "We rejected the payment with this card.";
 "px_dialog_detail_payment_method_disable_insufficient_amount" = "Your funds are insufficient or you exceeded the purchase limit.";
 "px_dialog_detail_different_payment_method" = "Try paying with a different payment method.";
