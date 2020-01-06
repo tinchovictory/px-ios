@@ -48,7 +48,6 @@
 "Estamos procesando el pago" = "Estamos procesando el pago";
 "terminada en" = "terminada en";
 "Total" = "Total";
-"Revisa si está todo bien..." = "Revisa si está todo bien...";
 "¿Cómo quieres pagar?" = "¿Cómo quieres pagar?";
 "Procesando tu pago" = "Procesando tu pago";
 "¿Con qué tarjeta?" = "¿Con qué tarjeta?";
@@ -111,7 +110,7 @@
 "bank_deal_details_date_format" = "Hasta el %@";
 "bank_deals_screen_title" = "Promociones";
 "review_terms_and_conditions" = "Al pagar, declaro que soy mayor de edad y acepto los Términos y Condiciones.";
-"review_discount_terms_and_conditions" = "Descuento exclusivo de Mercado Libre y Mercado Pago. Ver condiciones";
+"review_discount_terms_and_conditions" = "Descuento exclusivo de Mercado Libre y Mercado Pago.";
 "review_discount_terms_and_conditions_link" = "Ver condiciones";
 "discount_detail_modal_title" = "Mi descuento";
 "discount_detail_modal_footer" = "Los descuentos no son acumulables. Te damos el más alto para este pago.";
