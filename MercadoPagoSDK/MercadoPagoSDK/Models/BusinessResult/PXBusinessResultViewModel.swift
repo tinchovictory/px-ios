@@ -325,6 +325,12 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return bodyComponent.render()
     }
 
+    func shouldShowPaymentMethod() -> Bool {
+        let bodyComponent = buildBodyComponent() as? PXBodyComponent
+        let hasBodyError = bodyComponent?.hasBodyError() ?? false
+        return !hasInstructions() && !hasBodyError
+    }
+
     func getPaymentData() -> PXPaymentData? {
         return paymentData
     }
@@ -339,6 +345,18 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
     func getSplitAmountHelper() -> PXAmountHelper? {
         return amountHelper
+    }
+
+    func shouldShowErrorBody() -> Bool {
+        let bodyComponent = buildBodyComponent() as? PXBodyComponent
+        return bodyComponent?.hasBodyError() ?? false
+    }
+
+    func getErrorBodyView() -> UIView? {
+        if shouldShowErrorBody() {
+            return buildBodyComponent()?.render()
+        }
+        return nil
     }
 
     func getFooterMainAction() -> PXAction? {
