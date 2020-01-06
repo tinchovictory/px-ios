@@ -51,7 +51,7 @@ open class PXPaymentProcessorNavigationHandler: NSObject {
             if paymentStatus == .APPROVED {
                 statusDetailsStr = ""
             } else {
-                statusDetailsStr = PXRejectedStatusDetail.REJECTED_PLUGIN_PM.rawValue
+                statusDetailsStr = PXRejectedStatusDetail.OTHER_REASON.rawValue
             }
         }
 

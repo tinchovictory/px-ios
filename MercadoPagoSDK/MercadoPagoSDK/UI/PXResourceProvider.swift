@@ -68,12 +68,12 @@ internal class PXResourceProvider {
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_BY_BANK() -> String {
-        let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_BY_BANK
+        let key = error_body_description_base
         return key.localized
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_INSUFFICIENT_DATA() -> String {
-        let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_INSUFFICIENT_DATA
+        let key = error_body_description_base
         return key.localized
     }
 
@@ -98,7 +98,7 @@ internal class PXResourceProvider {
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_BY_REGULATIONS() -> String {
-        let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_BY_REGULATIONS
+        let key = error_body_description_base + "rejected_default_title".localized
         return key.localized
     }
 
