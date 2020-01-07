@@ -10,6 +10,7 @@ import Foundation
 
 internal class PXResourceProvider {
 
+    static var error_title_default = "rejected_default_title"
     static var error_body_title_base = "¿Qué puedo hacer?"
     static var error_body_title_c4a = "error_body_title_call_for_authorize"
     static var error_body_description_base = "error_body_description_"
@@ -119,5 +120,14 @@ internal class PXResourceProvider {
 
     static internal func getSecondaryTitleForErrorBodyForREJECTED_CALL_FOR_AUTHORIZE() -> String {
         return error_body_secondary_title_base.localized
+    }
+
+    static internal func getErrorTitleKey(statusDetail: String) -> String {
+        switch statusDetail {
+        case PXPayment.StatusDetails.REJECTED_BY_BANK, PXPayment.StatusDetails.REJECTED_INSUFFICIENT_DATA:
+            return error_title_default
+        default:
+            return statusDetail + "_title"
+        }
     }
 }
