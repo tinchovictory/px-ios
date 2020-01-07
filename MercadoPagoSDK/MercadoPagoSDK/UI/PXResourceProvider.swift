@@ -98,7 +98,7 @@ internal class PXResourceProvider {
     }
 
     static internal func getDescriptionForErrorBodyForREJECTED_BY_REGULATIONS() -> String {
-        let key = error_body_description_base + "rejected_default_title".localized
+        let key = error_body_description_base + PXPayment.StatusDetails.REJECTED_BY_REGULATIONS
         return key.localized
     }
 
