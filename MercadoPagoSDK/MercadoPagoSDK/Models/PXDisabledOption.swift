@@ -45,7 +45,7 @@ internal struct PXDisabledOption {
         case PXPayment.StatusDetails.REJECTED_BLACKLIST:
             secondaryString = "px_dialog_detail_payment_method_disable_black_list".localized
         case PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT:
-            secondaryString = "px_dialog_detail_payment_method_disable_insufficient_amount".localized
+            secondaryString = "error_body_description_cc_rejected_insufficient_amount".localized
         default:
             return nil
         }
