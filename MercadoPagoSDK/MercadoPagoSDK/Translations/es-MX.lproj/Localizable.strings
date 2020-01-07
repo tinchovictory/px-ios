@@ -94,6 +94,8 @@
 "cc_rejected_bad_filled_title" = "Algún dato de la tarjeta es inválido";
 "rejected_high_risk_title" = "No puedes usar tu dinero en Mercado Pago para este pago";
 "cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
+"cc_rejected_other_reason_title" = "{0} no procesó el pago";
+"error_body_description_rejected_high_risk" = "Intenta pagar con otro medio.";
 "rejected_default_title" = "No pudimos procesar tu pago";
 "discount_coupon_detail_description" = "{0} de descuento";
 "payment_result_screen_congrats_copy_button" = "¡Listo! Copiado.";
