@@ -20,6 +20,7 @@ DerivedData
 .bundle
 .fastlane/.bundle/
 vendor/
+po_files/
 
 ExampleObjectiveC/Pods/
 ExampleObjectiveC/Podfile.lock

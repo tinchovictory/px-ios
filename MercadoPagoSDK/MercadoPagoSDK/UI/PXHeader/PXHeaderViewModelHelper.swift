@@ -114,7 +114,7 @@ internal extension PXResultViewModel {
             statusDetail = badFilledKey
         }
 
-        let title = statusDetail + "_title"
+        let title = PXResourceProvider.getErrorTitleKey(statusDetail: statusDetail).localized
 
         return getTitleForRejected(paymentMethod, title)
     }
