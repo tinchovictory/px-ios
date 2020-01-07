@@ -29,7 +29,7 @@
 "Solo puedes pagar con" = "Solo puedes pagar con {0}";
 "No puedes pagar con esta tarjeta" = "No puedes pagar con esta tarjeta";
 "MAS INFO" = "MÁS INFO";
-"Ingresar tarjeta" = "Ingresar tarjeta";
+"Ingresar otra tarjeta" = "Ingresar otra tarjeta";
 "No te preocupes" = "No te preocupes, aún puedes terminar tu pago con:";
 "Nombre y apellido" = "Nombre y apellido";
 "OK" = "OK";
@@ -58,13 +58,11 @@
 "Envío" = "Envío";
 "¡Apúrate a pagar!" = "¡Apúrate a pagar!";
 "de" = "de";
-"Número de operación" = "Número de operación";
+"Operación #{0}" = "Operación #{0}";
 "Se acreditará instantáneamente" = "Se acreditará instantáneamente";
 "Se acreditará en" = "Se acreditará en";
 "día hábil" = "día hábil";
 "días hábiles" = "días hábiles";
-"hora" = "hora";
-"horas" = "horas";
 "Revisa si está todo bien" = "Revisa si está todo bien";
 "error_body_title_call_for_authorize" = "¿Cómo lo autorizo?";
 "error_body_description_" = "Por favor, intente pagar de otra forma.";
