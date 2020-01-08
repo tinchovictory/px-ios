@@ -145,5 +145,4 @@
 "hs" = "hs";
 "px_dialog_detail_payment_method_disable_high_risk" = "Rechazamos tu pago.";
 "px_dialog_detail_payment_method_disable_black_list" = "Rechazamos tu pago con esta tarjeta.";
-"px_dialog_detail_different_payment_method" = "Intenta pagar con otro medio.";
 "px_payment_method_disable_title" = "No puedes usar este medio de pago";
