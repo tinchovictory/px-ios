@@ -49,7 +49,6 @@
 "Total" = "Total";
 "¿Cómo quieres pagar?" = "¿Cómo quieres pagar?";
 "Procesando tu pago" = "Procesando tu pago";
-"¿Con qué tarjeta?" = "¿Con qué tarjeta?";
 "Producto" = "Producto";
 "Mora" = "Mora";
 "Cargos" = "Cargos";
@@ -79,7 +78,7 @@
 "error_body_action_text_cc_rejected_call_for_authorize" = "Ya hablé con {0} y me autorizó";
 "error_body_secondary_title_" = "¿No pudiste autorizarlo?";
 "cc_rejected_call_for_authorize_title" = "Tu tarjeta no autorizó el pago";
-"cc_rejected_card_disabled_button" = "Ya activé la tarjeta";
+"cc_rejected_card_disabled_button" = "Ya activé mi tarjeta";
 "cc_rejected_bad_filled_button" = "Reingresar los datos de la tarjeta";
 "cc_rejected_call_for_authorize_button" = "Ya autoricé el pago";
 "cc_rejected_duplicated_payment_button" = "Entendido";
@@ -93,7 +92,6 @@
 "cc_rejected_bad_filled_title" = "Algún dato de la tarjeta es inválido";
 "rejected_high_risk_title" = "No puedes usar tu dinero en Mercado Pago para este pago";
 "cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
-"cc_rejected_other_reason_title" = "{0} no procesó el pago";
 "error_body_description_rejected_high_risk" = "Intenta pagar con otro medio.";
 "rejected_default_title" = "No pudimos procesar tu pago";
 "discount_coupon_detail_description" = "{0} de descuento";
@@ -134,7 +132,7 @@
 "onetap_add_new_card_title" = "Agregar una tarjeta nueva";
 "onetap_purchase_summary_title" = "Tu compra";
 "onetap_select_installment_title" = "Selecciona la cuota";
-"terms_and_conditions_title" = "Términos y condiciones";
+"terms_and_conditions_title" = "Términos y Condiciones";
 "disabled_title_am" = "Tu dinero en Mercado Pago no está disponible ahora";
 "disabled_title_card" = "Esta tarjeta no está disponible ahora";
 "other_payment_method" = "No te preocupes, puedes usar otro medio para completar el pago.";

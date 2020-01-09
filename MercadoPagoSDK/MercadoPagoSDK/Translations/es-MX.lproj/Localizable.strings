@@ -49,7 +49,6 @@
 "Total" = "Total";
 "¿Cómo quieres pagar?" = "¿Cómo quieres pagar?";
 "Procesando tu pago" = "Procesando tu pago";
-"¿Con qué tarjeta?" = "¿Con qué tarjeta?";
 "Producto" = "Producto";
 "Mora" = "Mora";
 "Cargos" = "Cargos";
@@ -74,12 +73,12 @@
 "error_body_description_cc_rejected_duplicated_payment" = "No te preocupes, tu pago anterior se efectuó con éxito.";
 "error_body_description_cc_rejected_max_attempts" = "Como llegaste al límite de intentos con esta tarjeta, usa otro medio de pago.";
 "error_body_description_rejected_by_regulations" = "Para pagar con dinero en cuenta debes completar los datos faltantes.";
-"error_body_description_cc_rejected_invalid_installments" = "Elige otra cantidad de cuotas o usa otro medio de pago.";
+"error_body_description_cc_rejected_invalid_installments" = "Elige otra cantidad de mensualidades o usa otro medio de pago.";
 "error_body_action_text_" = "Ya hablé y me autorizó";
 "error_body_action_text_cc_rejected_call_for_authorize" = "Ya hablé con {0} y me autorizó";
 "error_body_secondary_title_" = "¿No pudiste autorizarlo?";
 "cc_rejected_call_for_authorize_title" = "Tu tarjeta no autorizó el pago";
-"cc_rejected_card_disabled_button" = "Ya activé la tarjeta";
+"cc_rejected_card_disabled_button" = "Ya activé mi tarjeta";
 "cc_rejected_bad_filled_button" = "Reingresar los datos de la tarjeta";
 "cc_rejected_call_for_authorize_button" = "Ya autoricé el pago";
 "cc_rejected_duplicated_payment_button" = "Entendido";
@@ -92,8 +91,7 @@
 "cc_rejected_high_risk_title" = "Rechazamos tu pago";
 "cc_rejected_bad_filled_title" = "Algún dato de la tarjeta es inválido";
 "rejected_high_risk_title" = "No puedes usar tu dinero en Mercado Pago para este pago";
-"cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de cuotas";
-"cc_rejected_other_reason_title" = "{0} no procesó el pago";
+"cc_rejected_invalid_installments_title" = "Tu tarjeta no acepta esta cantidad de meses";
 "error_body_description_rejected_high_risk" = "Intenta pagar con otro medio.";
 "rejected_default_title" = "No pudimos procesar tu pago";
 "discount_coupon_detail_description" = "{0} de descuento";
