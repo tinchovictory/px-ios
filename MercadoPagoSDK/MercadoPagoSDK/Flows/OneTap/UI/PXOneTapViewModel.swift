@@ -9,6 +9,10 @@
 import Foundation
 
 final class PXOneTapViewModel: PXReviewViewModel {
+    internal var publicKey: String = ""
+    internal var privateKey: String?
+    internal var siteId: String = ""
+    internal var excludedPaymentTypeIds: [String] = []
     // Privates
     private var cardSliderViewModel: [PXCardSliderViewModel] = [PXCardSliderViewModel]()
     private let installmentsRowMessageFontSize = PXLayout.XS_FONT
@@ -151,7 +155,7 @@ extension PXOneTapViewModel {
 
                 let cardData = PXCardDataFactory().create(cardName: "", cardNumber: "", cardCode: "", cardExpiration: "")
 
-                let creditsViewModel = CreditsViewModel(consumerCredits)
+                let creditsViewModel = PXCreditsViewModel(consumerCredits)
 
                 let viewModelCard = PXCardSliderViewModel(targetNode.paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: !targetNode.status.enabled), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits)
 
@@ -316,6 +320,10 @@ extension PXOneTapViewModel {
         return false
     }
 
+    func updateCardSliderViewModel(pxCardSliderViewModel: [PXCardSliderViewModel]) {
+        self.cardSliderViewModel = pxCardSliderViewModel
+    }
+
     func getPaymentMethod(targetId: String) -> PXPaymentMethod? {
         return paymentMethods.filter({ return $0.id == targetId }).first
     }
@@ -363,6 +371,13 @@ extension PXOneTapViewModel {
             $0.paymentTypeId == paymentTypeId
         })
         return filteredRules.first
+    }
+
+    func shouldUseOldCardForm() -> Bool {
+        if let newCardVersion = expressData?.filter({$0.newCard != nil}).first?.newCard?.version {
+            return newCardVersion == "v1"
+        }
+        return false
     }
 }
 
