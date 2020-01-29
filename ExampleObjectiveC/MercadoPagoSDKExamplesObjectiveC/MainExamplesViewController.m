@@ -14,12 +14,6 @@
 #import "PaymentPluginViewController.h"
 #import "MLMyMPPXTrackListener.h"
 
-#ifdef PX_PRIVATE_POD
-    @import MercadoPagoSDKV4;
-#else
-    @import MercadoPagoSDK;
-#endif
-
 @implementation MainExamplesViewController
 
 - (IBAction)checkoutFlow:(id)sender {
@@ -68,6 +62,9 @@
 
     //ONE TAP
     [advancedConfig setExpressEnabled:YES];
+    
+    //ESC
+    [advancedConfig setEscEnabled:YES];
 
     //PRODUCT ID
     [advancedConfig setProductIdWithId:@"bh31umv10flg01nmhg60"];
