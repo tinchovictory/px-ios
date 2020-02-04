@@ -267,11 +267,6 @@ extension PXNewResultViewController {
             views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
         }
 
-        // Consumer credits view
-        if let creditsExpectationView = viewModel.getCreditsExpectationView() {
-            views.append(ResultViewData(view: creditsExpectationView, verticalMargin: 0, horizontalMargin: 0))
-        }
-
         //Split Payment View
         if viewModel.shouldShowPaymentMethod(), let splitView = buildSplitPaymentMethodView() {
             views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
@@ -375,8 +370,11 @@ extension PXNewResultViewController {
             return nil
         }
 
-        let view = PXNewCustomView(data: data)
-        return view
+        if paymentData.paymentMethod?.id == "consumer_credits", let creditsExpectationView = viewModel.getCreditsExpectationView() {
+            return PXNewCustomView(data: data, bottomView: creditsExpectationView)
+        }
+
+        return PXNewCustomView(data: data)
     }
 
     //SPLIT PAYMENT METHOD

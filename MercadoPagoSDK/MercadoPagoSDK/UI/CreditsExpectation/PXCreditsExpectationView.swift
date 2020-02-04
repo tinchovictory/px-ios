@@ -41,9 +41,12 @@ final class PXCreditsExpectationView: PXBodyView {
         title.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
         title.textAlignment = .left
         title.numberOfLines = 0
-        self.pinFirstSubviewToTop(withMargin: PXLayout.L_MARGIN)?.isActive = true
+        self.pinFirstSubviewToTop(withMargin: PXLayout.ZERO_MARGIN)?.isActive = true
         PXLayout.matchWidth(ofView: title, toView: self, withPercentage: CGFloat(80), relation: .equal).isActive = true
-        PXLayout.centerHorizontally(view: title).isActive = true
+        NSLayoutConstraint.activate([
+            title.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            title.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        ])
 
         //Subtitle
         let detailLabel = UILabel()
@@ -57,7 +60,10 @@ final class PXCreditsExpectationView: PXBodyView {
         detailLabel.textAlignment = .left
         self.putOnBottomOfLastView(view: detailLabel, withMargin: PXLayout.XXXS_MARGIN)?.isActive = true
         PXLayout.matchWidth(ofView: detailLabel, toView: self, withPercentage: CGFloat(80), relation: .equal).isActive = true
-        PXLayout.centerHorizontally(view: detailLabel).isActive = true
-        self.pinLastSubviewToBottom(withMargin: PXLayout.L_MARGIN)?.isActive = true
+        NSLayoutConstraint.activate([
+            detailLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            detailLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        ])
+        self.pinLastSubviewToBottom(withMargin: PXLayout.ZERO_MARGIN)?.isActive = true
     }
 }
