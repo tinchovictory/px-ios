@@ -63,7 +63,7 @@ private extension PXCreditsExpectationView {
         titleLabel = title
         title.font = UIFont.ml_regularSystemFont(ofSize: TITLE_FONT_SIZE)
         title.text = props.title
-        title.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+        title.textColor = UIColor.black.withAlphaComponent(0.8)
         title.textAlignment = .left
         title.numberOfLines = 0
         return title
@@ -76,7 +76,7 @@ private extension PXCreditsExpectationView {
         subtitleLabel = detailLabel
         detailLabel.font = UIFont.ml_regularSystemFont(ofSize: SUBTITLE_FONT_SIZE)
         detailLabel.text = props.subtitle
-        detailLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.45)
+        detailLabel.textColor = UIColor.black.withAlphaComponent(0.45)
         detailLabel.textAlignment = .left
         return detailLabel
     }

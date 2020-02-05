@@ -142,10 +142,16 @@ class PXNewCustomView: UIView {
         if let expectationView = bottomView {
             pxContentView.addSubview(expectationView)
             NSLayoutConstraint.activate([
-                expectationView.topAnchor.constraint(equalTo: labelsView.bottomAnchor, constant: PXLayout.XM_MARGIN),
                 expectationView.leadingAnchor.constraint(equalTo: pxContentView.leadingAnchor, constant: PXLayout.L_MARGIN),
                 expectationView.trailingAnchor.constraint(equalTo: pxContentView.trailingAnchor, constant: -PXLayout.L_MARGIN)
             ])
+
+            if let iconView = iconView {
+                expectationView.topAnchor.constraint(equalTo: iconView.bottomAnchor, constant: PXLayout.S_MARGIN).isActive = true
+            } else {
+                expectationView.topAnchor.constraint(equalTo: labelsView.bottomAnchor, constant: PXLayout.S_MARGIN).isActive = true
+            }
+
         }
         PXLayout.pinLastSubviewToBottom(view: pxContentView, withMargin: PXLayout.S_MARGIN)
     }
