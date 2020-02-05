@@ -354,8 +354,7 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
 
     func getCreditsExpectationView() -> UIView? {
         if let resultInfo = self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo, self.businessResult.isApproved() {
-            let props = PXCreditsExpectationProps(title: resultInfo.title, subtitle: resultInfo.subtitle)
-            return PXCreditsExpectationView(props: props)
+            return PXCreditsExpectationView(title: resultInfo.title, subtitle: resultInfo.subtitle)
         }
         return nil
     }
