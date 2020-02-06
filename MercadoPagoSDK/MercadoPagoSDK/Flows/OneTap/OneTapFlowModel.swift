@@ -57,7 +57,7 @@ final internal class OneTapFlowModel: PXFlowModel {
     init(checkoutViewModel: MercadoPagoCheckoutViewModel, search: PXInitDTO, paymentOptionSelected: PaymentMethodOption) {
         publicKey = checkoutViewModel.publicKey
         privateKey = checkoutViewModel.privateKey
-        siteId = checkoutViewModel.checkoutPreference.siteId
+        siteId = checkoutViewModel.search?.site.id ?? ""
         paymentData = checkoutViewModel.paymentData.copy() as? PXPaymentData ?? checkoutViewModel.paymentData
         checkoutPreference = checkoutViewModel.checkoutPreference
         self.search = search
