@@ -80,7 +80,7 @@ extension PXTermsAndConditionView {
 
         let mutableAttributedString = NSMutableAttributedString(string: termsAndConditionsText, attributes: normalAttributes)
 
-        let defaultLinkablePhrase = PXLinkablePhraseDto(textColor: "", phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL(), html: "")
+        let defaultLinkablePhrase = PXLinkablePhraseDto(textColor: "", phrase: SCREEN_TITLE.localized, link: SiteManager.shared.getTermsAndConditionsURL(), html: "", installments: nil)
 
         let phrases = termsAndConditionsDto?.linkablePhrases ?? [defaultLinkablePhrase]
 

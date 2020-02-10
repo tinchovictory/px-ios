@@ -151,6 +151,23 @@ extension ConsumerCreditsCard {
             if customLink == nil, let customHtml = linkablePhrase.html {
                 let htmlLink = HtmlStorage.shared.set(customHtml)
                 customLink = htmlLink
+            } else if let installments = terms.installments {
+                var htmlKey = ""
+                var minInstallment = 0
+                for (index, keyValue) in installments.enumerated() {
+                    guard let installment = Int(keyValue.key) else { return attributedString }
+                    if index == 0 {
+                        minInstallment = installment
+                        htmlKey = keyValue.key
+                    } else if installment < minInstallment {
+                        minInstallment = installment
+                        htmlKey = keyValue.key
+                    }
+                }
+                if let customHtml = installments[htmlKey] {
+                    let htmlLink = HtmlStorage.shared.set(customHtml)
+                    customLink = htmlLink
+                }
             }
             if let customLink = customLink {
                 let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
