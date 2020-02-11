@@ -12,7 +12,7 @@ struct PXLinkablePhraseDto: Codable {
     let phrase: String
     let link: String?
     let html: String?
-    let installments: [String]?
+    let installments: [String: String]?
 
     enum CodingKeys: String, CodingKey {
         case textColor = "text_color"
