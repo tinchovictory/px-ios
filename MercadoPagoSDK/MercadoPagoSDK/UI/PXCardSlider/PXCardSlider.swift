@@ -20,7 +20,7 @@ final class PXCardSlider: NSObject {
     private var selectedIndex: Int = 0
     private let cardSliderCornerRadius: CGFloat = 11
     weak var termsAndCondDelegate: PXTermsAndConditionViewDelegate?
-    var creditsInstallmentSelected: Int?
+    var selectedCreditsInstallments: Int?
 }
 
 // MARK: DataSource
@@ -40,7 +40,7 @@ extension PXCardSlider: FSPagerViewDataSource {
                     cell.renderAccountMoneyCard(isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage)
                 } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
                     cell.delegate = self
-                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, creditsInstallmentSelected: creditsInstallmentSelected)
+                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, creditsInstallmentSelected: selectedCreditsInstallments)
                 } else {
                     // Other cards.
                     cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage)
@@ -154,8 +154,8 @@ extension PXCardSlider {
         return selectedIndex
     }
 
-    func setCreditsInstallmentSelected(_ installment: Int) {
-        creditsInstallmentSelected = installment
+    func setCreditsSelectedPayerCost(_ installments: Int?) {
+        selectedCreditsInstallments = installments
     }
 }
 

@@ -57,6 +57,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        viewModel.termsAndConditionsDelegate = self
         setupNavigationBar()
         setupUI()
         scrollView.isScrollEnabled = true
@@ -546,7 +547,6 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits)
             viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
             slider.update(viewModel.getCardSliderViewModel())
-            slider.setCreditsInstallmentSelected(payerCost.installments)
         }
         installmentInfoRow?.toggleInstallments(completion: { [weak self] (_) in
             self?.slider.showBottomMessageIfNeeded(index: selectedIndex, targetIndex: selectedIndex)
@@ -690,5 +690,12 @@ extension PXOneTapViewController: UINavigationControllerDelegate {
             return PXOneTapViewControllerTransition()
         }
         return nil
+    }
+}
+
+// MARK: TermsAndConditionsCreditsProtocol
+extension PXOneTapViewController: TermsAndConditionsCreditsProtocol {
+    func updateTermsAndConditionsHtml(selectedPayerCost: Int?) {
+        slider.setCreditsSelectedPayerCost(selectedPayerCost)
     }
 }

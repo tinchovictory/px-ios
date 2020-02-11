@@ -158,7 +158,7 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            consumerCreditCard.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize, installmentSelected: creditsInstallmentSelected)
+            consumerCreditCard.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize, selectedInstallments: creditsInstallmentSelected)
             consumerCreditCard.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true

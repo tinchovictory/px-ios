@@ -8,6 +8,10 @@
 import Foundation
 import MLCardDrawer
 
+public protocol TermsAndConditionsCreditsProtocol: NSObjectProtocol {
+    func updateTermsAndConditionsHtml(selectedPayerCost: Int?)
+}
+
 class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
     weak var delegate: PXTermsAndConditionViewDelegate?
@@ -44,7 +48,7 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 // MARK: Render
 extension ConsumerCreditsCard {
-    func render(containerView: UIView, creditsViewModel: PXCreditsViewModel, isDisabled: Bool, size: CGSize, installmentSelected: Int?) {
+    func render(containerView: UIView, creditsViewModel: PXCreditsViewModel, isDisabled: Bool, size: CGSize, selectedInstallments: Int?) {
         let creditsImageHeight: CGFloat = size.height * 0.35
         let creditsImageWidth: CGFloat = size.height * 0.60
         let margins: CGFloat = 16
@@ -71,7 +75,7 @@ extension ConsumerCreditsCard {
             ])
 
             //TERMS AND CONDITIONS LABEL
-            let termsAndConditionsText = getTermsAndConditionsTextView(terms: creditsViewModel.displayInfo.bottomText, installmentSelected: installmentSelected)
+            let termsAndConditionsText = getTermsAndConditionsTextView(terms: creditsViewModel.displayInfo.bottomText, selectedInstallments: selectedInstallments)
             containerView.addSubview(termsAndConditionsText)
             NSLayoutConstraint.activate([
                 PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins - PXLayout.XXXS_MARGIN),
@@ -120,7 +124,7 @@ extension ConsumerCreditsCard {
         return titleLabel
     }
 
-    private func getTermsAndConditionsTextView(terms: PXTermsDto, installmentSelected: Int?) -> UITextView {
+    private func getTermsAndConditionsTextView(terms: PXTermsDto, selectedInstallments: Int?) -> UITextView {
         let termsAndConditionsText = UITextView()
         termsAndConditionsText.linkTextAttributes = [.foregroundColor: UIColor.white]
         termsAndConditionsText.delegate = self
@@ -129,7 +133,7 @@ extension ConsumerCreditsCard {
         termsAndConditionsText.backgroundColor = .clear
         termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
 
-        let attributedString = getTermsAndConditionsText(terms: terms, creditsInstallmentSelected: installmentSelected)
+        let attributedString = getTermsAndConditionsText(terms: terms, selectedCreditsInstallments: selectedInstallments)
         termsAndConditionsText.attributedText = attributedString
         termsAndConditionsText.textAlignment = .center
         termsAndConditionsText.textColor = .white
@@ -137,7 +141,7 @@ extension ConsumerCreditsCard {
         return termsAndConditionsText
     }
 
-    private func getTermsAndConditionsText(terms: PXTermsDto, creditsInstallmentSelected: Int?) -> NSAttributedString {
+    private func getTermsAndConditionsText(terms: PXTermsDto, selectedCreditsInstallments: Int?) -> NSAttributedString {
         let tycText = terms.text
         let attributedString = NSMutableAttributedString(string: tycText)
 
@@ -150,24 +154,10 @@ extension ConsumerCreditsCard {
             var customLink = linkablePhrase.link
             if customLink == nil, let customHtml = linkablePhrase.html {
                 customLink = HtmlStorage.shared.set(customHtml)
-            } else if let installments = terms.installments {
-                if creditsInstallmentSelected == nil {
-                    var htmlKey = ""
-                    var minInstallment = 0
-                    for (index, element) in installments.enumerated() {
-                        guard let installment = Int(element.key) else { return attributedString }
-                        if index == 0 {
-                            minInstallment = installment
-                            htmlKey = element.key
-                        } else if installment < minInstallment {
-                            minInstallment = installment
-                            htmlKey = element.key
-                        }
-                    }
-                    if let customHtml = installments[htmlKey] {
-                        customLink = HtmlStorage.shared.set(customHtml)
-                    }
-                } else if let installmentSelected = creditsInstallmentSelected, let customHtml = installments[String(installmentSelected)] {
+            } else if let links = terms.links {
+                guard let installmentsSelected = selectedCreditsInstallments else { return attributedString }
+                let key = linkablePhrase.installments?[String(installmentsSelected)]
+                if let htmlKey = key, let customHtml = links[htmlKey] {
                     customLink = HtmlStorage.shared.set(customHtml)
                 }
             }
