@@ -546,6 +546,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits)
             viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
             slider.update(viewModel.getCardSliderViewModel())
+            slider.setCreditsInstallmentSelected(payerCost.installments)
         }
         installmentInfoRow?.toggleInstallments(completion: { [weak self] (_) in
             self?.slider.showBottomMessageIfNeeded(index: selectedIndex, targetIndex: selectedIndex)

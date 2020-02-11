@@ -20,6 +20,7 @@ final class PXCardSlider: NSObject {
     private var selectedIndex: Int = 0
     private let cardSliderCornerRadius: CGFloat = 11
     weak var termsAndCondDelegate: PXTermsAndConditionViewDelegate?
+    var creditsInstallmentSelected: Int?
 }
 
 // MARK: DataSource
@@ -39,7 +40,7 @@ extension PXCardSlider: FSPagerViewDataSource {
                     cell.renderAccountMoneyCard(isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage)
                 } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
                     cell.delegate = self
-                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage)
+                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, creditsInstallmentSelected: creditsInstallmentSelected)
                 } else {
                     // Other cards.
                     cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage)
@@ -151,6 +152,10 @@ extension PXCardSlider {
 
     func getSelectedIndex() -> Int {
         return selectedIndex
+    }
+
+    func setCreditsInstallmentSelected(_ installment: Int) {
+        creditsInstallmentSelected = installment
     }
 }
 
