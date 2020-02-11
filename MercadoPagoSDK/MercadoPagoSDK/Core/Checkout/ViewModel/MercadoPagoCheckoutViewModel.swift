@@ -105,10 +105,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     // Discounts bussines service.
     var paymentConfigurationService = PXPaymentConfigurationServices()
 
-    // Plugins payment method.
-    var paymentMethodPlugins = [PXPaymentMethodPlugin]()
-    var paymentMethodPluginsToShow = [PXPaymentMethodPlugin]()
-
     // Payment plugin
     var paymentPlugin: PXSplitPaymentProcessor?
     var paymentFlow: PXPaymentFlow?
@@ -143,6 +139,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if !isPreferenceLoaded() {
             self.paymentData.payer = self.checkoutPreference.getPayer()
         }
+
         escManager = PXESCManager(enabled: getAdvancedConfiguration().isESCEnabled(), sessionId: MPXTracker.sharedInstance.getSessionID(), flow: MPXTracker.sharedInstance.getFlowName() ?? "PX")
 
         // Create Init Flow
@@ -215,11 +212,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     func payerInfoFlow() -> PayerInfoViewModel {
         let viewModel = PayerInfoViewModel(identificationTypes: self.identificationTypes!, payer: self.paymentData.payer!, amountHelper: amountHelper)
         return viewModel
-    }
-
-    func getPluginPaymentMethodToShow() -> [PXPaymentMethodPlugin] {
-        populateCheckoutStore()
-        return paymentMethodPlugins.filter { $0.mustShowPaymentMethodPlugin(PXCheckoutStore.sharedInstance) == true }
     }
 
     // Returns list with all cards ids with esc
@@ -498,8 +490,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
             paymentOptionSelected = search.groups.first
         } else if !Array.isNullOrEmpty(search.payerPaymentMethods) && search.payerPaymentMethods.count == 1 {
             paymentOptionSelected = search.payerPaymentMethods.first
-        } else if !Array.isNullOrEmpty(paymentMethodPluginsToShow) && paymentMethodPluginsToShow.count == 1 {
-             paymentOptionSelected = paymentMethodPluginsToShow.first
         }
 
         if let paymentOptionSelected = paymentOptionSelected {
@@ -547,13 +537,11 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
 
         let totalPaymentMethodSearchCount = search.getPaymentOptionsCount()
-        self.paymentMethodPluginsToShow = getPluginPaymentMethodToShow()
-        let totalPaymentMethodsToShow = totalPaymentMethodSearchCount + paymentMethodPluginsToShow.count
 
-        if totalPaymentMethodsToShow == 0 {
+        if totalPaymentMethodSearchCount == 0 {
             self.errorInputs(error: MPSDKError(message: "Hubo un error".localized, errorDetail: "No se ha podido obtener los métodos de pago con esta preferencia".localized, retry: false), errorCallback: { () in
             })
-        } else if totalPaymentMethodsToShow == 1 {
+        } else if totalPaymentMethodSearchCount == 1 {
             autoselectOnlyPaymentMethod()
         }
 
@@ -843,7 +831,7 @@ extension MercadoPagoCheckoutViewModel {
 
     private func disableChangePaymentMethodIfNeed() {
         if let pmSearch = search, let firsPm = pmSearch.availablePaymentMethods.first {
-            if pmSearch.getPaymentOptionsCount() + paymentMethodPluginsToShow.count == 1 && !firsPm.isCard {
+            if pmSearch.getPaymentOptionsCount() == 1 && !firsPm.isCard {
                  advancedConfig.reviewConfirmConfiguration.disableChangeMethodOption()
             }
         } else {
