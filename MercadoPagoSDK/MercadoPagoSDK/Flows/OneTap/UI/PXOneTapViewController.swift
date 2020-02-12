@@ -57,7 +57,6 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.termsAndConditionsDelegate = self
         setupNavigationBar()
         setupUI()
         scrollView.isScrollEnabled = true
@@ -690,12 +689,5 @@ extension PXOneTapViewController: UINavigationControllerDelegate {
             return PXOneTapViewControllerTransition()
         }
         return nil
-    }
-}
-
-// MARK: TermsAndConditionsCreditsProtocol
-extension PXOneTapViewController: TermsAndConditionsCreditsProtocol {
-    func updateTermsAndConditionsHtml(selectedPayerCost: Int?) {
-        slider.setCreditsSelectedPayerCost(selectedPayerCost)
     }
 }

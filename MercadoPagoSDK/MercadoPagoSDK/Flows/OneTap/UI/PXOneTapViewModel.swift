@@ -212,10 +212,6 @@ extension PXOneTapViewModel {
                 } else {
                     let isDigitalCurrency: Bool = sliderNode.creditsViewModel != nil
                     let installmentInfoModel = PXOneTapInstallmentInfoViewModel(text: getInstallmentInfoAttrText(selectedPayerCost, isDigitalCurrency, interestFreeConfig: sliderNode.benefits?.interestFree), installmentData: installment, selectedPayerCost: selectedPayerCost, shouldShowArrow: sliderNode.shouldShowArrow, status: sliderNode.status, benefits: sliderNode.benefits, shouldShowInstallmentsHeader: shouldShowInstallmentsHeader)
-
-                    if let _ = sliderNode.creditsViewModel {
-                        termsAndConditionsDelegate?.updateTermsAndConditionsHtml(selectedPayerCost: selectedPayerCost?.installments)
-                    }
                     model.append(installmentInfoModel)
                 }
             }
