@@ -22,7 +22,7 @@ final internal class OneTapFlowModel: PXFlowModel {
     internal var siteId: String = ""
     var paymentData: PXPaymentData
     let checkoutPreference: PXCheckoutPreference
-    var paymentOptionSelected: PaymentMethodOption
+    var paymentOptionSelected: PaymentMethodOption?
     let search: PXInitDTO
     var readyToPay: Bool = false
     var paymentResult: PaymentResult?
@@ -54,7 +54,7 @@ final internal class OneTapFlowModel: PXFlowModel {
     let mercadoPagoServicesAdapter: MercadoPagoServicesAdapter
     let paymentConfigurationService: PXPaymentConfigurationServices
 
-    init(checkoutViewModel: MercadoPagoCheckoutViewModel, search: PXInitDTO, paymentOptionSelected: PaymentMethodOption) {
+    init(checkoutViewModel: MercadoPagoCheckoutViewModel, search: PXInitDTO, paymentOptionSelected: PaymentMethodOption?) {
         publicKey = checkoutViewModel.publicKey
         privateKey = checkoutViewModel.privateKey
         siteId = checkoutViewModel.search?.site.id ?? ""
@@ -142,7 +142,7 @@ internal extension OneTapFlowModel {
     func updateCheckoutModel(paymentData: PXPaymentData, splitAccountMoneyEnabled: Bool) {
         self.paymentData = paymentData
 
-        if splitAccountMoneyEnabled {
+        if splitAccountMoneyEnabled, let paymentOptionSelected = paymentOptionSelected {
             let splitConfiguration = amountHelper.paymentConfigurationService.getSplitConfigurationForPaymentMethod(paymentOptionSelected.getId())
 
             // Set total amount to pay with card without discount
@@ -178,6 +178,9 @@ internal extension OneTapFlowModel {
     }
 
     func updateCheckoutModel(payerCost: PXPayerCost) {
+        guard let paymentOptionSelected = paymentOptionSelected else {
+            return
+        }
 
         let isCredits = paymentOptionSelected.getId() == PXPaymentTypes.CONSUMER_CREDITS.rawValue
         if paymentOptionSelected.isCard() || isCredits {
@@ -194,15 +197,15 @@ internal extension OneTapFlowModel {
             return false
         }
 
-        if paymentData.isComplete(shouldCheckForToken: false) {
-            return true
-        }
-
-        return false
+        return true
     }
 
     func needSecurityCode() -> Bool {
         guard let paymentMethod = self.paymentData.getPaymentMethod() else {
+            return false
+        }
+
+        guard let paymentOptionSelected = paymentOptionSelected else {
             return false
         }
 
@@ -236,7 +239,7 @@ internal extension OneTapFlowModel {
     }
 
     func needKyC() -> Bool {
-        return !(search.payerCompliance?.offlineMethods.isCompliant ?? true) && paymentOptionSelected.additionalInfoNeeded?() ?? false
+        return !(search.payerCompliance?.offlineMethods.isCompliant ?? true) && paymentOptionSelected?.additionalInfoNeeded?() ?? false
     }
 
     func needCreatePayment() -> Bool {
