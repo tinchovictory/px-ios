@@ -10,7 +10,7 @@ import UIKit
 /// :nodoc:
 public struct PXCreditsDisplayInfo: Codable {
     let resultInfo: PXResultInfo
-    let termsAndConditions: PXTermsDto
+    let termsAndConditions: PXTermsDto?
 
     enum CodingKeys: String, CodingKey {
         case resultInfo = "result_info"

@@ -141,7 +141,7 @@ extension PXCardSliderPagerCell {
         addBottomMessageView(message: bottomMessage)
     }
 
-    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil) {
+    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil, creditsInstallmentSelected: Int? = nil) {
         consumerCreditCard = ConsumerCreditsCard(creditsViewModel, isDisabled: isDisabled)
         guard let consumerCreditCard = consumerCreditCard else { return }
 
@@ -158,7 +158,7 @@ extension PXCardSliderPagerCell {
 
         if let headerView = cardHeader?.view {
             containerView.addSubview(headerView)
-            consumerCreditCard.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize)
+            consumerCreditCard.render(containerView: containerView, creditsViewModel: creditsViewModel, isDisabled: isDisabled, size: cardSize, selectedInstallments: creditsInstallmentSelected)
             consumerCreditCard.delegate = self
             PXLayout.centerHorizontally(view: headerView).isActive = true
             PXLayout.centerVertically(view: headerView).isActive = true

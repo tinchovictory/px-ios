@@ -44,11 +44,11 @@ class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
 // MARK: Render
 extension ConsumerCreditsCard {
-    func render(containerView: UIView, creditsViewModel: PXCreditsViewModel, isDisabled: Bool, size: CGSize) {
+    func render(containerView: UIView, creditsViewModel: PXCreditsViewModel, isDisabled: Bool, size: CGSize, selectedInstallments: Int?) {
         let creditsImageHeight: CGFloat = size.height * 0.35
         let creditsImageWidth: CGFloat = size.height * 0.60
         let margins: CGFloat = 16
-        let termsAndConditionsTextHeight: CGFloat = 48
+        let termsAndConditionsTextHeight: CGFloat = 50
 
         let consumerCreditsImage = getConsumerCreditsImageView(isDisabled: isDisabled)
         containerView.addSubview(consumerCreditsImage)
@@ -71,7 +71,7 @@ extension ConsumerCreditsCard {
             ])
 
             //TERMS AND CONDITIONS LABEL
-            let termsAndConditionsText = getTermsAndConditionsTextView(terms: creditsViewModel.displayInfo.bottomText)
+            let termsAndConditionsText = getTermsAndConditionsTextView(terms: creditsViewModel.displayInfo.bottomText, selectedInstallments: selectedInstallments)
             containerView.addSubview(termsAndConditionsText)
             NSLayoutConstraint.activate([
                 PXLayout.pinBottom(view: termsAndConditionsText, to: containerView, withMargin: margins - PXLayout.XXXS_MARGIN),
@@ -120,7 +120,7 @@ extension ConsumerCreditsCard {
         return titleLabel
     }
 
-    private func getTermsAndConditionsTextView(terms: PXTermsDto) -> UITextView {
+    private func getTermsAndConditionsTextView(terms: PXTermsDto, selectedInstallments: Int?) -> UITextView {
         let termsAndConditionsText = UITextView()
         termsAndConditionsText.linkTextAttributes = [.foregroundColor: UIColor.white]
         termsAndConditionsText.delegate = self
@@ -129,7 +129,7 @@ extension ConsumerCreditsCard {
         termsAndConditionsText.backgroundColor = .clear
         termsAndConditionsText.translatesAutoresizingMaskIntoConstraints = false
 
-        let attributedString = getTermsAndConditionsText(terms: terms)
+        let attributedString = getTermsAndConditionsText(terms: terms, selectedCreditsInstallments: selectedInstallments)
         termsAndConditionsText.attributedText = attributedString
         termsAndConditionsText.textAlignment = .center
         termsAndConditionsText.textColor = .white
@@ -137,7 +137,7 @@ extension ConsumerCreditsCard {
         return termsAndConditionsText
     }
 
-    private func getTermsAndConditionsText(terms: PXTermsDto) -> NSAttributedString {
+    private func getTermsAndConditionsText(terms: PXTermsDto, selectedCreditsInstallments: Int?) -> NSAttributedString {
         let tycText = terms.text
         let attributedString = NSMutableAttributedString(string: tycText)
 
@@ -149,8 +149,13 @@ extension ConsumerCreditsCard {
         for linkablePhrase in phrases {
             var customLink = linkablePhrase.link
             if customLink == nil, let customHtml = linkablePhrase.html {
-                let htmlLink = HtmlStorage.shared.set(customHtml)
-                customLink = htmlLink
+                customLink = HtmlStorage.shared.set(customHtml)
+            } else if let links = terms.links {
+                guard let installmentsSelected = selectedCreditsInstallments else { return attributedString }
+                let key = linkablePhrase.installments?[String(installmentsSelected)]
+                if let htmlKey = key, let customHtml = links[htmlKey] {
+                    customLink = HtmlStorage.shared.set(customHtml)
+                }
             }
             if let customLink = customLink {
                 let tycLinkRange = (tycText as NSString).range(of: linkablePhrase.phrase)
