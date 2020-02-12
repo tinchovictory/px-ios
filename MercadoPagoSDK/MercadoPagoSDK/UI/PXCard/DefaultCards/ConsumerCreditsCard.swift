@@ -48,7 +48,7 @@ extension ConsumerCreditsCard {
         let creditsImageHeight: CGFloat = size.height * 0.35
         let creditsImageWidth: CGFloat = size.height * 0.60
         let margins: CGFloat = 16
-        let termsAndConditionsTextHeight: CGFloat = 48
+        let termsAndConditionsTextHeight: CGFloat = 50
 
         let consumerCreditsImage = getConsumerCreditsImageView(isDisabled: isDisabled)
         containerView.addSubview(consumerCreditsImage)
