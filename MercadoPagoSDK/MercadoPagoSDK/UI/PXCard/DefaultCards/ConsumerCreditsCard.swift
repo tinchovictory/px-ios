@@ -8,10 +8,6 @@
 import Foundation
 import MLCardDrawer
 
-public protocol TermsAndConditionsCreditsProtocol: NSObjectProtocol {
-    func updateTermsAndConditionsHtml(selectedPayerCost: Int?)
-}
-
 class ConsumerCreditsCard: NSObject, CustomCardDrawerUI {
 
     weak var delegate: PXTermsAndConditionViewDelegate?

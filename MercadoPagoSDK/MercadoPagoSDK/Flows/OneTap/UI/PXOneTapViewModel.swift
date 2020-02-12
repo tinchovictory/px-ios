@@ -27,9 +27,6 @@ final class PXOneTapViewModel: PXReviewViewModel {
     var additionalInfoSummary: PXAdditionalInfoSummary?
     var disabledOption: PXDisabledOption?
 
-    // Credits
-    weak var termsAndConditionsDelegate: TermsAndConditionsCreditsProtocol?
-
     // Current flow.
     weak var currentFlow: OneTapFlow?
 
