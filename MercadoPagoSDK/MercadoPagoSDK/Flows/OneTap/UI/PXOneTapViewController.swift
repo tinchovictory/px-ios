@@ -86,6 +86,8 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         viewModel.createCardSliderViewModel()
         let cardSliderViewModel = viewModel.getCardSliderViewModel()
         slider.update(cardSliderViewModel)
+        installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
+
         if let index = cardSliderViewModel.firstIndex(where: { $0.cardId == cardId }) {
             selectCardInSliderAtIndex(index)
         } else {
@@ -249,7 +251,7 @@ extension PXOneTapViewController {
 
     private func getInstallmentInfoView() -> PXOneTapInstallmentInfoView {
         installmentInfoRow = PXOneTapInstallmentInfoView()
-        installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
+        installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
         installmentInfoRow?.delegate = self
         if let targetView = installmentInfoRow {
             return targetView
@@ -284,7 +286,7 @@ extension PXOneTapViewController {
             self.present(vc, animated: true, completion: nil)
         }
     }
-    
+
     private func confirmPayment() {
         if viewModel.shouldValidateWithBiometric() {
             let biometricModule = PXConfiguratorManager.biometricProtocol
@@ -344,7 +346,7 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
         }
 
         //Update installment row
-        installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
+        installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
 
         // If it's debit and has split, update split message
         if let infoRow = installmentInfoRow, viewModel.getCardSliderViewModel().indices.contains(infoRow.getActiveRowIndex()) {
@@ -539,7 +541,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             let currentPaymentData: PXPaymentData = viewModel.amountHelper.getPaymentData()
             currentPaymentData.payerCost = payerCost
             // Update installmentInfoRow viewModel
-            installmentInfoRow?.model = viewModel.getInstallmentInfoViewModel()
+            installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
             PXFeedbackGenerator.heavyImpactFeedback()
 
             //Update card bottom message
