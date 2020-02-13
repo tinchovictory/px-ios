@@ -138,6 +138,18 @@ extension PXResultViewModel {
         return screenPath
     }
 
+    func getFlowBehaviourResult() -> PXResultKey {
+        let isApprovedOfflinePayment = PXPayment.Status.PENDING.elementsEqual(paymentResult.status) && PXPayment.StatusDetails.PENDING_WAITING_PAYMENT.elementsEqual(paymentResult.statusDetail)
+
+        if paymentResult.isApproved() || isApprovedOfflinePayment {
+            return .SUCCESS
+        } else if paymentResult.isRejected() {
+            return .FAILURE
+        } else {
+            return .PENDING
+        }
+    }
+
     func getFooterPrimaryActionTrackingPath() -> String {
         let paymentStatus = paymentResult.status
         var screenPath = ""
