@@ -23,11 +23,13 @@ internal final class PXPaymentFlowModel: NSObject {
     let escManager: MercadoPagoESC?
     var productId: String?
     var shouldSearchPointsAndDiscounts: Bool = true
+    let ESCBlacklistedStatus: [String]?
 
-    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?) {
+    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?, ESCBlacklistedStatus: [String]?) {
         self.paymentPlugin = paymentPlugin
         self.mercadoPagoServicesAdapter = mercadoPagoServicesAdapter
         self.escManager = escManager
+        self.ESCBlacklistedStatus = ESCBlacklistedStatus
     }
 
     enum Steps: String {
@@ -166,18 +168,7 @@ internal extension PXPaymentFlowModel {
 
             // If it has error Payment Type, check if the error was from a card
             if let isCard = PXPaymentTypes(rawValue: errorPaymentType)?.isCard(), isCard {
-                if let rejectedStatusDetail = PXRejectedStatusDetail(rawValue: statusDetails) {
-                    switch rejectedStatusDetail {
-                    case PXRejectedStatusDetail.BAD_FILLED_SECURITY_CODE,
-                         PXRejectedStatusDetail.BAD_FILLED_OTHER,
-                         PXRejectedStatusDetail.HIGH_RISK,
-                         PXRejectedStatusDetail.CALL_FOR_AUTH,
-                         PXRejectedStatusDetail.MAX_ATTEMPTS:
-                        escManager?.deleteESC(token: token)
-                    default:
-                        return
-                    }
-                } else {
+                if let ESCBlacklistedStatus = ESCBlacklistedStatus, ESCBlacklistedStatus.contains(statusDetails) {
                     escManager?.deleteESC(token: token)
                 }
             }

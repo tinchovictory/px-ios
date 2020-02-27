@@ -13,7 +13,7 @@ extension OneTapFlow {
         guard let paymentFlow = model.paymentFlow else {
             return
         }
-        model.invalidESC = false
+        model.invalidESCReason = nil
         paymentFlow.paymentErrorHandler = self
         if isShowingLoading() {
             self.pxNavigationHandler.presentLoading()
@@ -58,9 +58,9 @@ extension OneTapFlow: PXPaymentResultHandlerProtocol {
 }
 
 extension OneTapFlow: PXPaymentErrorHandlerProtocol {
-    func escError() {
+    func escError(reason: PXESCDeleteReason) {
         model.readyToPay = true
-        model.invalidESC = true
+        model.invalidESCReason = reason
         if let token = model.paymentData.getToken() {
             model.escManager?.deleteESC(token: token)
         }

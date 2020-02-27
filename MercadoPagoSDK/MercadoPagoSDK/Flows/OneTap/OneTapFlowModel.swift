@@ -42,7 +42,7 @@ final internal class OneTapFlowModel: PXFlowModel {
 
     var chargeRules: [PXPaymentTypeChargeRule]?
 
-    var invalidESC: Bool = false
+    var invalidESCReason: PXESCDeleteReason?
 
     // In order to ensure data updated create new instance for every usage
     internal var amountHelper: PXAmountHelper {
@@ -113,12 +113,8 @@ internal extension OneTapFlowModel {
             fatalError("Don't have paymentData to open Security View Controller")
         }
 
-        var reason: SecurityCodeViewModel.Reason
-        if invalidESC {
-            reason = SecurityCodeViewModel.Reason.INVALID_ESC
-        } else {
-            reason = SecurityCodeViewModel.Reason.SAVED_CARD
-        }
+        let ESCEnabled = escManager?.hasESCEnable() ?? false
+        let reason = SecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, escEnabled: ESCEnabled)
         return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
     }
 
@@ -219,6 +215,9 @@ internal extension OneTapFlowModel {
 
         if isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded && !hasSavedESC() {
             if let customOptionSearchItem = search.payerPaymentMethods.first(where: { $0.id == paymentOptionSelectedId}) {
+                if customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue {
+                    invalidESCReason = .ESC_CAP
+                }
                 return customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue
             } else {
                 return true
