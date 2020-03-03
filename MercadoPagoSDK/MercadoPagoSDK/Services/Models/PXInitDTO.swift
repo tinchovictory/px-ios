@@ -57,10 +57,6 @@ final class PXInitDTO: NSObject, Decodable {
         case configurations
     }
 
-    public class func fromJSON(data: Data) throws -> PXInitDTO {
-        return try JSONDecoder().decode(PXInitDTO.self, from: data)
-    }
-
     func getPaymentOptionsCount() -> Int {
         let payerOptionsCount = payerPaymentMethods.count
         let groupsOptionsCount = groups.count

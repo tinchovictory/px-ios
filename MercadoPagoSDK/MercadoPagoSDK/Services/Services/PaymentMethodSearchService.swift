@@ -62,7 +62,7 @@ internal class PaymentMethodSearchService: MercadoPagoService {
                             failure(PaymentMethodSearchService.getError(code: ErrorTypes.API_EXCEPTION_ERROR, apiException: apiException))
                         } else {
                             if paymentSearchDic.allKeys.count > 0 {
-                                let initDTO = try PXInitDTO.fromJSON(data: data)
+                                let initDTO = try JSONDecoder().decode(PXInitDTO.self, from: data) as PXInitDTO
                                 success(initDTO)
                             } else {
                                 failure(PaymentMethodSearchService.getError())

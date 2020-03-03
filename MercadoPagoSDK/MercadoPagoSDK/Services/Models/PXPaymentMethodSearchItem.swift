@@ -29,10 +29,10 @@ open class PXPaymentMethodSearchItem: NSObject, Codable {
         self.icon = icon
     }
 
-    public enum PXPaymentMethodSearchItemKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id
         case type
-        case description = "description"
+        case _description = "description"
         case comment
         case children
         case childrenHeader = "children_header"
@@ -53,36 +53,4 @@ open class PXPaymentMethodSearchItem: NSObject, Codable {
 
         self.init(id: id, type: type, description: description, comment: comment, children: children, childrenHeader: childrenHeader, showIcon: showIcon, icon: icon)
     }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: PXPaymentMethodSearchItemKeys.self)
-        try container.encodeIfPresent(self.id, forKey: .id)
-        try container.encodeIfPresent(self.type, forKey: .type)
-        try container.encodeIfPresent(self._description, forKey: .description)
-        try container.encodeIfPresent(self.comment, forKey: .comment)
-        try container.encodeIfPresent(self.children, forKey: .children)
-        try container.encodeIfPresent(self.childrenHeader, forKey: .childrenHeader)
-        try container.encodeIfPresent(self.showIcon, forKey: .showIcon)
-        try container.encodeIfPresent(self.icon, forKey: .icon)
-    }
-
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    open class func fromJSONToPXPaymentMethodSearchItem(data: Data) throws -> PXPaymentMethodSearchItem {
-        return try JSONDecoder().decode(PXPaymentMethodSearchItem.self, from: data)
-    }
-
-    open class func fromJSON(data: Data) throws -> [PXPaymentMethodSearchItem] {
-        return try JSONDecoder().decode([PXPaymentMethodSearchItem].self, from: data)
-    }
-
 }

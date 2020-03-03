@@ -122,7 +122,8 @@ internal class CustomService: MercadoPagoService {
                         failure!(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: ["message": "PREFERENCE_ERROR"], apiException: apiException))
                     } else {
                         if preferenceDic.allKeys.count > 0 {
-                            success(try PXCheckoutPreference.fromJSON(data: data))
+                            let checkoutPreference = try JSONDecoder().decode(PXCheckoutPreference.self, from: data) as PXCheckoutPreference
+                            success(checkoutPreference)
                         } else {
                             failure?(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "PREFERENCE_ERROR"]))
                         }
