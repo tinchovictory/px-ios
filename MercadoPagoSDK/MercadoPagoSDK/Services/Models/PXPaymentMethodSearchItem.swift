@@ -41,10 +41,10 @@ open class PXPaymentMethodSearchItem: NSObject, Codable {
     }
 
     required public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: PXPaymentMethodSearchItemKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         let id: String = try container.decode(String.self, forKey: .id)
         let type: String? = try container.decodeIfPresent(String.self, forKey: .type)
-        let description: String? = try container.decodeIfPresent(String.self, forKey: .description)
+        let description: String? = try container.decodeIfPresent(String.self, forKey: ._description)
         let comment: String? = try container.decodeIfPresent(String.self, forKey: .comment)
         let children: [PXPaymentMethodSearchItem] = try container.decodeIfPresent([PXPaymentMethodSearchItem].self, forKey: .children) ?? []
         let childrenHeader: String? = try container.decodeIfPresent(String.self, forKey: .childrenHeader)

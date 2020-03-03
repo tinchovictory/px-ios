@@ -70,7 +70,7 @@ open class PXPaymentMethod: NSObject, Codable {
     }
 
     required public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: PXPaymentMethodKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         let additionalInfoNeeded: [String]? = try container.decodeIfPresent([String].self, forKey: .additionalInfoNeeded)
         let id: String = try container.decode(String.self, forKey: .id)
         let name: String? = try container.decodeIfPresent(String.self, forKey: .name)
