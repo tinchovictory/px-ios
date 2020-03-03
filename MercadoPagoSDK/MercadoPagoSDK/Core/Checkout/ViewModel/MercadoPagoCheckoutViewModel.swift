@@ -545,7 +545,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if let esc = token.esc, !String.isNullOrEmpty(esc) {
             escManager?.saveESC(token: token, esc: esc)
         } else {
-            escManager?.deleteESC(token: token)
+            escManager?.deleteESC(token: token, reason: .NO_ESC, detail: nil)
         }
         self.paymentData.updatePaymentDataWith(token: token)
     }
@@ -793,7 +793,7 @@ extension MercadoPagoCheckoutViewModel {
             readyToPay = true
             if let cardId = paymentData.getToken()?.cardId, cardId.isNotEmpty {
                 savedESCCardToken = PXSavedESCCardToken(cardId: cardId, esc: nil, requireESC: getAdvancedConfiguration().isESCEnabled())
-                escManager?.deleteESC(cardId: cardId)
+                escManager?.deleteESC(cardId: cardId, reason: reason, detail: nil)
             }
         }
         self.paymentData.cleanToken()
