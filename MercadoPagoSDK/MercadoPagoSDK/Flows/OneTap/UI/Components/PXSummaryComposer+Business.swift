@@ -11,7 +11,7 @@ extension PXSummaryComposer {
     // MARK: business
     func isConsumedDiscount() -> Bool {
         if let discountData = getDiscountData() {
-            return discountData.discountConfiguration.getDiscountConfiguration().isNotAvailable
+            return !discountData.discountConfiguration.getDiscountConfiguration().isAvailable
         }
         return false
     }
