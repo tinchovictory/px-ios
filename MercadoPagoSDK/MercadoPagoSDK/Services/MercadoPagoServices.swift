@@ -106,7 +106,7 @@ internal class MercadoPagoServices: NSObject {
                 var token : PXToken
                 if let tokenDic = jsonResult as? NSDictionary {
                     if tokenDic["error"] == nil {
-                        token = try PXToken.fromJSON(data: data)
+                        token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
                         let apiException = try PXApiException.fromJSON(data: data)
@@ -127,7 +127,7 @@ internal class MercadoPagoServices: NSObject {
                 var token : PXToken
                 if let tokenDic = jsonResult as? NSDictionary {
                     if tokenDic["error"] == nil {
-                        token = try PXToken.fromJSON(data: data)
+                        token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
                         let apiException = try PXApiException.fromJSON(data: data)

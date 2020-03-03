@@ -35,19 +35,4 @@ import Foundation
                     }
                 return identificationType
         }
-
-    internal func toJSONString() -> String {
-
-        let identificationTypeId: Any = self.identificationTypeId != nil ? JSONHandler.null : self.identificationTypeId!
-        let name: Any = self.name == nil ? JSONHandler.null : self.name!
-        let type: Any = self.type == nil ? JSONHandler.null : self.type!
-        let obj: [String: Any] = [
-            "id": identificationTypeId,
-            "name": name,
-            "type": type,
-            "min_length": self.minLength,
-            "max_length": self.maxLength
-        ]
-        return JSONHandler.jsonCoding(obj)
-    }
 }

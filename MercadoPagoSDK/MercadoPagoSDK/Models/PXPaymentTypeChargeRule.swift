@@ -84,19 +84,4 @@ public final class PXPaymentTypeChargeRule: NSObject, Codable {
         try container.encodeIfPresent(self.amountCharge, forKey: .amountCharge)
         try container.encodeIfPresent(self.message, forKey: .message)
     }
-
-    public func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    public func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    public class func fromJSON(data: Data) throws -> PXPaymentTypeChargeRule {
-        return try JSONDecoder().decode(PXPaymentTypeChargeRule.self, from: data)
-    }
 }
