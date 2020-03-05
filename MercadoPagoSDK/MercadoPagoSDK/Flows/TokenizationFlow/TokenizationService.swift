@@ -101,7 +101,9 @@ internal class TokenizationService {
             if token.lastFourDigits.isEmpty {
                 token.lastFourDigits = cardInformation.getCardLastForDigits()
             }
-            self.resultHandler?.finishFlow(token: token)
+            self.resetESCCap(cardId: token.cardId, onCompletion: { [weak self] in
+                self?.resultHandler?.finishFlow(token: token)
+            })
 
         }, failure: { (error) in
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
@@ -122,7 +124,13 @@ internal class TokenizationService {
                 token.lastFourDigits = cardInformation?.getCardLastForDigits() ?? ""
             }
 
-            self.resultHandler?.finishFlow(token: token)
+            if let securityCode = savedESCCardToken.securityCode, !securityCode.isEmpty {
+                self.resetESCCap(cardId: token.cardId, onCompletion: { [weak self] in
+                    self?.resultHandler?.finishFlow(token: token)
+                })
+            } else {
+                self.resultHandler?.finishFlow(token: token)
+            }
 
         }, failure: { (error) in
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
@@ -135,11 +143,17 @@ internal class TokenizationService {
     private func cloneCardToken(token: PXToken, securityCode: String) {
         pxNavigationHandler.presentLoading()
         mercadoPagoServices.cloneToken(tokenId: token.id, securityCode: securityCode, callback: { (token) in
-            self.resultHandler?.finishFlow(token: token)
+            self.resetESCCap(cardId: token.cardId, onCompletion: { [weak self] in
+                self?.resultHandler?.finishFlow(token: token)
+            })
 
         }, failure: { (error) in
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
             self.resultHandler?.finishWithError(error: error, securityCode: securityCode)
         })
+    }
+
+    private func resetESCCap(cardId: String, onCompletion: @escaping () -> Void) {
+        mercadoPagoServices.resetESCCap(cardId: cardId, onCompletion: onCompletion)
     }
 }
