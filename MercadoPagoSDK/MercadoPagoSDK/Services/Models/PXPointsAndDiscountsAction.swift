@@ -10,7 +10,7 @@ import Foundation
 struct PXRemoteAction: Codable {
 
     let label: String
-    let target: String
+    let target: String?
 
     enum CodingKeys: String, CodingKey {
         case label
