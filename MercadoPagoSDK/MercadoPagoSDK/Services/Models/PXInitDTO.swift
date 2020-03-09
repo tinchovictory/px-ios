@@ -6,6 +6,21 @@
 //  Copyright © 2019 MercadoPago. All rights reserved.
 //
 
+public struct PXModal: Codable {
+    let title: PXText?
+    let description: PXText?
+    let mainButton: PXPointsAndDiscountsAction?
+    let secondaryButton: PXPointsAndDiscountsAction?
+
+    enum CodingKeys: String, CodingKey {
+        case title
+        case description
+        case mainButton = "main_button"
+        case secondaryButton = "secondary_button"
+    }
+
+}
+
 import Foundation
 /// :nodoc:
 final class PXInitDTO: NSObject, Decodable {
@@ -22,8 +37,9 @@ final class PXInitDTO: NSObject, Decodable {
     public var experiments: [PXExperiment]?
     public var payerCompliance: PXPayerCompliance?
     public var configurations: PXInitConfigurations?
+    var modals: [String: PXModal]
 
-    public init(preference: PXCheckoutPreference?, oneTap: [PXOneTapDto]?, currency: PXCurrency, site: PXSite, generalCoupon: String, coupons: [String: PXDiscountConfiguration], groups: [PXPaymentMethodSearchItem], payerPaymentMethods: [PXCustomOptionSearchItem], availablePaymentMethods: [PXPaymentMethod], experiments: [PXExperiment]?, payerCompliance: PXPayerCompliance?, configurations: PXInitConfigurations?) {
+    public init(preference: PXCheckoutPreference?, oneTap: [PXOneTapDto]?, currency: PXCurrency, site: PXSite, generalCoupon: String, coupons: [String: PXDiscountConfiguration], groups: [PXPaymentMethodSearchItem], payerPaymentMethods: [PXCustomOptionSearchItem], availablePaymentMethods: [PXPaymentMethod], experiments: [PXExperiment]?, payerCompliance: PXPayerCompliance?, configurations: PXInitConfigurations?, modals: [String: PXModal]) {
         self.preference = preference
         self.oneTap = oneTap
         self.payerCompliance = payerCompliance
@@ -36,6 +52,7 @@ final class PXInitDTO: NSObject, Decodable {
         self.availablePaymentMethods = availablePaymentMethods
         self.experiments = experiments
         self.configurations = configurations
+        self.modals = modals
 
         if let selectedDiscountConfiguration = coupons[generalCoupon] {
             self.selectedDiscountConfiguration = selectedDiscountConfiguration
@@ -55,6 +72,7 @@ final class PXInitDTO: NSObject, Decodable {
         case availablePaymentMethods = "available_payment_methods"
         case experiments
         case configurations
+        case modals
     }
 
     public class func fromJSON(data: Data) throws -> PXInitDTO {

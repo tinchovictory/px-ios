@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PXPointsAndDiscountsAction: Decodable {
+struct PXPointsAndDiscountsAction: Codable {
 
     let label: String
     let target: String

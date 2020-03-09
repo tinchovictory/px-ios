@@ -18,8 +18,9 @@ open class PXOneTapDto: NSObject, Codable {
     open var benefits: PXBenefits?
     open var status: PXStatus
     open var offlineMethods: PXOfflineMethods?
+    open var behaviour: PXBehaviour?
 
-    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?) {
+    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?, behaviour: PXBehaviour?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.oneTapCard = oneTapCard
@@ -29,6 +30,7 @@ open class PXOneTapDto: NSObject, Codable {
         self.status = status
         self.benefits = benefits
         self.offlineMethods = offlineMethods
+        self.behaviour = behaviour
     }
 
     public enum CodingKeys: String, CodingKey {
@@ -41,5 +43,6 @@ open class PXOneTapDto: NSObject, Codable {
         case status
         case benefits = "benefits"
         case offlineMethods = "offline_methods"
+        case behaviour
     }
 }

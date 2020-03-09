@@ -10,11 +10,15 @@ import Foundation
 public struct PXStatus: Codable {
     let mainMessage: PXText?
     let secondaryMessage: PXText?
+    let bottomCardDescription: PXText?
     let enabled: Bool
+    let detail: String?
 
     enum CodingKeys: String, CodingKey {
         case mainMessage = "main_message"
         case secondaryMessage = "secondary_message"
         case enabled
+        case detail
+        case bottomCardDescription = "bottom_card_description"
     }
 }
