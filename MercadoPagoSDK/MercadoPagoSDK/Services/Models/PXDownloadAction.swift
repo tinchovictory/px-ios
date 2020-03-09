@@ -9,5 +9,5 @@ import Foundation
 
 struct PXDownloadAction: Decodable {
     let title: String
-    let action: PXPointsAndDiscountsAction
+    let action: PXRemoteAction
 }

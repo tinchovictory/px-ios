@@ -9,8 +9,8 @@
 public struct PXModal: Codable {
     let title: PXText?
     let description: PXText?
-    let mainButton: PXPointsAndDiscountsAction?
-    let secondaryButton: PXPointsAndDiscountsAction?
+    let mainButton: PXRemoteAction?
+    let secondaryButton: PXRemoteAction?
 
     enum CodingKeys: String, CodingKey {
         case title

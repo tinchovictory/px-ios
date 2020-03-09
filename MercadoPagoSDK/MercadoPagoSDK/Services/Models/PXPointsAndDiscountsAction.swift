@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PXPointsAndDiscountsAction: Codable {
+struct PXRemoteAction: Codable {
 
     let label: String
     let target: String

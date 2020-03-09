@@ -11,7 +11,7 @@ struct PXPoints: Decodable {
 
     let progress: PXPointsProgress
     let title: String
-    let action: PXPointsAndDiscountsAction
+    let action: PXRemoteAction
 
     enum CodingKeys: String, CodingKey {
         case progress
