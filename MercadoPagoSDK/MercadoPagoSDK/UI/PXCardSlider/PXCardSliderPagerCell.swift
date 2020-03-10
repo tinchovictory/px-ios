@@ -39,7 +39,7 @@ protocol AddNewMethodCardDelegate: NSObjectProtocol {
 
 // MARK: Publics.
 extension PXCardSliderPagerCell {
-    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil) {
+    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool, cardSize: CGSize, bottomMessage: PXText? = nil) {
         containerView.layer.masksToBounds = false
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
@@ -122,7 +122,7 @@ extension PXCardSliderPagerCell {
         addNewMethodDelegate?.addNewOfflineMethod()
     }
 
-    func renderAccountMoneyCard(isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil) {
+    func renderAccountMoneyCard(isDisabled: Bool, cardSize: CGSize, bottomMessage: PXText? = nil) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
@@ -141,7 +141,7 @@ extension PXCardSliderPagerCell {
         addBottomMessageView(message: bottomMessage)
     }
 
-    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil, creditsInstallmentSelected: Int? = nil) {
+    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: PXText? = nil, creditsInstallmentSelected: Int? = nil) {
         consumerCreditCard = ConsumerCreditsCard(creditsViewModel, isDisabled: isDisabled)
         guard let consumerCreditCard = consumerCreditCard else { return }
 
@@ -166,19 +166,18 @@ extension PXCardSliderPagerCell {
         addBottomMessageView(message: bottomMessage)
     }
 
-    func addBottomMessageView(message: String?) {
+    func addBottomMessageView(message: PXText?) {
         guard let message = message else { return }
 
         let messageView = UIView()
         messageView.translatesAutoresizingMaskIntoConstraints = false
-        messageView.backgroundColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
+        messageView.backgroundColor = message.getBackgroundColor()
 
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = message
+        label.attributedText = message.getAttributedString()
         label.numberOfLines = 1
         label.textAlignment = .center
-        label.textColor = .white
         label.font = Utils.getSemiBoldFont(size: PXLayout.XXXS_FONT)
 
         messageView.addSubview(label)

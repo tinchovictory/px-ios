@@ -14,7 +14,7 @@ final class PXOneTapViewModel: PXReviewViewModel {
     internal var siteId: String = ""
     internal var excludedPaymentTypeIds: [String] = []
     // Privates
-    private var cardSliderViewModel: [PXCardSliderViewModel] = [PXCardSliderViewModel]()
+    private var cardSliderViewModel = [PXCardSliderViewModel]()
     private let installmentsRowMessageFontSize = PXLayout.XS_FONT
     // Publics
     var expressData: [PXOneTapDto]?
@@ -71,7 +71,7 @@ extension PXOneTapViewModel {
         for targetNode in reArrangedNodes {
 
             //Charge rule message when amount is zero
-            var chargeRuleMessage = getCardBottomMessage(paymentTypeId: targetNode.paymentTypeId, benefits: targetNode.benefits, selectedPayerCost: nil)
+            var chargeRuleMessage = getCardBottomMessage(paymentTypeId: targetNode.paymentTypeId, benefits: targetNode.benefits, status: targetNode.status, selectedPayerCost: nil)
             let benefits = targetNode.benefits
 
             let statusConfig = getStatusConfig(currentStatus: targetNode.status, cardId: targetNode.oneTapCard?.cardId, paymentMethodId: targetNode.paymentMethodId)
@@ -160,7 +160,7 @@ extension PXOneTapViewModel {
 
                     let selectedPayerCost = amountHelper.paymentConfigurationService.getSelectedPayerCostsForPaymentMethod(targetCardData.cardId, splitPaymentEnabled: defaultEnabledSplitPayment)
 
-                    chargeRuleMessage = getCardBottomMessage(paymentTypeId: targetNode.paymentTypeId, benefits: targetNode.benefits, selectedPayerCost: selectedPayerCost)
+                    chargeRuleMessage = getCardBottomMessage(paymentTypeId: targetNode.paymentTypeId, benefits: targetNode.benefits, status: targetNode.status, selectedPayerCost: selectedPayerCost)
 
                     let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, targetIssuerId, templateCard, cardData, payerCost, selectedPayerCost, targetCardData.cardId, showArrow, amountConfiguration: amountConfiguration, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits)
 
@@ -284,7 +284,7 @@ extension PXOneTapViewModel {
         return cardSliderViewModel
     }
 
-    func updateCardSliderModel(at index: Int, bottomMessage: String?) {
+    func updateCardSliderModel(at index: Int, bottomMessage: PXText?) {
         if cardSliderViewModel.indices.contains(index) {
             cardSliderViewModel[index].bottomMessage = bottomMessage
         }
@@ -348,9 +348,19 @@ extension PXOneTapViewModel {
         return getChargeRuleViewController() != nil
     }
 
-    func getCardBottomMessage(paymentTypeId: String?, benefits: PXBenefits?, selectedPayerCost: PXPayerCost?) -> String? {
+    func getCardBottomMessage(paymentTypeId: String?, benefits: PXBenefits?, status: PXStatus?, selectedPayerCost: PXPayerCost?) -> PXText? {
+        let defaultTextColor = UIColor.white
+        let defaultBackgroundColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
+
         if let chargeRuleMessage = getChargeRuleBottomMessage(paymentTypeId) {
-            return chargeRuleMessage
+            let text = PXText(message: chargeRuleMessage, backgroundColor: nil, textColor: nil, weight: nil)
+            text.setDefaultTextColor(defaultTextColor)
+            text.setDefaultBackgroundColor(defaultBackgroundColor)
+            return text
+        }
+
+        if let statusMessage = status?.bottomCardDescription {
+            return statusMessage
         }
 
         guard let selectedInstallments = selectedPayerCost?.installments else {
@@ -362,7 +372,10 @@ extension PXOneTapViewModel {
         }
 
         if reimbursementAppliedInstallments.contains(selectedInstallments) {
-            return benefits?.reimbursement?.card?.message
+            let text = PXText(message: benefits?.reimbursement?.card?.message, backgroundColor: nil, textColor: nil, weight: nil)
+            text.setDefaultTextColor(defaultTextColor)
+            text.setDefaultBackgroundColor(defaultBackgroundColor)
+            return text
         }
 
         return nil
