@@ -101,7 +101,7 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
             PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
         }
 
-        if !itemModel.status.enabled {
+        if !itemModel.status.isUsable() {
             let helperIcon = ResourceManager.shared.getImage("helper_ico_blue")
             let helperImageView = UIImageView(image: helperIcon)
             helperImageView.contentMode = .scaleAspectFit
@@ -246,7 +246,7 @@ extension PXOneTapInstallmentInfoView {
     @objc func toggleInstallments(completion: ((Bool) -> Void)? = nil) {
         if let currentIndex = getCurrentIndex(), let currentModel = model, currentModel.indices.contains(currentIndex) {
             let cardStatus = currentModel[currentIndex].status
-            if !cardStatus.enabled {
+            if !cardStatus.isUsable() {
                 delegate?.disabledCardTapped(status: cardStatus)
             } else if currentModel[currentIndex].shouldShowArrow, tapEnabled {
                 let selectedModel = currentModel[currentIndex]

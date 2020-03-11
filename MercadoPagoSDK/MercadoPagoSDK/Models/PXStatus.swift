@@ -21,4 +21,16 @@ public struct PXStatus: Codable {
         case detail
         case bottomCardDescription = "bottom_card_description"
     }
+
+    func isUsable() -> Bool {
+        return enabled && !isSuspended()
+    }
+
+    func isDisabled() -> Bool {
+        return !enabled
+    }
+
+    func isSuspended() -> Bool {
+        return detail == "suspended"
+    }
 }

@@ -175,7 +175,7 @@ extension PXCardSliderPagerCell {
 
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.attributedText = message.getAttributedString()
+        label.attributedText = message.getAttributedString(backgroundColor: .clear)
         label.numberOfLines = 1
         label.textAlignment = .center
         label.font = Utils.getSemiBoldFont(size: PXLayout.XXXS_FONT)

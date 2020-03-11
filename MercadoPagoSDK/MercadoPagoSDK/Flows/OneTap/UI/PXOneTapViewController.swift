@@ -179,7 +179,7 @@ extension PXOneTapViewController {
             PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
 
-        if let selectedCard = selectedCard, (!selectedCard.status.enabled || selectedCard.cardId == nil) {
+        if let selectedCard = selectedCard, (!selectedCard.status.isUsable() || selectedCard.cardId == nil) {
             loadingButtonComponent?.setDisabled(animated: false)
         }
 
@@ -424,7 +424,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
         // Add card. - card o credits payment method selected
         let validData = targetModel.cardData != nil || targetModel.isCredits
-        let shouldDisplay = validData && targetModel.status.enabled
+        let shouldDisplay = validData && targetModel.status.isUsable()
         if shouldDisplay {
             displayCard(targetModel: targetModel)
             loadingButtonComponent?.setEnabled()

@@ -173,7 +173,7 @@ extension PXOneTapViewModel {
 
                 let creditsViewModel = PXCreditsViewModel(consumerCredits)
 
-                let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: !targetNode.status.enabled), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits)
+                let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: targetNode.status.isDisabled()), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits)
 
                 sliderModel.append(viewModelCard)
             }
@@ -193,7 +193,7 @@ extension PXOneTapViewModel {
 
             let shouldShowInstallmentsHeader = sliderNode.shouldShowInstallmentsHeader()
 
-            if !sliderNode.status.enabled {
+            if !sliderNode.status.isUsable() {
                 let disabledInfoModel = PXOneTapInstallmentInfoViewModel(text: disabledMessage, installmentData: nil, selectedPayerCost: nil, shouldShowArrow: false, status: sliderNode.status, benefits: sliderNode.benefits, shouldShowInstallmentsHeader: shouldShowInstallmentsHeader)
                 model.append(disabledInfoModel)
             } else if sliderNode.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
@@ -352,7 +352,7 @@ extension PXOneTapViewModel {
         let defaultTextColor = UIColor.white
         let defaultBackgroundColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
 
-        if let chargeRuleMessage = getChargeRuleBottomMessage(paymentTypeId) {
+        if let chargeRuleMessage = getChargeRuleBottomMessage(paymentTypeId), (status?.isUsable() ?? true) {
             let text = PXText(message: chargeRuleMessage, backgroundColor: nil, textColor: nil, weight: nil)
             text.setDefaultTextColor(defaultTextColor)
             text.setDefaultBackgroundColor(defaultBackgroundColor)
@@ -371,7 +371,7 @@ extension PXOneTapViewModel {
             return nil
         }
 
-        if reimbursementAppliedInstallments.contains(selectedInstallments) {
+        if reimbursementAppliedInstallments.contains(selectedInstallments), (status?.isUsable() ?? true) {
             let text = PXText(message: benefits?.reimbursement?.card?.message, backgroundColor: nil, textColor: nil, weight: nil)
             text.setDefaultTextColor(defaultTextColor)
             text.setDefaultBackgroundColor(defaultBackgroundColor)

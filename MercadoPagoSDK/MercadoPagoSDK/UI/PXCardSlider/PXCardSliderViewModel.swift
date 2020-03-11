@@ -39,7 +39,7 @@ final class PXCardSliderViewModel {
         self.payerCost = payerCost
         self.selectedPayerCost = selectedPayerCost
         self.cardId = cardId
-        self.shouldShowArrow = !status.enabled ? false : shouldShowArrow
+        self.shouldShowArrow = !status.isUsable() ? false : shouldShowArrow
         self.amountConfiguration = amountConfiguration
         self.creditsViewModel = creditsViewModel
         self.status = status
@@ -82,7 +82,7 @@ extension PXCardSliderViewModel: PaymentMethodOption {
     }
 
     func shouldShowInstallmentsHeader() -> Bool {
-        return !userDidSelectPayerCost && status.enabled
+        return !userDidSelectPayerCost && status.isUsable()
     }
 
     func getReimbursement() -> PXInstallmentsConfiguration? {
