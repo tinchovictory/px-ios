@@ -28,9 +28,10 @@ final class PXCardSliderViewModel {
     }
     var bottomMessage: PXText?
     var benefits: PXBenefits?
+    var behaviour: [String: PXBehaviour]?
     var userDidSelectPayerCost: Bool = false
 
-    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: PXCreditsViewModel? = nil, status: PXStatus, bottomMessage: PXText? = nil, benefits: PXBenefits?) {
+    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: PXCreditsViewModel? = nil, status: PXStatus, bottomMessage: PXText? = nil, benefits: PXBenefits?, behaviour: [String: PXBehaviour]?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.issuerId = issuerId
@@ -45,6 +46,7 @@ final class PXCardSliderViewModel {
         self.status = status
         self.bottomMessage = bottomMessage
         self.benefits = benefits
+        self.behaviour = behaviour
     }
 }
 
