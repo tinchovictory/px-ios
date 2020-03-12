@@ -18,9 +18,9 @@ open class PXOneTapDto: NSObject, Codable {
     open var benefits: PXBenefits?
     open var status: PXStatus
     open var offlineMethods: PXOfflineMethods?
-    open var behaviour: PXBehaviour?
+    open var behaviour: [String: PXBehaviour]?
 
-    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?, behaviour: PXBehaviour?) {
+    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?, behaviour: [String: PXBehaviour]?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.oneTapCard = oneTapCard

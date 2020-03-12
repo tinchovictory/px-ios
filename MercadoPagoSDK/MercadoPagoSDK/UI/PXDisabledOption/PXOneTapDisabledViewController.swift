@@ -9,21 +9,30 @@ import UIKit
 
 class PXOneTapDisabledViewController: UIViewController {
 
-    init(text: String, primaryButton: PXAction?, secondaryButton: PXAction?) {
+    init(title: PXText?, description: PXText?, primaryButton: PXAction?, secondaryButton: PXAction?) {
         super.init(nibName: nil, bundle: nil)
 
         let containerView = PXComponentView()
 
-        let description = UILabel()
-        description.text = text
-        description.font = Utils.getFont(size: PXLayout.XS_FONT)
-        description.textColor = ThemeManager.shared.labelTintColor()
-        description.textAlignment = .center
-        description.numberOfLines = 0
-        PXLayout.setHeight(owner: description, height: 150).isActive = true
-        containerView.addSubviewToBottom(description, withMargin: PXLayout.M_MARGIN)
-        PXLayout.pinLeft(view: description, withMargin: PXLayout.S_MARGIN).isActive = true
-        PXLayout.pinRight(view: description, withMargin: PXLayout.S_MARGIN).isActive = true
+        if let title = title {
+            let label = UILabel()
+            label.attributedText = title.getAttributedString(fontSize: PXLayout.XS_FONT, textColor: ThemeManager.shared.labelTintColor(), backgroundColor: .clear)
+            label.textAlignment = .center
+            label.numberOfLines = 0
+            containerView.addSubviewToBottom(label, withMargin: PXLayout.M_MARGIN)
+            PXLayout.pinLeft(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
+            PXLayout.pinRight(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
+        }
+
+        if let description = description {
+            let label = UILabel()
+            label.attributedText = description.getAttributedString(fontSize: PXLayout.XS_FONT, textColor: ThemeManager.shared.labelTintColor(), backgroundColor: .clear)
+            label.textAlignment = .center
+            label.numberOfLines = 0
+            containerView.addSubviewToBottom(label, withMargin: PXLayout.M_MARGIN)
+            PXLayout.pinLeft(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
+            PXLayout.pinRight(view: label, withMargin: PXLayout.S_MARGIN).isActive = true
+        }
 
         if let primaryAction = primaryButton {
             addNewButton(containerView: containerView, action: primaryAction)
@@ -47,11 +56,12 @@ class PXOneTapDisabledViewController: UIViewController {
         let button = UIButton()
         button.setTitle(action.label, for: .normal)
         button.backgroundColor = .blue
+        button.layer.cornerRadius = 10
 
         containerView.addSubviewToBottom(button, withMargin: PXLayout.M_MARGIN)
 
         NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 30),
+            button.heightAnchor.constraint(equalToConstant: 50),
             button.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
             button.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20)
             ])

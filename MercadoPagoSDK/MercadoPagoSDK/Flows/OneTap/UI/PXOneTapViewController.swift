@@ -484,29 +484,44 @@ extension PXOneTapViewController: PXCardSliderProtocol {
     }
 
     func showDisabledCardModal(status: PXStatus) {
-        guard let message = status.secondaryMessage?.message else {return}
 
-        guard let modalConfig = viewModel.modals?["suspended_split"] else {
+        guard let message = status.secondaryMessage else {return}
+
+        let primaryAction = getActionForModal(nil)
+        let vc = PXOneTapDisabledViewController(title: nil, description: message, primaryButton: primaryAction, secondaryButton: nil)
+
+        self.currentModal = PXComponentFactory.Modal.show(viewController: vc, title: nil)
+
+        trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
+    }
+
+    func showModalFor(behaviour: PXBehaviour) {
+        guard let behaviourModal = behaviour.modal, let modalConfig = viewModel.modals?[behaviourModal] else {
             return
         }
 
         let primaryAction = getActionForModal(modalConfig.mainButton)
         let secondaryAction = getActionForModal(modalConfig.secondaryButton)
-        let vc = PXOneTapDisabledViewController(text: message, primaryButton: primaryAction, secondaryButton: secondaryAction)
+        let vc = PXOneTapDisabledViewController(title: modalConfig.title, description: modalConfig.description, primaryButton: primaryAction, secondaryButton: secondaryAction)
 
         self.currentModal = PXComponentFactory.Modal.show(viewController: vc)
 
-        trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
+//        trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
     }
 
     func getActionForModal(_ action: PXRemoteAction?) -> PXAction? {
-        guard let action = action else {return nil}
+        let defaultTitle = "Pagar con otro medio".localized
+        let defaultAction: () -> Void = {
+            self.currentModal?.dismiss()
+            self.selectFirstCardInSlider()
+        }
+
+        guard let action = action else {
+            return PXAction(label: defaultTitle, action: defaultAction)
+        }
 
         guard let target = action.target else {
-            return PXAction(label: action.label, action: {
-                self.currentModal?.dismiss()
-                self.selectFirstCardInSlider()
-            })
+            return PXAction(label: action.label, action: defaultAction)
         }
 
         return PXAction(label: action.label, action: {
