@@ -37,7 +37,7 @@ final class PXInitDTO: NSObject, Decodable {
     public var experiments: [PXExperiment]?
     public var payerCompliance: PXPayerCompliance?
     public var configurations: PXInitConfigurations?
-    var modals: [String: PXModal]
+    var modals: [String: PXModal]?
 
     public init(preference: PXCheckoutPreference?, oneTap: [PXOneTapDto]?, currency: PXCurrency, site: PXSite, generalCoupon: String, coupons: [String: PXDiscountConfiguration], groups: [PXPaymentMethodSearchItem], payerPaymentMethods: [PXCustomOptionSearchItem], availablePaymentMethods: [PXPaymentMethod], experiments: [PXExperiment]?, payerCompliance: PXPayerCompliance?, configurations: PXInitConfigurations?, modals: [String: PXModal]) {
         self.preference = preference

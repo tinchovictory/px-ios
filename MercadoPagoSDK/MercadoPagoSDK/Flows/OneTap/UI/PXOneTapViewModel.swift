@@ -352,15 +352,15 @@ extension PXOneTapViewModel {
         let defaultTextColor = UIColor.white
         let defaultBackgroundColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
 
+        if let statusMessage = status?.bottomCardDescription {
+            return statusMessage
+        }
+
         if let chargeRuleMessage = getChargeRuleBottomMessage(paymentTypeId), (status?.isUsable() ?? true) {
             let text = PXText(message: chargeRuleMessage, backgroundColor: nil, textColor: nil, weight: nil)
             text.setDefaultTextColor(defaultTextColor)
             text.setDefaultBackgroundColor(defaultBackgroundColor)
             return text
-        }
-
-        if let statusMessage = status?.bottomCardDescription {
-            return statusMessage
         }
 
         guard let selectedInstallments = selectedPayerCost?.installments else {
