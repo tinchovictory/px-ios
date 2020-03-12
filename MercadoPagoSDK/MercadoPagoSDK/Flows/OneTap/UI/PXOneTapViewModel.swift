@@ -21,6 +21,7 @@ final class PXOneTapViewModel: PXReviewViewModel {
     var paymentMethods: [PXPaymentMethod] = [PXPaymentMethod]()
     var items: [PXItem] = [PXItem]()
     var payerCompliance: PXPayerCompliance?
+    var modals: [String: PXModal]?
 
     var splitPaymentEnabled: Bool = false
     var splitPaymentSelectionByUser: Bool?

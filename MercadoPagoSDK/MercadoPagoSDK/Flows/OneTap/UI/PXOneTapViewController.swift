@@ -8,6 +8,7 @@
 
 import UIKit
 import MLCardForm
+import MLUI
 
 final class PXOneTapViewController: PXComponentContainerViewController {
 
@@ -33,6 +34,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     var whiteView: UIView?
     var selectedCard: PXCardSliderViewModel?
 
+    var currentModal: MLModal?
     let timeOutPayButton: TimeInterval
 
     var cardSliderMarginConstraint: NSLayoutConstraint?
@@ -483,16 +485,34 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
     func showDisabledCardModal(status: PXStatus) {
         guard let message = status.secondaryMessage?.message else {return}
-        let vc = PXOneTapDisabledViewController(text: message)
 
-        let buttonTitle = "Pagar con otro medio".localized
-        PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: { [weak self] in
+        guard let modalConfig = viewModel.modals?["suspended_split"] else {
+            return
+        }
 
-            //Select first item
-            self?.selectFirstCardInSlider()
-        })
+        let primaryAction = getActionForModal(modalConfig.mainButton)
+        let secondaryAction = getActionForModal(modalConfig.secondaryButton)
+        let vc = PXOneTapDisabledViewController(text: message, primaryButton: primaryAction, secondaryButton: secondaryAction)
+
+        self.currentModal = PXComponentFactory.Modal.show(viewController: vc)
 
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
+    }
+
+    func getActionForModal(_ action: PXRemoteAction?) -> PXAction? {
+        guard let action = action else {return nil}
+
+        guard let target = action.target else {
+            return PXAction(label: action.label, action: {
+                self.currentModal?.dismiss()
+                self.selectFirstCardInSlider()
+            })
+        }
+
+        return PXAction(label: action.label, action: {
+            self.currentModal?.dismiss()
+            PXDeepLinkManager.open(target)
+        })
     }
 
     func addNewCardDidTap() {
