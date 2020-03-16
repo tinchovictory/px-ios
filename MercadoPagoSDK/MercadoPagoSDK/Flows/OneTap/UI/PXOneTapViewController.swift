@@ -83,39 +83,15 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapPath(), properties: viewModel.getOneTapScreenProperties())
     }
 
-    func updateSlider() {
-        let newOneTapSliderModel = viewModel.getOneTapSliderModel()
-        var newCards = [PXCardSliderViewModel]()
-        var newInstallments = [PXOneTapInstallmentInfoViewModel]()
-
-        for oneTapSlide in newOneTapSliderModel {
-            newCards.append(oneTapSlide.cardModel)
-            newInstallments.append(oneTapSlide.installmentsModel)
-        }
-
-        slider.update(newCards)
-        installmentInfoRow?.update(model: newInstallments)
-    }
-
     func update(viewModel: PXOneTapViewModel, cardId: String) {
         self.viewModel = viewModel
 
-        let newOneTapSliderModel = viewModel.getOneTapSliderModel()
-//
-        var newCards = [PXCardSliderViewModel]()
-//        var newInstallments = [PXOneTapInstallmentInfoViewModel]()
-//
-        for oneTapSlide in newOneTapSliderModel {
-            newCards.append(oneTapSlide.cardModel)
-//            newInstallments.append(oneTapSlide.installmentsModel)
-        }
+        viewModel.createCardSliderViewModel()
+        let cardSliderViewModel = viewModel.getCardSliderViewModel()
+        slider.update(cardSliderViewModel)
+        installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
 
-//        slider.update(newCards)
-//        installmentInfoRow?.update(model: newInstallments)
-
-        updateSlider()
-
-        if let index = newCards.firstIndex(where: { $0.cardId == cardId }) {
+        if let index = cardSliderViewModel.firstIndex(where: { $0.cardId == cardId }) {
             selectCardInSliderAtIndex(index)
         } else {
             //Select first item
@@ -605,14 +581,13 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             let currentPaymentData: PXPaymentData = viewModel.amountHelper.getPaymentData()
             currentPaymentData.payerCost = payerCost
             // Update installmentInfoRow viewModel
-//            installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
+            installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
             PXFeedbackGenerator.heavyImpactFeedback()
 
             //Update card bottom message
             let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits, status: selectedCard?.status, selectedPayerCost: payerCost)
             viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
-            updateSlider()
-//            slider.update(viewModel.getCardSliderViewModel())
+            slider.update(viewModel.getCardSliderViewModel())
         }
         installmentInfoRow?.toggleInstallments(completion: { [weak self] (_) in
             self?.slider.showBottomMessageIfNeeded(index: selectedIndex, targetIndex: selectedIndex)
