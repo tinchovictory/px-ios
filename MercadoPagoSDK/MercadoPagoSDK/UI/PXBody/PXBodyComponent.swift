@@ -20,10 +20,10 @@ internal class PXBodyComponent: PXComponentizable {
     }
 
     func getCreditsExpectationView() -> PXCreditsExpectationView? {
-        if let resultInfo = props.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo,
-            let title = resultInfo.title,
-            let subtitle = resultInfo.subtitle {
-            return PXCreditsExpectationView(title: title, subtitle: subtitle)
+        if let resultInfo = props.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo {
+//            let title = resultInfo.title,
+//            let subtitle = resultInfo.subtitle {
+            return PXCreditsExpectationView(title: resultInfo.title, subtitle: resultInfo.subtitle)
         }
         return nil
     }
