@@ -11,7 +11,7 @@ struct PXDiscounts: Decodable {
 
     let title: String?
     let subtitle: String?
-    let discountsAction: PXPointsAndDiscountsAction
+    let discountsAction: PXRemoteAction
     let downloadAction: PXDownloadAction
     let items: [PXDiscountsItem]
 

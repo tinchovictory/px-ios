@@ -8,6 +8,7 @@
 
 import UIKit
 import MLCardForm
+import MLUI
 
 final class PXOneTapViewController: PXComponentContainerViewController {
 
@@ -33,6 +34,9 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     var whiteView: UIView?
     var selectedCard: PXCardSliderViewModel?
 
+    var currentModal: MLModal?
+    var shouldTrackModal: Bool = false
+    var currentModalDismissTrackingProperties: [String: Any]? = nil
     let timeOutPayButton: TimeInterval
 
     var cardSliderMarginConstraint: NSLayoutConstraint?
@@ -83,6 +87,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     func update(viewModel: PXOneTapViewModel, cardId: String) {
         self.viewModel = viewModel
+
         viewModel.createCardSliderViewModel()
         let cardSliderViewModel = viewModel.getCardSliderViewModel()
         slider.update(cardSliderViewModel)
@@ -179,7 +184,7 @@ extension PXOneTapViewController {
             PXLayout.pinBottom(view: footerView, withMargin: bottomMargin).isActive = true
         }
 
-        if let selectedCard = selectedCard, (!selectedCard.status.enabled || selectedCard.cardId == nil) {
+        if let selectedCard = selectedCard, (selectedCard.status.isDisabled() || selectedCard.cardId == nil) {
             loadingButtonComponent?.setDisabled(animated: false)
         }
 
@@ -235,7 +240,7 @@ extension PXOneTapViewController {
         loadingButtonComponent?.animationDelegate = self
         loadingButtonComponent?.layer.cornerRadius = 4
         loadingButtonComponent?.add(for: .touchUpInside, { [weak self] in
-            self?.confirmPayment()
+            self?.handlePayButton()
         })
         loadingButtonComponent?.setTitle("Pagar".localized, for: .normal)
         loadingButtonComponent?.backgroundColor = ThemeManager.shared.getAccentColor()
@@ -275,8 +280,7 @@ extension PXOneTapViewController {
 
     func shouldAddNewOfflineMethod() {
         if let offlineMethods = viewModel.getOfflineMethods() {
-
-            let offlineViewModel = PXOfflineMethodsViewModel(offlinePaymentTypes: offlineMethods.paymentTypes, paymentMethods: viewModel.paymentMethods, amountHelper: viewModel.amountHelper, paymentOptionSelected: viewModel.paymentOptionSelected, advancedConfig: viewModel.advancedConfiguration, userLogged: viewModel.userLogged, disabledOption: viewModel.disabledOption, payerCompliance: viewModel.payerCompliance)
+            let offlineViewModel = PXOfflineMethodsViewModel(offlinePaymentTypes: offlineMethods.paymentTypes, paymentMethods: viewModel.paymentMethods, amountHelper: viewModel.amountHelper, paymentOptionSelected: viewModel.paymentOptionSelected, advancedConfig: viewModel.advancedConfiguration, userLogged: viewModel.userLogged, disabledOption: viewModel.disabledOption, payerCompliance: viewModel.payerCompliance, displayInfo: offlineMethods.displayInfo)
 
             let vc = PXOfflineMethodsViewController(viewModel: offlineViewModel, callbackConfirm: callbackConfirm, callbackUpdatePaymentOption: callbackUpdatePaymentOption, finishButtonAnimation: finishButtonAnimation) { [weak self] in
                     self?.navigationController?.popViewController(animated: false)
@@ -285,6 +289,84 @@ extension PXOneTapViewController {
             vc.modalPresentationStyle = .formSheet
             self.present(vc, animated: true, completion: nil)
         }
+    }
+
+    private func handleBehaviour(_ behaviour: PXBehaviour, isSplit: Bool) {
+        if let target = behaviour.target {
+            let properties = viewModel.getTargetBehaviourProperties(behaviour)
+            trackEvent(path: TrackingPaths.Events.OneTap.getTargetBehaviourPath(), properties: properties)
+            openKyCDeeplinkWithoutCallback(target)
+        } else if let modal = behaviour.modal, let modalConfig = viewModel.modals?[modal] {
+            let properties = viewModel.getDialogOpenProperties(behaviour, modalConfig)
+            trackEvent(path: TrackingPaths.Events.OneTap.getDialogOpenPath(), properties: properties)
+
+            let mainActionProperties = viewModel.getDialogActionProperties(behaviour, modalConfig, "main_action", modalConfig.mainButton)
+            let secondaryActionProperties = viewModel.getDialogActionProperties(behaviour, modalConfig, "secondary_action", modalConfig.secondaryButton)
+            let primaryAction = getActionForModal(modalConfig.mainButton, isSplit: isSplit, trackingPath: TrackingPaths.Events.OneTap.getDialogActionPath(), properties: mainActionProperties)
+            let secondaryAction = getActionForModal(modalConfig.secondaryButton, isSplit: isSplit, trackingPath: TrackingPaths.Events.OneTap.getDialogActionPath(), properties: secondaryActionProperties)
+            let vc = PXOneTapDisabledViewController(title: modalConfig.title, description: modalConfig.description, primaryButton: primaryAction, secondaryButton: secondaryAction, iconUrl: modalConfig.imageUrl)
+            shouldTrackModal = true
+            currentModalDismissTrackingProperties = viewModel.getDialogDismissProperties(behaviour, modalConfig)
+            currentModal = PXComponentFactory.Modal.show(viewController: vc, title: nil, dismissBlock: { [weak self] in
+                guard let self = self else { return }
+                self.trackDialogEvent(trackingPath: TrackingPaths.Events.OneTap.getDialogDismissPath(), properties: self.currentModalDismissTrackingProperties)
+            })
+        }
+    }
+
+    func trackDialogEvent(trackingPath: String?, properties: [String: Any]?) {
+        if shouldTrackModal, let trackingPath = trackingPath, let properties = properties {
+            shouldTrackModal = false
+            trackEvent(path: trackingPath, properties: properties)
+        }
+    }
+
+    private func getActionForModal(_ action: PXRemoteAction? = nil, isSplit: Bool = false, trackingPath: String? = nil, properties: [String: Any]? = nil) -> PXAction? {
+        let defaultTitle = "Pagar con otro medio".localized
+        let nonSplitDefaultAction: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            self.currentModal?.dismiss()
+            self.selectFirstCardInSlider()
+            self.trackDialogEvent(trackingPath: trackingPath, properties: properties)
+        }
+        let splitDefaultAction: () -> Void = { [weak self] in
+            guard let self = self else { return }
+            self.currentModal?.dismiss()
+        }
+
+        let defaultAction = isSplit ? splitDefaultAction : nonSplitDefaultAction
+
+        guard let action = action else {
+            return PXAction(label: defaultTitle, action: defaultAction)
+        }
+
+        guard let target = action.target else {
+            return PXAction(label: action.label, action: defaultAction)
+        }
+
+        return PXAction(label: action.label, action: { [weak self] in
+            guard let self = self else { return }
+            self.currentModal?.dismiss()
+            self.openKyCDeeplinkWithoutCallback(target)
+            self.trackDialogEvent(trackingPath: trackingPath, properties: properties)
+        })
+    }
+
+    private func handlePayButton() {
+        if let selectedCard = getSuspendedCardSliderViewModel() {
+            if let tapPayBehaviour = selectedCard.behaviours?[PXBehaviour.Behaviours.tapPay.rawValue] {
+                handleBehaviour(tapPayBehaviour, isSplit: false)
+            }
+        } else {
+            confirmPayment()
+        }
+    }
+
+    private func getSuspendedCardSliderViewModel() -> PXCardSliderViewModel? {
+        if let selectedCard = selectedCard, selectedCard.status.detail == "suspended" {
+            return selectedCard
+        }
+        return nil
     }
 
     private func confirmPayment() {
@@ -327,12 +409,27 @@ extension PXOneTapViewController {
     private func cancelPayment() {
         self.callbackExit()
     }
+
+    private func openKyCDeeplinkWithoutCallback(_ target: String) {
+        let index = target.firstIndex(of: "&")
+        if let index = index {
+            let deepLink = String(target[..<index])
+            PXDeepLinkManager.open(deepLink)
+        }
+    }
 }
 
 // MARK: Summary delegate.
 extension PXOneTapViewController: PXOneTapHeaderProtocol {
 
     func splitPaymentSwitchChangedValue(isOn: Bool, isUserSelection: Bool) {
+        if isUserSelection, let selectedCard = getSuspendedCardSliderViewModel(), let splitConfiguration = selectedCard.amountConfiguration?.splitConfiguration, let switchSplitBehaviour = selectedCard.behaviours?[PXBehaviour.Behaviours.switchSplit.rawValue] {
+            handleBehaviour(switchSplitBehaviour, isSplit: true)
+            splitConfiguration.splitEnabled = false
+            headerView?.updateSplitPaymentView(splitConfiguration: splitConfiguration)
+            return
+        }
+
         viewModel.splitPaymentEnabled = isOn
         if isUserSelection {
             self.viewModel.splitPaymentSelectionByUser = isOn
@@ -347,10 +444,10 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
         //Update installment row
         installmentInfoRow?.update(model: viewModel.getInstallmentInfoViewModel())
 
-        // If it's debit and has split, update split message
         if let infoRow = installmentInfoRow, viewModel.getCardSliderViewModel().indices.contains(infoRow.getActiveRowIndex()) {
             let selectedCard = viewModel.getCardSliderViewModel()[infoRow.getActiveRowIndex()]
 
+            // If it's debit and has split, update split message
             if selectedCard.paymentTypeId == PXPaymentTypes.DEBIT_CARD.rawValue {
                 selectedCard.displayMessage = viewModel.getSplitMessageForDebit(amountToPay: selectedCard.selectedPayerCost?.totalAmount ?? 0)
             }
@@ -423,7 +520,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
         // Add card. - card o credits payment method selected
         let validData = targetModel.cardData != nil || targetModel.isCredits
-        let shouldDisplay = validData && targetModel.status.enabled
+        let shouldDisplay = validData && !targetModel.status.isDisabled()
         if shouldDisplay {
             displayCard(targetModel: targetModel)
             loadingButtonComponent?.setEnabled()
@@ -476,20 +573,24 @@ extension PXOneTapViewController: PXCardSliderProtocol {
         }
     }
 
-    func disabledCardDidTap(status: PXStatus) {
-        showDisabledCardModal(status: status)
+    func cardDidTap(status: PXStatus) {
+        if let selectedCard = getSuspendedCardSliderViewModel() {
+            if let tapCardBehaviour = selectedCard.behaviours?[PXBehaviour.Behaviours.tapCard.rawValue] {
+                handleBehaviour(tapCardBehaviour, isSplit: false)
+            }
+        } else if status.isDisabled() {
+            showDisabledCardModal(status: status)
+        }
     }
 
     func showDisabledCardModal(status: PXStatus) {
-        guard let message = status.secondaryMessage?.message else {return}
-        let vc = PXOneTapDisabledViewController(text: message)
 
-        let buttonTitle = "Pagar con otro medio".localized
-        PXComponentFactory.Modal.show(viewController: vc, title: nil, actionTitle: buttonTitle, actionBlock: { [weak self] in
+        guard let message = status.secondaryMessage else {return}
 
-            //Select first item
-            self?.selectFirstCardInSlider()
-        })
+        let primaryAction = getActionForModal()
+        let vc = PXOneTapDisabledViewController(title: nil, description: message, primaryButton: primaryAction, secondaryButton: nil, iconUrl: nil)
+
+        self.currentModal = PXComponentFactory.Modal.show(viewController: vc, title: nil)
 
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapDisabledModalPath(), treatAsViewController: false)
     }
@@ -532,8 +633,14 @@ extension PXOneTapViewController: PXCardSliderProtocol {
 
 // MARK: Installment Row Info delegate.
 extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapInstallmentsSelectorProtocol {
-    func disabledCardTapped(status: PXStatus) {
-        showDisabledCardModal(status: status)
+    func cardTapped(status: PXStatus) {
+        if let selectedCard = getSuspendedCardSliderViewModel() {
+            if let tapCardBehaviour = selectedCard.behaviours?[PXBehaviour.Behaviours.tapCard.rawValue] {
+                handleBehaviour(tapCardBehaviour, isSplit: false)
+            }
+        } else if status.isDisabled() {
+            showDisabledCardModal(status: status)
+        }
     }
 
     func payerCostSelected(_ payerCost: PXPayerCost) {
@@ -548,7 +655,7 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
             PXFeedbackGenerator.heavyImpactFeedback()
 
             //Update card bottom message
-            let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits, selectedPayerCost: payerCost)
+            let bottomMessage = viewModel.getCardBottomMessage(paymentTypeId: selectedCard?.paymentTypeId, benefits: selectedCard?.benefits, status: selectedCard?.status, selectedPayerCost: payerCost, displayInfo: selectedCard?.displayInfo)
             viewModel.updateCardSliderModel(at: selectedIndex, bottomMessage: bottomMessage)
             slider.update(viewModel.getCardSliderViewModel())
         }

@@ -26,12 +26,14 @@ final class PXCardSliderViewModel {
     var isCredits: Bool {
         return self.paymentMethodId == PXPaymentTypes.CONSUMER_CREDITS.rawValue
     }
-    var bottomMessage: String?
+    var bottomMessage: PXCardBottomMessage?
     var benefits: PXBenefits?
+    var behaviours: [String: PXBehaviour]?
+    var displayInfo: PXOneTapDisplayInfo?
     var userDidSelectPayerCost: Bool = false
     var payerPaymentMethod: PXCustomOptionSearchItem?
 
-    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: PXCreditsViewModel? = nil, status: PXStatus, bottomMessage: String? = nil, benefits: PXBenefits?, payerPaymentMethod: PXCustomOptionSearchItem?) {
+    init(_ paymentMethodId: String, _ paymentTypeId: String?, _ issuerId: String, _ cardUI: CardUI, _ cardData: CardData?, _ payerCost: [PXPayerCost], _ selectedPayerCost: PXPayerCost?, _ cardId: String? = nil, _ shouldShowArrow: Bool, amountConfiguration: PXAmountConfiguration?, creditsViewModel: PXCreditsViewModel? = nil, status: PXStatus, bottomMessage: PXCardBottomMessage? = nil, benefits: PXBenefits?, payerPaymentMethod: PXCustomOptionSearchItem?, behaviours: [String: PXBehaviour]?, displayInfo: PXOneTapDisplayInfo?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.issuerId = issuerId
@@ -40,13 +42,15 @@ final class PXCardSliderViewModel {
         self.payerCost = payerCost
         self.selectedPayerCost = selectedPayerCost
         self.cardId = cardId
-        self.shouldShowArrow = !status.enabled ? false : shouldShowArrow
+        self.shouldShowArrow = !status.isUsable() ? false : shouldShowArrow
         self.amountConfiguration = amountConfiguration
         self.creditsViewModel = creditsViewModel
         self.status = status
         self.bottomMessage = bottomMessage
         self.benefits = benefits
         self.payerPaymentMethod = payerPaymentMethod
+        self.behaviours = behaviours
+        self.displayInfo = displayInfo
     }
 }
 
@@ -84,7 +88,7 @@ extension PXCardSliderViewModel: PaymentMethodOption {
     }
 
     func shouldShowInstallmentsHeader() -> Bool {
-        return !userDidSelectPayerCost && status.enabled
+        return !userDidSelectPayerCost && status.isUsable()
     }
 
     func getReimbursement() -> PXInstallmentsConfiguration? {

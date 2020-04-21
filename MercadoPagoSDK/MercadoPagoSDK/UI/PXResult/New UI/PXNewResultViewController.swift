@@ -7,6 +7,7 @@
 
 import UIKit
 import MLBusinessComponents
+import AndesUI
 
 class PXNewResultViewController: MercadoPagoUIViewController {
 
@@ -244,6 +245,11 @@ extension PXNewResultViewController {
             views.append(ResultViewData(view: view))
         }
 
+        //Top text box View
+        if let topTextBoxView = buildTopTextBoxView() {
+            views.append(ResultViewData(view: topTextBoxView, verticalMargin: PXLayout.ZERO_MARGIN, horizontalMargin: PXLayout.ZERO_MARGIN))
+        }
+
         //Important View
         if let view = viewModel.getImportantView() {
             views.append(ResultViewData(view: view))
@@ -316,6 +322,11 @@ extension PXNewResultViewController {
         //Split Payment View
         if viewModel.shouldShowPaymentMethod(), let view = buildSplitPaymentMethodView() {
             views.append(ResultViewData(view: view))
+        }
+
+        //View receipt action view
+        if let viewReceiptActionView = buildViewReceiptActionView() {
+            views.append(ResultViewData(view: viewReceiptActionView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Bottom Custom View
@@ -404,6 +415,54 @@ extension PXNewResultViewController {
             itemsViews.append(itemView)
         }
         return itemsViews
+    }
+
+    ////VIEW RECEIPT ACTION
+    func buildViewReceiptActionView() -> UIView? {
+        guard let viewReceiptAction = viewModel.getViewReceiptAction() else {
+            return nil
+        }
+        if !MLBusinessAppDataService().isMpAlreadyInstalled() {
+            return nil
+        }
+
+        let button = AndesButton(text: viewReceiptAction.label, hierarchy: .quiet, size: AndesButtonSize.large)
+        button.add(for: .touchUpInside) { [weak self] in
+            self?.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapViewReceiptPath())
+            //open deep link
+            PXDeepLinkManager.open(viewReceiptAction.target)
+        }
+        return button
+    }
+
+    ////TOP TEXT BOX
+    func buildTopTextBoxView() -> UIView? {
+        guard let topTextBox = viewModel.getTopTextBox() else {
+            return nil
+        }
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSeparatorLineToBottom(height: 1)
+
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.attributedText = topTextBox.getAttributedString(fontSize: PXLayout.XS_FONT)
+        label.numberOfLines = 0
+
+        containerView.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PXLayout.L_MARGIN),
+            label.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PXLayout.L_MARGIN),
+            label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PXLayout.M_MARGIN),
+            label.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PXLayout.M_MARGIN)
+        ])
+
+        return containerView
+    }
+
+    //INSTRUCTIONS
+    func buildInstructionsView() -> UIView? {
+        return viewModel.getInstructionsView()
     }
 
     //PAYMENT METHOD

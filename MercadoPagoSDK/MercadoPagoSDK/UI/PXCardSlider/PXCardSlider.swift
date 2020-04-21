@@ -52,13 +52,13 @@ extension PXCardSlider: FSPagerViewDataSource {
 
                 if targetModel.cardUI is AccountMoneyCard {
                     // AM card.
-                    cell.renderAccountMoneyCard(isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, accessibilityData: accessibilityData)
+                    cell.renderAccountMoneyCard(isDisabled: targetModel.status.isDisabled(), cardSize: pagerView.itemSize, bottomMessage: bottomMessage, accessibilityData: accessibilityData)
                 } else if let oneTapCreditsInfo = targetModel.creditsViewModel, targetModel.cardUI is ConsumerCreditsCard {
                     cell.delegate = self
-                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, creditsInstallmentSelected: targetModel.selectedPayerCost?.installments, accessibilityData: accessibilityData)
+                    cell.renderConsumerCreditsCard(creditsViewModel: oneTapCreditsInfo, isDisabled: targetModel.status.isDisabled(), cardSize: pagerView.itemSize, bottomMessage: bottomMessage, creditsInstallmentSelected: targetModel.selectedPayerCost?.installments, accessibilityData: accessibilityData)
                 } else {
                     // Other cards.
-                    cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: !targetModel.status.enabled, cardSize: pagerView.itemSize, bottomMessage: bottomMessage, accessibilityData: accessibilityData)
+                    cell.render(withCard: targetModel.cardUI, cardData: cardData, isDisabled: targetModel.status.isDisabled(), cardSize: pagerView.itemSize, bottomMessage: bottomMessage, accessibilityData: accessibilityData)
                 }
                 return cell
             } else {
@@ -130,10 +130,7 @@ extension PXCardSlider: FSPagerViewDelegate {
     func pagerView(_ pagerView: FSPagerView, didSelectItemAt index: Int) {
         if model.indices.contains(index) {
             let modelData = model[index]
-
-            if !modelData.status.enabled {
-                delegate?.disabledCardDidTap(status: modelData.status)
-            }
+            delegate?.cardDidTap(status: modelData.status)
         }
     }
 }

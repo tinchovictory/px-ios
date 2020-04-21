@@ -37,6 +37,6 @@ class PXRingViewData: NSObject, MLBusinessLoyaltyRingData {
     }
 
     func getButtonDeepLink() -> String {
-        return points.action.target
+        return points.action.target ?? ""
     }
 }

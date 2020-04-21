@@ -7,6 +7,7 @@
 
 import Foundation
 import MLBusinessComponents
+import AndesUI
 
 class PXNewResultUtil {
 
@@ -53,9 +54,7 @@ class PXNewResultUtil {
 
         let dataService = MLBusinessAppDataService()
         if dataService.isMpAlreadyInstalled() {
-            let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = discounts.discountsAction.label
-
+            let button = AndesButton(text: discounts.discountsAction.label, hierarchy: .quiet, size: .large)
             button.add(for: .touchUpInside) {
                 //open deep link
                 PXDeepLinkManager.open(discounts.discountsAction.target)
@@ -197,10 +196,14 @@ extension PXNewResultUtil {
         var pmDescription: String = ""
         let paymentMethodName = paymentMethod.name ?? ""
 
-        if paymentMethod.isCard, let lastFourDigits = (paymentData.token?.lastFourDigits) {
-            pmDescription = paymentMethodName + " " + "terminada en".localized + " " + lastFourDigits
-        } else {
+        if paymentMethod.isCard {
+            if let lastFourDigits = (paymentData.token?.lastFourDigits) {
+                pmDescription = paymentMethodName + " " + "terminada en".localized + " " + lastFourDigits
+            }
+        } else if paymentMethod.paymentTypeId == "digital_currency" {
             pmDescription = paymentMethodName
+        } else {
+            return nil
         }
 
         let attributedSecond = NSMutableAttributedString(string: pmDescription, attributes: PXNewCustomView.subtitleAttributes)
@@ -209,13 +212,10 @@ extension PXNewResultUtil {
 
     // PM Third String
     class func getPMThirdString(paymentData: PXPaymentData) -> NSAttributedString? {
-        guard let paymentMethod = paymentData.paymentMethod else {
+        guard let paymentMethodDisplayDescription = paymentData.paymentMethod?.creditsDisplayInfo?.description?.message else {
             return nil
         }
-        let paymentMethodName = paymentMethod.name ?? ""
-        if let issuer = paymentData.getIssuer(), let issuerName = issuer.name, !issuerName.isEmpty, issuerName.lowercased() != paymentMethodName.lowercased() {
-            return NSMutableAttributedString(string: issuerName, attributes: PXNewCustomView.subtitleAttributes)
-        }
-        return nil
+        let thirdAttributed = NSMutableAttributedString(string: paymentMethodDisplayDescription, attributes: PXNewCustomView.subtitleAttributes)
+        return thirdAttributed
     }
 }

@@ -29,6 +29,6 @@ class PXDownloadAppData: NSObject, MLBusinessDownloadAppData {
     }
 
     func getButtonDeepLink() -> String {
-        return discounts.downloadAction.action.target
+        return discounts.downloadAction.action.target ?? ""
     }
 }

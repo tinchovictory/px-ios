@@ -113,4 +113,39 @@ extension PXOneTapViewModel {
         properties["extra_info"] = extraDic
         return properties
     }
+
+    func getTargetBehaviourProperties(_ behaviour: PXBehaviour) -> [String: Any] {
+        var properties: [String: Any] = [:]
+        if let target = behaviour.target {
+            properties["behaviour"] = behaviour.modal ?? ""
+            properties["deepLink"] = target
+        }
+        return properties
+    }
+    
+    func getDialogOpenProperties(_ behaviour: PXBehaviour, _ modalConfig: PXModal) -> [String: Any] {
+        var properties: [String: Any] = [:]
+        if behaviour.target != nil {
+            return getTargetBehaviourProperties(behaviour)
+        } else if let modal = behaviour.modal {
+            properties["description"] = modal
+            var actions = 0
+            if modalConfig.mainButton != nil { actions += 1 }
+            if modalConfig.secondaryButton != nil { actions += 1 }
+            properties["actions"] = actions
+        }
+        return properties
+    }
+
+    func getDialogDismissProperties(_ behaviour: PXBehaviour, _ modalConfig: PXModal) -> [String: Any] {
+        return getDialogOpenProperties(behaviour, modalConfig)
+    }
+
+    func getDialogActionProperties(_ behaviour: PXBehaviour, _ modalConfig: PXModal, _ type: String, _ button: PXRemoteAction?) -> [String: Any]? {
+        guard let button = button else { return nil }
+        var properties = getDialogOpenProperties(behaviour, modalConfig)
+        properties["type"] = type
+        properties["deepLink"] = button.target ?? ""
+        return properties
+    }
 }

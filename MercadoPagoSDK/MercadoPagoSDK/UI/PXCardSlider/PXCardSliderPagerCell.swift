@@ -24,6 +24,8 @@ class PXCardSliderPagerCell: FSPagerViewCell {
     weak var addNewMethodDelegate: AddNewMethodCardDelegate?
     @IBOutlet weak var containerView: UIView!
 
+    private var bottomMessageFixed: Bool = false
+
     override func prepareForReuse() {
         super.prepareForReuse()
         cardHeader?.view.removeFromSuperview()
@@ -39,7 +41,7 @@ protocol AddNewMethodCardDelegate: NSObjectProtocol {
 
 // MARK: Publics.
 extension PXCardSliderPagerCell {
-    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil, accessibilityData: AccessibilityCardData) {
+    func render(withCard: CardUI, cardData: CardData, isDisabled: Bool, cardSize: CGSize, bottomMessage: PXCardBottomMessage? = nil, accessibilityData: AccessibilityCardData) {
         containerView.layer.masksToBounds = false
         containerView.removeAllSubviews()
         containerView.layer.cornerRadius = cornerRadius
@@ -124,7 +126,7 @@ extension PXCardSliderPagerCell {
         addNewMethodDelegate?.addNewOfflineMethod()
     }
 
-    func renderAccountMoneyCard(isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil, accessibilityData: AccessibilityCardData) {
+    func renderAccountMoneyCard(isDisabled: Bool, cardSize: CGSize, bottomMessage: PXCardBottomMessage? = nil, accessibilityData: AccessibilityCardData) {
         containerView.layer.masksToBounds = false
         containerView.backgroundColor = .clear
         containerView.removeAllSubviews()
@@ -144,7 +146,7 @@ extension PXCardSliderPagerCell {
         accessibilityLabel = getAccessibilityMessage(accessibilityData)
     }
 
-    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: String? = nil, creditsInstallmentSelected: Int? = nil, accessibilityData: AccessibilityCardData) {
+    func renderConsumerCreditsCard(creditsViewModel: PXCreditsViewModel, isDisabled: Bool, cardSize: CGSize, bottomMessage: PXCardBottomMessage? = nil, creditsInstallmentSelected: Int? = nil, accessibilityData: AccessibilityCardData) {
         consumerCreditCard = ConsumerCreditsCard(creditsViewModel, isDisabled: isDisabled)
         guard let consumerCreditCard = consumerCreditCard else { return }
 
@@ -170,19 +172,18 @@ extension PXCardSliderPagerCell {
         accessibilityLabel = getAccessibilityMessage(accessibilityData)
     }
 
-    func addBottomMessageView(message: String?) {
+    func addBottomMessageView(message: PXCardBottomMessage?) {
         guard let message = message else { return }
 
         let messageView = UIView()
         messageView.translatesAutoresizingMaskIntoConstraints = false
-        messageView.backgroundColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
+        messageView.backgroundColor = message.text.getBackgroundColor()
 
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = message
+        label.attributedText = message.text.getAttributedString(backgroundColor: .clear)
         label.numberOfLines = 1
         label.textAlignment = .center
-        label.textColor = .white
         label.font = Utils.getSemiBoldFont(size: PXLayout.XXXS_FONT)
 
         messageView.addSubview(label)
@@ -192,7 +193,11 @@ extension PXCardSliderPagerCell {
             label.trailingAnchor.constraint(equalTo: messageView.trailingAnchor),
         ])
 
-        messageLabelCenterConstraint = label.centerYAnchor.constraint(equalTo: messageView.centerYAnchor, constant: bottomMessageViewHeight)
+        self.bottomMessageFixed = message.fixed
+
+        let constraintsConstant = message.fixed ? 0 : bottomMessageViewHeight
+
+        messageLabelCenterConstraint = label.centerYAnchor.constraint(equalTo: messageView.centerYAnchor, constant: constraintsConstant)
         messageLabelCenterConstraint?.isActive = true
 
         containerView.clipsToBounds = true
@@ -204,7 +209,7 @@ extension PXCardSliderPagerCell {
             messageView.heightAnchor.constraint(equalToConstant: bottomMessageViewHeight),
         ])
 
-        messageViewBottomConstraint = messageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: bottomMessageViewHeight)
+        messageViewBottomConstraint = messageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: constraintsConstant)
         messageViewBottomConstraint?.isActive = true
     }
 
@@ -221,6 +226,7 @@ extension PXCardSliderPagerCell {
     }
 
     func showBottomMessageView(_ shouldShow: Bool) {
+        guard !bottomMessageFixed else { return }
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let heightValue = self?.bottomMessageViewHeight else { return }
             self?.messageViewBottomConstraint?.constant = shouldShow ? 0 : heightValue

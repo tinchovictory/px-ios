@@ -7,6 +7,14 @@
 
 import Foundation
 
+public struct PXOneTapDisplayInfo: Codable {
+    let bottomDescription: PXText?
+
+    enum CodingKeys: String, CodingKey {
+        case bottomDescription = "bottom_description"
+    }
+}
+
 /// :nodoc:
 open class PXOneTapDto: NSObject, Codable {
     open var paymentMethodId: String?
@@ -18,8 +26,10 @@ open class PXOneTapDto: NSObject, Codable {
     open var benefits: PXBenefits?
     open var status: PXStatus
     open var offlineMethods: PXOfflineMethods?
+    open var behaviours: [String: PXBehaviour]?
+    open var displayInfo: PXOneTapDisplayInfo?
 
-    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?) {
+    public init(paymentMethodId: String?, paymentTypeId: String?, oneTapCard: PXOneTapCardDto?, oneTapCreditsInfo: PXOneTapCreditsDto?, accountMoney: PXAccountMoneyDto?, newCard: PXOneTapNewCardDto?, status: PXStatus, benefits: PXBenefits? = nil, offlineMethods: PXOfflineMethods?, behaviours: [String: PXBehaviour]?, displayInfo: PXOneTapDisplayInfo?) {
         self.paymentMethodId = paymentMethodId
         self.paymentTypeId = paymentTypeId
         self.oneTapCard = oneTapCard
@@ -29,6 +39,8 @@ open class PXOneTapDto: NSObject, Codable {
         self.status = status
         self.benefits = benefits
         self.offlineMethods = offlineMethods
+        self.behaviours = behaviours
+        self.displayInfo = displayInfo
     }
 
     public enum CodingKeys: String, CodingKey {
@@ -41,5 +53,7 @@ open class PXOneTapDto: NSObject, Codable {
         case status
         case benefits = "benefits"
         case offlineMethods = "offline_methods"
+        case behaviours
+        case displayInfo = "display_info"
     }
 }

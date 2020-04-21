@@ -28,7 +28,7 @@ class PXCrossSellingItemData: NSObject, MLBusinessCrossSellingBoxData {
     }
 
     func getButtonDeepLink() -> String {
-        return item.action.target
+        return item.action.target ?? ""
     }
 }
 

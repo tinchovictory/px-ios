@@ -12,20 +12,23 @@ import MLUI
 struct PXComponentFactory {
 
     struct Modal {
-        static func show(viewController: UIViewController, title: String?) {
+        @discardableResult
+        static func show(viewController: UIViewController, title: String?) -> MLModal {
             if let modalTitle = title {
-                MLModal.show(with: viewController, title: modalTitle)
+                return MLModal.show(with: viewController, title: modalTitle)
             } else {
-                MLModal.show(with: viewController)
+                return MLModal.show(with: viewController)
             }
         }
 
-        static func show(viewController: UIViewController, title: String? = "", dismissBlock: @escaping (() -> Void)) {
-            MLModal.show(with: viewController, title: title, actionTitle: "", actionBlock: {}, secondaryActionTitle: "", secondaryActionBlock: {}, dismiss: dismissBlock, enableScroll: false)
+        @discardableResult
+        static func show(viewController: UIViewController, title: String? = "", dismissBlock: @escaping (() -> Void)) -> MLModal {
+            return MLModal.show(with: viewController, title: title, actionTitle: "", actionBlock: {}, secondaryActionTitle: "", secondaryActionBlock: {}, dismiss: dismissBlock, enableScroll: false)
         }
 
-        static func show(viewController: UIViewController, title: String? = "", actionTitle: String? = "", actionBlock: @escaping () -> Void = {}, secondaryActionTitle: String? = "", secondaryActionBlock: @escaping () -> Void = {}, dismissBlock: @escaping (() -> Void) = {}, enableScroll: Bool = false) {
-            MLModal.show(with: viewController, title: title, actionTitle: actionTitle, actionBlock: actionBlock, secondaryActionTitle: secondaryActionTitle, secondaryActionBlock: secondaryActionBlock, dismiss: dismissBlock, enableScroll: enableScroll)
+        @discardableResult
+        static func show(viewController: UIViewController, title: String? = "", actionTitle: String? = "", actionBlock: @escaping () -> Void = {}, secondaryActionTitle: String? = "", secondaryActionBlock: @escaping () -> Void = {}, dismissBlock: @escaping (() -> Void) = {}, enableScroll: Bool = false) -> MLModal {
+            return MLModal.show(with: viewController, title: title, actionTitle: actionTitle, actionBlock: actionBlock, secondaryActionTitle: secondaryActionTitle, secondaryActionBlock: secondaryActionBlock, dismiss: dismissBlock, enableScroll: enableScroll)
         }
     }
 

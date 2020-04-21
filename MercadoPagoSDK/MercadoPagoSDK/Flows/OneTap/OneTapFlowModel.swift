@@ -129,6 +129,7 @@ internal extension OneTapFlowModel {
         viewModel.paymentMethods = search.availablePaymentMethods
         viewModel.items = checkoutPreference.items
         viewModel.additionalInfoSummary = checkoutPreference.pxAdditionalInfo?.pxSummary
+        viewModel.modals = search.modals
         return viewModel
     }
 }

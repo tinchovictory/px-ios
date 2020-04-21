@@ -54,7 +54,7 @@ internal struct PXDisabledOption {
         let thirdMessage = "error_body_description_rejected_high_risk".localized
         let message = secondaryMessage + "\n\n" + thirdMessage
         let secondaryText = PXText(message: message, backgroundColor: nil, textColor: nil, weight: nil)
-        return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false)
+        return PXStatus(mainMessage: mainText, secondaryMessage: secondaryText, enabled: false, detail: nil)
     }
 }
 

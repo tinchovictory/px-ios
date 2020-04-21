@@ -90,7 +90,7 @@ internal class CustomService: MercadoPagoService {
                                 failure?()
                         } else {
                             if pointsDic.allKeys.count > 0 {
-                                let pointsAndDiscounts = try PXPointsAndDiscounts.fromJSON(data: data)
+                                let pointsAndDiscounts = try JSONDecoder().decode(PXPointsAndDiscounts.self, from: data)
                                 success(pointsAndDiscounts)
                             } else {
                                 failure?()

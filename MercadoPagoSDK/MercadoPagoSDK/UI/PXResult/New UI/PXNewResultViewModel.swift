@@ -47,6 +47,12 @@ protocol PXNewResultViewModelInterface {
     func getCrossSellingItems() -> [PXCrossSellingItem]?
     func getCrossSellingTapAction() -> ((_ deepLink: String) -> Void)?
 
+    ////VIEW RECEIPT ACTION
+    func getViewReceiptAction() -> PXRemoteAction?
+
+    ////TOP TEXT BOX
+    func getTopTextBox() -> PXText?
+
     //INSTRUCTIONS
     func hasInstructions() -> Bool
     func getInstructionsView() -> UIView?

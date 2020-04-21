@@ -9,7 +9,7 @@ import Foundation
 
 protocol PXCardSliderProtocol: NSObjectProtocol {
     func newCardDidSelected(targetModel: PXCardSliderViewModel)
-    func disabledCardDidTap(status: PXStatus)
+    func cardDidTap(status: PXStatus)
     func didScroll(offset: CGPoint)
     func didEndDecelerating()
     func addNewCardDidTap()
