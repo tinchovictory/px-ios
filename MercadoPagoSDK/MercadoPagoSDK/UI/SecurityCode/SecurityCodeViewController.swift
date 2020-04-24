@@ -56,6 +56,7 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
         securityCodeTextField.addTarget(self, action: #selector(SecurityCodeViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         securityCodeTextField.delegate = self
         completeCvvLabel()
+        renderMessageView()
     }
 
     open override func viewWillAppear(_ animated: Bool) {
@@ -198,6 +199,52 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
 
         label?.text?.append("•")
         return true
+    }
+}
+
+// MARK: Privates
+private extension SecurityCodeViewController {
+    func renderMessageView() {
+        cardFront.alpha = 0
+        view.backgroundColor = .white
+        let messageView = UIView()
+        messageView.translatesAutoresizingMaskIntoConstraints = false
+        messageView.backgroundColor = .white
+        view.addSubview(messageView)
+        NSLayoutConstraint.activate([
+            messageView.topAnchor.constraint(equalTo: view.topAnchor, constant: PXLayout.M_MARGIN),
+            messageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+            messageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+            messageView.bottomAnchor.constraint(equalTo: panelView.topAnchor, constant: -PXLayout.M_MARGIN)
+        ])
+
+        let titleLabel = buildLabel("Busca el código de seguridad en la APP de Caixa")
+        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XS_FONT)
+        messageView.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: messageView.topAnchor, constant: PXLayout.XL_MARGIN),
+            titleLabel.leadingAnchor.constraint(equalTo: messageView.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: messageView.trailingAnchor)
+        ])
+
+        let subtitleLabel = buildLabel("Recuerda que se actualiza cada vez que ingresas al detalle de tu tarjeta y es válido por 20 minutos.")
+        subtitleLabel.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
+        messageView.addSubview(subtitleLabel)
+        NSLayoutConstraint.activate([
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: PXLayout.L_MARGIN),
+            subtitleLabel.leadingAnchor.constraint(equalTo: messageView.leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: messageView.trailingAnchor)
+        ])
+    }
+
+    func buildLabel(_ message: String?) -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .left
+        label.text = message ?? ""
+        label.textColor = .black
+        label.numberOfLines = 0
+        return label
     }
 }
 
