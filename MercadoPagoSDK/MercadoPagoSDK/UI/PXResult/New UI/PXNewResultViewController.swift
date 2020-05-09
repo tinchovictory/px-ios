@@ -167,6 +167,10 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 if let ringView = data.view as? MLBusinessLoyaltyRingView {
                     self.ringView = ringView
                 }
+                
+                if let touchpointView = data.view as? MLBusinessTouchpointsView {
+                    touchpointView.delegate = self
+                }
 
                 contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
 
@@ -388,11 +392,9 @@ extension PXNewResultViewController {
         guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
             return nil
         }
-        let discountsView = MLBusinessDiscountBoxView(data)
-
-        if let tapAction = viewModel.getDiscountsTapAction() {
-            discountsView.addTapAction(tapAction)
-        }
+        let discountsView = MLBusinessTouchpointsView()
+        discountsView.setTouchpointsTracker(with: PXDiscountTracker())
+        discountsView.update(with: data)
 
         return discountsView
     }
@@ -571,5 +573,11 @@ extension PXNewResultViewController {
         if let button = getRemedyViewAnimatedButton() {
             PXNotificationManager.UnsuscribeTo.animateButton(button)
         }
+    }
+}
+
+extension PXNewResultViewController: MLBusinessTouchpointsUserInteractionHandler {
+    func didTap(with selectedIndex: Int, deeplink: String, trackingId: String) {
+        viewModel.getDiscountsTapAction(index: selectedIndex, deepLink: deeplink, trackId: trackingId)
     }
 }
