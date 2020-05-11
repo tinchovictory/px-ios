@@ -204,28 +204,28 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
     }
 }
 
-// MARK: Privates
+// MARK: CVVInfoView
 private extension SecurityCodeViewController {
     func renderCVVInfoView() {
         cardFront.alpha = 0
         cardCvvThumbnail.image = ResourceManager.shared.getImage("caixa")
 
         let titleLabel = buildLabel(viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.title)
-        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.L_FONT)
+        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
         view.addSubview(titleLabel)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: PXLayout.XXXL_MARGIN),
-            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XXXL_MARGIN),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XXXL_MARGIN)
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XL_MARGIN),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XL_MARGIN)
         ])
 
         let subtitleLabel = buildLabel(viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.message)
         subtitleLabel.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
         view.addSubview(subtitleLabel)
         NSLayoutConstraint.activate([
-            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: PXLayout.XL_MARGIN),
-            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XXXL_MARGIN),
-            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XXXL_MARGIN)
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: PXLayout.XS_MARGIN),
+            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XL_MARGIN),
+            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XL_MARGIN)
         ])
     }
 
