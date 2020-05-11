@@ -7,14 +7,9 @@
 
 import Foundation
 import MLBusinessComponents
+import AndesUI
 
 class PXNewResultUtil {
-
-    //HEADER DATA
-    class func getDataForHeaderView(color: UIColor?, title: String, icon: UIImage?, iconURL: String?, badgeImage: UIImage?, closeAction: (() -> Void)?) -> PXNewResultHeaderData {
-
-        return PXNewResultHeaderData(color: color, title: title, icon: icon, iconURL: iconURL, badgeImage: badgeImage, closeAction: closeAction)
-    }
 
     //RECEIPT DATA
     class func getDataForReceiptView(paymentId: String?) -> PXNewCustomViewData? {
@@ -22,7 +17,7 @@ class PXNewResultUtil {
             return nil
         }
 
-        let attributedTitle = NSAttributedString(string: "Operación".localized + " #" + paymentId, attributes: PXNewCustomView.titleAttributes)
+        let attributedTitle = NSAttributedString(string: ("Operación #{0}".localized as NSString).replacingOccurrences(of: "{0}", with: "\(paymentId)"), attributes: PXNewCustomView.titleAttributes)
 
         let date = Date()
         let attributedSubtitle = NSAttributedString(string: Utils.getFormatedStringDate(date, addTime: true), attributes: PXNewCustomView.subtitleAttributes)
@@ -59,9 +54,7 @@ class PXNewResultUtil {
 
         let dataService = MLBusinessAppDataService()
         if dataService.isMpAlreadyInstalled() {
-            let button = PXOutlinedSecondaryButton()
-            button.buttonTitle = discounts.discountsAction.label
-
+            let button = AndesButton(text: discounts.discountsAction.label, hierarchy: .quiet, size: .large)
             button.add(for: .touchUpInside) {
                 //open deep link
                 PXDeepLinkManager.open(discounts.discountsAction.target)
@@ -168,7 +161,6 @@ extension PXNewResultUtil {
             }
         } else {
             // Caso account money
-
             if let splitAccountMoneyAmount = paymentData.getTransactionAmountWithDiscount() {
                 let string = Utils.getAmountFormated(amount: splitAccountMoneyAmount, forCurrency: currency)
                 let attributed = NSAttributedString(string: string, attributes: PXNewCustomView.titleAttributes)
@@ -208,8 +200,10 @@ extension PXNewResultUtil {
             if let lastFourDigits = (paymentData.token?.lastFourDigits) {
                 pmDescription = paymentMethodName + " " + "terminada en".localized + " " + lastFourDigits
             }
-        } else {
+        } else if paymentMethod.paymentTypeId == "digital_currency" {
             pmDescription = paymentMethodName
+        } else {
+            return nil
         }
 
         let attributedSecond = NSMutableAttributedString(string: pmDescription, attributes: PXNewCustomView.subtitleAttributes)
@@ -218,15 +212,10 @@ extension PXNewResultUtil {
 
     // PM Third String
     class func getPMThirdString(paymentData: PXPaymentData) -> NSAttributedString? {
-        guard let paymentMethod = paymentData.paymentMethod else {
+        guard let paymentMethodDisplayDescription = paymentData.paymentMethod?.creditsDisplayInfo?.description?.message else {
             return nil
         }
-        let paymentMethodName = paymentMethod.name ?? ""
-        if let issuer = paymentData.getIssuer(), let issuerName = issuer.name, !issuerName.isEmpty, issuerName.lowercased() != paymentMethodName.lowercased() {
-            let issuerAttributedString = NSMutableAttributedString(string: issuerName, attributes: PXNewCustomView.subtitleAttributes)
-            
-            return issuerAttributedString
-        }
-        return nil
+        let thirdAttributed = NSMutableAttributedString(string: paymentMethodDisplayDescription, attributes: PXNewCustomView.subtitleAttributes)
+        return thirdAttributed
     }
 }

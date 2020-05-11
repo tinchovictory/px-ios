@@ -46,8 +46,8 @@ final class OneTapFlow: NSObject, PXFlow {
 
     func executeNextStep() {
         switch self.model.nextStep() {
-        case .screenReviewOneTap:
-            self.showReviewAndConfirmScreenForOneTap()
+        case .screenOneTap:
+            self.showOneTapViewController()
         case .screenSecurityCode:
             self.showSecurityCodeScreen()
         case .serviceCreateESCCardToken:
@@ -81,7 +81,7 @@ final class OneTapFlow: NSObject, PXFlow {
     // Finish one tap and continue with checkout
     func finishFlow() {
         if let paymentResult = model.paymentResult {
-            resultHandler?.finishOneTap(paymentResult: paymentResult, instructionsInfo: model.instructionsInfo, pointsAndDiscounts: model.pointsAndDiscounts)
+            resultHandler?.finishOneTap(paymentResult: paymentResult, instructionsInfo: model.instructionsInfo, pointsAndDiscounts: model.pointsAndDiscounts, paymentOptionSelected: model.paymentOptionSelected)
         } else if let businessResult = model.businessResult {
             resultHandler?.finishOneTap(businessResult: businessResult, paymentData: model.paymentData, splitAccountMoney: model.splitAccountMoney, pointsAndDiscounts: model.pointsAndDiscounts)
         } else {
@@ -120,8 +120,13 @@ extension OneTapFlow {
 
             if let suggestedAccountMoney = search.oneTap?.first?.accountMoney {
                 selectedPaymentOption = suggestedAccountMoney
-            } else if let firstPaymentMethodId = search.oneTap?.first?.paymentMethodId {
-                let customOptionsFound = customerPaymentMethods.filter { return $0.getPaymentMethodId() == firstPaymentMethodId }
+            } else if let oneTapDto = search.oneTap?.first {
+                let customOptionsFound = customerPaymentMethods.filter {
+                    if let oneTapCard = oneTapDto.oneTapCard {
+                        return $0.getPaymentMethodId() == oneTapDto.paymentMethodId && $0.id == oneTapCard.cardId
+                    }
+                    return $0.getPaymentMethodId() == oneTapDto.paymentMethodId
+                }
                 if let customerPaymentMethod = customOptionsFound.first {
                     // Check if one tap response has payer costs
                     if let expressNode = search.getPaymentMethodInExpressCheckout(targetId: customerPaymentMethod.getId()).expressNode,

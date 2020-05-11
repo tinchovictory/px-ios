@@ -7,25 +7,23 @@
 
 import UIKit
 import MLBusinessComponents
+import AndesUI
 
 class PXNewResultViewController: MercadoPagoUIViewController {
 
     private weak var ringView: MLBusinessLoyaltyRingView?
     private lazy var elasticHeader = UIView()
-    private lazy var NAVIGATION_BAR_DELTA_Y: CGFloat = 29.8
-    private lazy var NAVIGATION_BAR_SECONDARY_DELTA_Y: CGFloat = 0
-    private lazy var navigationTitleStatusStep: Int = 0
-
     private let statusBarHeight = PXLayout.getStatusBarHeight()
+    private var contentViewHeightConstraint: NSLayoutConstraint?
 
     let scrollView = UIScrollView()
     let viewModel: PXNewResultViewModelInterface
+    private var finishButtonAnimation: (() -> Void)?
 
-    internal var changePaymentMethodCallback: (() -> Void)?
-
-    init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState) -> Void) {
+    init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState, String?) -> Void, finishButtonAnimation: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.viewModel.setCallback(callback: callback)
+        self.finishButtonAnimation = finishButtonAnimation
         super.init(nibName: nil, bundle: nil)
         self.shouldHideNavigationBar = true
     }
@@ -37,26 +35,69 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupScrollView()
-        addElasticHeader(headerBackgroundColor: viewModel.getHeaderColor())
+        addElasticHeader()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animateScrollView()
         animateRing()
-        if !String.isNullOrEmpty(viewModel.getTrackingPath()) {
-            trackScreen(path: viewModel.getTrackingPath(), properties: viewModel.getTrackingProperties())
+        let path = viewModel.getTrackingPath()
+        if !path.isEmpty {
+            trackScreen(path: path, properties: viewModel.getTrackingProperties())
 
             let behaviourProtocol = PXConfiguratorManager.flowBehaviourProtocol
             behaviourProtocol.trackConversion(result: viewModel.getFlowBehaviourResult())
         }
     }
 
-    private func animateScrollView() {
-        let animator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1) {
-            self.scrollView.alpha = 1
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // remove animated button observer
+        unsubscribeFromAnimatedButtonNotifications()
+        // remove keyboard observer
+        unsubscribeFromKeyboardNotifications()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if let button = getRemedyViewAnimatedButton() {
+            button.resetButton()
         }
-        animator.startAnimation()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func keyboardWillBeShown(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+            scrollView.contentInset = contentInset
+            scrollView.scrollIndicatorInsets = contentInset
+            animateContentViewHeightConstraint(isActive: false)
+        }
+    }
+
+    @objc func keyboardWillBeHidden(notification: Notification) {
+        let contentInset = UIEdgeInsets.zero
+        scrollView.contentInset = contentInset
+        scrollView.scrollIndicatorInsets = contentInset
+        animateContentViewHeightConstraint(isActive: true)
+    }
+
+    private func animateContentViewHeightConstraint(isActive: Bool) {
+        if contentViewHeightConstraint != nil {
+            UIViewPropertyAnimator(duration: 0.25, curve: .easeInOut) { [weak self] in
+                self?.contentViewHeightConstraint?.isActive = isActive
+            }.startAnimation()
+        }
+    }
+
+    private func animateScrollView() {
+        UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1) { [weak self] in
+            self?.scrollView.alpha = 1
+        }.startAnimation()
     }
 
     private func setupScrollView() {
@@ -81,7 +122,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         renderContentView()
     }
 
-    func renderContentView() {
+    private func renderContentView() {
         //CONTENT VIEW
         let contentView = UIView()
         contentView.backgroundColor = .white
@@ -93,12 +134,14 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            contentView.widthAnchor.constraint(equalTo: view.widthAnchor)
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
 
         //FOOTER VIEW
         let footerView = buildFooterView()
-        footerView.addSeparatorLineToTop(height: 1)
+        if let model = viewModel as? PXResultViewModel, model.getPaymentStatus() != PXPayment.Status.REJECTED {
+            footerView.addSeparatorLineToTop(height: 1)
+        }
         scrollView.addSubview(footerView)
 
         //Footer View Layout
@@ -106,50 +149,49 @@ class PXNewResultViewController: MercadoPagoUIViewController {
             footerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
-            footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            footerView.widthAnchor.constraint(equalTo: view.widthAnchor)
+            footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
 
         //Calculate content view min height
         self.view.layoutIfNeeded()
         let scrollViewMinHeight: CGFloat = PXLayout.getScreenHeight() - footerView.frame.height - PXLayout.getSafeAreaTopInset() - PXLayout.getSafeAreaBottomInset()
-        NSLayoutConstraint.activate([
-            contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: scrollViewMinHeight)
-        ])
+        contentViewHeightConstraint = contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: scrollViewMinHeight)
+        if let contentViewHeightConstraint = contentViewHeightConstraint {
+            contentViewHeightConstraint.isActive = true
+        }
 
         //Load content views
         let views = getContentViews()
-        for data in views {
-            if let ringView = data.view as? MLBusinessLoyaltyRingView {
-                self.ringView = ringView
+        if views.count > 0 {
+            for data in views {
+                if let ringView = data.view as? MLBusinessLoyaltyRingView {
+                    self.ringView = ringView
+                }
+
+                contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
+
+                NSLayoutConstraint.activate([
+                    data.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: data.horizontalMargin),
+                    data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
+                ])
             }
-
-            contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
-
-            NSLayoutConstraint.activate([
-                data.view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: data.horizontalMargin),
-                data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
-            ])
+            if let resultViewModel = viewModel as? PXResultViewModel,
+                resultViewModel.remedy?.cvv != nil || resultViewModel.remedy?.suggestedPaymentMethod != nil,
+                contentView.subviews.last is PXRemedyView {
+                PXLayout.pinLastSubviewToBottom(view: contentView)
+            } else {
+                PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
+            }
         }
-        PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
     }
 }
 
 // MARK: Elastic header.
 extension PXNewResultViewController: UIScrollViewDelegate {
-    func addElasticHeader(headerBackgroundColor: UIColor?, navigationDeltaY: CGFloat?=nil, navigationSecondaryDeltaY: CGFloat?=nil) {
+    func addElasticHeader() {
         elasticHeader.removeFromSuperview()
-        scrollView.delegate = self
-        elasticHeader.backgroundColor = headerBackgroundColor
-        if let customDeltaY = navigationDeltaY {
-            NAVIGATION_BAR_DELTA_Y = customDeltaY
-        }
-        if let customSecondaryDeltaY = navigationSecondaryDeltaY {
-            NAVIGATION_BAR_SECONDARY_DELTA_Y = customSecondaryDeltaY
-        }
-
+        elasticHeader.backgroundColor = viewModel.getHeaderColor()
         view.insertSubview(elasticHeader, aboveSubview: scrollView)
-        scrollView.bounces = true
     }
 
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -184,12 +226,10 @@ internal extension UIView {
 
 // MARK: Ring Animate.
 extension PXNewResultViewController {
-    @objc func doAnimateRing() {
-        ringView?.fillPercentProgressWithAnimation()
-    }
-
     private func animateRing() {
-        perform(#selector(self.doAnimateRing), with: self, afterDelay: 0.3)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+            self?.ringView?.fillPercentProgressWithAnimation()
+        }
     }
 }
 
@@ -199,17 +239,22 @@ extension PXNewResultViewController {
         var views = [ResultViewData]()
 
         //Header View
-        let headerView = buildHeaderView()
-        views.append(ResultViewData(view: headerView, verticalMargin: 0, horizontalMargin: 0))
+        let view = buildHeaderView()
+        views.append(ResultViewData(view: view))
 
         //Instructions View
-        if let instructionsView = buildInstructionsView() {
-            views.append(ResultViewData(view: instructionsView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = viewModel.getInstructionsView() {
+            views.append(ResultViewData(view: view))
+        }
+
+        //Top text box View
+        if let topTextBoxView = buildTopTextBoxView() {
+            views.append(ResultViewData(view: topTextBoxView, verticalMargin: PXLayout.ZERO_MARGIN, horizontalMargin: PXLayout.ZERO_MARGIN))
         }
 
         //Important View
-        if let importantView = buildImportantView() {
-            views.append(ResultViewData(view: importantView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = viewModel.getImportantView() {
+            views.append(ResultViewData(view: view))
         }
 
         //Points and Discounts
@@ -245,42 +290,60 @@ extension PXNewResultViewController {
             } else if discountsView == nil && pointsView != nil {
                 margin = PXLayout.XXS_MARGIN
             }
-            for crossSellingView in crossSellingViews {
-                views.append(ResultViewData(view: crossSellingView, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
+            for view in crossSellingViews {
+                views.append(ResultViewData(view: view, verticalMargin: margin, horizontalMargin: PXLayout.L_MARGIN))
             }
         }
 
         //Top Custom View
-        if let topCustomView = buildTopCustomView() {
-            views.append(ResultViewData(view: topCustomView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = viewModel.getTopCustomView() {
+            views.append(ResultViewData(view: view))
         }
 
         //Receipt View
-        if let receiptView = buildReceiptView() {
-            views.append(ResultViewData(view: receiptView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = buildReceiptView() {
+            views.append(ResultViewData(view: view))
         }
 
         //Error body View
-        if let errorBodyView = viewModel.getErrorBodyView() {
-            views.append(ResultViewData(view: errorBodyView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = viewModel.getErrorBodyView() {
+            views.append(ResultViewData(view: view))
+        }
+
+        //Remedy body View
+        if let view = viewModel.getRemedyView(animatedButtonDelegate: self, remedyViewProtocol: self) {
+            subscribeToKeyboardNotifications()
+            views.append(ResultViewData(view: view))
         }
 
         //Payment Method View
-        if viewModel.shouldShowPaymentMethod(), let PMView = buildPaymentMethodView() {
-            views.append(ResultViewData(view: PMView, verticalMargin: 0, horizontalMargin: 0))
+        if viewModel.shouldShowPaymentMethod(), let view = buildPaymentMethodView() {
+            views.append(ResultViewData(view: view))
         }
 
         //Split Payment View
-        if viewModel.shouldShowPaymentMethod(), let splitView = buildSplitPaymentMethodView() {
-            views.append(ResultViewData(view: splitView, verticalMargin: 0, horizontalMargin: 0))
+        if viewModel.shouldShowPaymentMethod(), let view = buildSplitPaymentMethodView() {
+            views.append(ResultViewData(view: view))
+        }
+
+        //View receipt action view
+        if let viewReceiptActionView = buildViewReceiptActionView() {
+            views.append(ResultViewData(view: viewReceiptActionView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Bottom Custom View
-        if let bottomCustomView = buildBottomCustomView() {
-            views.append(ResultViewData(view: bottomCustomView, verticalMargin: 0, horizontalMargin: 0))
+        if let view = viewModel.getBottomCustomView() {
+            views.append(ResultViewData(view: view))
         }
 
         return views
+    }
+
+    private func getRemedyViewAnimatedButton() -> PXAnimatedButton? {
+        if let remedyView = scrollView.subviews.first?.subviews.first(where: { $0 is PXRemedyView }) as? PXRemedyView? {
+            return remedyView?.button
+        }
+        return nil
     }
 }
 
@@ -356,6 +419,49 @@ extension PXNewResultViewController {
         return itemsViews
     }
 
+    ////VIEW RECEIPT ACTION
+    func buildViewReceiptActionView() -> UIView? {
+        guard let viewReceiptAction = viewModel.getViewReceiptAction() else {
+            return nil
+        }
+        if !MLBusinessAppDataService().isMpAlreadyInstalled() {
+            return nil
+        }
+
+        let button = AndesButton(text: viewReceiptAction.label, hierarchy: .quiet, size: AndesButtonSize.large)
+        button.add(for: .touchUpInside) { [weak self] in
+            self?.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapViewReceiptPath())
+            //open deep link
+            PXDeepLinkManager.open(viewReceiptAction.target)
+        }
+        return button
+    }
+
+    ////TOP TEXT BOX
+    func buildTopTextBoxView() -> UIView? {
+        guard let topTextBox = viewModel.getTopTextBox() else {
+            return nil
+        }
+        let containerView = UIView()
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSeparatorLineToBottom(height: 1)
+
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.attributedText = topTextBox.getAttributedString(fontSize: PXLayout.XS_FONT)
+        label.numberOfLines = 0
+
+        containerView.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: containerView.topAnchor, constant: PXLayout.L_MARGIN),
+            label.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -PXLayout.L_MARGIN),
+            label.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: PXLayout.M_MARGIN),
+            label.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -PXLayout.M_MARGIN)
+        ])
+
+        return containerView
+    }
+
     //INSTRUCTIONS
     func buildInstructionsView() -> UIView? {
         return viewModel.getInstructionsView()
@@ -363,13 +469,9 @@ extension PXNewResultViewController {
 
     //PAYMENT METHOD
     func buildPaymentMethodView() -> UIView? {
-        guard let paymentData = viewModel.getPaymentData() else {
-            return nil
-        }
-        guard let amountHelper = viewModel.getAmountHelper() else {
-            return nil
-        }
-        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+        guard let paymentData = viewModel.getPaymentData(),
+            let amountHelper = viewModel.getAmountHelper(),
+            let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
             return nil
         }
 
@@ -382,39 +484,92 @@ extension PXNewResultViewController {
 
     //SPLIT PAYMENT METHOD
     func buildSplitPaymentMethodView() -> UIView? {
-        guard let paymentData = viewModel.getSplitPaymentData() else {
-            return nil
-        }
-        guard let amountHelper = viewModel.getSplitAmountHelper() else {
-            return nil
-        }
-        guard let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
+        guard let paymentData = viewModel.getSplitPaymentData(),
+            let amountHelper = viewModel.getSplitAmountHelper(),
+            let data = PXNewResultUtil.getDataForPaymentMethodView(paymentData: paymentData, amountHelper: amountHelper) else {
             return nil
         }
 
-        let view = PXNewCustomView(data: data)
-        return view
+        return PXNewCustomView(data: data)
     }
 
     //FOOTER
     func buildFooterView() -> UIView {
-        let footerProps = PXFooterProps(buttonAction: viewModel.getFooterMainAction(), linkAction: viewModel.getFooterSecondaryAction())
+        let footerProps = PXFooterProps(buttonAction: viewModel.getFooterMainAction(), linkAction: viewModel.getFooterSecondaryAction(), useAndesButtonForLinkAction: viewModel.isPaymentResultRejectedWithRemedy())
         return PXFooterComponent(props: footerProps).render()
     }
+}
 
-    //CUSTOM
-    ////IMPORTANT
-    func buildImportantView() -> UIView? {
-        return viewModel.getImportantView()
+// MARK: Animated Button delegate
+extension PXNewResultViewController: PXAnimatedButtonDelegate {
+    func shakeDidFinish() {
+        scrollView.isScrollEnabled = true
+        view.isUserInteractionEnabled = true
+        unsubscribeFromAnimatedButtonNotifications()
+        if let button = getRemedyViewAnimatedButton() {
+            UIView.animate(withDuration: 0.3, animations: {
+                button.backgroundColor = ThemeManager.shared.getAccentColor()
+            })
+        }
     }
 
-    ////TOP CUSTOM
-    func buildTopCustomView() -> UIView? {
-        return viewModel.getTopCustomView()
+    func expandAnimationInProgress() {
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
+            if let scrollView = self?.scrollView {
+                self?.view.bringSubviewToFront(scrollView)
+            }
+            if let footerView = self?.scrollView.subviews.first(where: { $0 is PXFooterView }) {
+                self?.scrollView.sendSubviewToBack(footerView)
+            }
+        })
     }
 
-    ////BOTTOM CUSTOM
-    func buildBottomCustomView() -> UIView? {
-        return viewModel.getBottomCustomView()
+    func didFinishAnimation() {
+        if let finishButtonAnimation = finishButtonAnimation {
+            finishButtonAnimation()
+        }
+    }
+
+    func progressButtonAnimationTimeOut() {
+        if let button = getRemedyViewAnimatedButton() {
+            button.resetButton()
+            button.showErrorToast()
+        }
+    }
+}
+
+extension PXNewResultViewController: PXRemedyViewProtocol {
+    func remedyViewButtonTouchUpInside(_ sender: PXAnimatedButton) {
+        subscribeToAnimatedButtonNotifications(button: sender)
+        sender.startLoading()
+        scrollView.isScrollEnabled = false
+        view.isUserInteractionEnabled = false
+        hideBackButton()
+        hideNavBar()
+    }
+}
+
+// MARK: Notifications
+extension PXNewResultViewController {
+    func subscribeToKeyboardNotifications() {
+        let center = NotificationCenter.default
+        center.addObserver(self, selector: #selector(keyboardWillBeShown(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        center.addObserver(self, selector: #selector(keyboardWillBeHidden(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    func unsubscribeFromKeyboardNotifications() {
+        let center = NotificationCenter.default
+        center.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        center.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    func subscribeToAnimatedButtonNotifications(button: PXAnimatedButton) {
+        PXNotificationManager.SuscribeTo.animateButton(button, selector: #selector(button.animateFinish))
+    }
+
+    func unsubscribeFromAnimatedButtonNotifications() {
+        if let button = getRemedyViewAnimatedButton() {
+            PXNotificationManager.UnsuscribeTo.animateButton(button)
+        }
     }
 }

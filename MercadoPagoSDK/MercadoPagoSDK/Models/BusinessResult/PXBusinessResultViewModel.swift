@@ -15,7 +15,7 @@ class PXBusinessResultViewModel: NSObject {
     let pointsAndDiscounts: PXPointsAndDiscounts?
     let paymentData: PXPaymentData
     let amountHelper: PXAmountHelper
-    var callback: ((PaymentResult.CongratsState) -> Void)?
+    var callback: ((PaymentResult.CongratsState, String?) -> Void)?
 
     //Default Image
     private lazy var approvedIconName = "default_item_icon"
@@ -37,7 +37,7 @@ class PXBusinessResultViewModel: NSObject {
         return ResourceManager.shared.getResultColorWith(status: self.businessResult.getBusinessStatus().getDescription())
     }
 
-    func setCallback(callback: @escaping ((PaymentResult.CongratsState) -> Void)) {
+    func setCallback(callback: @escaping ((PaymentResult.CongratsState, String?) -> Void)) {
         self.callback = callback
     }
 
@@ -99,7 +99,16 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     func getHeaderCloseAction() -> (() -> Void)? {
         let action = { [weak self] in
             if let callback = self?.callback {
-                callback(PaymentResult.CongratsState.cancel_EXIT)
+                callback(PaymentResult.CongratsState.EXIT, nil)
+            }
+        }
+        return action
+    }
+
+    func getRemedyButtonAction() -> ((String?) -> Void)? {
+        let action = { [weak self] (text: String?) in
+            if let callback = self?.callback {
+                callback(PaymentResult.CongratsState.EXIT, text)
             }
         }
         return action
@@ -152,6 +161,14 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return action
     }
 
+    func getViewReceiptAction() -> PXRemoteAction? {
+        return pointsAndDiscounts?.viewReceiptAction
+    }
+
+    func getTopTextBox() -> PXText? {
+        return pointsAndDiscounts?.topTextBox
+    }
+
     func hasInstructions() -> Bool {
         return false
     }
@@ -192,6 +209,14 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return nil
     }
 
+    func getRemedyView(animatedButtonDelegate: PXAnimatedButtonDelegate?, remedyViewProtocol: PXRemedyViewProtocol?) -> UIView? {
+        return nil
+    }
+
+    func isPaymentResultRejectedWithRemedy() -> Bool {
+        return false
+    }
+
     func getFooterMainAction() -> PXAction? {
         return businessResult.getMainAction()
     }
@@ -206,8 +231,11 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
     }
 
     func getCreditsExpectationView() -> UIView? {
-        if let resultInfo = self.amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo, self.businessResult.isApproved() {
-            return PXCreditsExpectationView(title: resultInfo.title, subtitle: resultInfo.subtitle)
+        if let resultInfo = amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo,
+            let title = resultInfo.title,
+            let subtitle = resultInfo.subtitle,
+            businessResult.isApproved() {
+            return PXCreditsExpectationView(title: title, subtitle: subtitle)
         }
         return nil
     }

@@ -12,21 +12,23 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
     let model: PXPaymentFlowModel
     weak var resultHandler: PXPaymentResultHandlerProtocol?
     weak var paymentErrorHandler: PXPaymentErrorHandlerProtocol?
+    var splitAccountMoney: PXPaymentData?
 
     var pxNavigationHandler: PXNavigationHandler
 
-    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, paymentErrorHandler: PXPaymentErrorHandlerProtocol, navigationHandler: PXNavigationHandler, amountHelper: PXAmountHelper, checkoutPreference: PXCheckoutPreference?, escManager: MercadoPagoESC?, ESCBlacklistedStatus: [String]?) {
-        model = PXPaymentFlowModel(paymentPlugin: paymentPlugin, mercadoPagoServicesAdapter: mercadoPagoServicesAdapter, escManager: escManager, ESCBlacklistedStatus: ESCBlacklistedStatus)
+    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServices: MercadoPagoServices, paymentErrorHandler: PXPaymentErrorHandlerProtocol, navigationHandler: PXNavigationHandler, amountHelper: PXAmountHelper, checkoutPreference: PXCheckoutPreference?, escManager: MercadoPagoESC?, ESCBlacklistedStatus: [String]?) {
+        model = PXPaymentFlowModel(paymentPlugin: paymentPlugin, mercadoPagoServices: mercadoPagoServices, escManager: escManager, ESCBlacklistedStatus: ESCBlacklistedStatus)
         self.paymentErrorHandler = paymentErrorHandler
         self.pxNavigationHandler = navigationHandler
         self.model.amountHelper = amountHelper
         self.model.checkoutPreference = checkoutPreference
     }
 
-    func setData(amountHelper: PXAmountHelper, checkoutPreference: PXCheckoutPreference, resultHandler: PXPaymentResultHandlerProtocol) {
+    func setData(amountHelper: PXAmountHelper, checkoutPreference: PXCheckoutPreference, resultHandler: PXPaymentResultHandlerProtocol, splitAccountMoney: PXPaymentData? = nil) {
         self.model.amountHelper = amountHelper
         self.model.checkoutPreference = checkoutPreference
         self.resultHandler = resultHandler
+        self.splitAccountMoney = splitAccountMoney
 
         if let discountToken = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod(amountHelper.getPaymentData().token?.cardId)?.discountToken, amountHelper.splitAccountMoney == nil {
             self.model.amountHelper?.getPaymentData().discount?.id = discountToken.stringValue
@@ -70,7 +72,7 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
         if let paymentPluginTimeOut = model.paymentPlugin?.paymentTimeOut?(), paymentPluginTimeOut > 0 {
             return paymentPluginTimeOut + instructionTimeOut
         } else {
-            return model.mercadoPagoServicesAdapter.getTimeOut() + instructionTimeOut
+            return model.mercadoPagoServices.getTimeOut() + instructionTimeOut
         }
     }
 
@@ -84,11 +86,9 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
 
     func finishFlow() {
         if let paymentResult = model.paymentResult {
-            self.resultHandler?.finishPaymentFlow(paymentResult: (paymentResult), instructionsInfo: model.instructionsInfo, pointsAndDiscounts: model.pointsAndDiscounts)
-            return
+            self.resultHandler?.finishPaymentFlow(paymentResult: paymentResult, instructionsInfo: model.instructionsInfo, pointsAndDiscounts: model.pointsAndDiscounts)
         } else if let businessResult = model.businessResult {
             self.resultHandler?.finishPaymentFlow(businessResult: businessResult, pointsAndDiscounts: model.pointsAndDiscounts)
-            return
         }
     }
 
@@ -106,7 +106,7 @@ extension PXPaymentFlow: PXPaymentProcessorErrorHandler {
     func showError() {
         let error = MPSDKError(message: "Hubo un error".localized, errorDetail: "", retry: false)
         error.requestOrigin = ApiUtil.RequestOrigin.CREATE_PAYMENT.rawValue
-        resultHandler?.finishPaymentFlow(error: error)
+        showError(error: error)
     }
 
     func showError(error: MPSDKError) {

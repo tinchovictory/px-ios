@@ -38,7 +38,10 @@ extension MercadoPagoCheckout: PXOneTapResultHandlerProtocol {
         finish()
     }
 
-    func finishOneTap(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts: PXPointsAndDiscounts?) {
+    func finishOneTap(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts: PXPointsAndDiscounts?, paymentOptionSelected: PaymentMethodOption?) {
+        if let paymentOptionSelected = paymentOptionSelected, paymentResult.isRejectedWithRemedy() {
+            viewModel.updateCheckoutModel(paymentOptionSelected: paymentOptionSelected)
+        }
         setPaymentResult(paymentResult: paymentResult)
         viewModel.instructionsInfo = instructionsInfo
         viewModel.pointsAndDiscounts = pointsAndDiscounts

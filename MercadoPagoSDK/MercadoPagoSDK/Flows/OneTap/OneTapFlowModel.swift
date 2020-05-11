@@ -11,7 +11,7 @@ import Foundation
 final internal class OneTapFlowModel: PXFlowModel {
     enum Steps: String {
         case finish
-        case screenReviewOneTap
+        case screenOneTap
         case screenSecurityCode
         case serviceCreateESCCardToken
         case screenKyC
@@ -51,7 +51,7 @@ final internal class OneTapFlowModel: PXFlowModel {
 
     let escManager: MercadoPagoESC?
     let advancedConfiguration: PXAdvancedConfiguration
-    let mercadoPagoServicesAdapter: MercadoPagoServicesAdapter
+    let mercadoPagoServices: MercadoPagoServices
     let paymentConfigurationService: PXPaymentConfigurationServices
 
     init(checkoutViewModel: MercadoPagoCheckoutViewModel, search: PXInitDTO, paymentOptionSelected: PaymentMethodOption?) {
@@ -64,7 +64,7 @@ final internal class OneTapFlowModel: PXFlowModel {
         self.paymentOptionSelected = paymentOptionSelected
         advancedConfiguration = checkoutViewModel.getAdvancedConfiguration()
         chargeRules = checkoutViewModel.chargeRules
-        mercadoPagoServicesAdapter = checkoutViewModel.mercadoPagoServicesAdapter
+        mercadoPagoServices = checkoutViewModel.mercadoPagoServices
         escManager = checkoutViewModel.escManager
         paymentConfigurationService = checkoutViewModel.paymentConfigurationService
         disabledOption = checkoutViewModel.disabledOption
@@ -83,8 +83,8 @@ final internal class OneTapFlowModel: PXFlowModel {
         }
     }
     public func nextStep() -> Steps {
-        if needReviewAndConfirmForOneTap() {
-            return .screenReviewOneTap
+        if needShowOneTap() {
+            return .screenOneTap
         }
         if needSecurityCode() {
             return .screenSecurityCode
@@ -119,7 +119,7 @@ internal extension OneTapFlowModel {
     }
 
     func oneTapViewModel() -> PXOneTapViewModel {
-        let viewModel = PXOneTapViewModel(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfiguration, userLogged: false, disabledOption: disabledOption, escProtocol: escManager, currentFlow: oneTapFlow)
+        let viewModel = PXOneTapViewModel(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfiguration, userLogged: false, disabledOption: disabledOption, escProtocol: escManager, currentFlow: oneTapFlow, payerPaymentMethods: search.payerPaymentMethods)
         viewModel.publicKey = publicKey
         viewModel.privateKey = privateKey
         viewModel.siteId = siteId
@@ -129,6 +129,7 @@ internal extension OneTapFlowModel {
         viewModel.paymentMethods = search.availablePaymentMethods
         viewModel.items = checkoutPreference.items
         viewModel.additionalInfoSummary = checkoutPreference.pxAdditionalInfo?.pxSummary
+        viewModel.modals = search.modals
         return viewModel
     }
 }
@@ -188,7 +189,7 @@ internal extension OneTapFlowModel {
 
 // MARK: Flow logic
 internal extension OneTapFlowModel {
-    func needReviewAndConfirmForOneTap() -> Bool {
+    func needShowOneTap() -> Bool {
         if readyToPay {
             return false
         }
@@ -213,12 +214,18 @@ internal extension OneTapFlowModel {
         let paymentOptionSelectedId = paymentOptionSelected.getId()
         let isCustomerCard = paymentOptionSelected.isCustomerPaymentMethod() && paymentOptionSelectedId != PXPaymentTypes.ACCOUNT_MONEY.rawValue && paymentOptionSelectedId != PXPaymentTypes.CONSUMER_CREDITS.rawValue
 
-        if isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded && !hasSavedESC() {
+        if isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded {
             if let customOptionSearchItem = search.payerPaymentMethods.first(where: { $0.id == paymentOptionSelectedId}) {
-                if customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue {
-                    invalidESCReason = .ESC_CAP
+                if hasSavedESC() {
+                    if customOptionSearchItem.escStatus == PXESCStatus.REJECTED.rawValue {
+                        invalidESCReason = .ESC_CAP
+                        return true
+                    } else {
+                        return false
+                    }
+                } else {
+                    return true
                 }
-                return customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue
             } else {
                 return true
             }
@@ -268,7 +275,7 @@ internal extension OneTapFlowModel {
     func getTimeoutForOneTapReviewController() -> TimeInterval {
         if let paymentFlow = paymentFlow {
             paymentFlow.model.amountHelper = amountHelper
-            let tokenTimeOut: TimeInterval = mercadoPagoServicesAdapter.getTimeOut()
+            let tokenTimeOut: TimeInterval = mercadoPagoServices.getTimeOut()
             // Payment Flow timeout + tokenization TimeOut
             return paymentFlow.getPaymentTimeOut() + tokenTimeOut
         }

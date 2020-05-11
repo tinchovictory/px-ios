@@ -12,8 +12,8 @@ import UIKit
 internal extension PXResultViewModel {
 
     func getActionButton() -> PXAction? {
-         var actionButton: PXAction?
-        if let label = self.getButtonLabel(), let action = self.getButtonAction() {
+        var actionButton: PXAction?
+        if let label = getButtonLabel(), let action = getButtonAction() {
             actionButton = PXAction(label: label, action: action)
         }
         return actionButton
@@ -30,7 +30,12 @@ internal extension PXResultViewModel {
         if paymentResult.isAccepted() {
             return nil
         } else if paymentResult.isError() {
-            return PXFooterResultConstants.GENERIC_ERROR_BUTTON_TEXT.localized
+            if paymentResult.isHighRisk(),
+                let label = remedy?.highRisk?.actionLoud?.label {
+                return label
+            } else {
+                return PXFooterResultConstants.GENERIC_ERROR_BUTTON_TEXT.localized
+            }
         } else if paymentResult.isWarning() {
             return getWarningButtonLabel()
         }
@@ -38,9 +43,13 @@ internal extension PXResultViewModel {
     }
 
     private func getWarningButtonLabel() -> String? {
-        if self.paymentResult.isCallForAuth() {
+        if paymentResult.isRejectedWithRemedy() && remedy?.cvv != nil || remedy?.suggestedPaymentMethod != nil {
+            // These remedy types have its own animated button
+            return nil
+        }
+        if paymentResult.isCallForAuth() {
             return PXFooterResultConstants.C4AUTH_BUTTON_TEXT.localized
-        } else if self.paymentResult.isBadFilled() {
+        } else if paymentResult.isBadFilled() {
             return PXFooterResultConstants.BAD_FILLED_BUTTON_TEXT.localized
         } else if self.paymentResult.isDuplicatedPayment() {
             return PXFooterResultConstants.DUPLICATED_PAYMENT_BUTTON_TEXT.localized
@@ -63,7 +72,7 @@ internal extension PXResultViewModel {
     }
 
     private func getButtonAction() -> (() -> Void)? {
-        return { self.pressButton() }
+        return { [weak self] in self?.pressButton() }
     }
 
     private func getLinkAction() -> (() -> Void)? {
@@ -79,37 +88,41 @@ internal extension PXResultViewModel {
     }
 
     private func pressButton() {
-        guard let callback = self.callback else { return }
+        guard let callback = callback else { return }
         if paymentResult.isAccepted() {
-             callback(PaymentResult.CongratsState.cancel_EXIT)
+             callback(PaymentResult.CongratsState.EXIT, nil)
         } else if paymentResult.isError() {
-            callback(PaymentResult.CongratsState.cancel_SELECT_OTHER)
+            if paymentResult.isHighRisk(), let deepLink = remedy?.highRisk?.deepLink {
+                callback(PaymentResult.CongratsState.DEEPLINK, deepLink)
+            } else {
+                callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
+            }
         } else if self.paymentResult.isBadFilled() {
-            callback(PaymentResult.CongratsState.cancel_SELECT_OTHER)
+            callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
         } else if paymentResult.isWarning() {
             switch self.paymentResult.statusDetail {
             case PXRejectedStatusDetail.CALL_FOR_AUTH.rawValue:
-                callback(PaymentResult.CongratsState.call_FOR_AUTH)
+                callback(PaymentResult.CongratsState.CALL_FOR_AUTH, nil)
             case PXRejectedStatusDetail.CARD_DISABLE.rawValue:
-                callback(PaymentResult.CongratsState.cancel_RETRY)
+                callback(PaymentResult.CongratsState.RETRY, nil)
             default:
-                callback(PaymentResult.CongratsState.cancel_SELECT_OTHER)
+                callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
             }
         }
     }
 
     private func pressLink() {
-        guard let callback = self.callback else { return }
+        guard let callback = callback else { return }
         if paymentResult.isAccepted() {
-                callback(PaymentResult.CongratsState.cancel_EXIT)
+            callback(PaymentResult.CongratsState.EXIT, nil)
         } else {
             switch self.paymentResult.statusDetail {
             case PXRejectedStatusDetail.REJECTED_FRAUD.rawValue:
-                callback(PaymentResult.CongratsState.cancel_EXIT)
+                callback(PaymentResult.CongratsState.EXIT, nil)
             case PXRejectedStatusDetail.DUPLICATED_PAYMENT.rawValue:
-                callback(PaymentResult.CongratsState.cancel_EXIT)
+                callback(PaymentResult.CongratsState.EXIT, nil)
             default:
-                callback(PaymentResult.CongratsState.cancel_SELECT_OTHER)
+                callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
             }
         }
     }

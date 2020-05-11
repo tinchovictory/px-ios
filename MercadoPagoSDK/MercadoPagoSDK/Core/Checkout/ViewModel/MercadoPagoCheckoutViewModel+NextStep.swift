@@ -129,6 +129,18 @@ extension MercadoPagoCheckoutViewModel {
         return false
     }
 
+    func needGetRemedy() -> Bool {
+        if let paymentResult = paymentResult,
+            let paymentId = paymentResult.paymentId,
+            !paymentId.isEmpty,
+            paymentResult.paymentData?.payerCost != nil,
+            paymentResult.isRejectedWithRemedy(),
+            remedy == nil {
+            return true
+        }
+        return false
+    }
+
     func needIssuerSelectionScreen() -> Bool {
         guard let selectedType = self.paymentOptionSelected else {
             return false
@@ -180,12 +192,18 @@ extension MercadoPagoCheckoutViewModel {
             paymentOptionSelectedId != PXPaymentTypes.ACCOUNT_MONEY.rawValue &&
             paymentOptionSelectedId != PXPaymentTypes.CONSUMER_CREDITS.rawValue
 
-        if  isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded && !hasSavedESC() {
+        if isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded {
             if let customOptionSearchItem = search?.payerPaymentMethods.first(where: { $0.id == paymentOptionSelectedId}) {
-                if customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue {
-                    invalidESCReason = .ESC_CAP
+                if hasSavedESC() {
+                    if customOptionSearchItem.escStatus == PXESCStatus.REJECTED.rawValue {
+                        invalidESCReason = .ESC_CAP
+                        return true
+                    } else {
+                        return false
+                    }
+                } else {
+                    return true
                 }
-                return customOptionSearchItem.escStatus != PXESCStatus.APPROVED.rawValue
             } else {
                 return true
             }
@@ -195,7 +213,6 @@ extension MercadoPagoCheckoutViewModel {
     }
 
     func needCreateToken() -> Bool {
-
         guard let pm = self.paymentData.getPaymentMethod() else {
             return false
         }

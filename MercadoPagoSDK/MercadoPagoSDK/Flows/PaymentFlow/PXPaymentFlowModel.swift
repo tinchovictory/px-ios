@@ -13,7 +13,7 @@ internal final class PXPaymentFlowModel: NSObject {
     var checkoutPreference: PXCheckoutPreference?
     let paymentPlugin: PXSplitPaymentProcessor?
 
-    let mercadoPagoServicesAdapter: MercadoPagoServicesAdapter
+    let mercadoPagoServices: MercadoPagoServices
 
     var paymentResult: PaymentResult?
     var instructionsInfo: PXInstructions?
@@ -25,9 +25,9 @@ internal final class PXPaymentFlowModel: NSObject {
     var shouldSearchPointsAndDiscounts: Bool = true
     let ESCBlacklistedStatus: [String]?
 
-    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServicesAdapter: MercadoPagoServicesAdapter, escManager: MercadoPagoESC?, ESCBlacklistedStatus: [String]?) {
+    init(paymentPlugin: PXSplitPaymentProcessor?, mercadoPagoServices: MercadoPagoServices, escManager: MercadoPagoESC?, ESCBlacklistedStatus: [String]?) {
         self.paymentPlugin = paymentPlugin
-        self.mercadoPagoServicesAdapter = mercadoPagoServicesAdapter
+        self.mercadoPagoServices = mercadoPagoServices
         self.escManager = escManager
         self.ESCBlacklistedStatus = ESCBlacklistedStatus
     }
@@ -162,14 +162,13 @@ internal extension PXPaymentFlowModel {
             }
         } else {
             guard let errorPaymentType = errorPaymentType else {
-                escManager?.deleteESC(token: token)
                 return
             }
 
             // If it has error Payment Type, check if the error was from a card
             if let isCard = PXPaymentTypes(rawValue: errorPaymentType)?.isCard(), isCard {
                 if let ESCBlacklistedStatus = ESCBlacklistedStatus, ESCBlacklistedStatus.contains(statusDetails) {
-                    escManager?.deleteESC(token: token)
+                    escManager?.deleteESC(token: token, reason: .REJECTED_PAYMENT, detail: statusDetails)
                 }
             }
         }

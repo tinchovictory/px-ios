@@ -37,28 +37,36 @@ public class PXText: Codable {
         self.defaultTextColor = color
     }
 
+    internal func getTextColor() -> UIColor {
+        guard let color = self.textColor, color.isNotEmpty else {
+            return defaultTextColor
+        }
+        return UIColor.fromHex(color)
+    }
+
+    internal func getBackgroundColor() -> UIColor {
+        guard let color = self.backgroundColor, color.isNotEmpty else {
+            return defaultBackgroundColor
+        }
+        return UIColor.fromHex(color)
+    }
+
     internal func getAttributedString(fontSize: CGFloat = PXLayout.XS_FONT, textColor: UIColor? = nil, backgroundColor: UIColor? = nil) -> NSAttributedString? {
         guard let message = message else {return nil}
 
         var attributes: [NSAttributedString.Key: AnyObject] = [:]
 
         // Add text color attribute or default
-        if let defaultTextColor = self.textColor, defaultTextColor.isNotEmpty {
-            attributes[.foregroundColor] = UIColor.fromHex(defaultTextColor)
-        } else {
-            attributes[.foregroundColor] = defaultTextColor
-        }
+        attributes[.foregroundColor] = getTextColor()
+
         // Override text color
         if let overrideTextColor = textColor {
             attributes[.foregroundColor] = overrideTextColor
         }
 
         // Add background color attribute or default
-        if let defaultBackgroundColor = self.backgroundColor, defaultBackgroundColor.isNotEmpty {
-            attributes[.backgroundColor] = UIColor.fromHex(defaultBackgroundColor)
-        } else {
-            attributes[.backgroundColor] = defaultBackgroundColor
-        }
+        attributes[.backgroundColor] = getBackgroundColor()
+
         // Override background color
         if let overrideBackgroundColor = backgroundColor {
             attributes[.backgroundColor] = overrideBackgroundColor

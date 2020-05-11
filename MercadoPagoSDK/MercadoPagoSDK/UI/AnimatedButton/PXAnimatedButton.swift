@@ -26,6 +26,7 @@ internal class PXAnimatedButton: UIButton {
         self.retryText = retryText
         super.init(frame: .zero)
         setTitle(normalText, for: .normal)
+        titleLabel?.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.S_FONT)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -59,6 +60,7 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
             guard let animatedView = self.animatedView else { return }
             animatedView.backgroundColor = self.backgroundColor
             animatedView.layer.cornerRadius = self.layer.cornerRadius
+            animatedView.isAccessibilityElement = true
             self.superview?.addSubview(animatedView)
             self.alpha = 0
 
@@ -84,7 +86,6 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
             self?.progressView?.alpha = 0
             animatedView.backgroundColor = color
         }, completion: { _ in
-
             let scaleFactor: CGFloat = 0.40
             let iconImage = UIImageView(frame: CGRect(x: newFrame.width / 2 - (newFrame.width * scaleFactor) / 2, y: newFrame.width / 2 - (newFrame.width * scaleFactor) / 2, width: newFrame.width * scaleFactor, height: newFrame.height * scaleFactor))
 

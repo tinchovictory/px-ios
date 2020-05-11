@@ -11,14 +11,16 @@ import Foundation
 internal class PaymentResult {
 
     internal enum CongratsState: Int {
-        case cancel_EXIT = 0
-        case cancel_SELECT_OTHER = 1
-        case cancel_RETRY = 2
-        case cancel_RECOVER = 3
-        case call_FOR_AUTH = 4
+        case EXIT
+        case SELECT_OTHER
+        case RETRY
+        case CALL_FOR_AUTH
+        case RETRY_SECURITY_CODE
+        case RETRY_SILVER_BULLET
+        case DEEPLINK
     }
 
-    let warningStatusDetails = [PXRejectedStatusDetail.INVALID_ESC.rawValue,
+    private let warningStatusDetails = [PXRejectedStatusDetail.INVALID_ESC.rawValue,
                                 PXRejectedStatusDetail.CALL_FOR_AUTH.rawValue,
                                 PXRejectedStatusDetail.BAD_FILLED_CARD_NUMBER.rawValue,
                                 PXRejectedStatusDetail.CARD_DISABLE.rawValue,
@@ -30,10 +32,22 @@ internal class PaymentResult {
                                 PXPendingStatusDetail.CONTINGENCY.rawValue,
                                 PXPendingStatusDetail.REVIEW_MANUAL.rawValue]
 
-    let badFilledStatusDetails = [PXRejectedStatusDetail.BAD_FILLED_CARD_NUMBER.rawValue,
+    private let badFilledStatusDetails = [PXRejectedStatusDetail.BAD_FILLED_CARD_NUMBER.rawValue,
                                   PXRejectedStatusDetail.BAD_FILLED_DATE.rawValue,
                                   PXRejectedStatusDetail.BAD_FILLED_SECURITY_CODE.rawValue,
                                   PXRejectedStatusDetail.BAD_FILLED_OTHER.rawValue]
+
+    private let rejectedWithRemedyStatusDetails = [PXPayment.StatusDetails.REJECTED_BAD_FILLED_SECURITY_CODE,
+                                                  PXPayment.StatusDetails.REJECTED_HIGH_RISK,
+                                                  PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK,
+                                                  PXPayment.StatusDetails.REJECTED_INSUFFICIENT_AMOUNT,
+                                                  PXPayment.StatusDetails.REJECTED_OTHER_REASON,
+                                                  PXPayment.StatusDetails.REJECTED_MAX_ATTEMPTS,
+                                                  PXPayment.StatusDetails.REJECTED_BLACKLIST,
+                                                  PXPayment.StatusDetails.REJECTED_INVALID_INSTALLMENTS,
+                                                  PXPayment.StatusDetails.REJECTED_BAD_FILLED_CARD_NUMBER,
+                                                  PXPayment.StatusDetails.REJECTED_BAD_FILLED_OTHER,
+                                                  PXPayment.StatusDetails.REJECTED_CALL_FOR_AUTHORIZE]
 
     var paymentData: PXPaymentData?
     var splitAccountMoney: PXPaymentData?
@@ -73,6 +87,11 @@ internal class PaymentResult {
         return self.statusDetail == PXRejectedStatusDetail.CALL_FOR_AUTH.rawValue
     }
 
+    func isHighRisk() -> Bool {
+        return [PXPayment.StatusDetails.REJECTED_CARD_HIGH_RISK,
+                PXPayment.StatusDetails.REJECTED_HIGH_RISK].contains(statusDetail)
+    }
+
     func isInvalidInstallments() -> Bool {
         return self.statusDetail == PXRejectedStatusDetail.REJECTED_INVALID_INSTALLMENTS.rawValue
     }
@@ -94,10 +113,11 @@ internal class PaymentResult {
     }
 
     func hasSecondaryButton() -> Bool {
-        return self.isCallForAuth() ||
-            self.isBadFilled() ||
-            self.isInvalidInstallments() ||
-            self.isCardDisabled()
+        return isCallForAuth() ||
+            isHighRisk() ||
+            isBadFilled() ||
+            isInvalidInstallments() ||
+            isCardDisabled()
     }
 
     func isApproved() -> Bool {
@@ -114,6 +134,10 @@ internal class PaymentResult {
 
     func isRejected() -> Bool {
         return self.status == PXPaymentStatus.REJECTED.rawValue
+    }
+
+    func isRejectedWithRemedy() -> Bool {
+        return self.status == PXPaymentStatus.REJECTED.rawValue && rejectedWithRemedyStatusDetails.contains(statusDetail)
     }
 
     func isInvalidESC() -> Bool {

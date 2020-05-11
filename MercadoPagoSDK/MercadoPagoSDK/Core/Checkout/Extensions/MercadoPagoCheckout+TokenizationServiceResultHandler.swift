@@ -14,7 +14,17 @@ extension MercadoPagoCheckout: TokenizationServiceResultHandler {
         }
     }
 
-    func finishFlow(token: PXToken) {
+    func finishFlow(token: PXToken, shouldResetESC: Bool) {
+        if shouldResetESC {
+            getTokenizationService().resetESCCap(cardId: token.cardId) { [weak self] in
+                self?.flowCompletion(token: token)
+            }
+        } else {
+            flowCompletion(token: token)
+        }
+    }
+
+    func flowCompletion(token: PXToken) {
         viewModel.updateCheckoutModel(token: token)
         executeNextStep()
     }
@@ -30,7 +40,7 @@ extension MercadoPagoCheckout: TokenizationServiceResultHandler {
         self.executeNextStep()
     }
 
-    func getTokenizationService() -> TokenizationService {
-        return TokenizationService(paymentOptionSelected: viewModel.paymentOptionSelected, cardToken: viewModel.cardToken, escManager: viewModel.escManager, pxNavigationHandler: viewModel.pxNavigationHandler, needToShowLoading: true, mercadoPagoServicesAdapter: viewModel.mercadoPagoServicesAdapter, gatewayFlowResultHandler: self)
+    func getTokenizationService(needToShowLoading: Bool = true) -> TokenizationService {
+        return TokenizationService(paymentOptionSelected: viewModel.paymentOptionSelected, cardToken: viewModel.cardToken, escManager: viewModel.escManager, pxNavigationHandler: viewModel.pxNavigationHandler, needToShowLoading: needToShowLoading, mercadoPagoServices: viewModel.mercadoPagoServices, gatewayFlowResultHandler: self)
     }
 }
