@@ -208,7 +208,10 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
 private extension SecurityCodeViewController {
     func renderCVVInfoView() {
         cardFront.alpha = 0
-        cardCvvThumbnail.image = ResourceManager.shared.getImage("caixa")
+        cardCvvThumbnail.image = nil
+        Utils().loadImageFromURLWithCache(withUrl: viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.imageUrl, targetView: cardCvvThumbnail, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
+            self?.cardCvvThumbnail.image = newImage
+        }
 
         let titleLabel = buildLabel(viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.title)
         titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
