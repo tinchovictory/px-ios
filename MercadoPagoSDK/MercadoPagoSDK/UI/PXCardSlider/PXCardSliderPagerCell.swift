@@ -295,23 +295,40 @@ class PXAddMethodView: UIView {
         let labelsContainerView = UIStackView()
         labelsContainerView.translatesAutoresizingMaskIntoConstraints = false
         labelsContainerView.axis = .vertical
+        labelsContainerView.distribution = .fillEqually
 
         if let title = data.title {
             let titleLabel = UILabel()
-            titleLabel.numberOfLines = 1
+            titleLabel.numberOfLines = 2
             titleLabel.translatesAutoresizingMaskIntoConstraints = false
             titleLabel.attributedText = title.getAttributedString(fontSize: PXLayout.XS_FONT)
             titleLabel.textAlignment = data.compactMode ? .left : .center
-            labelsContainerView.addArrangedSubview(titleLabel)
+
+            let titleView = UIView()
+            titleView.addSubview(titleLabel)
+            labelsContainerView.addArrangedSubview(titleView)
+            NSLayoutConstraint.activate([
+                titleLabel.leadingAnchor.constraint(equalTo: titleView.leadingAnchor),
+                titleLabel.trailingAnchor.constraint(equalTo: titleView.trailingAnchor),
+                titleLabel.bottomAnchor.constraint(equalTo: titleView.bottomAnchor)
+            ])
         }
 
         if let subtitle = data.subtitle {
             let subtitleLabel = UILabel()
-            subtitleLabel.numberOfLines = 1
+            subtitleLabel.numberOfLines = 2
             subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
             subtitleLabel.attributedText = subtitle.getAttributedString(fontSize: PXLayout.XXS_FONT)
             subtitleLabel.textAlignment = data.compactMode ? .left : .center
-            labelsContainerView.addArrangedSubview(subtitleLabel)
+
+            let subtitleView = UIView()
+            subtitleView.addSubview(subtitleLabel)
+            labelsContainerView.addArrangedSubview(subtitleView)
+            NSLayoutConstraint.activate([
+                subtitleLabel.leadingAnchor.constraint(equalTo: subtitleView.leadingAnchor),
+                subtitleLabel.trailingAnchor.constraint(equalTo: subtitleView.trailingAnchor),
+                subtitleLabel.topAnchor.constraint(equalTo: subtitleView.topAnchor)
+            ])
         }
 
         accessibilityLabel = data.title?.message
@@ -333,7 +350,7 @@ class PXAddMethodView: UIView {
                 labelsContainerView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: PXLayout.S_MARGIN),
                 labelsContainerView.trailingAnchor.constraint(equalTo: chevronImageView.leadingAnchor, constant: -PXLayout.S_MARGIN),
                 labelsContainerView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-                labelsContainerView.heightAnchor.constraint(equalToConstant: 40)
+                labelsContainerView.heightAnchor.constraint(equalToConstant: 80)
             ])
         } else {
             NSLayoutConstraint.activate([
