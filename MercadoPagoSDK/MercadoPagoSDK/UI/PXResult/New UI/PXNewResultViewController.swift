@@ -20,6 +20,9 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     let viewModel: PXNewResultViewModelInterface
     private var finishButtonAnimation: (() -> Void)?
 
+    private weak var touchpointView: MLBusinessTouchpointsView?
+    private var trackPrintOnTouchpointView: Bool = false
+    
     init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState, String?) -> Void, finishButtonAnimation: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.viewModel.setCallback(callback: callback)
@@ -169,7 +172,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 }
 
                 if let touchpointView = data.view as? MLBusinessTouchpointsView {
-                    touchpointView.delegate = self
+                    self.touchpointView = touchpointView
                 }
 
                 contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
@@ -212,6 +215,13 @@ extension PXNewResultViewController: UIScrollViewDelegate {
             elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: statusBarHeight)
         } else {
             elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
+        }
+
+        if let touchpointView = touchpointView, touchpointView.frame.origin.y < scrollView.contentOffset.y + scrollView.frame.height {
+            if trackPrintOnTouchpointView {
+                touchpointView.trackVisiblePrints()
+                trackPrintOnTouchpointView = false
+            }
         }
     }
 }
@@ -276,7 +286,7 @@ extension PXNewResultViewController {
             if let discountsTopViewData = buildDiscountsTopView() {
                 views.append(discountsTopViewData)
             }
-            
+
             var margin = PXLayout.M_MARGIN
             if pointsView != nil {
                 //Dividing Line
@@ -396,13 +406,14 @@ extension PXNewResultViewController {
     func buildDiscountsTopView() -> ResultViewData? {
         return PXNewResultUtil.getDataForDiscountTopView(discounts: viewModel.getDiscounts())
     }
-    
+
     func buildDiscountsView() -> UIView? {
         guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
             return nil
         }
         let discountsView = MLBusinessTouchpointsView()
         discountsView.setTouchpointsTracker(with: PXDiscountTracker())
+        discountsView.delegate = self
         discountsView.update(with: data)
 
         return discountsView
