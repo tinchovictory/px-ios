@@ -167,7 +167,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 if let ringView = data.view as? MLBusinessLoyaltyRingView {
                     self.ringView = ringView
                 }
-                
+
                 if let touchpointView = data.view as? MLBusinessTouchpointsView {
                     touchpointView.delegate = self
                 }
@@ -272,6 +272,11 @@ extension PXNewResultViewController {
 
         //Discounts
         if let discountsView = discountsView {
+            //Discounts Top View
+            if let discountsTopViewData = buildDiscountsTopView() {
+                views.append(discountsTopViewData)
+            }
+            
             var margin = PXLayout.M_MARGIN
             if pointsView != nil {
                 //Dividing Line
@@ -388,6 +393,10 @@ extension PXNewResultViewController {
         return pointsView
     }
     ////DISCOUNTS
+    func buildDiscountsTopView() -> ResultViewData? {
+        return PXNewResultUtil.getDataForDiscountTopView(discounts: viewModel.getDiscounts())
+    }
+    
     func buildDiscountsView() -> UIView? {
         guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
             return nil

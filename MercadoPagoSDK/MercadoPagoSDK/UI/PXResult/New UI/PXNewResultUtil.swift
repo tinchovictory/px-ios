@@ -36,6 +36,21 @@ class PXNewResultUtil {
         let data = PXRingViewData(points: points)
         return data
     }
+    
+    //DISCOUNTS TOP VIEW
+    class func getDataForDiscountTopView(discounts: PXDiscounts?) -> ResultViewData? {
+        guard let discounts = discounts else {
+            return nil
+        }
+
+        let label = MPLabel(frame: .zero)
+        label.text = discounts.title
+        label.textAlignment = .center
+        label.font = label.font.withSize(18.0)
+        label.numberOfLines = 0
+        return ResultViewData(view: label, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        
+    }
 
     //DISCOUNTS DATA
     class func getDataForDiscountsView(discounts: PXDiscounts?) -> MLBusinessTouchpointsData? {

@@ -25,16 +25,16 @@ class PXDiscountsTouchpointsData: NSObject, MLBusinessTouchpointsData {
     }
 
     func getTouchpointContent() -> [String: Any] {
-        return touchpoint.content
+        return touchpoint.content.rawValue
     }
 
     func getTouchpointTracking() -> [String: Any] {
         guard let tracking = touchpoint.tracking else { return [:] }
-        return tracking
+        return tracking.rawValue
     }
 
     func getAdditionalEdgeInsets() -> [String: Any] {
         guard let additionalEdgeInsets = touchpoint.additionalEdgeInsets else { return [:] }
-        return additionalEdgeInsets
+        return additionalEdgeInsets.rawValue
     }
 }

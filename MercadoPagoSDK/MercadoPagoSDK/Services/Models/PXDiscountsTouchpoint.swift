@@ -11,9 +11,9 @@ struct PXDiscountsTouchpoint: Decodable {
 
     let id: String
     let type: String
-    let content: [String:String] //TODO: CHANGE THIS
-    let tracking: [String:String]? //TODO: CHANGE THIS
-    let additionalEdgeInsets: [String:String]? //TODO: CHANGE THIS
+    let content: PXCodableDictionary
+    let tracking: PXCodableDictionary?
+    let additionalEdgeInsets: PXCodableDictionary?
 
     enum CodingKeys: String, CodingKey {
         case id
