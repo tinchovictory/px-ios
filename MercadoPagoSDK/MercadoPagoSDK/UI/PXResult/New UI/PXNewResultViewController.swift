@@ -282,17 +282,19 @@ extension PXNewResultViewController {
 
         //Discounts
         if let discountsView = discountsView {
-            //Discounts Top View
-            if let discountsTopViewData = buildDiscountsTopView() {
-                views.append(discountsTopViewData)
-            }
-
             var margin = PXLayout.M_MARGIN
             if pointsView != nil {
                 //Dividing Line
                 views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
                 margin -= 8
             }
+            
+            //Discounts Top View
+            if let discountsTopViewData = buildDiscountsTopView() {
+                views.append(discountsTopViewData)
+            }
+            
+            //Discount Component
             views.append(ResultViewData(view: discountsView, verticalMargin: margin, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
@@ -408,15 +410,19 @@ extension PXNewResultViewController {
     }
 
     func buildDiscountsView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
-            return nil
+        guard let data = PXNewResultUtil.getDataForTouchpointsView(discounts: viewModel.getDiscounts()) else {
+            guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
+                return nil
+            }
+            let discountsView = MLBusinessDiscountBoxView(data)
+            return discountsView
         }
-        let discountsView = MLBusinessTouchpointsView()
-        discountsView.setTouchpointsTracker(with: PXDiscountTracker())
-        discountsView.delegate = self
-        discountsView.update(with: data)
+        let touchpointView = MLBusinessTouchpointsView()
+        touchpointView.setTouchpointsTracker(with: PXDiscountTracker())
+        touchpointView.delegate = self
+        touchpointView.update(with: data)
 
-        return discountsView
+        return touchpointView
     }
 
     ////DISCOUNTS ACCESSORY VIEW

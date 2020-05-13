@@ -36,28 +36,54 @@ class PXNewResultUtil {
         let data = PXRingViewData(points: points)
         return data
     }
-    
+
     //DISCOUNTS TOP VIEW
     class func getDataForDiscountTopView(discounts: PXDiscounts?) -> ResultViewData? {
-        guard let discounts = discounts else {
-            return nil
-        }
+        if let discounts = discounts, discounts.touchpoint != nil, let title = discounts.title {
+            let stackview = UIStackView(frame: .zero)
+            stackview.translatesAutoresizingMaskIntoConstraints = false
+            stackview.distribution = .equalSpacing
+            stackview.axis = .vertical
 
-        let label = MPLabel(frame: .zero)
-        label.text = discounts.title
-        label.textAlignment = .center
-        label.font = label.font.withSize(18.0)
-        label.numberOfLines = 0
-        return ResultViewData(view: label, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        
+            let titleLabel = MPLabel(frame: .zero)
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+            titleLabel.text = title
+            titleLabel.textAlignment = .center
+            titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: 20.0)
+            titleLabel.numberOfLines = 2
+            stackview.addArrangedSubview(titleLabel)
+
+            if let subtitle = discounts.subtitle, subtitle.isEmpty == false {
+                let subtitleLabel = MPLabel(frame: .zero)
+                subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+                subtitleLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+                subtitleLabel.text = subtitle
+                subtitleLabel.textAlignment = .center
+                subtitleLabel.font = UIFont.ml_lightSystemFont(ofSize: 14.0)
+                subtitleLabel.numberOfLines = 1
+                stackview.addArrangedSubview(subtitleLabel)
+            }
+
+            return ResultViewData(view: stackview, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        }
+        return nil
     }
 
     //DISCOUNTS DATA
-    class func getDataForDiscountsView(discounts: PXDiscounts?) -> MLBusinessTouchpointsData? {
+    class func getDataForDiscountsView(discounts: PXDiscounts?) -> MLBusinessDiscountBoxData? {
         guard let discounts = discounts else {
             return nil
         }
-        let data = PXDiscountsTouchpointsData(touchpoint: discounts.touchpoint)
+        let data = PXDiscountsBoxData(discounts: discounts)
+        return data
+    }
+    
+    class func getDataForTouchpointsView(discounts: PXDiscounts?) -> MLBusinessTouchpointsData? {
+        guard let touchpoint = discounts?.touchpoint else {
+            return nil
+        }
+        let data = PXDiscountsTouchpointsData(touchpoint: touchpoint)
         return data
     }
 
@@ -68,7 +94,9 @@ class PXNewResultUtil {
         }
 
         let dataService = MLBusinessAppDataService()
-        if dataService.isMpAlreadyInstalled() {
+        /*******************TEST**********************/
+        /*********REMOVE THE ! - DO NOT IMPLEMENT*******/
+        if !dataService.isMpAlreadyInstalled() {
             let button = AndesButton(text: discounts.discountsAction.label, hierarchy: .quiet, size: .large)
             button.add(for: .touchUpInside) {
                 //open deep link
