@@ -404,14 +404,45 @@ extension PXNewResultViewController {
 
         return pointsView
     }
+    
     ////DISCOUNTS
     func buildDiscountsTopView() -> ResultViewData? {
-        return PXNewResultUtil.getDataForDiscountTopView(discounts: viewModel.getDiscounts())
+        return getDataForDiscountTopView(discounts: viewModel.getDiscounts())
+    }
+    
+    //DISCOUNTS TOP VIEW
+    func getDataForDiscountTopView(discounts: PXDiscounts?) -> ResultViewData? {
+        if let discounts = discounts, discounts.touchpoint != nil, let title = discounts.title {
+            let stackview = UIStackView(frame: .zero)
+            stackview.distribution = .equalSpacing
+            stackview.axis = .vertical
+            stackview.addArrangedSubview(buildMPLabel(with: title, font: UIFont.ml_semiboldSystemFont(ofSize: 20.0), numberOfLines: 2))
+
+            if let subtitle = discounts.subtitle, subtitle.isEmpty == false {
+                stackview.addArrangedSubview(buildMPLabel(with: subtitle, font: UIFont.ml_semiboldSystemFont(ofSize: 14.0), numberOfLines: 1))
+            }
+
+            return ResultViewData(view: stackview, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        }
+        return nil
+    }
+    
+    private func buildMPLabel(with text: String, font: UIFont, numberOfLines: Int) -> MPLabel {
+        let mpLabel = MPLabel(frame: .zero)
+        mpLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+        mpLabel.text = text
+        mpLabel.textAlignment = .center
+        mpLabel.font = font
+        mpLabel.numberOfLines = numberOfLines
+        return mpLabel
     }
 
     func buildDiscountsView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForTouchpointsView(discounts: viewModel.getDiscounts()) else {
-            guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
+        guard let discounts = viewModel.getDiscounts()  else {
+            return nil
+        }
+        guard let data = PXNewResultUtil.getDataForTouchpointsView(discounts: discounts) else {
+            guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: discounts) else {
                 return nil
             }
             let discountsView = MLBusinessDiscountBoxView(data)
@@ -604,6 +635,6 @@ extension PXNewResultViewController {
 
 extension PXNewResultViewController: MLBusinessTouchpointsUserInteractionHandler {
     func didTap(with selectedIndex: Int, deeplink: String, trackingId: String) {
-        viewModel.getDiscountsTapAction(index: selectedIndex, deepLink: deeplink, trackId: trackingId)
+        viewModel.didTapDiscount(index: selectedIndex, deepLink: deeplink, trackId: trackingId)
     }
 }

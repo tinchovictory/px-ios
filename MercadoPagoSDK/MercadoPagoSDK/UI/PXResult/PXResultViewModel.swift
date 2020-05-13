@@ -347,7 +347,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
         return pointsAndDiscounts?.discounts
     }
 
-    func getDiscountsTapAction(index: Int, deepLink: String?, trackId: String?) {
+    func didTapDiscount(index: Int, deepLink: String?, trackId: String?) {
         PXDeepLinkManager.open(deepLink)
         PXCongratsTracking.trackTapDiscountItemEvent(index, trackId)
     }

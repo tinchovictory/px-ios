@@ -37,39 +37,6 @@ class PXNewResultUtil {
         return data
     }
 
-    //DISCOUNTS TOP VIEW
-    class func getDataForDiscountTopView(discounts: PXDiscounts?) -> ResultViewData? {
-        if let discounts = discounts, discounts.touchpoint != nil, let title = discounts.title {
-            let stackview = UIStackView(frame: .zero)
-            stackview.translatesAutoresizingMaskIntoConstraints = false
-            stackview.distribution = .equalSpacing
-            stackview.axis = .vertical
-
-            let titleLabel = MPLabel(frame: .zero)
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
-            titleLabel.text = title
-            titleLabel.textAlignment = .center
-            titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: 20.0)
-            titleLabel.numberOfLines = 2
-            stackview.addArrangedSubview(titleLabel)
-
-            if let subtitle = discounts.subtitle, subtitle.isEmpty == false {
-                let subtitleLabel = MPLabel(frame: .zero)
-                subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-                subtitleLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
-                subtitleLabel.text = subtitle
-                subtitleLabel.textAlignment = .center
-                subtitleLabel.font = UIFont.ml_lightSystemFont(ofSize: 14.0)
-                subtitleLabel.numberOfLines = 1
-                stackview.addArrangedSubview(subtitleLabel)
-            }
-
-            return ResultViewData(view: stackview, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
-        }
-        return nil
-    }
-
     //DISCOUNTS DATA
     class func getDataForDiscountsView(discounts: PXDiscounts?) -> MLBusinessDiscountBoxData? {
         guard let discounts = discounts else {
