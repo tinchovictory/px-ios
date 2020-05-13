@@ -446,6 +446,9 @@ extension PXNewResultViewController {
                 return nil
             }
             let discountsView = MLBusinessDiscountBoxView(data)
+            if let tapAction = viewModel.getDiscountsTapAction() {
+                discountsView.addTapAction(tapAction)
+            }
             return discountsView
         }
         let touchpointView = MLBusinessTouchpointsView()

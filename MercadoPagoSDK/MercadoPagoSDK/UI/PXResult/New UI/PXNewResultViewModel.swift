@@ -41,6 +41,7 @@ protocol PXNewResultViewModelInterface {
 
     ///DISCOUNTS
     func getDiscounts() -> PXDiscounts?
+    func getDiscountsTapAction() -> ((_ index: Int, _ deepLink: String?, _ trackId: String?) -> Void)?
     func didTapDiscount(index: Int, deepLink: String?, trackId: String?)
 
     ///CROSS SELLING
