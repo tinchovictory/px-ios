@@ -94,9 +94,7 @@ class PXNewResultUtil {
         }
 
         let dataService = MLBusinessAppDataService()
-        /*******************TEST**********************/
-        /*********REMOVE THE ! - DO NOT IMPLEMENT*******/
-        if !dataService.isMpAlreadyInstalled() {
+        if dataService.isMpAlreadyInstalled() {
             let button = AndesButton(text: discounts.discountsAction.label, hierarchy: .quiet, size: .large)
             button.add(for: .touchUpInside) {
                 //open deep link

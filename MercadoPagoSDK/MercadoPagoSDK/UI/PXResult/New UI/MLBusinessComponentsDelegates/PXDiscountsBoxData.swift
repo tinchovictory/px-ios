@@ -4,6 +4,7 @@
 //
 //  Created by AUGUSTO COLLERONE ALFONSO on 13/09/2019.
 //
+
 import UIKit
 import MLBusinessComponents
 
@@ -20,7 +21,7 @@ class PXDiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
     }
 
     func getSubtitle() -> String? {
-        return "Ver más descuentos" //discounts.subtitle
+        return discounts.subtitle
     }
 
     func getItems() -> [MLBusinessSingleItemProtocol] {
@@ -30,7 +31,7 @@ class PXDiscountsBoxData: NSObject, MLBusinessDiscountBoxData {
         }
         return itemProtocols
     }
-
+    
     func getDiscountTracker() -> MLBusinessDiscountTrackerProtocol? {
         return PXDiscountTracker(touchPointId: "px_congrats")
     }
