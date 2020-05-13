@@ -419,7 +419,7 @@ extension PXNewResultViewController {
             stackview.addArrangedSubview(buildMPLabel(with: title, font: UIFont.ml_semiboldSystemFont(ofSize: 20.0), numberOfLines: 2))
 
             if let subtitle = discounts.subtitle, subtitle.isEmpty == false {
-                stackview.addArrangedSubview(buildMPLabel(with: subtitle, font: UIFont.ml_semiboldSystemFont(ofSize: 14.0), numberOfLines: 1))
+                stackview.addArrangedSubview(buildMPLabel(with: subtitle, font: UIFont.ml_lightSystemFont(ofSize: 14.0), numberOfLines: 1))
             }
 
             return ResultViewData(view: stackview, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
