@@ -20,8 +20,7 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     let viewModel: PXNewResultViewModelInterface
     private var finishButtonAnimation: (() -> Void)?
 
-    private weak var touchpointView: MLBusinessTouchpointsView?
-    private var trackPrintOnTouchpointView: Bool = false
+    private var touchpointView: MLBusinessTouchpointsView?
     
     init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState, String?) -> Void, finishButtonAnimation: (() -> Void)? = nil) {
         self.viewModel = viewModel
@@ -171,10 +170,6 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                     self.ringView = ringView
                 }
 
-                if let touchpointView = data.view as? MLBusinessTouchpointsView {
-                    self.touchpointView = touchpointView
-                }
-
                 contentView.addViewToBottom(data.view, withMargin: data.verticalMargin)
 
                 NSLayoutConstraint.activate([
@@ -218,10 +213,7 @@ extension PXNewResultViewController: UIScrollViewDelegate {
         }
 
         if let touchpointView = touchpointView, touchpointView.frame.origin.y < scrollView.contentOffset.y + scrollView.frame.height {
-            if trackPrintOnTouchpointView {
-                touchpointView.trackVisiblePrints()
-                trackPrintOnTouchpointView = false
-            }
+            touchpointView.trackVisiblePrints()
         }
     }
 }
@@ -451,10 +443,10 @@ extension PXNewResultViewController {
             }
             return discountsView
         }
-        let touchpointView = MLBusinessTouchpointsView()
-        touchpointView.setTouchpointsTracker(with: PXDiscountTracker())
-        touchpointView.delegate = self
-        touchpointView.update(with: data)
+        touchpointView = MLBusinessTouchpointsView()
+        touchpointView?.setTouchpointsTracker(with: PXDiscountTracker())
+        touchpointView?.delegate = self
+        touchpointView?.update(with: data)
 
         return touchpointView
     }
