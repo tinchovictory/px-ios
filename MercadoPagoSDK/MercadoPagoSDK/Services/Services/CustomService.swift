@@ -19,30 +19,6 @@ internal class CustomService: MercadoPagoService {
         super.init(baseURL: baseURL)
     }
 
-    internal func getCustomer(params: String, success: @escaping (_ jsonResult: PXCustomer) -> Void, failure: ((_ error: PXError) -> Void)?) {
-
-        self.request(uri: self.URI, params: params, body: nil, method: HTTPMethod.get, cache: false, success: { (data) -> Void in
-            do {
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-                if let custDic = jsonResult as? NSDictionary {
-                    if custDic["error"] != nil {
-                        let apiException = try PXApiException.fromJSON(data: data)
-                        failure?(PXError(domain: ApiDomain.GET_CUSTOMER, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: custDic as? [String: Any], apiException: apiException))
-                    } else {
-                        let customer: PXCustomer = try PXCustomer.fromJSONToPXCustomer(data: data)
-                        success(customer)
-                    }
-                } else {
-                    failure?(PXError(domain: ApiDomain.GET_CUSTOMER, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "Response cannot be decoded"]))
-                }
-            } catch {
-                failure?(PXError(domain: ApiDomain.GET_CUSTOMER, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "No se ha podido obtener los customers"]))
-            }
-        }, failure: { (_) in
-            failure?(PXError(domain: ApiDomain.GET_CUSTOMER, code: ErrorTypes.NO_INTERNET_ERROR, userInfo: ["message": "Response cannot be decoded"]))
-        })
-    }
-
     internal func createPayment(headers: [String: String]? = nil, body: Data, params: String?, success: @escaping (_ jsonResult: PXPayment) -> Void, failure: ((_ error: PXError) -> Void)?) {
 
         self.request(uri: self.URI, params: params, body: body, method: HTTPMethod.post, headers: headers, cache: false, success: { (data: Data) -> Void in
@@ -108,35 +84,6 @@ internal class CustomService: MercadoPagoService {
                 }
             })
         }
-
-    internal func createPreference(body: Data?, success: @escaping (_ jsonResult: PXCheckoutPreference) -> Void, failure: ((_ error: PXError) -> Void)?) {
-
-        self.request(uri: self.URI, params: nil, body: body, method: HTTPMethod.post, cache: false, success: {
-            (data) in
-            do {
-                let jsonResult = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-
-                if let preferenceDic = jsonResult as? NSDictionary {
-                    if preferenceDic["error"] != nil && failure != nil {
-                        let apiException = try PXApiException.fromJSON(data: data)
-                        failure!(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: ["message": "PREFERENCE_ERROR"], apiException: apiException))
-                    } else {
-                        if preferenceDic.allKeys.count > 0 {
-                            let checkoutPreference = try JSONDecoder().decode(PXCheckoutPreference.self, from: data) as PXCheckoutPreference
-                            success(checkoutPreference)
-                        } else {
-                            failure?(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "PREFERENCE_ERROR"]))
-                        }
-                    }
-                } else {
-                    failure?(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: ["message": "Response cannot be decoded"]))
-
-                }} catch {
-                    failure?(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "No se ha podido crear la preferencia"]))
-            }}, failure: { (_) in
-                failure?(PXError(domain: ApiDomain.CREATE_PREFERENCE, code: ErrorTypes.NO_INTERNET_ERROR, userInfo: ["message": "Response cannot be decoded"]))
-        })
-    }
 
     internal func resetESCCap(params: String, success: @escaping () -> Void, failure: ((_ error: PXError) -> Void)?) {
         self.request(uri: self.URI, params: params, body: nil, method: HTTPMethod.delete, cache: false, success: { (data) in

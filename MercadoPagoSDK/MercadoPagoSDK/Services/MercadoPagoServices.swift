@@ -243,32 +243,6 @@ internal class MercadoPagoServices: NSObject {
         }, failure: failure)
     }
 
-    func getCustomer(url: String, uri: String, additionalInfo: [String: String]? = nil, callback: @escaping (PXCustomer) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let service: CustomService = CustomService(baseURL: url, URI: uri)
-
-        var addInfo: String = ""
-        if let additionalInfo = additionalInfo {
-            let additionalInfoDic = additionalInfo as NSDictionary
-            if !NSDictionary.isNullOrEmpty(additionalInfoDic) {
-                addInfo = additionalInfoDic.parseToQuery()
-            }
-        }
-        service.getCustomer(params: addInfo, success: callback, failure: failure)
-    }
-
-    func createCheckoutPreference(url: String, uri: String, bodyInfo: NSDictionary? = nil, callback: @escaping (PXCheckoutPreference) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let service: CustomService = CustomService(baseURL: url, URI: uri)
-
-        let body: Data?
-        if let bodyInfo = bodyInfo {
-            body = NSKeyedArchiver.archivedData(withRootObject: bodyInfo)
-        } else {
-            body = nil
-        }
-
-        service.createPreference(body: body, success: callback, failure: failure)
-    }
-
     //SETS
     func setBaseURL(_ baseURL: String) {
         self.baseURL = baseURL
