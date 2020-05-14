@@ -56,6 +56,9 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
         securityCodeTextField.addTarget(self, action: #selector(SecurityCodeViewController.editingChanged(_:)), for: UIControl.Event.editingChanged)
         securityCodeTextField.delegate = self
         completeCvvLabel()
+        if viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo != nil {
+            renderCVVInfoView()
+        }
     }
 
     open override func viewWillAppear(_ animated: Bool) {
@@ -198,6 +201,45 @@ internal class SecurityCodeViewController: MercadoPagoUIViewController, UITextFi
 
         label?.text?.append("•")
         return true
+    }
+}
+
+// MARK: CVVInfoView
+private extension SecurityCodeViewController {
+    func renderCVVInfoView() {
+        cardFront.alpha = 0
+        cardCvvThumbnail.image = nil
+        Utils().loadImageFromURLWithCache(withUrl: viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.imageUrl, targetView: cardCvvThumbnail, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
+            self?.cardCvvThumbnail.image = newImage
+        }
+
+        let titleLabel = buildLabel(viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.title)
+        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
+        view.addSubview(titleLabel)
+        NSLayoutConstraint.activate([
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: PXLayout.XXXL_MARGIN),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XL_MARGIN),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XL_MARGIN)
+        ])
+
+        let subtitleLabel = buildLabel(viewModel.paymentMethod.creditsDisplayInfo?.cvvInfo?.message)
+        subtitleLabel.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
+        view.addSubview(subtitleLabel)
+        NSLayoutConstraint.activate([
+            subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: PXLayout.XS_MARGIN),
+            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.XL_MARGIN),
+            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.XL_MARGIN)
+        ])
+    }
+
+    func buildLabel(_ message: String?) -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textAlignment = .center
+        label.text = message ?? ""
+        label.textColor = ThemeManager.shared.statusBarStyle() == UIStatusBarStyle.default ? UIColor.black : ThemeManager.shared.whiteColor()
+        label.numberOfLines = 0
+        return label
     }
 }
 

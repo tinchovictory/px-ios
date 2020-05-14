@@ -472,5 +472,10 @@
 		<key>image_name</key>
 		<string>mediosIconoPecAzul</string>
 	</dict>
+    <key>debelo</key>
+    <dict>
+        <key>image_name</key>
+        <string>mediosIconoDebelo</string>
+    </dict>
 </dict>
 </plist>
