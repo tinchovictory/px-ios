@@ -7,8 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "ExampleUtils.h"
-
 
 @interface AppDelegate ()
 
@@ -16,26 +14,7 @@
 
 @implementation AppDelegate
 
-
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
-//    [MercadoPagoContext setPublicKey:@"APP_USR-5a399d42-6015-4f6a-8ff8-dd7d368068f8"];
-    
-//    [MercadoPagoContext setPublicKey:TEST_PUBLIC_KEY];
-
-//    [MercadoPagoContext setPayerAccessToken:@"APP_USR-1094487241196549-081708-4bc39f94fd147e7ce839c230c93261cb__LA_LC__-145698489"];
-
-
-//    [MercadoPagoContext setMerchantAccessToken: MERCHANT_ACCESS_TOKEN];
-//    [MercadoPagoContext setBaseURL: MERCHANT_MOCK_BASE_URL];
-//    [MercadoPagoContext setCustomerURI: MERCHANT_MOCK_GET_CUSTOMER_URI];
-    
-    //[MercadoPagoContext setAccountMoneyAvailableWithAccountMoneyAvailable:YES];
-    
-    //[MercadoPagoContext setupPrimaryColor:[UIColor redColor] complementaryColor:nil];
-    //[MercadoPagoContext setDisplayDefaultLoadingWithFlag:NO];
-    
     return YES;
 }
 

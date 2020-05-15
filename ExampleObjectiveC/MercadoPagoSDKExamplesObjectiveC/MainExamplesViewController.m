@@ -7,11 +7,8 @@
 //
 
 #import "MainExamplesViewController.h"
-#import "ExampleUtils.h"
 #import "MercadoPagoSDKExamplesObjectiveC-Swift.h"
-#import "PaymentMethodPluginConfigViewController.h"
 #import "PaymentPluginViewController.h"
-#import "MLMyMPPXTrackListener.h"
   
 @implementation MainExamplesViewController
 
