@@ -29,16 +29,13 @@
 
         [self.paymentNavigationHandler hideLoading];
 
-        // Custom component view
-        // CustomComponentText* component = [[CustomComponentText alloc] init];
-
         /*
-        PXAction* popeame = [[PXAction alloc] initWithLabel:@"Continuar" action:^{
+        PXAction* mainAction = [[PXAction alloc] initWithLabel:@"Continuar" action:^{
             //[self.paymentNavigationHandler cancel];
         }]; */
 
         /*
-        PXAction* print = [[PXAction alloc] initWithLabel:@"Intentar nuevamente" action:^{
+        PXAction* secondaryAction = [[PXAction alloc] initWithLabel:@"Intentar nuevamente" action:^{
             NSLog(@"print !!! action!!");
         }]; */
 
@@ -61,45 +58,30 @@
 }
 
 -(void)startPaymentWithCheckoutStore:(PXCheckoutStore *)checkoutStore errorHandler:(id<PXPaymentProcessorErrorHandler>)errorHandler successWithBasePayment:(void (^)(id<PXBasePayment> _Nonnull))successWithBasePayment {
+    NSString* title = @"¡Listo! Ya pagaste en YPF";
+    UIImage* icon = [UIImage imageNamed:@"ypf"];
+    PXBusinessResultStatus status = PXBusinessResultStatusAPPROVED;
+    NSString* imageUrl = @"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png";
+    NSString* paymentMethodId = [[[checkoutStore getPaymentData] getPaymentMethod] getId];
+    NSString* paymentTypeId = [[[checkoutStore getPaymentData] getPaymentMethod] paymentTypeId];
 
-    CustomComponentText* component = [[CustomComponentText alloc] init];
+    CustomComponentText* topCustomView = [[CustomComponentText alloc] initWithLabelText:@"Custom view test. PXBusinessResult topCustomView."];
+    CustomComponentText* bottomCustomView = [[CustomComponentText alloc] initWithLabelText:@"Custom view test. PXBusinessResult bottomCustomView."];
+    CustomComponentText* importantView = [[CustomComponentText alloc] initWithLabelText:@"Important view test. PXBusinessResult importantView."];
 
     //PAYMENT ID ARGENTINO
-//    PXBusinessResult* result = [[PXBusinessResult alloc] initWithReceiptId:@"1879867544" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:[component render] bottomCustomView: nil paymentStatus:@"approved" paymentStatusDetail:@""];
+//    PXBusinessResult* result = [[PXBusinessResult alloc] initWithReceiptId:@"1879867544" status:status title:title subtitle:nil icon:icon mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:imageUrl topCustomView:[component render] bottomCustomView: nil paymentStatus:@"approved" paymentStatusDetail:@""];
 
     // PAYMENT ID BRASIL (Test New Congrats)
-    PXBusinessResult* result = [[[PXBusinessResult alloc] initWithReceiptId:@"5148665090" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:[component render] bottomCustomView: [component render] paymentStatus:@"approved" paymentStatusDetail:@"" paymentMethodId: [[[checkoutStore getPaymentData] getPaymentMethod] getId] paymentTypeId: [[[checkoutStore getPaymentData] getPaymentMethod] paymentTypeId] importantView: [component render]] shouldShowReceipt:YES];
+    PXBusinessResult* result = [[[PXBusinessResult alloc] initWithReceiptId:@"5148665090" status:status title:title subtitle:nil icon:icon mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:imageUrl topCustomView:[topCustomView render] bottomCustomView: [bottomCustomView render] paymentStatus:@"approved" paymentStatusDetail:@"" paymentMethodId: paymentMethodId paymentTypeId: paymentTypeId importantView: [importantView render]] shouldShowReceipt:YES];
 
-    /*
-     // Credits Log
-    NSLog(@"creditsLog: %@", [[[checkoutStore getPaymentData] getPaymentMethod] getId]);
-    PXPayerCost* payerCost;
-    payerCost = [[checkoutStore getPaymentData] getPayerCost];
-    NSLog(@"creditsLog: %ld", (long)payerCost.installments);
-     */
-
+    // Success example payment result generic payment.
+    // PXGenericPayment* result = [[PXGenericPayment alloc] initWithStatus:@"approved" statusDetail:@"" paymentId: @""];
+    // Rejected example payment result generic payment.
     // PXGenericPayment* result = [[PXGenericPayment alloc] initWithStatus:@"rejected" statusDetail:@"" paymentId: @""];
 
     successWithBasePayment(result);
 }
-
-//-(void)startPaymentWithCheckoutStore:(PXCheckoutStore *)checkoutStore errorHandler:(id<PXPaymentProcessorErrorHandler>)errorHandler successWithBusinessResult:(void (^)(PXBusinessResult * _Nonnull))successWithBusinessResult successWithPaymentResult:(void (^)(PXGenericPayment * _Nonnull))successWithPaymentResult {
-//
-//    // Success example business result
-//    CustomComponentText* component = [[CustomComponentText alloc] init];
-//    PXAction* popeame = [[PXAction alloc] initWithLabel:@"Continuar" action:^{
-//        //[self.paymentNavigationHandler cancel];
-//    }];
-//    PXAction* printeaEnConsola = [[PXAction alloc] initWithLabel:@"Intentar nuevamente" action:^{
-//        NSLog(@"print !!! action!!");
-//    }];
-//    PXBusinessResult* businessResult = [[PXBusinessResult alloc] initWithReceiptId:@"1879867544" status:PXBusinessResultStatusAPPROVED title:@"¡Listo! Ya pagaste en YPF" subtitle:nil icon:[UIImage imageNamed:@"ypf"] mainAction:nil secondaryAction:nil helpMessage:nil showPaymentMethod:YES statementDescription:nil imageUrl:@"https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/YPF.svg/2000px-YPF.svg.png" topCustomView:[component render] bottomCustomView: nil paymentStatus:@"" paymentStatusDetail:@""];
-//    successWithBusinessResult(businessResult);
-//
-//    // Success example payment result generic payment.
-////    PXGenericPayment* result = [[PXGenericPayment alloc] initWithStatus:@"approved" statusDetail:@"" paymentId: @""];
-////    successWithPaymentResult(result);
-//}
 
 -(void)didReceiveWithNavigationHandler:(PXPaymentProcessorNavigationHandler *)navigationHandler {
     self.paymentNavigationHandler = navigationHandler;
