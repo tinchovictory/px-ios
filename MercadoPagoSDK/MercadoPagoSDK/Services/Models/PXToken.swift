@@ -112,21 +112,6 @@ open class PXToken: NSObject, Codable {
         try container.encodeIfPresent(self.cardholder, forKey: .cardholder)
         try container.encodeIfPresent(self.esc, forKey: .esc)
     }
-
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    open class func fromJSON(data: Data) throws -> PXToken {
-        return try JSONDecoder().decode(PXToken.self, from: data)
-    }
 }
 
 // MARK: Getters

@@ -180,7 +180,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
             return
         }
         let discount = discountConfiguration.getDiscountConfiguration().discount
-        let consumedDiscount = discountConfiguration.getDiscountConfiguration().isNotAvailable
+        let consumedDiscount = !discountConfiguration.getDiscountConfiguration().isAvailable
         self.paymentData.setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
     }
 

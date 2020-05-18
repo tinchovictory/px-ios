@@ -34,8 +34,8 @@ import UIKit
 // MARK: Mock configurations (Ex-preferences).
 extension TestComponent: PXReviewConfirmDynamicViewsConfiguration {
     static public func getPaymentResultConfiguration() -> PXPaymentResultConfiguration {
-        let top = CustomComponentText()
-        let bottom = CustomComponentText()
+        let top = CustomComponentText(labelText: "Important view test. PXPaymentResultConfiguration topView.")
+        let bottom = CustomComponentText(labelText: "Important view test. PXPaymentResultConfiguration bottomView.")
         let paymentConfig = PXPaymentResultConfiguration(topView: top.render(), bottomView: bottom.render())
         return paymentConfig
     }

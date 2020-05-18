@@ -60,19 +60,4 @@ open class PXVendorSpecificAttributes: NSObject, Codable {
         try container.encodeIfPresent(self.deviceName, forKey: .deviceName)
         try container.encode(self.simulator, forKey: .simulator)
     }
-
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    open class func fromJSON(data: Data) throws -> PXVendorSpecificAttributes {
-        return try JSONDecoder().decode(PXVendorSpecificAttributes.self, from: data)
-    }
 }

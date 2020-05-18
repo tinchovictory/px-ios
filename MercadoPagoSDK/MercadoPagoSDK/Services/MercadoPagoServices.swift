@@ -123,7 +123,7 @@ internal class MercadoPagoServices: NSObject {
                 var token : PXToken
                 if let tokenDic = jsonResult as? NSDictionary {
                     if tokenDic["error"] == nil {
-                        token = try PXToken.fromJSON(data: data)
+                        token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
                         let apiException = try PXApiException.fromJSON(data: data)
@@ -144,7 +144,7 @@ internal class MercadoPagoServices: NSObject {
                 var token : PXToken
                 if let tokenDic = jsonResult as? NSDictionary {
                     if tokenDic["error"] == nil {
-                        token = try PXToken.fromJSON(data: data)
+                        token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
                         let apiException = try PXApiException.fromJSON(data: data)
@@ -241,32 +241,6 @@ internal class MercadoPagoServices: NSObject {
                 failure(PXError(domain: ApiDomain.GET_ISSUERS, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "No se ha podido obtener los bancos"]))
             }
         }, failure: failure)
-    }
-
-    func getCustomer(url: String, uri: String, additionalInfo: [String: String]? = nil, callback: @escaping (PXCustomer) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let service: CustomService = CustomService(baseURL: url, URI: uri)
-
-        var addInfo: String = ""
-        if let additionalInfo = additionalInfo {
-            let additionalInfoDic = additionalInfo as NSDictionary
-            if !NSDictionary.isNullOrEmpty(additionalInfoDic) {
-                addInfo = additionalInfoDic.parseToQuery()
-            }
-        }
-        service.getCustomer(params: addInfo, success: callback, failure: failure)
-    }
-
-    func createCheckoutPreference(url: String, uri: String, bodyInfo: NSDictionary? = nil, callback: @escaping (PXCheckoutPreference) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let service: CustomService = CustomService(baseURL: url, URI: uri)
-
-        let body: Data?
-        if let bodyInfo = bodyInfo {
-            body = NSKeyedArchiver.archivedData(withRootObject: bodyInfo)
-        } else {
-            body = nil
-        }
-
-        service.createPreference(body: body, success: callback, failure: failure)
     }
 
     //SETS

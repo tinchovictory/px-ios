@@ -49,7 +49,7 @@ open class PXPaymentMethod: NSObject, Codable {
         self.creditsDisplayInfo = creditsDisplayInfo
     }
 
-    public enum PXPaymentMethodKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case additionalInfoNeeded = "additional_info_needed"
         case id
         case name
@@ -70,7 +70,7 @@ open class PXPaymentMethod: NSObject, Codable {
     }
 
     required public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: PXPaymentMethodKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         let additionalInfoNeeded: [String]? = try container.decodeIfPresent([String].self, forKey: .additionalInfoNeeded)
         let id: String = try container.decode(String.self, forKey: .id)
         let name: String? = try container.decodeIfPresent(String.self, forKey: .name)
@@ -90,45 +90,6 @@ open class PXPaymentMethod: NSObject, Codable {
         let creditsDisplayInfo: PXPaymentMethodDisplayInfo? = try container.decodeIfPresent(PXPaymentMethodDisplayInfo.self, forKey: .creditsDisplayInfo)
 
         self.init(additionalInfoNeeded: additionalInfoNeeded, id: id, name: name, paymentTypeId: paymentTypeId, status: status, secureThumbnail: secureThumbnail, thumbnail: thumbnail, deferredCapture: deferredCapture, settings: settings, minAllowedAmount: minAllowedAmount, maxAllowedAmount: maxAllowedAmount, accreditationTime: accreditationTime, merchantAccountId: merchantAccountId, financialInstitutions: financialInstitutions, description: description, processingModes: processingModes, creditsDisplayInfo: creditsDisplayInfo)
-    }
-
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: PXPaymentMethodKeys.self)
-        try container.encodeIfPresent(self.additionalInfoNeeded, forKey: .additionalInfoNeeded)
-        try container.encodeIfPresent(self.id, forKey: .id)
-        try container.encodeIfPresent(self.name, forKey: .name)
-        try container.encodeIfPresent(self.paymentTypeId, forKey: .paymentTypeId)
-        try container.encodeIfPresent(self.status, forKey: .status)
-        try container.encodeIfPresent(self.secureThumbnail, forKey: .secureThumbnail)
-        try container.encodeIfPresent(self.thumbnail, forKey: .thumbnail)
-        try container.encodeIfPresent(self.deferredCapture, forKey: .deferredCapture)
-        try container.encodeIfPresent(self.settings, forKey: .settings)
-        try container.encodeIfPresent(self.minAllowedAmount, forKey: .minAllowedAmount)
-        try container.encodeIfPresent(self.maxAllowedAmount, forKey: .maxAllowedAmount)
-        try container.encodeIfPresent(self.accreditationTime, forKey: .accreditationTime)
-        try container.encodeIfPresent(self.merchantAccountId, forKey: .merchantAccountId)
-        try container.encodeIfPresent(self.financialInstitutions, forKey: .financialInstitutions)
-        try container.encodeIfPresent(self.processingModes, forKey: .processingModes)
-        try container.encodeIfPresent(self.creditsDisplayInfo, forKey: .creditsDisplayInfo)
-    }
-
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    open class func fromJSONToPXPaymentMethod(data: Data) throws -> PXPaymentMethod {
-        return try JSONDecoder().decode(PXPaymentMethod.self, from: data)
-    }
-
-    open class func fromJSON(data: Data) throws -> [PXPaymentMethod] {
-        return try JSONDecoder().decode([PXPaymentMethod].self, from: data)
     }
 }
 

@@ -19,12 +19,6 @@ internal class InstructionsService: MercadoPagoService {
         super.init(baseURL: baseURL)
     }
 
-    @available(*, deprecated: 2.2.4, message: "Use getInstructions(_ paymentId : String, ...) instead. PaymentId can be greater than Int and might fail")
-    internal func getInstructions(_ paymentId: Int, paymentTypeId: String? = "", success : @escaping (_ instructionsInfo: PXInstructions) -> Void, failure: ((_ error: NSError) -> Void)?) {
-        let paymentId = Int64(paymentId)
-        self.getInstructions(for: paymentId, paymentTypeId: paymentTypeId, success: success, failure: failure)
-    }
-
     internal func getInstructions(for paymentId: Int64, paymentTypeId: String? = "", success : @escaping (_ instructionsInfo: PXInstructions) -> Void, failure: ((_ error: PXError) -> Void)?) {
         var params: String = MercadoPagoServices.getParamsPublicKeyAndAcessToken(merchantPublicKey, payerAccessToken)
         params.paramsAppend(key: ApiParam.PAYMENT_TYPE, value: paymentTypeId)

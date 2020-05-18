@@ -39,15 +39,4 @@ open class PXSplitConfiguration: NSObject, Codable {
         try container.encodeIfPresent(self.primaryPaymentMethod, forKey: .primaryPaymentMethod)
         try container.encodeIfPresent(self.secondaryPaymentMethod, forKey: .secondaryPaymentMethod)
     }
-
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
 }

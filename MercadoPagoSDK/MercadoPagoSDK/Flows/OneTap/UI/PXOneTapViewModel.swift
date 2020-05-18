@@ -236,7 +236,7 @@ extension PXOneTapViewModel {
             let discountConfiguration = discountData.discountConfiguration
             let campaign = discountData.campaign
             let discount = discountConfiguration.getDiscountConfiguration().discount
-            let consumedDiscount = discountConfiguration.getDiscountConfiguration().isNotAvailable
+            let consumedDiscount = !discountConfiguration.getDiscountConfiguration().isAvailable
             amountHelper.getPaymentData().setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
         } else {
             amountHelper.getPaymentData().clearDiscount()

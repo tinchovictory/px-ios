@@ -137,7 +137,7 @@ import Foundation
     }
 
     /// :nodoc:
-    public enum PXCheckoutPreferenceKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case id
         case items
         case payer = "payer"
@@ -158,7 +158,7 @@ import Foundation
     }
 
     required public convenience init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: PXCheckoutPreferenceKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         let id: String? = try container.decodeIfPresent(String.self, forKey: .id)
         let branchId: String? = try container.decodeIfPresent(String.self, forKey: .branchId)
         let processingModes: [String] = try container.decodeIfPresent([String].self, forKey: .processingModes) ?? PXServicesURLConfigs.MP_DEFAULT_PROCESSING_MODES
@@ -181,45 +181,6 @@ import Foundation
         self.additionalInfo = try container.decodeIfPresent(String.self, forKey: .additionalInfo)
         populateAdditionalInfoModel()
         self.backUrls = try container.decodeIfPresent(PXBackUrls.self, forKey: .backUrls)
-    }
-
-    /// :nodoc:
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: PXCheckoutPreferenceKeys.self)
-        try container.encodeIfPresent(self.id, forKey: .id)
-        try container.encodeIfPresent(self.items, forKey: .items)
-        try container.encodeIfPresent(self.paymentPreference, forKey: .paymentPreference)
-        try container.encodeIfPresent(self.payer, forKey: .payer)
-        try container.encodeIfPresent(self.siteId, forKey: .siteId)
-        try container.encodeIfPresent(self.site, forKey: .site)
-        try container.encodeIfPresent(self.differentialPricing, forKey: .differentialPricing)
-        try container.encodeIfPresent(self.additionalInfo, forKey: .additionalInfo)
-        try container.encodeIfPresent(self.marketplace, forKey: .marketplace)
-        try container.encodeIfPresent(self.additionalInfo, forKey: .additionalInfo)
-        try container.encodeIfPresent(self.backUrls, forKey: .backUrls)
-        try container.encodeIfPresent(self.branchId, forKey: .branchId)
-        try container.encodeIfPresent(self.processingModes, forKey: .processingModes)
-        try container.encodeIfPresent(self.collectorId, forKey: .collectorId)
-        try container.encodeIfPresent(self.orderId, forKey: .orderId)
-        try container.encodeIfPresent(self.merchantOrderId, forKey: .merchantOrderId)
-    }
-
-    /// :nodoc:
-    open func toJSONString() throws -> String? {
-        let encoder = JSONEncoder()
-        let data = try encoder.encode(self)
-        return String(data: data, encoding: .utf8)
-    }
-
-    /// :nodoc:
-    open func toJSON() throws -> Data {
-        let encoder = JSONEncoder()
-        return try encoder.encode(self)
-    }
-
-    /// :nodoc:
-    open class func fromJSON(data: Data) throws -> PXCheckoutPreference {
-        return try JSONDecoder().decode(PXCheckoutPreference.self, from: data)
     }
 }
 

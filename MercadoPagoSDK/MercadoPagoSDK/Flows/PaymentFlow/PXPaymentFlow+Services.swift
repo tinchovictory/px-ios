@@ -22,7 +22,7 @@ internal extension PXPaymentFlow {
     }
 
     func createPayment() {
-        guard let _ = model.amountHelper?.getPaymentData(), let _ = model.checkoutPreference else {
+        guard model.amountHelper?.getPaymentData() != nil, model.checkoutPreference != nil else {
             return
         }
 

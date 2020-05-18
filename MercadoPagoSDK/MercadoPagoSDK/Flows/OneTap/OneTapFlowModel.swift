@@ -155,12 +155,12 @@ internal extension OneTapFlowModel {
                 splitAccountMoney?.updatePaymentDataWith(paymentMethod: accountMoneyPM)
 
                 let campaign = amountHelper.paymentConfigurationService.getDiscountConfigurationForPaymentMethodOrDefault(paymentOptionSelected.getId())?.getDiscountConfiguration().campaign
-                let consumedDiscount = amountHelper.paymentConfigurationService.getDiscountConfigurationForPaymentMethodOrDefault(paymentOptionSelected.getId())?.getDiscountConfiguration().isNotAvailable
-                if let discount = splitConfiguration?.primaryPaymentMethod?.discount, let campaign = campaign, let consumedDiscount = consumedDiscount {
-                    paymentData.setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
+                let isDiscountAvailable = amountHelper.paymentConfigurationService.getDiscountConfigurationForPaymentMethodOrDefault(paymentOptionSelected.getId())?.getDiscountConfiguration().isAvailable
+                if let discount = splitConfiguration?.primaryPaymentMethod?.discount, let campaign = campaign, let isDiscountAvailable = isDiscountAvailable {
+                    paymentData.setDiscount(discount, withCampaign: campaign, consumedDiscount: !isDiscountAvailable)
                 }
-                if let discount = splitConfiguration?.secondaryPaymentMethod?.discount, let campaign = campaign, let consumedDiscount = consumedDiscount {
-                    splitAccountMoney?.setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
+                if let discount = splitConfiguration?.secondaryPaymentMethod?.discount, let campaign = campaign, let isDiscountAvailable = isDiscountAvailable {
+                    splitAccountMoney?.setDiscount(discount, withCampaign: campaign, consumedDiscount: !isDiscountAvailable)
                 }
             }
         } else {

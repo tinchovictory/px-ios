@@ -10,6 +10,12 @@ import UIKit
 
 @objcMembers class CustomComponentText: NSObject {
     let HEIGHT: CGFloat = 80.0
+    let labelText: String
+    
+    required init(labelText: String? = nil) {
+        self.labelText = labelText ?? "Important view test. I'm a custom important view by BusinessResult."
+    }
+    
     func render() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -20,7 +26,7 @@ import UIKit
         textLabel.lineBreakMode = .byWordWrapping
         textLabel.numberOfLines = 0
         textLabel.textAlignment = .left
-        textLabel.text = "Important view test. I'm a custom important view by BusinessResult."
+        textLabel.text = labelText
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textLabel)
         NSLayoutConstraint(item: textLabel, attribute: NSLayoutConstraint.Attribute.width, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.width, multiplier: 80 / 100, constant: 0).isActive = true
