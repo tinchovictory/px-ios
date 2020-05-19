@@ -272,9 +272,11 @@ extension MercadoPagoCheckoutViewModel {
             return false
         }
 
-        if paymentData.isComplete() {
-            return false
-        }
+        // Fix https://mercadolibre.atlassian.net/browse/PXN-1100
+        // Checkear que no se rompa algun otro flujo
+//        if paymentData.isComplete() {
+//            return false
+//        }
 
         // MoneyIn default card - OneTap safe business check.
         if amountHelper.preference.paymentPreference.cardId != nil {
