@@ -445,6 +445,7 @@ extension PXNewResultViewController {
         }
         touchpointView = MLBusinessTouchpointsView()
         touchpointView?.setTouchpointsTracker(with: PXDiscountTracker())
+        touchpointView?.setCanOpenMercadoPagoApp(MLBusinessAppDataService().isMpAlreadyInstalled())
         touchpointView?.delegate = self
         touchpointView?.update(with: data)
 
