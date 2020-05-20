@@ -25,14 +25,23 @@ internal final class PXPaymentFlow: NSObject, PXFlow {
     }
 
     func setData(amountHelper: PXAmountHelper, checkoutPreference: PXCheckoutPreference, resultHandler: PXPaymentResultHandlerProtocol, splitAccountMoney: PXPaymentData? = nil) {
-        self.model.amountHelper = amountHelper
-        self.model.checkoutPreference = checkoutPreference
+        model.amountHelper = amountHelper
+        model.checkoutPreference = checkoutPreference
         self.resultHandler = resultHandler
         self.splitAccountMoney = splitAccountMoney
 
-        if let discountToken = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod(amountHelper.getPaymentData().token?.cardId)?.discountToken, amountHelper.splitAccountMoney == nil {
-            self.model.amountHelper?.getPaymentData().discount?.id = discountToken.stringValue
-            self.model.amountHelper?.getPaymentData().campaign?.id = discountToken
+        if amountHelper.getPaymentData().paymentMethod?.id == PXPaymentTypes.ACCOUNT_MONEY.rawValue {
+            if let resultHandler = resultHandler as? OneTapFlow,
+                let payerPaymentMethod = resultHandler.model.search.payerPaymentMethods.first(where: { $0.id == PXPaymentTypes.ACCOUNT_MONEY.rawValue }),
+                amountHelper.splitAccountMoney == nil {
+
+                let couponToApply = payerPaymentMethod.couponToApply ?? ""
+                model.amountHelper?.getPaymentData().discount?.id = payerPaymentMethod.paymentOptions?[couponToApply]?.discountToken?.stringValue
+                model.amountHelper?.getPaymentData().campaign?.id = payerPaymentMethod.paymentOptions?[couponToApply]?.discountToken
+            }
+        } else if let discountToken = amountHelper.paymentConfigurationService.getAmountConfigurationForPaymentMethod(amountHelper.getPaymentData().token?.cardId)?.discountToken, amountHelper.splitAccountMoney == nil {
+            model.amountHelper?.getPaymentData().discount?.id = discountToken.stringValue
+            model.amountHelper?.getPaymentData().campaign?.id = discountToken
         }
     }
 
