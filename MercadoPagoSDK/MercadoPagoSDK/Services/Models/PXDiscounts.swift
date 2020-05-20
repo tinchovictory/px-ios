@@ -14,6 +14,7 @@ struct PXDiscounts: Decodable {
     let discountsAction: PXRemoteAction
     let downloadAction: PXDownloadAction
     let items: [PXDiscountsItem]
+    let touchpoint: PXDiscountsTouchpoint?
 
     enum CodingKeys: String, CodingKey {
         case title
@@ -21,5 +22,6 @@ struct PXDiscounts: Decodable {
         case discountsAction = "action"
         case downloadAction = "action_download"
         case items
+        case touchpoint
     }
 }

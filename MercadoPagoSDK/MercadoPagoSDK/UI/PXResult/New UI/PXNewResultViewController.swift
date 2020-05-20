@@ -20,6 +20,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
     let viewModel: PXNewResultViewModelInterface
     private var finishButtonAnimation: (() -> Void)?
 
+    private var touchpointView: MLBusinessTouchpointsView?
+    
     init(viewModel: PXNewResultViewModelInterface, callback: @escaping ( _ status: PaymentResult.CongratsState, String?) -> Void, finishButtonAnimation: (() -> Void)? = nil) {
         self.viewModel = viewModel
         self.viewModel.setCallback(callback: callback)
@@ -209,6 +211,10 @@ extension PXNewResultViewController: UIScrollViewDelegate {
         } else {
             elasticHeader.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: -scrollView.contentOffset.y)
         }
+
+        if let touchpointView = touchpointView, touchpointView.frame.origin.y < scrollView.contentOffset.y + scrollView.frame.height {
+            touchpointView.trackVisiblePrints()
+        }
     }
 }
 
@@ -274,6 +280,13 @@ extension PXNewResultViewController {
                 views.append(ResultViewData(view: MLBusinessDividingLineView(hasTriangle: true), verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
                 margin -= 8
             }
+            
+            //Discounts Top View
+            if let discountsTopViewData = buildDiscountsTopView() {
+                views.append(discountsTopViewData)
+            }
+            
+            //Discount Component
             views.append(ResultViewData(view: discountsView, verticalMargin: margin, horizontalMargin: PXLayout.M_MARGIN))
 
             //Discounts Accessory View
@@ -383,18 +396,60 @@ extension PXNewResultViewController {
 
         return pointsView
     }
+    
     ////DISCOUNTS
+    func buildDiscountsTopView() -> ResultViewData? {
+        return getDataForDiscountTopView(discounts: viewModel.getDiscounts())
+    }
+    
+    //DISCOUNTS TOP VIEW
+    func getDataForDiscountTopView(discounts: PXDiscounts?) -> ResultViewData? {
+        if let discounts = discounts, discounts.touchpoint != nil, let title = discounts.title {
+            let stackview = UIStackView(frame: .zero)
+            stackview.distribution = .equalSpacing
+            stackview.axis = .vertical
+            stackview.addArrangedSubview(buildMPLabel(with: title, font: UIFont.ml_semiboldSystemFont(ofSize: 20.0), numberOfLines: 2))
+
+            if let subtitle = discounts.subtitle, subtitle.isEmpty == false {
+                stackview.addArrangedSubview(buildMPLabel(with: subtitle, font: UIFont.ml_lightSystemFont(ofSize: 14.0), numberOfLines: 1))
+            }
+
+            return ResultViewData(view: stackview, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN)
+        }
+        return nil
+    }
+    
+    private func buildMPLabel(with text: String, font: UIFont, numberOfLines: Int) -> MPLabel {
+        let mpLabel = MPLabel(frame: .zero)
+        mpLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+        mpLabel.text = text
+        mpLabel.textAlignment = .center
+        mpLabel.font = font
+        mpLabel.numberOfLines = numberOfLines
+        return mpLabel
+    }
+
     func buildDiscountsView() -> UIView? {
-        guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: viewModel.getDiscounts()) else {
+        guard let discounts = viewModel.getDiscounts()  else {
             return nil
         }
-        let discountsView = MLBusinessDiscountBoxView(data)
-
-        if let tapAction = viewModel.getDiscountsTapAction() {
-            discountsView.addTapAction(tapAction)
+        guard let data = PXNewResultUtil.getDataForTouchpointsView(discounts: discounts) else {
+            guard let data = PXNewResultUtil.getDataForDiscountsView(discounts: discounts) else {
+                return nil
+            }
+            let discountsView = MLBusinessDiscountBoxView(data)
+            if let tapAction = viewModel.getDiscountsTapAction() {
+                discountsView.addTapAction(tapAction)
+            }
+            return discountsView
         }
+        touchpointView = MLBusinessTouchpointsView()
+        touchpointView?.setTouchpointsTracker(with: PXDiscountTracker())
+        touchpointView?.setCanOpenMercadoPagoApp(MLBusinessAppDataService().isMpAlreadyInstalled())
+        touchpointView?.delegate = self
+        touchpointView?.update(with: data)
 
-        return discountsView
+        return touchpointView
     }
 
     ////DISCOUNTS ACCESSORY VIEW
@@ -571,5 +626,11 @@ extension PXNewResultViewController {
         if let button = getRemedyViewAnimatedButton() {
             PXNotificationManager.UnsuscribeTo.animateButton(button)
         }
+    }
+}
+
+extension PXNewResultViewController: MLBusinessTouchpointsUserInteractionHandler {
+    func didTap(with selectedIndex: Int, deeplink: String, trackingId: String) {
+        viewModel.didTapDiscount(index: selectedIndex, deepLink: deeplink, trackId: trackingId)
     }
 }

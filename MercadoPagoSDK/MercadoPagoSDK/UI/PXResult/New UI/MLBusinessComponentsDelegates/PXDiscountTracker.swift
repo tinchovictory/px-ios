@@ -9,17 +9,23 @@ import Foundation
 import MLBusinessComponents
 
 public class PXDiscountTracker: NSObject, MLBusinessDiscountTrackerProtocol {
-    
+
     let basePath = "/discount_center/payers/touchpoint"
-    var touchPointId: String
-    
+    var touchPointId: String?
+
     init(touchPointId: String) {
         self.touchPointId = touchPointId
     }
-    
-    public func track(action: String, eventData: [String : Any]) {
+
+    public override init() { }
+
+    public func setTouchpointId(with touchPointId: String) {
+        self.touchPointId = touchPointId
+    }
+
+    public func track(action: String, eventData: [String: Any]) {
+        guard let touchPointId = touchPointId else { return }
         let path = "\(basePath)/\(touchPointId)/\(action)"
         MPXTracker.sharedInstance.trackEvent(path: path, properties: eventData)
     }
-    
 }
