@@ -1,3 +1,9 @@
+# v4.33.8
+🚀Private Release - 4.33.8 🚀
+MercadoPagoSDKV4 - Private Version
+- Se agrego el nuevo componente MLBusinessTouchpointsView
+- Refactor Codable
+
 # v4.33.7
 🚀Private Release - 4.33.7 🚀
 MercadoPagoSDKV4 - Private Version
@@ -16,7 +22,7 @@ MercadoPagoSDKV4 - Private Version
 MercadoPagoSDKV4 - Private Version
 - Add total amount for silver bullet remedy
 - Add flow name to every request header. Remove flow name as remedies request param
-- Fix tyc view 
+- Fix tyc view
 
 # v4.33.4
 🚀Private Release - 4.33.4 🚀
