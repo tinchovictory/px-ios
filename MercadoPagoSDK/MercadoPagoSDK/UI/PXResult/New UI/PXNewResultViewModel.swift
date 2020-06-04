@@ -54,6 +54,9 @@ protocol PXNewResultViewModelInterface {
     ////TOP TEXT BOX
     func getTopTextBox() -> PXText?
 
+    ////CUSTOM ORDER
+    func getCustomOrder() -> Bool?
+
     //INSTRUCTIONS
     func hasInstructions() -> Bool
     func getInstructionsView() -> UIView?

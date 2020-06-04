@@ -174,6 +174,10 @@ extension PXBusinessResultViewModel: PXNewResultViewModelInterface {
         return pointsAndDiscounts?.topTextBox
     }
 
+    func getCustomOrder() -> Bool? {
+        return pointsAndDiscounts?.customOrder
+    }
+
     func hasInstructions() -> Bool {
         return false
     }
