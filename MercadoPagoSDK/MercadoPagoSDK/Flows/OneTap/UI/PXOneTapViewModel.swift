@@ -23,6 +23,7 @@ final class PXOneTapViewModel: PXReviewViewModel {
     var payerCompliance: PXPayerCompliance?
     var modals: [String: PXModal]?
     var payerPaymentMethods: [PXCustomOptionSearchItem]
+    var experimentsViewModel: PXExperimentsViewModel
 
     var splitPaymentEnabled: Bool = false
     var splitPaymentSelectionByUser: Bool?
@@ -32,10 +33,11 @@ final class PXOneTapViewModel: PXReviewViewModel {
     // Current flow.
     weak var currentFlow: OneTapFlow?
 
-    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?, currentFlow: OneTapFlow?, payerPaymentMethods: [PXCustomOptionSearchItem]) {
+    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?, currentFlow: OneTapFlow?, payerPaymentMethods: [PXCustomOptionSearchItem], experiments: [PXExperiment]?) {
         self.disabledOption = disabledOption
         self.currentFlow = currentFlow
         self.payerPaymentMethods = payerPaymentMethods
+        self.experimentsViewModel = PXExperimentsViewModel(experiments)
         super.init(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfig, userLogged: userLogged, escProtocol: escProtocol)
     }
 

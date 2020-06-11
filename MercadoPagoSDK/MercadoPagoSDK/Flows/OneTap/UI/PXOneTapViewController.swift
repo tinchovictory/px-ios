@@ -41,6 +41,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
 
     var cardSliderMarginConstraint: NSLayoutConstraint?
     private var navigationBarTapGesture: UITapGestureRecognizer?
+    var installmentRow = PXOneTapInstallmentInfoView()
 
     // MARK: Lifecycle/Publics
     init(viewModel: PXOneTapViewModel, timeOutPayButton: TimeInterval = 15, callbackPaymentData : @escaping ((PXPaymentData) -> Void), callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), callbackRefreshInit: @escaping ((String) -> Void), callbackExit: @escaping (() -> Void), finishButtonAnimation: @escaping (() -> Void)) {
@@ -64,11 +65,13 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         setupNavigationBar()
         setupUI()
         isUIEnabled(true)
+        addPulseViewNotifications()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unsubscribeFromNotifications()
+        removePulseViewNotifications()
         removeNavigationTapGesture()
     }
 
@@ -83,6 +86,15 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         slider.showBottomMessageIfNeeded(index: 0, targetIndex: 0)
         UIAccessibility.post(notification: .layoutChanged, argument: headerView?.getMerchantView()?.getMerchantTitleLabel())
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapPath(), properties: viewModel.getOneTapScreenProperties())
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        installmentRow.addChevronBackgroundViewGradient()
+    }
+
+    @objc func willEnterForeground() {
+        installmentRow.pulseView?.setupAnimations()
     }
 
     func update(viewModel: PXOneTapViewModel, cardId: String) {
@@ -130,6 +142,8 @@ extension PXOneTapViewController {
                 viewModel.amountHelper.getPaymentData().payerCost = preSelectedCard.selectedPayerCost
             }
             renderViews()
+        } else {
+            installmentRow.pulseView?.setupAnimations()
         }
     }
 
@@ -153,7 +167,7 @@ extension PXOneTapViewController {
         PXLayout.pinRight(view: whiteView, withMargin: 0).isActive = true
 
         // Add installment row
-        let installmentRow = getInstallmentInfoView()
+        installmentRow = getInstallmentInfoView()
         whiteView.addSubview(installmentRow)
         PXLayout.pinLeft(view: installmentRow).isActive = true
         PXLayout.pinRight(view: installmentRow).isActive = true
@@ -190,7 +204,7 @@ extension PXOneTapViewController {
 
         view.layoutIfNeeded()
         let installmentRowWidth: CGFloat = slider.getItemSize(cardSliderContentView).width
-        installmentRow.render(installmentRowWidth)
+        installmentRow.render(installmentRowWidth, experiment: viewModel.experimentsViewModel.getExperiment(name: PXExperimentsViewModel.HIGHLIGHT_INSTALLMENTS))
 
         view.layoutIfNeeded()
         refreshContentViewSize()
@@ -707,6 +721,8 @@ extension PXOneTapViewController: PXOneTapInstallmentInfoViewProtocol, PXOneTapI
 
         PXFeedbackGenerator.selectionFeedback()
 
+        installmentRow.removePulseView()
+
         self.installmentsSelectorView?.removeFromSuperview()
         self.installmentsSelectorView?.layoutIfNeeded()
         let viewModel = PXOneTapInstallmentsSelectorViewModel(installmentData: installmentData, selectedPayerCost: selectedPayerCost, interest: interest, reimbursement: reimbursement)
@@ -769,7 +785,7 @@ extension PXOneTapViewController: PXAnimatedButtonDelegate {
 }
 
 // MARK: Notifications
-extension PXOneTapViewController {
+private extension PXOneTapViewController {
     func subscribeLoadingButtonToNotifications() {
         guard let loadingButton = loadingButtonComponent else {
             return
@@ -779,6 +795,14 @@ extension PXOneTapViewController {
 
     func unsubscribeFromNotifications() {
         PXNotificationManager.UnsuscribeTo.animateButton(loadingButtonComponent)
+    }
+
+    func addPulseViewNotifications() {
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+
+    func removePulseViewNotifications() {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 

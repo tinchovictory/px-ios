@@ -15,6 +15,9 @@ final class PXOneTapInstallmentInfoView: PXComponentView {
     private var arrowImage: UIImageView = UIImageView()
     private var pagerView = FSPagerView(frame: .zero)
     private var tapEnabled = true
+    private var shouldShowBadgeView = false
+    private var chevronBackgroundView: UIView?
+    var pulseView: PXPulseView?
 
     weak var delegate: PXOneTapInstallmentInfoViewProtocol?
     private var model: [PXOneTapInstallmentInfoViewModel]?
@@ -74,26 +77,26 @@ extension PXOneTapInstallmentInfoView: FSPagerViewDataSource {
         var benefitsLabel: UILabel?
         var benefitsText = ""
         if itemModel.shouldShowInstallmentsHeader, let benefitText = itemModel.benefits?.installmentsHeader?.getAttributedString(fontSize: PXLayout.XXXS_FONT) {
-            let label = UILabel()
-            benefitsLabel = label
-            label.numberOfLines = 1
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.attributedText = benefitText
-            label.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XXXS_FONT)
-            label.textAlignment = .right
             benefitsText = benefitText.string
-            cell.addSubview(label)
-            PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
-            PXLayout.centerVertically(view: label).isActive = true
-            PXLayout.matchHeight(ofView: label).isActive = true
+            if shouldShowBadgeView {
+                let badgeView = buildBadgeView(benefitText, itemModel.benefits?.installmentsHeader?.getBackgroundColor())
+                benefitsLabel = badgeView
+                cell.addSubview(badgeView)
+                PXLayout.pinRight(view: badgeView, withMargin: PXLayout.M_MARGIN).isActive = true
+                PXLayout.centerVertically(view: badgeView).isActive = true
+                badgeView.heightAnchor.constraint(equalToConstant: 24).isActive = true
+                badgeView.widthAnchor.constraint(equalToConstant: badgeView.intrinsicContentSize.width + 20).isActive = true
+            } else {
+                let label = buildLabel(benefitText, UIFont.ml_regularSystemFont(ofSize: PXLayout.XXXS_FONT), .right)
+                benefitsLabel = label
+                cell.addSubview(label)
+                PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
+                PXLayout.centerVertically(view: label).isActive = true
+                PXLayout.matchHeight(ofView: label).isActive = true
+            }
         }
 
-        let label = UILabel()
-        label.numberOfLines = 1
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.attributedText = itemModel.text
-        label.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
-        label.textAlignment = .left
+        let label = buildLabel(itemModel.text, UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT), .left)
         let accessibilityMessage = getAccessibilityMessage(itemModel.text.string, benefitsText)
         cell.setAccessibilityMessage(accessibilityMessage)
         if index == 0 {
@@ -205,11 +208,11 @@ extension PXOneTapInstallmentInfoView {
         tapEnabled = true
     }
 
-    func render(_ width: CGFloat) {
+    func render(_ width: CGFloat, experiment: PXExperiment? = nil) {
         removeAllSubviews()
         setupSlider(width: width)
         setupFadeImages()
-        setupChevron()
+        setupChevron(experiment)
         setupTitleLabel()
         PXLayout.setHeight(owner: self, height: PXOneTapInstallmentInfoView.DEFAULT_ROW_HEIGHT).isActive = true
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(toggleInstallmentsWrapper)))
@@ -220,16 +223,23 @@ extension PXOneTapInstallmentInfoView {
         toggleInstallments()
     }
 
-    private func setupChevron() {
+    private func setupChevron(_ experiment: PXExperiment?) {
         addSubview(arrowImage)
-        arrowImage.contentMode = UIView.ContentMode.scaleAspectFit
-        arrowImage.image = ResourceManager.shared.getImage("one-tap-installments-info-chevron")
-        PXLayout.centerVertically(view: arrowImage).isActive = true
-        PXLayout.pinTop(view: arrowImage).isActive = true
-        PXLayout.pinBottom(view: arrowImage).isActive = true
-        PXLayout.setWidth(owner: arrowImage, width: 56).isActive = true
-        PXLayout.pinRight(view: arrowImage, withMargin: 0).isActive = true
+        arrowImage.contentMode = .scaleAspectFit
         arrowImage.tag = colapsedTag
+        if experiment == nil || !shouldShowPulseView(experiment) {
+            arrowImage.image = ResourceManager.shared.getImage("one-tap-installments-info-chevron")
+            PXLayout.centerVertically(view: arrowImage).isActive = true
+            PXLayout.pinTop(view: arrowImage).isActive = true
+            PXLayout.pinBottom(view: arrowImage).isActive = true
+            PXLayout.setWidth(owner: arrowImage, width: 56).isActive = true
+            PXLayout.pinRight(view: arrowImage, withMargin: 0).isActive = true
+            if shouldShowBadgeView(experiment) {
+                highlightInstallments(experiment)
+            }
+        } else {
+            highlightInstallments(experiment)
+        }
 
         if let targetModel = model?.first, !targetModel.shouldShowArrow {
             disableTap()
@@ -312,6 +322,111 @@ extension PXOneTapInstallmentInfoView {
                     }
                 }
             }
+        }
+    }
+}
+
+// MARK: Privates
+private extension PXOneTapInstallmentInfoView {
+    func buildLabel(_ attributedText: NSAttributedString, _ font: UIFont, _ textAlignment: NSTextAlignment, _ numberOfLines: Int = 1) -> UILabel {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.attributedText = attributedText
+        label.font = font
+        label.textAlignment = textAlignment
+        label.numberOfLines = numberOfLines
+        return label
+    }
+}
+
+// MARK: Highlight Installments
+extension PXOneTapInstallmentInfoView {
+    private func highlightInstallments(_ experiment: PXExperiment?) {
+        if shouldShowPulseView(experiment) {
+            setupChevronBackgroundView()
+            if let chevronBackgroundView = chevronBackgroundView {
+                arrowImage.image = MLBusinessAppDataService().getAppIdentifier() == .mp ? ResourceManager.shared.getImage("chevronMP") : ResourceManager.shared.getImage("chevronML")
+                arrowImage.translatesAutoresizingMaskIntoConstraints = false
+                addSubview(arrowImage)
+                NSLayoutConstraint.activate([
+                    arrowImage.centerYAnchor.constraint(equalTo: chevronBackgroundView.centerYAnchor),
+                    arrowImage.leadingAnchor.constraint(equalTo: chevronBackgroundView.leadingAnchor, constant: PXLayout.XXS_MARGIN),
+                    arrowImage.heightAnchor.constraint(equalToConstant: 24),
+                    arrowImage.widthAnchor.constraint(equalToConstant: 24)
+                ])
+                setupPulseView()
+            }
+        } else if shouldShowBadgeView(experiment) {
+            shouldShowBadgeView = true
+        }
+    }
+
+    private func shouldShowBadgeView(_ experiment: PXExperiment?) -> Bool {
+        return experiment?.variant.name == HighlightInstallmentsVariant.badge.getValue ? true : false
+    }
+
+    private func shouldShowPulseView(_ experiment: PXExperiment?) -> Bool {
+        return experiment?.variant.name == HighlightInstallmentsVariant.animationPulse.getValue ? true : false
+    }
+
+    private func buildBadgeView(_ attributedText: NSAttributedString, _ backgroundColor: UIColor?) -> UILabel {
+        let badgeView = UILabel()
+        badgeView.translatesAutoresizingMaskIntoConstraints = false
+        badgeView.numberOfLines = 1
+        badgeView.backgroundColor = backgroundColor
+        badgeView.attributedText = attributedText
+        badgeView.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XXXS_FONT)
+        badgeView.layer.cornerRadius = 12
+        badgeView.layer.masksToBounds = true
+        badgeView.textAlignment = .center
+        return badgeView
+    }
+
+    private func setupPulseView() {
+        pulseView = PXPulseView()
+        if let pulseView = pulseView {
+            arrowImage.addSubview(pulseView)
+            NSLayoutConstraint.activate([
+                pulseView.centerYAnchor.constraint(equalTo: arrowImage.centerYAnchor),
+                pulseView.centerXAnchor.constraint(equalTo: arrowImage.centerXAnchor),
+                pulseView.heightAnchor.constraint(equalToConstant: 32),
+                pulseView.widthAnchor.constraint(equalToConstant: 32)
+            ])
+        }
+    }
+
+    func removePulseView() {
+        if let pulse = pulseView {
+            pulse.removeFromSuperview()
+            pulseView = nil
+        }
+    }
+
+    private func setupChevronBackgroundView() {
+        chevronBackgroundView = UIView()
+        if let chevronBackgroundView = chevronBackgroundView {
+            chevronBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+            chevronBackgroundView.backgroundColor = .white
+            addSubview(chevronBackgroundView)
+            NSLayoutConstraint.activate([
+                chevronBackgroundView.topAnchor.constraint(equalTo: self.topAnchor),
+                chevronBackgroundView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+                chevronBackgroundView.widthAnchor.constraint(equalToConstant: 56),
+                chevronBackgroundView.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            ])
+        }
+    }
+
+    func addChevronBackgroundViewGradient() {
+        if let chevronBackgroundView = chevronBackgroundView {
+            let gradient = CAGradientLayer()
+            gradient.startPoint = CGPoint(x: 0.0, y: 0.5)
+            gradient.endPoint = CGPoint(x: 1.0, y: 0.5)
+            let whiteColor = UIColor.white
+            gradient.colors = [whiteColor.withAlphaComponent(0.0).cgColor, whiteColor.withAlphaComponent(1.0).cgColor, whiteColor.withAlphaComponent(1.0).cgColor]
+            gradient.locations = [NSNumber(value: 0.0), NSNumber(value: 0.2), NSNumber(value: 1.0)]
+            gradient.frame = chevronBackgroundView.bounds
+            chevronBackgroundView.layer.mask = gradient
         }
     }
 }
