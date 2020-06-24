@@ -76,6 +76,10 @@ extension PXResultViewModel: PXCongratsTrackingDataProtocol {
         return false
     }
 
+    func hasExpenseSplitView() -> Bool {
+        return getExpenseSplit() != nil && MLBusinessAppDataService().getAppIdentifier() == .mp ? true : false
+    }
+
     func getScoreLevel() -> Int? {
         return PXNewResultUtil.getDataForPointsView(points: pointsAndDiscounts?.points)?.getRingNumber()
     }
@@ -360,6 +364,18 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
     func didTapDiscount(index: Int, deepLink: String?, trackId: String?) {
         PXDeepLinkManager.open(deepLink)
         PXCongratsTracking.trackTapDiscountItemEvent(index, trackId)
+    }
+
+    func getExpenseSplit() -> PXExpenseSplit? {
+        return pointsAndDiscounts?.expenseSplit
+    }
+
+    func getExpenseSplitTapAction() -> (() -> Void)? {
+        let action: () -> Void = { [weak self] in
+            PXDeepLinkManager.open(self?.pointsAndDiscounts?.expenseSplit?.action.target)
+            MPXTracker.sharedInstance.trackEvent(path: TrackingPaths.Events.Congrats.getSuccessTapDeeplinkPath(), properties: PXCongratsTracking.getDeeplinkProperties(type: "money_split", deeplink: self?.pointsAndDiscounts?.expenseSplit?.action.target ?? ""))
+        }
+        return action
     }
 
     func getCrossSellingItems() -> [PXCrossSellingItem]? {

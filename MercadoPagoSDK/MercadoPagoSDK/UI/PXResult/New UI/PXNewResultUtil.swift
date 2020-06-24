@@ -81,6 +81,11 @@ class PXNewResultUtil {
         }
     }
 
+    //EXPENSE SPLIT DATA
+    class func getDataForExpenseSplitView(expenseSplit: PXExpenseSplit) -> MLBusinessActionCardViewData {
+        return PXExpenseSplitData(expenseSplitData: expenseSplit)
+    }
+
     //CROSS SELLING VIEW
     class func getDataForCrossSellingView(crossSellingItems: [PXCrossSellingItem]?) -> [MLBusinessCrossSellingBoxData]? {
         guard let crossSellingItems = crossSellingItems else {

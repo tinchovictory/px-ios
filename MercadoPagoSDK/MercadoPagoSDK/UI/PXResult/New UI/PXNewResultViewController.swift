@@ -306,10 +306,18 @@ extension PXNewResultViewController {
             }
         }
 
+        // Expense Split View
+        let expenseSplitView = buildSplitPaymentView()
+        if let expenseSplitView = expenseSplitView {
+            views.append(ResultViewData(view: expenseSplitView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
+        }
+
         //Cross Selling View
         if let crossSellingViews = buildCrossSellingViews() {
             var margin: CGFloat = 0
-            if discountsView != nil && pointsView == nil {
+            if expenseSplitView != nil {
+                margin = PXLayout.M_MARGIN
+            } else if discountsView != nil && pointsView == nil {
                 margin = PXLayout.M_MARGIN
             } else if discountsView == nil && pointsView != nil {
                 margin = PXLayout.XXS_MARGIN
@@ -495,6 +503,20 @@ extension PXNewResultViewController {
     ////DISCOUNTS ACCESSORY VIEW
     func buildDiscountsAccessoryView() -> ResultViewData? {
         return PXNewResultUtil.getDataForDiscountsAccessoryViewData(discounts: viewModel.getDiscounts())
+    }
+
+    ////EXPENSE SPLIT VIEW
+    private func buildSplitPaymentView() -> UIView? {
+        guard let expenseSplit = viewModel.getExpenseSplit(),
+            MLBusinessAppDataService().getAppIdentifier() == .mp
+            else { return nil }
+
+        let data = PXNewResultUtil.getDataForExpenseSplitView(expenseSplit: expenseSplit)
+        let expenseSplitView = MLBusinessActionCardView(data)
+        if let tapAction = viewModel.getExpenseSplitTapAction() {
+            expenseSplitView.addTapAction(tapAction)
+        }
+        return expenseSplitView
     }
 
     ////CROSS SELLING
