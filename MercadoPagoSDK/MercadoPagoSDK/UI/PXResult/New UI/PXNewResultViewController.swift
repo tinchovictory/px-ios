@@ -507,8 +507,7 @@ extension PXNewResultViewController {
 
     ////EXPENSE SPLIT VIEW
     private func buildSplitPaymentView() -> UIView? {
-        guard let expenseSplit = viewModel.getExpenseSplit(),
-            MLBusinessAppDataService().getAppIdentifier() == .mp
+        guard let expenseSplit = viewModel.getExpenseSplit()
             else { return nil }
 
         let data = PXNewResultUtil.getDataForExpenseSplitView(expenseSplit: expenseSplit)
