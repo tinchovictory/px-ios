@@ -148,10 +148,10 @@ class PXNewResultViewController: MercadoPagoUIViewController {
         scrollView.addSubview(footerView)
 
         //Footer View Layout
+        var footerTopAnchor = footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor)
         NSLayoutConstraint.activate([
             footerView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             footerView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             footerView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor)
         ])
 
@@ -184,8 +184,12 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                 PXLayout.pinLastSubviewToBottom(view: contentView)
             } else {
                 PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
+                if contentView.subviews.last is MLBusinessActionCardView {
+                    footerTopAnchor = footerView.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: PXLayout.XXXS_MARGIN)
+                }
             }
         }
+        footerTopAnchor.isActive = true
     }
 }
 
@@ -307,15 +311,14 @@ extension PXNewResultViewController {
         }
 
         // Expense Split View
-        let expenseSplitView = buildSplitPaymentView()
-        if let expenseSplitView = expenseSplitView {
+        if let expenseSplitView = buildExpenseSplitView() {
             views.append(ResultViewData(view: expenseSplitView, verticalMargin: PXLayout.M_MARGIN, horizontalMargin: PXLayout.L_MARGIN))
         }
 
         //Cross Selling View
         if let crossSellingViews = buildCrossSellingViews() {
             var margin: CGFloat = 0
-            if expenseSplitView != nil {
+            if views.last?.view is MLBusinessActionCardView {
                 margin = PXLayout.M_MARGIN
             } else if discountsView != nil && pointsView == nil {
                 margin = PXLayout.M_MARGIN
@@ -344,7 +347,8 @@ extension PXNewResultViewController {
         /// Payment Method View
         /// Split Payment View
         if customOrder == false {
-            views.append(contentsOf: addReceiptAndPaymentViews(customOrder))
+            let verticalMargin = views.last?.view is MLBusinessActionCardView ? true : false
+            views.append(contentsOf: addReceiptAndPaymentViews(customOrder, verticalMargin))
         }
 
         //View receipt action view
@@ -354,35 +358,40 @@ extension PXNewResultViewController {
 
         //Bottom Custom View
         if let view = viewModel.getBottomCustomView() {
-            views.append(ResultViewData(view: view))
+            let margin = views.last?.view is MLBusinessActionCardView ? PXLayout.M_MARGIN : 0
+            views.append(ResultViewData(view: view, verticalMargin: margin))
         }
 
         return views
     }
 
-    private func addReceiptAndPaymentViews(_ customOrder: Bool) -> [ResultViewData] {
+    private func addReceiptAndPaymentViews(_ customOrder: Bool, _ verticalMargin: Bool = false) -> [ResultViewData] {
         var views = [ResultViewData]()
 
         if customOrder == false {
             //Top Custom View
             if let view = viewModel.getTopCustomView() {
-                views.append(ResultViewData(view: view))
+                let margin = shouldApplyVerticalMargin(verticalMargin, views) ? PXLayout.M_MARGIN : 0
+                views.append(ResultViewData(view: view, verticalMargin: margin))
             }
 
             //Receipt View
             if let view = buildReceiptView() {
-                views.append(ResultViewData(view: view))
+                let margin = shouldApplyVerticalMargin(verticalMargin, views) ? PXLayout.M_MARGIN : 0
+                views.append(ResultViewData(view: view, verticalMargin: margin))
             }
         }
 
         //Payment Method View
         if viewModel.shouldShowPaymentMethod(), let view = buildPaymentMethodView() {
-            views.append(ResultViewData(view: view))
+            let margin = shouldApplyVerticalMargin(verticalMargin, views) ? PXLayout.M_MARGIN : 0
+            views.append(ResultViewData(view: view, verticalMargin: margin))
         }
 
         //Split Payment View
         if viewModel.shouldShowPaymentMethod(), let view = buildSplitPaymentMethodView() {
-            views.append(ResultViewData(view: view))
+            let margin = shouldApplyVerticalMargin(verticalMargin, views) ? PXLayout.M_MARGIN : 0
+            views.append(ResultViewData(view: view, verticalMargin: margin))
         }
 
         if customOrder == true {
@@ -405,6 +414,13 @@ extension PXNewResultViewController {
             return remedyView?.button
         }
         return nil
+    }
+}
+
+//MARK: MLBusinessActionCardView
+private extension PXNewResultViewController {
+    func shouldApplyVerticalMargin(_ margin: Bool, _ views: [ResultViewData]) -> Bool {
+        return margin == true && views.last == nil
     }
 }
 
@@ -506,10 +522,10 @@ extension PXNewResultViewController {
     }
 
     ////EXPENSE SPLIT VIEW
-    private func buildSplitPaymentView() -> UIView? {
+    private func buildExpenseSplitView() -> UIView? {
         guard let expenseSplit = viewModel.getExpenseSplit(),
             MLBusinessAppDataService().getAppIdentifier() == .mp
-            else { return nil }
+        else { return nil }
 
         let data = PXNewResultUtil.getDataForExpenseSplitView(expenseSplit: expenseSplit)
         let expenseSplitView = MLBusinessActionCardView(data)
