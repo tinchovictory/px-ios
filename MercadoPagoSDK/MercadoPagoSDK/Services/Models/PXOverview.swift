@@ -7,7 +7,8 @@
 
 import Foundation
 
-public struct PXOverview: Codable {
+public struct PXOverview: Codable, Equatable {
+
     let title: PXText
     let subtitle: PXText?
     let amount: PXText
@@ -20,5 +21,9 @@ public struct PXOverview: Codable {
         case amount
         case description
         case iconUrl = "icon_url"
+    }
+
+    public static func == (lhs: PXOverview, rhs: PXOverview) -> Bool {
+        return lhs.title == rhs.title && lhs.subtitle == rhs.subtitle && lhs.amount == rhs.amount && lhs.description == rhs.description && lhs.iconUrl == rhs.iconUrl
     }
 }
