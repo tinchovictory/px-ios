@@ -32,6 +32,8 @@ extension PXSummaryComposer {
             return nil
         }
 
+        let overview = getOverview()
+
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
         let helperImage = helpIcon(color: discountColor())
         let row = PXOneTapSummaryRowData(title: discount.getDiscountDescription(),
@@ -40,7 +42,8 @@ extension PXSummaryComposer {
             alpha: textTransparency,
             isTotal: false,
             image: helperImage,
-            type: .discount)
+            type: .discount,
+            overview: overview)
         return row
     }
 
