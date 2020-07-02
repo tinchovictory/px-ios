@@ -80,6 +80,8 @@ public class PXText: Codable {
             attributes[.font] = UIFont.ml_semiboldSystemFont(ofSize: fontSize)
         case "light":
             attributes[.font] = UIFont.ml_lightSystemFont(ofSize: fontSize)
+        case "bold":
+            attributes[.font] = UIFont.ml_boldSystemFont(ofSize: fontSize)
         default:
             attributes[.font] = UIFont.ml_regularSystemFont(ofSize: fontSize)
         }
