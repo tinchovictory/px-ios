@@ -91,6 +91,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         installmentRow.addChevronBackgroundViewGradient()
+        headerView?.updateConstraintsIfNecessary()
     }
 
     @objc func willEnterForeground() {

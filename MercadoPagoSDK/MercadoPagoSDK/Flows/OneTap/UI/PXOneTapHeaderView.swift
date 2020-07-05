@@ -229,4 +229,8 @@ extension PXOneTapHeaderView {
     func getMerchantView() -> PXOneTapHeaderMerchantView? {
         return merchantView
     }
+
+    func updateConstraintsIfNecessary() {
+        summaryView?.updateRowsConstraintsIfNecessary()
+    }
 }
