@@ -100,7 +100,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func animateRows(_ rowsToAnimate: [PXOneTapSummaryRow], rowsToMove: [PXOneTapSummaryRow], newData: [PXOneTapSummaryRowData], animateIn: Bool, distance: CGFloat, completion: @escaping () -> Void) {
+    func animateRows(_ rowsToAnimate: [PXOneTapSummaryRow], rowsToMove: [PXOneTapSummaryRow], newData: [PXOneTapSummaryRowData], animateIn: Bool, distance: CGFloat, _ rowsPositions: [CGFloat]? = nil, completion: @escaping () -> Void) {
         let duration: Double = 0.4
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: nil)
 
@@ -108,11 +108,15 @@ class PXOneTapSummaryView: PXComponentView {
             self.updateAllRows(newData: newData)
         }
 
-        for row in rowsToAnimate {
+        for (index, row) in rowsToAnimate.enumerated() {
             self.sendSubviewToBack(row.view)
             animator.addAnimations {
                 row.view.alpha = animateIn ? 1 : 0
-                row.constraint.constant += animateIn ? -distance : distance
+                if let rowsPositions = rowsPositions {
+                    row.constraint.constant = rowsPositions[index]
+                } else {
+                    row.constraint.constant += animateIn ? -distance : distance
+                }
                 self.layoutIfNeeded()
             }
         }
@@ -193,6 +197,15 @@ class PXOneTapSummaryView: PXComponentView {
             //View Constraints
             self.addSubview(rowView)
             let constraint = PXLayout.pinBottom(view: rowView, withMargin: -constraintConstant)
+
+            // Update constraint so as to fix animation when discount row with description and charges row are shown
+            if rowData.type == PXOneTapSummaryRowView.RowType.discount,
+                let message = rowData.overview?.description?.message,
+                !message.isEmpty,
+                newRowsData.first?.type == PXOneTapSummaryRowView.RowType.charges {
+                constraint.constant = -76
+            }
+
             PXLayout.centerHorizontally(view: rowView).isActive = true
             PXLayout.pinLeft(view: rowView, withMargin: 0).isActive = true
             PXLayout.pinRight(view: rowView, withMargin: 0).isActive = true
@@ -208,7 +221,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         stopCurrentAnimatorIfNeeded()
-        animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta) {
+        animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta, getRowsPositions(rowsToAdd)) {
         }
     }
 
@@ -233,5 +246,40 @@ class PXOneTapSummaryView: PXComponentView {
         rowView.isUserInteractionEnabled = true
 
         return rowView
+    }
+}
+
+// MARK: Privates
+extension PXOneTapSummaryView {
+    func getRowsPositions(_ rows: [PXOneTapSummaryRow]) -> [CGFloat]? {
+        guard let row = rows.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount }) else { return nil }
+        var positions = [CGFloat]()
+        if let message = row.data.overview?.description?.message, !message.isEmpty {
+            // First row is always at the same position
+            positions.append(-76)
+            if rows.count == 2 {
+                // Discount row with description without charges row
+                row.view.descriptionHasOneLine() ? positions.append(-116) : positions.append(-132)
+            } else {
+                // Discount row with description with charges row
+                positions.append(-100)
+                row.view.descriptionHasOneLine() ? positions.append(-140) : positions.append(-156)
+            }
+            return positions
+        }
+        return nil
+    }
+}
+
+// MARK: Publics
+extension PXOneTapSummaryView {
+    func updateRowsConstraintsIfNecessary() {
+        if let row = rows.first(where: { $0.data.type ==  PXOneTapSummaryRowView.RowType.discount }),
+            row.view.overviewDescription != nil,
+            row.view.descriptionHasOneLine() {
+            row.view.height.constant = 32
+            row.rowHeight = 40
+            rows.last?.constraint.constant = rows.count == 4 ? -140 : -116
+        }
     }
 }
