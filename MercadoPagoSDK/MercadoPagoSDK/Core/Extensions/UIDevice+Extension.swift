@@ -20,13 +20,13 @@ internal extension UIDevice {
     }
 
     static func isLargeDevice() -> Bool {
-        let devices = ["iPhone X", "iPhone XS"]
+        let devices = ["iPhone X", "iPhone XS", "iPhone 11 Pro"]
         let modelName = self.modelName.replacingOccurrences(of: "Simulator ", with: "")
         return devices.contains(modelName)
     }
 
     static func isExtraLargeDevice() -> Bool {
-        let devices = ["iPhone XS Max", "iPhone XR"]
+        let devices = ["iPhone XS Max", "iPhone XR", "iPhone 11", "iPhone 11 Pro Max"]
         let modelName = self.modelName.replacingOccurrences(of: "Simulator ", with: "")
         return devices.contains(modelName)
     }
@@ -63,6 +63,9 @@ internal extension UIDevice {
             case "iPhone11,2":                              return "iPhone XS"
             case "iPhone11,4", "iPhone11,6":                return "iPhone XS Max"
             case "iPhone11,8":                              return "iPhone XR"
+            case "iPhone12,1":                              return "iPhone 11"
+            case "iPhone12,3":                              return "iPhone 11 Pro"
+            case "iPhone12,5":                              return "iPhone 11 Pro Max"
             case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":return "iPad 2"
             case "iPad3,1", "iPad3,2", "iPad3,3":           return "iPad 3"
             case "iPad3,4", "iPad3,5", "iPad3,6":           return "iPad 4"
