@@ -36,6 +36,7 @@ class PXOneTapHeaderViewModel {
     private func isLargeSummaryOrLarger() -> Bool {
         var chargeFound = false
         var discountFound = false
+        var discountHasDescription = false
         for item in data {
             if item.type == .charges {
                 chargeFound = true
@@ -43,9 +44,12 @@ class PXOneTapHeaderViewModel {
 
             if item.type == .discount {
                 discountFound = true
+                if item.rowHasDescription() {
+                    discountHasDescription = true
+                }
             }
         }
-        return chargeFound && discountFound
+        return (chargeFound && discountFound) || (discountHasDescription && subTitle != nil) || (discountHasDescription && isLargeTitle())
     }
 
     private func isMediumSummaryOrLarger() -> Bool {
@@ -55,5 +59,9 @@ class PXOneTapHeaderViewModel {
             }
         }
         return false
+    }
+
+    private func isLargeTitle() -> Bool {
+        return title.count > 30 ? true : false
     }
 }
