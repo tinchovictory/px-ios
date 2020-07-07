@@ -154,7 +154,7 @@ private extension PXOneTapHeaderView {
         removeMargins()
         backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
-        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self)
+        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self, splitMoney: model.splitConfiguration != nil)
         self.summaryView = summaryView
 
         addSubview(summaryView)
