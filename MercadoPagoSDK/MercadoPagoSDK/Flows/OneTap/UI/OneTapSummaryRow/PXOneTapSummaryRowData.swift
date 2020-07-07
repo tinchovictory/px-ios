@@ -16,6 +16,7 @@ class PXOneTapSummaryRowData: Equatable {
     let image: UIImage?
     let type: PXOneTapSummaryRowView.RowType?
     let overview: PXOverview?
+    var splitMoney = false
 
     init(title: String, value: String, highlightedColor: UIColor, alpha: CGFloat, isTotal: Bool, image: UIImage?, type: PXOneTapSummaryRowView.RowType?, overview: PXOverview? = nil) {
         self.title = title
