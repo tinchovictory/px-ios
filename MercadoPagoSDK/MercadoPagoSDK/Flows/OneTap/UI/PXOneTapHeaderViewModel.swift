@@ -44,7 +44,7 @@ class PXOneTapHeaderViewModel {
 
             if item.type == .discount {
                 discountFound = true
-                if item.rowHasDescription() {
+                if item.rowHasBrief() {
                     discountHasDescription = true
                 }
             }

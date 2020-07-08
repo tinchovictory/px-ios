@@ -46,7 +46,7 @@ open class PXDiscountConfiguration: NSObject, Codable {
         case campaign
         case isAvailable =  "is_available"
         case reason
-        case overview = "overview"
+        case overview = "discount_overview"
     }
 
     /**
