@@ -46,6 +46,10 @@ extension PXOneTapSummaryRowData {
         return true
     }
 
+    func getAmountText() -> NSAttributedString? {
+        return overview?.amount.getAttributedString(fontSize: PXLayout.XXS_FONT, textColor: highlightedColor, backgroundColor: .clear)
+    }
+
     func getDescriptionText() -> NSAttributedString? {
         guard let description = overview?.description else { return nil }
         return getAttributedText(array: description, fontSize: PXLayout.XXS_FONT)
@@ -54,6 +58,10 @@ extension PXOneTapSummaryRowData {
     func getBriefText() -> NSAttributedString? {
         guard let brief = overview?.brief else { return nil }
         return getAttributedText(array: brief, fontSize: PXLayout.XXXS_FONT)
+    }
+
+    func getIconUrl() -> String? {
+        return overview?.iconUrl
     }
 
     private func getAttributedText(array: [PXText], fontSize: CGFloat) -> NSAttributedString {

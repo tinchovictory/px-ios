@@ -21,6 +21,9 @@ class PXOneTapSummaryRowView: UIView {
     private var titleLabel: UILabel?
     private var iconImageView: UIImageView?
     private var valueLabel: UILabel?
+    private var infoIcon: UIImageView?
+    var overviewBrief: UILabel?
+    var heightConstraint = NSLayoutConstraint()
 
     init(data: PXOneTapSummaryRowData) {
         self.data = data
@@ -46,13 +49,9 @@ class PXOneTapSummaryRowView: UIView {
 
     open func getRowHeight() -> CGFloat {
         if data.isTotal {
-            if !UIDevice.isSmallDevice() {
-                return 52
-            } else {
-                return 48
-            }
+            return !UIDevice.isSmallDevice() ? 52 : 48
         } else {
-            return 16
+            return data.rowHasBrief() ? 48 : 16
         }
     }
 
@@ -68,18 +67,30 @@ class PXOneTapSummaryRowView: UIView {
             titleLabel?.fadeTransition(duration)
             iconImageView?.fadeTransition(duration)
             valueLabel?.fadeTransition(duration)
+//            infoIcon?.fadeTransition(duration)
         }
 
-        titleLabel?.text = data.title
-        titleLabel?.textColor = data.highlightedColor
         titleLabel?.alpha = data.alpha
-
-        iconImageView?.image = data.image
-        iconImageView?.isHidden = data.image == nil
-
-        valueLabel?.text = data.value
-        valueLabel?.textColor = data.highlightedColor
         valueLabel?.alpha = data.alpha
+        if data.overview == nil {
+            titleLabel?.text = data.title
+            titleLabel?.textColor = data.highlightedColor
+
+            iconImageView?.image = data.image
+            iconImageView?.isHidden = data.image == nil
+
+            valueLabel?.text = data.value
+            valueLabel?.textColor = data.highlightedColor
+        } else {
+            titleLabel?.attributedText = data.getDescriptionText()
+            if let infoIcon = infoIcon {
+//                Utils().loadImageFromURLWithCache(withUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Information_icon_alt.svg/1200px-Information_icon_alt.svg.png", targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: false) { [weak self] newImage in
+//                    self?.infoIcon?.image = newImage
+//                }
+                infoIcon.isHidden = data.getIconUrl() == nil
+            }
+            valueLabel?.attributedText = data.getAmountText()
+        }
 
         let rowValue = data.value.replacingOccurrences(of: "$", with: "").replacingOccurrences(of: ".", with: "")
         accessibilityLabel = "\(data.title)" + "\(rowValue)" + "pesos".localized
@@ -101,38 +112,132 @@ class PXOneTapSummaryRowView: UIView {
 
         let titleLabel = UILabel()
         self.titleLabel = titleLabel
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = data.title
         titleLabel.textAlignment = .left
-        titleLabel.font = titleFont
-        self.addSubview(titleLabel)
-        PXLayout.pinLeft(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
-        PXLayout.centerVertically(view: titleLabel).isActive = true
+        let verStackView = UIStackView()
+        if data.overview == nil {
+            titleLabel.translatesAutoresizingMaskIntoConstraints = false
+            titleLabel.text = data.title
+            titleLabel.font = titleFont
+            addSubview(titleLabel)
+            PXLayout.pinLeft(view: titleLabel, withMargin: PXLayout.L_MARGIN).isActive = true
+            PXLayout.centerVertically(view: titleLabel).isActive = true
+        } else {
+            // Overview description
+            titleLabel.attributedText = data.getDescriptionText()
+            verStackView.translatesAutoresizingMaskIntoConstraints = false
+            verStackView.axis = .vertical
+            addSubview(verStackView)
+            NSLayoutConstraint.activate([
+                titleLabel.heightAnchor.constraint(equalToConstant: 16),
+                verStackView.topAnchor.constraint(equalTo: topAnchor),
+                verStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PXLayout.L_MARGIN),
+                verStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -100),
+                verStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
 
-        let imageView: UIImageView = UIImageView()
-        self.iconImageView = imageView
-        let imageSize: CGFloat = 16
-        imageView.contentMode = .scaleAspectFit
-        self.addSubview(imageView)
-        PXLayout.setWidth(owner: imageView, width: imageSize).isActive = true
-        PXLayout.setHeight(owner: imageView, height: imageSize).isActive = true
-        PXLayout.centerVertically(view: imageView, to: titleLabel).isActive = true
-        PXLayout.put(view: imageView, rightOf: titleLabel, withMargin: PXLayout.XXXS_MARGIN).isActive = true
+            let horStackview = UIStackView()
+            horStackview.translatesAutoresizingMaskIntoConstraints = false
+            horStackview.axis = .horizontal
+            horStackview.addArrangedSubview(titleLabel)
+
+            // Overview Info icon
+            if data.rowHasInfoIcon() {
+                let icon = buildInfoIcon()
+                let iconContainer = UIView()
+                iconContainer.addSubview(icon)
+                NSLayoutConstraint.activate([
+                    icon.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor, constant: 2),
+                    icon.centerYAnchor.constraint(equalTo: iconContainer.centerYAnchor),
+                    icon.heightAnchor.constraint(equalToConstant: 16),
+                    icon.widthAnchor.constraint(equalToConstant: 16)
+                ])
+                horStackview.addArrangedSubview(iconContainer)
+            }
+            verStackView.addArrangedSubview(horStackview)
+        }
+
+        // Overview brief
+        if data.rowHasBrief() {
+            let brief = UILabel()
+            overviewBrief = brief
+            brief.translatesAutoresizingMaskIntoConstraints = false
+            brief.textAlignment = .left
+            brief.numberOfLines = 2
+            brief.attributedText = data.getBriefText()
+
+            let containerView = UIView()
+            containerView.addSubview(brief)
+            verStackView.addArrangedSubview(containerView)
+            NSLayoutConstraint.activate([
+                brief.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                brief.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                brief.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 2)
+            ])
+        }
+
+        if data.overview == nil {
+            let imageView: UIImageView = UIImageView()
+            self.iconImageView = imageView
+            let imageSize: CGFloat = 16
+            imageView.contentMode = .scaleAspectFit
+            self.addSubview(imageView)
+            PXLayout.setWidth(owner: imageView, width: imageSize).isActive = true
+            PXLayout.setHeight(owner: imageView, height: imageSize).isActive = true
+            PXLayout.centerVertically(view: imageView, to: titleLabel).isActive = true
+            PXLayout.put(view: imageView, rightOf: titleLabel, withMargin: PXLayout.XXXS_MARGIN).isActive = true
+        }
 
         let valueLabel = UILabel()
         self.valueLabel = valueLabel
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        valueLabel.text = data.value
         valueLabel.textAlignment = .right
-        valueLabel.font = valueFont
-        self.addSubview(valueLabel)
+        addSubview(valueLabel)
         PXLayout.pinRight(view: valueLabel, withMargin: PXLayout.L_MARGIN).isActive = true
-        PXLayout.centerVertically(view: valueLabel).isActive = true
-        PXLayout.setHeight(owner: self, height: rowHeight).isActive = true
+        if data.overview == nil {
+            valueLabel.text = data.value
+            valueLabel.font = valueFont
+            PXLayout.centerVertically(view: valueLabel).isActive = true
+        } else {
+            // Overview amount
+            valueLabel.attributedText = data.overview?.amount.getAttributedString(fontSize: PXLayout.XXS_FONT, backgroundColor: .clear)
+            valueLabel.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        }
+
+        if overviewBrief == nil {
+            PXLayout.setHeight(owner: self, height: rowHeight).isActive = true
+        } else {
+            heightConstraint = PXLayout.setHeight(owner: self, height: rowHeight)
+        }
 
         isAccessibilityElement = true
         let rowValue = valueLabel.text?.replacingOccurrences(of: "$", with: "") ?? ""
         accessibilityLabel = "\(titleLabel.text ?? "")" + "\(rowValue)" + "pesos".localized
         updateUI()
+    }
+}
+
+// MARK: Publics
+extension PXOneTapSummaryRowView {
+    func briefHasOneLine() -> Bool {
+        guard let brief = overviewBrief else { return false }
+        return brief.intrinsicContentSize.height < CGFloat(16) ? true : false
+    }
+}
+
+// MARK: Privates
+private extension PXOneTapSummaryRowView {
+    func buildInfoIcon() -> UIImageView {
+        let icon = UIImageView()
+        infoIcon = icon
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        icon.contentMode = .scaleAspectFit
+        icon.backgroundColor = .clear
+        icon.clipsToBounds = true
+        if let infoIcon = infoIcon {
+            Utils().loadImageFromURLWithCache(withUrl: data.overview?.iconUrl, targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
+                self?.infoIcon?.image = newImage
+            }
+        }
+        return icon
     }
 }
