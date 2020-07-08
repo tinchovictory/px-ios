@@ -22,10 +22,12 @@ class PXOneTapSummaryView: PXComponentView {
     private weak var delegate: PXOneTapSummaryProtocol?
     private var rows: [PXOneTapSummaryRow] = []
     private var currentAnimator: UIViewPropertyAnimator?
+    private var splitMoney: Bool
 
-    init(data: [PXOneTapSummaryRowData] = [], delegate: PXOneTapSummaryProtocol) {
+    init(data: [PXOneTapSummaryRowData] = [], delegate: PXOneTapSummaryProtocol, splitMoney: Bool = false) {
         self.data = data.reversed()
         self.delegate = delegate
+        self.splitMoney = splitMoney
         super.init()
         render()
     }
@@ -41,6 +43,7 @@ class PXOneTapSummaryView: PXComponentView {
 
         var offset: CGFloat = 0
         for row in self.data {
+            row.splitMoney = splitMoney
             let rowView = self.getSummaryRowView(with: row)
             let margin = rowView.getRowMargin()
 
@@ -100,7 +103,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
     }
 
-    func animateRows(_ rowsToAnimate: [PXOneTapSummaryRow], rowsToMove: [PXOneTapSummaryRow], newData: [PXOneTapSummaryRowData], animateIn: Bool, distance: CGFloat, _ rowsPositions: [CGFloat]? = nil, completion: @escaping () -> Void) {
+    func animateRows(_ rowsToAnimate: [PXOneTapSummaryRow], rowsToMove: [PXOneTapSummaryRow], newData: [PXOneTapSummaryRowData], animateIn: Bool, distance: CGFloat, rowsPositions: [CGFloat]? = nil, completion: @escaping () -> Void) {
         let duration: Double = 0.4
         let animator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: nil)
 
@@ -112,10 +115,10 @@ class PXOneTapSummaryView: PXComponentView {
             self.sendSubviewToBack(row.view)
             animator.addAnimations {
                 row.view.alpha = animateIn ? 1 : 0
-                if let rowsPositions = rowsPositions {
-                    row.constraint.constant = rowsPositions[index]
-                } else {
+                if rowsPositions == nil {
                     row.constraint.constant += animateIn ? -distance : distance
+                } else if let rowsPositions = rowsPositions, index < rowsPositions.count {
+                    row.constraint.constant = rowsPositions[index]
                 }
                 self.layoutIfNeeded()
             }
@@ -165,7 +168,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         stopCurrentAnimatorIfNeeded()
-        animateRows(rowsToRemove, rowsToMove: rowsToMove, newData: newValue, animateIn: false, distance: distanceDelta) {
+        animateRows(rowsToRemove, rowsToMove: rowsToMove, newData: newValue, animateIn: false, distance: distanceDelta, rowsPositions: nil) {
             for row in rowsToRemove {
                 row.view.removeFromSuperview()
             }
@@ -185,6 +188,7 @@ class PXOneTapSummaryView: PXComponentView {
         var rowsToMove: [PXOneTapSummaryRow] = []
 
         for (index, rowData) in newRowsData.enumerated() {
+            rowData.splitMoney = splitMoney
             let rowView = getSummaryRowView(with: rowData)
             let rowHeight = rowView.getTotalHeightNeeded()
             let totalRowHeight = rows[optional: 0]?.rowHeight ?? 52
@@ -198,10 +202,9 @@ class PXOneTapSummaryView: PXComponentView {
             self.addSubview(rowView)
             let constraint = PXLayout.pinBottom(view: rowView, withMargin: -constraintConstant)
 
-            // Update constraint so as to fix animation when discount row with description and charges row are shown
+            // Update constraint so as to fix animation when discount row with brief and charges row are shown
             if rowData.type == PXOneTapSummaryRowView.RowType.discount,
-                let message = rowData.overview?.description?.message,
-                !message.isEmpty,
+                rowData.rowHasBrief(),
                 newRowsData.first?.type == PXOneTapSummaryRowView.RowType.charges {
                 constraint.constant = -76
             }
@@ -221,7 +224,7 @@ class PXOneTapSummaryView: PXComponentView {
         }
 
         stopCurrentAnimatorIfNeeded()
-        animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta, getRowsPositions(rowsToAdd)) {
+        animateRows(rowsToAdd, rowsToMove: rowsToMove, newData: newValue, animateIn: true, distance: distanceDelta, rowsPositions: getRowsPositions(rowsToAdd: rowsToAdd, rowsToMove: rowsToMove)) {
         }
     }
 
@@ -251,23 +254,24 @@ class PXOneTapSummaryView: PXComponentView {
 
 // MARK: Privates
 extension PXOneTapSummaryView {
-    func getRowsPositions(_ rows: [PXOneTapSummaryRow]) -> [CGFloat]? {
-        guard let row = rows.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount }) else { return nil }
+    func getRowsPositions(rowsToAdd: [PXOneTapSummaryRow]?, rowsToMove: [PXOneTapSummaryRow]?) -> [CGFloat]? {
+
+        guard let rowsToMove = rowsToMove, rowsToMove.isEmpty, let rowsToAdd = rowsToAdd,
+              let row = rowsToAdd.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount }), row.data.rowHasBrief()
+              else { return nil }
+
         var positions = [CGFloat]()
-        if let message = row.data.overview?.description?.message, !message.isEmpty {
-            // First row is always at the same position
-            positions.append(-76)
-            if rows.count == 2 {
-                // Discount row with description without charges row
-                row.view.descriptionHasOneLine() ? positions.append(-116) : positions.append(-132)
-            } else {
-                // Discount row with description with charges row
-                positions.append(-100)
-                row.view.descriptionHasOneLine() ? positions.append(-140) : positions.append(-156)
-            }
-            return positions
+        // First row is always at the same position
+        positions.append(-76)
+        if rowsToAdd.count == 2 {
+            // Discount row with brief without charges row
+            row.view.briefHasOneLine() ? positions.append(-116) : positions.append(-132)
+        } else {
+            // Discount row with brief with charges row
+            positions.append(-100)
+            row.view.briefHasOneLine() ? positions.append(-140) : positions.append(-156)
         }
-        return nil
+        return positions
     }
 }
 
@@ -275,9 +279,9 @@ extension PXOneTapSummaryView {
 extension PXOneTapSummaryView {
     func updateRowsConstraintsIfNecessary() {
         if let row = rows.first(where: { $0.data.type ==  PXOneTapSummaryRowView.RowType.discount }),
-            row.view.overviewDescription != nil,
-            row.view.descriptionHasOneLine() {
-            row.view.height.constant = 32
+            row.view.overviewBrief != nil,
+            row.view.briefHasOneLine() {
+            row.view.heightConstraint.constant = 32
             row.rowHeight = 40
             rows.last?.constraint.constant = rows.count == 4 ? -140 : -116
         }
