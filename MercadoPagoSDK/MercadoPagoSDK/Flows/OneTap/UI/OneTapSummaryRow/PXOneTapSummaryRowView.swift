@@ -84,7 +84,7 @@ class PXOneTapSummaryRowView: UIView {
         } else {
             titleLabel?.attributedText = data.getDescriptionText()
             if let infoIcon = infoIcon {
-//                Utils().loadImageFromURLWithCache(withUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Information_icon_alt.svg/1200px-Information_icon_alt.svg.png", targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: false) { [weak self] newImage in
+//                Utils().loadImageFromURLWithCache(withUrl: data.getIconUrl(), targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: false) { [weak self] newImage in
 //                    self?.infoIcon?.image = newImage
 //                }
                 infoIcon.isHidden = data.getIconUrl() == nil
@@ -234,7 +234,7 @@ private extension PXOneTapSummaryRowView {
         icon.backgroundColor = .clear
         icon.clipsToBounds = true
         if let infoIcon = infoIcon {
-            Utils().loadImageFromURLWithCache(withUrl: data.overview?.url, targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
+            Utils().loadImageFromURLWithCache(withUrl: data.getIconUrl(), targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
                 self?.infoIcon?.image = newImage
             }
         }
