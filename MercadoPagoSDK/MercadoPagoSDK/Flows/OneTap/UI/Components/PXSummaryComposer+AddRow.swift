@@ -43,7 +43,8 @@ extension PXSummaryComposer {
             isTotal: false,
             image: helperImage,
             type: .discount,
-            overview: overview)
+            overview: overview,
+            briefColor: discountBriefColor())
         return row
     }
 
