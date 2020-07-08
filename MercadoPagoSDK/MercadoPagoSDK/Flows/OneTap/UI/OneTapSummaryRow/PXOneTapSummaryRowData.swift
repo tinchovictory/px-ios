@@ -30,6 +30,43 @@ class PXOneTapSummaryRowData: Equatable {
     }
 
     static func == (lhs: PXOneTapSummaryRowData, rhs: PXOneTapSummaryRowData) -> Bool {
-        return lhs.title == rhs.title && lhs.value == rhs.value && lhs.highlightedColor == rhs.highlightedColor && lhs.alpha == rhs.alpha && lhs.isTotal == rhs.isTotal && lhs.image == rhs.image && lhs.type == rhs.type && lhs.overview == rhs.overview
+        return lhs.title == rhs.title && lhs.value == rhs.value && lhs.highlightedColor == rhs.highlightedColor && lhs.alpha == rhs.alpha && lhs.isTotal == rhs.isTotal && lhs.image == rhs.image && lhs.type == rhs.type && lhs.overview == rhs.overview && lhs.splitMoney == rhs.splitMoney
+    }
+}
+
+// MARK: PXOverview
+extension PXOneTapSummaryRowData {
+    func rowHasBrief() -> Bool {
+        guard let brief = overview?.brief, !brief.isEmpty else { return false }
+        return UIDevice.isSmallDevice() && splitMoney ? false : true
+    }
+
+    func rowHasInfoIcon() -> Bool {
+        guard let url = overview?.iconUrl, !url.isEmpty else { return false }
+        return true
+    }
+
+    func getDescriptionText() -> NSAttributedString? {
+        guard let description = overview?.description else { return nil }
+        return getAttributedText(array: description, fontSize: PXLayout.XXS_FONT)
+    }
+
+    func getBriefText() -> NSAttributedString? {
+        guard let brief = overview?.brief else { return nil }
+        return getAttributedText(array: brief, fontSize: PXLayout.XXXS_FONT)
+    }
+
+    private func getAttributedText(array: [PXText], fontSize: CGFloat) -> NSAttributedString {
+        var attributedString = NSAttributedString()
+        for (index, text) in array.enumerated() {
+            if let attrString = text.getAttributedString(fontSize: fontSize, textColor: highlightedColor, backgroundColor: .clear) {
+                if index > 0 {
+                    attributedString = attributedString + NSAttributedString(string: " ") + attrString
+                } else {
+                    attributedString = attributedString + attrString
+                }
+            }
+        }
+        return attributedString
     }
 }
