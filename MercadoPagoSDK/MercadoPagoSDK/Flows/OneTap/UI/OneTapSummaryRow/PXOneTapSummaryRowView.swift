@@ -234,7 +234,7 @@ private extension PXOneTapSummaryRowView {
         icon.backgroundColor = .clear
         icon.clipsToBounds = true
         if let infoIcon = infoIcon {
-            Utils().loadImageFromURLWithCache(withUrl: data.overview?.iconUrl, targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
+            Utils().loadImageFromURLWithCache(withUrl: data.overview?.url, targetView: infoIcon, placeholderView: nil, fallbackView: nil, fadeInEnabled: true) { [weak self] newImage in
                 self?.infoIcon?.image = newImage
             }
         }

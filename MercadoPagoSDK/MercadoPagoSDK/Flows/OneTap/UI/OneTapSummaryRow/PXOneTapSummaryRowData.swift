@@ -32,7 +32,7 @@ class PXOneTapSummaryRowData: Equatable {
     }
 
     static func == (lhs: PXOneTapSummaryRowData, rhs: PXOneTapSummaryRowData) -> Bool {
-        return lhs.title == rhs.title && lhs.value == rhs.value && lhs.highlightedColor == rhs.highlightedColor && lhs.alpha == rhs.alpha && lhs.isTotal == rhs.isTotal && lhs.image == rhs.image && lhs.type == rhs.type && lhs.overview == rhs.overview && lhs.splitMoney == rhs.splitMoney
+        return lhs.title == rhs.title && lhs.value == rhs.value && lhs.highlightedColor == rhs.highlightedColor && lhs.alpha == rhs.alpha && lhs.isTotal == rhs.isTotal && lhs.image == rhs.image && lhs.type == rhs.type && lhs.overview == rhs.overview && lhs.briefColor == rhs.briefColor && lhs.splitMoney == rhs.splitMoney
     }
 }
 
@@ -44,7 +44,7 @@ extension PXOneTapSummaryRowData {
     }
 
     func rowHasInfoIcon() -> Bool {
-        guard let url = overview?.iconUrl, !url.isEmpty else { return false }
+        guard let url = overview?.url, !url.isEmpty else { return false }
         return true
     }
 
@@ -63,7 +63,7 @@ extension PXOneTapSummaryRowData {
     }
 
     func getIconUrl() -> String? {
-        return overview?.iconUrl
+        return overview?.url
     }
 
     private func getAttributedText(array: [PXText], textColor: UIColor?, fontSize: CGFloat) -> NSAttributedString {
