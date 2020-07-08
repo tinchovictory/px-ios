@@ -19,6 +19,7 @@ open class PXDiscountConfiguration: NSObject, Codable {
     private var campaign: PXCampaign?
     private var isAvailable: Bool = true
     private var reason: PXDiscountReason?
+    private var discountDescription: PXDescription?
     private var overview: PXOverview?
 
     internal override init() {
@@ -26,6 +27,7 @@ open class PXDiscountConfiguration: NSObject, Codable {
         self.campaign = nil
         isAvailable = false
         self.reason = nil
+        self.discountDescription = nil
         self.overview = nil
     }
 
@@ -46,6 +48,7 @@ open class PXDiscountConfiguration: NSObject, Codable {
         case campaign
         case isAvailable =  "is_available"
         case reason
+        case discountDescription = "discount_description"
         case overview = "discount_overview"
     }
 
