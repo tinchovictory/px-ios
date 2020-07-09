@@ -15,11 +15,11 @@ class PXOneTapSummaryRowData: Equatable {
     let isTotal: Bool
     let image: UIImage?
     let type: PXOneTapSummaryRowView.RowType?
-    let overview: PXOverview?
+    let overview: PXDiscountOverview?
     let briefColor: UIColor?
     var splitMoney = false
 
-    init(title: String, value: String, highlightedColor: UIColor, alpha: CGFloat, isTotal: Bool, image: UIImage?, type: PXOneTapSummaryRowView.RowType?, overview: PXOverview? = nil, briefColor: UIColor? = nil) {
+    init(title: String, value: String, highlightedColor: UIColor, alpha: CGFloat, isTotal: Bool, image: UIImage?, type: PXOneTapSummaryRowView.RowType?, overview: PXDiscountOverview? = nil, briefColor: UIColor? = nil) {
         self.title = title
         self.value = value
         self.highlightedColor = highlightedColor

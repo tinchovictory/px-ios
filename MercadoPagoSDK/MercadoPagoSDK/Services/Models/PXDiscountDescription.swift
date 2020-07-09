@@ -1,5 +1,5 @@
 //
-//  PXDescription.swift
+//  PXDiscountDescription.swift
 //  MercadoPagoSDK
 //
 //  Created by Esteban Adrian Boffa on 08/07/2020.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PXDescription: Codable {
+public struct PXDiscountDescription: Codable {
 
     let title: PXText
     let subtitle: PXText?
