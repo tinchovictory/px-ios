@@ -9,20 +9,6 @@ import Foundation
 
 extension PXSummaryComposer {
     // MARK: business
-    func isConsumedDiscount() -> Bool {
-        if let discountData = getDiscountData() {
-            return !discountData.discountConfiguration.getDiscountConfiguration().isAvailable
-        }
-        return false
-    }
-
-    func getConsumedDiscountReason() -> String? {
-        guard let discountData = getDiscountData() else {
-            return nil
-        }
-        return discountData.discountConfiguration.getDiscountConfiguration().reason?.summary?.message
-    }
-
     func shouldDisplayChargeHelpIcon() -> Bool {
         return shouldDisplayChargesHelp
     }
