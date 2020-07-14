@@ -111,6 +111,7 @@ private extension PXOneTapHeaderView {
 
         layoutIfNeeded()
 
+        summaryView?.updateSplitConfiguration(newModel.splitConfiguration != nil)
         summaryView?.update(newModel.data)
 
         if shouldAnimateSplitPaymentView {
