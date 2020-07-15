@@ -11,17 +11,11 @@ import UIKit
 final class PXDiscountDetailViewController: MercadoPagoUIViewController {
 
     private var amountHelper: PXAmountHelper
-    private let fontSize: CGFloat = PXLayout.S_FONT
-    private let baselineOffSet: Int = 6
-    private let fontColor = ThemeManager.shared.boldLabelTintColor()
-    private let discountFontColor = ThemeManager.shared.noTaxAndDiscountLabelTintColor()
-    private let currency = SiteManager.shared.getCurrency()
-    private let discountReason: PXDiscountReason?
-    let contentView: PXComponentView = PXComponentView()
+    private let discountDescription: PXDiscountDescriptionViewModel
 
-    init(amountHelper: PXAmountHelper, discountReason: PXDiscountReason? = nil) {
+    init(amountHelper: PXAmountHelper, discountDescription: PXDiscountDescriptionViewModel) {
         self.amountHelper = amountHelper
-        self.discountReason = discountReason
+        self.discountDescription = discountDescription
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,167 +30,167 @@ final class PXDiscountDetailViewController: MercadoPagoUIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        if self.contentView.isEmpty() {
-            renderViews()
-        }
+        renderViews()
     }
 }
 
 // MARK: Getters
 extension PXDiscountDetailViewController {
-    func getContentView() -> PXComponentView {
+    func getContentView() -> UIView {
         renderViews()
-        return self.contentView
+        return view
     }
 }
 
-// MARK: Render Views
-extension PXDiscountDetailViewController {
+// MARK: RenderViews
+private extension PXDiscountDetailViewController {
+    func renderViews() {
+        // Title
+        let title = buildLabel(text: discountDescription.getTitle(), numberOfLines: 2)
+        view.addSubview(title)
+        NSLayoutConstraint.activate([
+            title.topAnchor.constraint(equalTo: view.topAnchor, constant: PXLayout.M_MARGIN),
+            title.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+            title.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+        ])
 
-    private func renderViews() {
-
-        if let title = getTitle() {
-            buildAndAddLabel(to: self.contentView, margin: PXLayout.M_MARGIN, with: title, height: 20, accessibilityIdentifier: "discount_detail_title_label")
+        // Subtitle
+        var subtitle: UILabel?
+        subtitle = buildLabel(text: discountDescription.getSubtitle(), numberOfLines: 2)
+        if let subtitle = subtitle {
+            view.addSubview(subtitle)
+            NSLayoutConstraint.activate([
+                subtitle.topAnchor.constraint(equalTo: title.bottomAnchor, constant: PXLayout.XXS_MARGIN),
+                subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+                subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+            ])
         }
 
-        if let disclaimer = getDisclaimer() {
-            buildAndAddLabel(to: self.contentView, margin: PXLayout.XS_MARGIN, with: disclaimer, accessibilityIdentifier: "discount_detail_disclaimer_label")
+        // Badge
+        var badgeView: UIView?
+        if discountDescription.badge != nil {
+            badgeView = buildBadgeView()
+            if let badgeView = badgeView {
+                view.addSubview(badgeView)
+                badgeView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+                var badgeTopConstraint = NSLayoutConstraint()
+                if let subtitle = subtitle {
+                    badgeTopConstraint = badgeView.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: PXLayout.XXS_MARGIN)
+                } else {
+                    badgeTopConstraint = badgeView.topAnchor.constraint(equalTo: title.bottomAnchor, constant: PXLayout.XXS_MARGIN)
+                }
+                badgeTopConstraint.isActive = true
+            }
         }
 
-        if let description = getDescription() {
-            buildAndAddLabel(to: self.contentView, margin: PXLayout.XXS_MARGIN, with: description, height: 34, accessibilityIdentifier: "discount_detail_description_label")
+        // Summary
+        let summary = buildLabel(text: discountDescription.getSummary(), numberOfLines: 2)
+        view.addSubview(summary)
+        NSLayoutConstraint.activate([
+            summary.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+            summary.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+        ])
+        var summaryTopConstraint = NSLayoutConstraint()
+        if let badgeView = badgeView {
+            summaryTopConstraint = summary.topAnchor.constraint(equalTo: badgeView.bottomAnchor, constant: PXLayout.M_MARGIN)
+        } else if let subtitle = subtitle {
+            summaryTopConstraint = summary.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: PXLayout.M_MARGIN)
+        } else {
+            summaryTopConstraint = summary.topAnchor.constraint(equalTo: title.bottomAnchor, constant: PXLayout.M_MARGIN)
         }
+        summaryTopConstraint.isActive = true
 
-        if let legalTerms = getLegalTerms() {
-            let legalTermsLabel = buildAndAddLabel(to: self.contentView, margin: PXLayout.XXS_MARGIN, with: legalTerms, accessibilityIdentifier: "discount_legal_terms_label")
-            let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-            legalTermsLabel.addGestureRecognizer(tap)
-            legalTermsLabel.isUserInteractionEnabled = true
+        // Description
+        let description = buildLabel(text: discountDescription.getDescription(), numberOfLines: 0)
+        view.addSubview(description)
+        NSLayoutConstraint.activate([
+            description.topAnchor.constraint(equalTo: summary.bottomAnchor, constant: PXLayout.XXXS_MARGIN),
+            description.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+            description.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+        ])
+
+        // Legal terms
+        let legalTerms = buildLabel(text: discountDescription.getLegalTermsContent(), numberOfLines: 2)
+        view.addSubview(legalTerms)
+        NSLayoutConstraint.activate([
+            legalTerms.topAnchor.constraint(equalTo: description.bottomAnchor, constant: PXLayout.M_MARGIN),
+            legalTerms.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+            legalTerms.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+            legalTerms.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -PXLayout.M_MARGIN)
+        ])
+        legalTerms.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(didTapTerms)))
+        legalTerms.isUserInteractionEnabled = true
+    }
+}
+
+// MARK: Privates
+private extension PXDiscountDetailViewController {
+    func buildBadgeView() -> UIView {
+        let badgeView = UIView()
+        badgeView.translatesAutoresizingMaskIntoConstraints = false
+        if let backgroundColor = discountDescription.getBadgeBackgroundColor() {
+            badgeView.backgroundColor = UIColor.fromHex(backgroundColor)
         }
+        badgeView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        badgeView.layer.cornerRadius = 10
 
-        if !amountHelper.consumedDiscount {
-            buildSeparatorLine(in: self.contentView, topMargin: PXLayout.M_MARGIN, sideMargin: PXLayout.M_MARGIN, height: 1)
+        let icon = buildIcon()
+        badgeView.addSubview(icon)
+        NSLayoutConstraint.activate([
+            icon.heightAnchor.constraint(equalToConstant: 7),
+            icon.widthAnchor.constraint(equalToConstant: 9),
+            icon.leadingAnchor.constraint(equalTo: badgeView.leadingAnchor, constant: PXLayout.XXS_MARGIN),
+            icon.centerYAnchor.constraint(equalTo: badgeView.centerYAnchor)
+        ])
 
-        }
-        if let footerMessage = getFooterMessage() {
-            buildAndAddLabel(to: self.contentView, margin: PXLayout.S_MARGIN, with: footerMessage, accessibilityIdentifier: "discount_detail_footer_label")
-        }
-
-        self.contentView.pinLastSubviewToBottom(withMargin: PXLayout.M_MARGIN)?.isActive = true
-        self.view.addSubview(contentView)
-        PXLayout.matchWidth(ofView: contentView).isActive = true
-        PXLayout.matchHeight(ofView: contentView).isActive = true
-        PXLayout.centerHorizontally(view: contentView).isActive = true
-        PXLayout.centerVertically(view: contentView).isActive = true
+        let badgeLabel = buildLabel(text: discountDescription.getBadgeContent(), numberOfLines: 1)
+        badgeView.addSubview(badgeLabel)
+        NSLayoutConstraint.activate([
+            badgeLabel.centerYAnchor.constraint(equalTo: badgeView.centerYAnchor),
+            badgeLabel.leftAnchor.constraint(equalTo: icon.rightAnchor, constant: PXLayout.XXXS_MARGIN),
+            badgeLabel.trailingAnchor.constraint(equalTo: badgeView.trailingAnchor, constant: -PXLayout.XXS_MARGIN)
+        ])
+        return badgeView
     }
 
-    @discardableResult
-    func buildAndAddLabel(to view: PXComponentView, margin: CGFloat, with text: NSAttributedString, height: CGFloat? = nil, accessibilityIdentifier: String) -> UILabel {
+    func buildLabel(text: NSAttributedString?, numberOfLines: Int) -> UILabel {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
+        label.numberOfLines = numberOfLines
         label.attributedText = text
-        label.accessibilityIdentifier = accessibilityIdentifier
-        view.addSubviewToBottom(label, withMargin: margin)
-        if let height = height {
-            PXLayout.setHeight(owner: label, height: height).isActive = true
-        }
-        PXLayout.pinLeft(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
-        PXLayout.pinRight(view: label, withMargin: PXLayout.M_MARGIN).isActive = true
+        label.textAlignment = .center
         return label
     }
 
-    func buildSeparatorLine(in view: PXComponentView, topMargin: CGFloat, sideMargin: CGFloat, height: CGFloat) {
-        let line = UIView()
-        line.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviewToBottom(line, withMargin: topMargin)
-        PXLayout.setHeight(owner: line, height: height).isActive = true
-        PXLayout.pinLeft(view: line, withMargin: sideMargin).isActive = true
-        PXLayout.pinRight(view: line, withMargin: sideMargin).isActive = true
-        line.alpha = 0.6
-        line.backgroundColor = ThemeManager.shared.greyColor()
-    }
-
-    func getTitle() -> NSAttributedString? {
-        let fontSize = PXLayout.XS_FONT
-        if amountHelper.consumedDiscount, discountReason?.title?.message?.isNotEmpty ?? false {
-            return nil
-        } else if let maxCouponAmount = amountHelper.maxCouponAmount, !amountHelper.consumedDiscount {
-            let attributes = [NSAttributedString.Key.font: Utils.getSemiBoldFont(size: fontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.boldLabelTintColor()]
-            let amountAttributedString = Utils.getAttributedAmount(withAttributes: attributes, amount: maxCouponAmount, currency: currency, negativeAmount: false)
-            let string: String = ("discount_detail_modal_disclaimer".localized as NSString).replacingOccurrences(of: "{0}", with: amountAttributedString.string)
-            let attributedString = NSMutableAttributedString(string: string, attributes: attributes)
-
-            return attributedString
+    func buildIcon() -> UIImageView {
+        let icon = UIImageView()
+        icon.translatesAutoresizingMaskIntoConstraints = false
+        if let url = discountDescription.getBadgeUrl() {
+            icon.setRemoteImage(imageUrl: url)
         }
-        return nil
-    }
-
-    func getDisclaimer() -> NSAttributedString? {
-        let fontSize = PXLayout.XXS_FONT
-        let attributes = [NSAttributedString.Key.font: Utils.getLightFont(size: fontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
-        if amountHelper.consumedDiscount {
-            if let discountReasonDescription = discountReason?.description?.getAttributedString(fontSize: fontSize) {
-                return discountReasonDescription
-            } else {
-                return NSAttributedString(string: "modal_content_consumed_discount".localized, attributes: attributes)
-            }
-        } else if amountHelper.campaign?.maxRedeemPerUser == 1 {
-            var message = "unique_discount_detail_modal_footer".localized
-            if let expirationDate = amountHelper.campaign?.endDate {
-                let messageDate = "discount_end_date".localized
-                message.append(messageDate.replacingOccurrences(of: "{0}", with: Utils.getFormatedStringDate(expirationDate)))
-            }
-            return NSAttributedString(string: message, attributes: attributes)
-        } else if let maxRedeemPerUser = amountHelper.campaign?.maxRedeemPerUser, maxRedeemPerUser > 1 {
-            return NSAttributedString(string: "multiple_discount_detail_modal_footer".localized, attributes: attributes)
-        }
-        return nil
-    }
-
-    func getDescription() -> NSAttributedString? {
-        //TODO: descuentos por medio de pago
-        return nil
-    }
-
-    func getFooterMessage() -> NSAttributedString? {
-        if amountHelper.consumedDiscount {
-            return nil
-        }
-        let attributes = [NSAttributedString.Key.font: Utils.getLightFont(size: PXLayout.XXS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
-        let string = NSAttributedString(string: "discount_detail_modal_footer".localized, attributes: attributes)
-        return string
-    }
-
-    func getLegalTerms() -> NSAttributedString? {
-        if amountHelper.campaign?.legalTermsUrl == nil {
-            return nil
-        }
-        let attributes = [NSAttributedString.Key.font: Utils.getSemiBoldFont(size: PXLayout.XXS_FONT), NSAttributedString.Key.foregroundColor: ThemeManager.shared.getAccentColor()]
-        let string = NSAttributedString(string: "terms_and_conditions_title".localized, attributes: attributes)
-        return string
+        icon.contentMode = .scaleAspectFit
+        icon.clipsToBounds = true
+        return icon
     }
 }
 
-// MARK: Accions
-extension PXDiscountDetailViewController {
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        let SCREEN_TITLE = "terms_and_conditions_title".localized
-
-        if let legalTermsURLString = amountHelper.campaign?.legalTermsUrl, let url = URL(string: legalTermsURLString) {
-            let webVC = WebViewController(url: url, navigationBarTitle: SCREEN_TITLE, forceAddNavBar: true)
-            webVC.title = SCREEN_TITLE
+// MARK: Actions
+private extension PXDiscountDetailViewController {
+    @objc func didTapTerms() {
+        let title = "terms_and_conditions_title".localized
+        if let url = URL(string: discountDescription.getLegalTermsUrl()) {
+            let webVC = WebViewController(url: url, navigationBarTitle: title, forceAddNavBar: true)
+            webVC.title = title
             present(webVC, animated: true)
         }
     }
 }
 
 // MARK: Tracking
-extension PXDiscountDetailViewController {
+private extension PXDiscountDetailViewController {
     func trackScreen() {
         var properties: [String: Any] = [:]
         properties["discount"] = amountHelper.getDiscountForTracking()
-
         trackScreen(path: TrackingPaths.Screens.getDiscountDetailPath(), properties: properties)
     }
 }

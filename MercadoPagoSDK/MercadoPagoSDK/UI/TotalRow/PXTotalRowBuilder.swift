@@ -86,10 +86,10 @@ final class PXTotalRowBuilder: PXTotalRowComponent {
     }
 
     static func handleTap(amountHelper: PXAmountHelper) {
-        if amountHelper.discount != nil {
-            PXComponentFactory.Modal.show(viewController: PXDiscountDetailViewController(amountHelper: amountHelper), title: amountHelper.discount?.getDiscountDescription())
-        } else if amountHelper.consumedDiscount {
-            PXComponentFactory.Modal.show(viewController: PXDiscountDetailViewController(amountHelper: amountHelper), title: "modal_title_consumed_discount".localized)
+        if let discountDescription = amountHelper.getPaymentData().discountDescription {
+            if amountHelper.discount != nil {
+                PXComponentFactory.Modal.show(viewController: PXDiscountDetailViewController(amountHelper: amountHelper, discountDescription: PXDiscountDescriptionViewModel(discountDescription)), title: nil)
+            }
         }
     }
 }
