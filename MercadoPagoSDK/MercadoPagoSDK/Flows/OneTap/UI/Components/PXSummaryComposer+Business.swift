@@ -21,10 +21,7 @@ extension PXSummaryComposer {
     }
 
     func getDiscountOverview() -> PXDiscountOverview? {
-        if let discountData = getDiscountData() {
-            return discountData.discountConfiguration.getDiscountOverview()
-        }
-        return nil
+        return getDiscountData()?.discountConfiguration.getDiscountOverview()
     }
 
     func shouldDisplayCharges() -> Bool {
