@@ -17,6 +17,9 @@ class PXOneTapSummaryRowView: UIView {
         case generic
     }
 
+    static let DEFAULT_HEIGHT: CGFloat = 16
+    static let TOTAL_ROW_DEFAULT_HEIGHT: CGFloat = 52
+    static let MARGIN: CGFloat = 8
     private var data: PXOneTapSummaryRowData
     private var titleLabel: UILabel?
     private var iconImageView: UIImageView?
@@ -52,9 +55,9 @@ class PXOneTapSummaryRowView: UIView {
 
     open func getRowHeight() -> CGFloat {
         if data.isTotal {
-            return !UIDevice.isSmallDevice() ? 52 : 48
+            return !UIDevice.isSmallDevice() ? PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT : PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4
         } else {
-            return data.rowHasBrief() ? 48 : 16
+            return data.rowHasBrief() ? PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3 : PXOneTapSummaryRowView.DEFAULT_HEIGHT
         }
     }
 
@@ -191,22 +194,22 @@ class PXOneTapSummaryRowView: UIView {
 extension PXOneTapSummaryRowView {
     func briefHasOneLine() -> Bool {
         guard let brief = overviewBrief else { return false }
-        return brief.intrinsicContentSize.height < CGFloat(16) ? true : false
+        return brief.intrinsicContentSize.height < PXOneTapSummaryRowView.DEFAULT_HEIGHT ? true : false
     }
 
     func briefNumberOfLines() -> Int {
         guard let brief = overviewBrief else { return 0 }
-        return brief.intrinsicContentSize.height < CGFloat(16) ? 1 : 2
+        return brief.intrinsicContentSize.height < PXOneTapSummaryRowView.DEFAULT_HEIGHT ? 1 : 2
     }
 
     func updateHeightConstraint() {
         layoutIfNeeded()
         if !data.rowHasBrief() {
-            heightConstraint.constant = 16
+            heightConstraint.constant = PXOneTapSummaryRowView.DEFAULT_HEIGHT
         } else if briefNumberOfLines() == 1 {
-            heightConstraint.constant = 32
+            heightConstraint.constant = PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2
         } else if briefNumberOfLines() == 2 {
-            heightConstraint.constant = 48
+            heightConstraint.constant = PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3
         }
     }
 }
