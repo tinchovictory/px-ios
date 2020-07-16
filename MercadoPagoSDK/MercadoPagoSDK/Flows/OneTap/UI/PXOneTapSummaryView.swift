@@ -272,7 +272,6 @@ class PXOneTapSummaryView: PXComponentView {
 
     func getSummaryRowView(with data: PXOneTapSummaryRowData) -> PXOneTapSummaryRowView {
         let rowView = PXOneTapSummaryRowView(data: data)
-        rowView.backgroundColor = .red
 
         //Tap Gesture
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
