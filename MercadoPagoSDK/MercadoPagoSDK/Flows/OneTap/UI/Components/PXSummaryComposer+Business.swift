@@ -22,7 +22,7 @@ extension PXSummaryComposer {
 
     func getOverview() -> PXDiscountOverview? {
         if let discountData = getDiscountData() {
-            return discountData.discountConfiguration.getOverview()
+            return discountData.discountConfiguration.getDiscountOverview()
         }
         return nil
     }

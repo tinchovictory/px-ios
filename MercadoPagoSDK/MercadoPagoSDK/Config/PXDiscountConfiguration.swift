@@ -8,7 +8,7 @@
 
 import Foundation
 
-internal typealias PXDiscountConfigurationType = (discount: PXDiscount?, campaign: PXCampaign?, isAvailable: Bool, reason: PXDiscountReason?, discountDescription: PXDiscountDescription?, overview: PXDiscountOverview?)
+internal typealias PXDiscountConfigurationType = (discount: PXDiscount?, campaign: PXCampaign?, isAvailable: Bool, reason: PXDiscountReason?, discountDescription: PXDiscountDescription?, discountOverview: PXDiscountOverview?)
 
 /**
  Configuration related to Mercadopago discounts and campaigns. More details: `PXDiscount` and `PXCampaign`.
@@ -67,7 +67,7 @@ open class PXDiscountConfiguration: NSObject, Codable {
         return PXDiscountConfiguration()
     }
 
-    public func getOverview() -> PXDiscountOverview? {
+    public func getDiscountOverview() -> PXDiscountOverview? {
         return discountOverview
     }
 }
