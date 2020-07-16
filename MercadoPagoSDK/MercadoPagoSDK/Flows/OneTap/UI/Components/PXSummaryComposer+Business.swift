@@ -20,7 +20,7 @@ extension PXSummaryComposer {
         return nil
     }
 
-    func getOverview() -> PXDiscountOverview? {
+    func getDiscountOverview() -> PXDiscountOverview? {
         if let discountData = getDiscountData() {
             return discountData.discountConfiguration.getDiscountOverview()
         }

@@ -25,7 +25,7 @@ extension PXSummaryComposer {
             return nil
         }
 
-        let overview = getOverview()
+        let discountOverview = getDiscountOverview()
 
         let discountToShow = Utils.getAmountFormated(amount: discount.couponAmount, forCurrency: currency)
         let helperImage = helpIcon(color: discountColor())
@@ -36,7 +36,7 @@ extension PXSummaryComposer {
             isTotal: false,
             image: helperImage,
             type: .discount,
-            discountOverview: overview,
+            discountOverview: discountOverview,
             briefColor: discountBriefColor())
         return row
     }
