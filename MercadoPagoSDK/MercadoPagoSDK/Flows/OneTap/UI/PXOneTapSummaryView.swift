@@ -294,7 +294,7 @@ private extension PXOneTapSummaryView {
                 distanceArray.append(rowDistance)
                 if let newDiscountRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.discount }) {
                     newDiscountRowData.splitMoney = splitMoney
-                    discountRow.updateRow(newData: newDiscountRowData, needToUpdateBriefDiscount: true)
+                    discountRow.updateRow(newDiscountRowData)
                     distanceArray.append(rowDistance - discountRow.view.getTotalHeightNeeded())
                 } else {
                     distanceArray.append(rowDistance - 24)
@@ -303,7 +303,7 @@ private extension PXOneTapSummaryView {
             } else if let discountRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.discount }),
                 let rowToMove = rowsToMove?.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.charges }) {
                     discountRowData.splitMoney = splitMoney
-                    rowToMove.updateRow(newData: discountRowData, needToUpdateBriefDiscount: true)
+                rowToMove.updateRow(discountRowData)
                     distanceArray.append(rowDistance)
                     distanceArray.append(rowDistance - rowToMove.view.getTotalHeightNeeded())
                     return distanceArray
@@ -364,23 +364,23 @@ private extension PXOneTapSummaryView {
             if !oldRow.data.rowHasBrief() && !newRowData.rowHasBrief() {
                 return false
             } else if oldRow.data.rowHasBrief() && newRowData.rowHasBrief() {
-                oldRow.updateRow(newData: newRowData, needToUpdateBriefDiscount: false) //***** checkear si esta bien que se mande false
+                oldRow.updateRow(newRowData)
                 return oldRowNumberOfLines == oldRow.view.briefNumberOfLines() ? false : true
             } else {
-                oldRow.updateRow(newData: newRowData, needToUpdateBriefDiscount: true)
+                oldRow.updateRow(newRowData)
                 return true
             }
         } else if oldRow?.data.rowHasBrief() ?? false || newRowData?.rowHasBrief() ?? false {
             if let newRowData = newRowData,
                 let rowToUpdate = rows.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.charges }) {
                 // from 2 rows with charges to 2 rows with discounts
-                rowToUpdate.updateRow(newData: newRowData, needToUpdateBriefDiscount: true)
+                rowToUpdate.updateRow(newRowData)
                 return true
             } else if let chargesRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.charges }),
                     let oldRow = oldRow {
                     // from 2 rows with discounts to 2 rows with charges
                     chargesRowData.splitMoney = splitMoney
-                    oldRow.updateRow(newData: chargesRowData, needToUpdateBriefDiscount: true)
+                    oldRow.updateRow(chargesRowData)
                     return true
             }
         }
@@ -398,13 +398,13 @@ private extension PXOneTapSummaryView {
             if !oldRowToMove.data.rowHasBrief() && !newRowToMoveData.rowHasBrief() {
                 return false
             } else {
-                oldRowToMove.updateRow(newData: newRowToMoveData, needToUpdateBriefDiscount: true)
+                oldRowToMove.updateRow(newRowToMoveData)
                 return true
             }
         } else if oldRowToMove?.data.rowHasBrief() ?? false || newRowToMoveData?.rowHasBrief() ?? false {
             if let newChargesRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.charges }) {
                 // from 3 rows with brief to 2 rows with charges
-                oldRowToMove?.updateRow(newData: newChargesRowData, needToUpdateBriefDiscount: true)
+                oldRowToMove?.updateRow(newChargesRowData)
             }
             return true
         } else {

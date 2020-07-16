@@ -73,6 +73,9 @@ private extension PXOneTapHeaderView {
 
     func shouldShowHorizontally(model: PXOneTapHeaderViewModel) -> Bool {
         if UIDevice.isLargeOrExtraLargeDevice() {
+            if UIDevice.isLargeDevice(), model.splitConfiguration != nil, model.data.count > 3 {
+                return true
+            }
             //an extra large device will always be able to accomodate al view in vertical mode
             return false
         }

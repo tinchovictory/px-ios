@@ -28,8 +28,8 @@ class PXOneTapSummaryRow: Equatable {
         self.data = data
     }
 
-    func updateRow(newData: PXOneTapSummaryRowData, needToUpdateBriefDiscount: Bool) {
-        view.update(newData, needToUpdateBriefDiscount: true)
+    func updateRow(_ newData: PXOneTapSummaryRowData) {
+        view.update(newData)
         updateData(newData)
         view.updateHeightConstraint()
     }
