@@ -178,12 +178,19 @@ class PXOneTapSummaryView: PXComponentView {
         var distanceArray: [CGFloat] = []
         if rowsToRemove.count == 1, updateRowConstraintsIfNecessary(oldRows: rowsToMove, newData: newValue) {
             let newDiscountRow = rowsToMove.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount })
-            let rowDistance: CGFloat = UIDevice.isSmallDevice() ? -72 : -76
-            distanceArray.append(rowDistance)
+            let rowDistance: CGFloat = UIDevice.isSmallDevice() ? PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4 + 24 : PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + 24
+            distanceArray.append(-rowDistance)
             if let newDiscountRow = newDiscountRow, newDiscountRow.data.rowHasBrief() {
-                newDiscountRow.view.briefHasOneLine() ? distanceArray.append(rowDistance - 40) : distanceArray.append(rowDistance - 56)
+                var rowHeight: CGFloat
+                if newDiscountRow.view.briefHasOneLine() {
+                    rowHeight = (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) + PXOneTapSummaryRowView.MARGIN
+                    distanceArray.append(-rowDistance - rowHeight)
+                } else {
+                    rowHeight = (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3) + PXOneTapSummaryRowView.MARGIN
+                    distanceArray.append(-rowDistance - rowHeight)
+                }
             } else {
-                distanceArray.append(rowDistance - 24)
+                distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN))
             }
         }
 
@@ -226,7 +233,7 @@ class PXOneTapSummaryView: PXComponentView {
             if rowData.type == PXOneTapSummaryRowView.RowType.discount,
                 rowData.rowHasBrief(),
                 newRowsData.first?.type == PXOneTapSummaryRowView.RowType.charges {
-                constraint.constant = -76
+                constraint.constant = -(PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + 24)
             }
 
             PXLayout.centerHorizontally(view: rowView).isActive = true
@@ -272,7 +279,6 @@ class PXOneTapSummaryView: PXComponentView {
 
     func getSummaryRowView(with data: PXOneTapSummaryRowData) -> PXOneTapSummaryRowView {
         let rowView = PXOneTapSummaryRowView(data: data)
-
         //Tap Gesture
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.tapRow(_:)))
         rowView.addGestureRecognizer(tap)
@@ -288,23 +294,23 @@ private extension PXOneTapSummaryView {
         // Animation with discount row from 2 to 3 rows
         var distanceArray = [CGFloat]()
         if rowsToAdd?.count == 1 {
-            let rowDistance: CGFloat = UIDevice.isSmallDevice() ? -96 : -100
+            let rowDistance: CGFloat = UIDevice.isSmallDevice() ? PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4 + (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) + (PXOneTapSummaryRowView.MARGIN * 2) : PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) + (PXOneTapSummaryRowView.MARGIN * 2)
             if let discountRow = rowsToMove?.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount }) {
-                distanceArray.append(rowDistance)
+                distanceArray.append(-rowDistance)
                 if let newDiscountRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.discount }) {
                     newDiscountRowData.splitMoney = splitMoney
                     discountRow.updateRow(newDiscountRowData)
-                    distanceArray.append(rowDistance - discountRow.view.getTotalHeightNeeded())
+                    distanceArray.append(-rowDistance - discountRow.view.getTotalHeightNeeded())
                 } else {
-                    distanceArray.append(rowDistance - 24)
+                    distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN))
                 }
                 return distanceArray
             } else if let discountRowData = newData.first(where: { $0.type == PXOneTapSummaryRowView.RowType.discount }),
                 let rowToMove = rowsToMove?.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.charges }) {
                     discountRowData.splitMoney = splitMoney
                 rowToMove.updateRow(discountRowData)
-                    distanceArray.append(rowDistance)
-                    distanceArray.append(rowDistance - rowToMove.view.getTotalHeightNeeded())
+                    distanceArray.append(-rowDistance)
+                    distanceArray.append(-rowDistance - rowToMove.view.getTotalHeightNeeded())
                     return distanceArray
             }
             return nil
@@ -315,15 +321,15 @@ private extension PXOneTapSummaryView {
               else { return nil }
 
         // Animation with discount row with brief from 0 to 2 or 3 rows
-        let rowDistance: CGFloat = UIDevice.isSmallDevice() ? -72 : -76
-        distanceArray.append(rowDistance)
+        let rowDistance: CGFloat = UIDevice.isSmallDevice() ? PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4 + 24 : PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + 24
+        distanceArray.append(-rowDistance)
         if rowsToAdd.count == 2 {
             // Discount row with brief without charges row
-            distanceArray.append(rowDistance - row.view.getTotalHeightNeeded())
+            distanceArray.append(-rowDistance - row.view.getTotalHeightNeeded())
         } else {
             // Discount row with brief with charges row
-            distanceArray.append(rowDistance - 24)
-            distanceArray.append(rowDistance - 24 - row.view.getTotalHeightNeeded())
+            distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN))
+            distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN) - row.view.getTotalHeightNeeded())
         }
         return distanceArray
     }
@@ -332,20 +338,20 @@ private extension PXOneTapSummaryView {
         let newRowView = rows.first(where: { $0.data.rowHasBrief() })?.view
         var distanceArray: [CGFloat] = []
 
-        let rowDistance: CGFloat = UIDevice.isSmallDevice() ? -72 : -76
-        distanceArray.append(rowDistance)
+        let rowDistance: CGFloat = UIDevice.isSmallDevice() ? PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4 + 24 : PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + 24
+        distanceArray.append(-rowDistance)
         if rowsToMove.count == 2 {
             if newRowView == nil {
-                distanceArray.append(rowDistance - 24)
+                distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN))
             } else if let newRowView = newRowView {
-                distanceArray.append(rowDistance - newRowView.getTotalHeightNeeded())
+                distanceArray.append(-rowDistance - newRowView.getTotalHeightNeeded())
             }
         } else {
-            distanceArray.append(rowDistance - 24)
+            distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN))
             if let newRowView = newRowView {
-                distanceArray.append(rowDistance - 24 - newRowView.getTotalHeightNeeded())
+                distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT + PXOneTapSummaryRowView.MARGIN) - newRowView.getTotalHeightNeeded())
             } else {
-                distanceArray.append(rowDistance - 48)
+                distanceArray.append(-rowDistance - (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3))
             }
         }
         return distanceArray
@@ -416,16 +422,22 @@ private extension PXOneTapSummaryView {
 // MARK: Publics
 extension PXOneTapSummaryView {
     func updateRowsConstraintsIfNecessary() {
-        if let row = rows.first(where: { $0.data.type ==  PXOneTapSummaryRowView.RowType.discount }),
+        if let row = rows.first(where: { $0.data.type == PXOneTapSummaryRowView.RowType.discount }),
             row.view.overviewBrief != nil,
             row.view.briefHasOneLine() {
-            row.view.heightConstraint.constant = 32
-            row.rowHeight = 40
-            if !UIDevice.isSmallDevice() {
-                rows.last?.constraint.constant = rows.count == 4 ? -140 : -116
-            } else {
-                rows.last?.constraint.constant = rows.count == 4 ? -136 : -112
-            }
+            row.view.heightConstraint.constant = PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2
+            row.rowHeight = (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) + PXOneTapSummaryRowView.MARGIN
+            updatePurchaseRowBottomConstraint()
+        }
+    }
+
+    private func updatePurchaseRowBottomConstraint() {
+        if !UIDevice.isSmallDevice() {
+            let bottomConstraintStartingPoint: CGFloat = PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT + 24
+            rows.last?.constraint.constant = rows.count == 4 ? -bottomConstraintStartingPoint - (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3) - (PXOneTapSummaryRowView.MARGIN * 2) : -bottomConstraintStartingPoint - (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) - PXOneTapSummaryRowView.MARGIN
+        } else {
+            let bottomConstraintStartingPoint: CGFloat = PXOneTapSummaryRowView.TOTAL_ROW_DEFAULT_HEIGHT - 4 + 24
+            rows.last?.constraint.constant = rows.count == 4 ? -bottomConstraintStartingPoint - (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 3) - (PXOneTapSummaryRowView.MARGIN * 2) : -bottomConstraintStartingPoint - (PXOneTapSummaryRowView.DEFAULT_HEIGHT * 2) - PXOneTapSummaryRowView.MARGIN
         }
     }
 }

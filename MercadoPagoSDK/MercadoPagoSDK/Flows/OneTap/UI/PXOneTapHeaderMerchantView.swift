@@ -31,7 +31,10 @@ class PXOneTapHeaderMerchantView: PXComponentView {
     }
 
     private func render() {
-        PXLayout.setHeight(owner: self, height: layout.IMAGE_SIZE, relation: .greaterThanOrEqual).isActive = true
+        let height = PXLayout.setHeight(owner: self, height: layout.IMAGE_SIZE, relation: .greaterThanOrEqual)
+        if UIDevice.isLargeDevice(), showHorizontally {
+            height.constant = layout.IMAGE_NAV_SIZE
+        }
 
         let containerView = UIView()
         // The image of the merchant
