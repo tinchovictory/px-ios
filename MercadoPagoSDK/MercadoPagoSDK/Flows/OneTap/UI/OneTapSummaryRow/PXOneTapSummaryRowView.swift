@@ -135,9 +135,7 @@ class PXOneTapSummaryRowView: UIView {
                 valueLabelTopConstraint.isActive = true
             }
         }
-
-        let rowValue = data.value.replacingOccurrences(of: "$", with: "").replacingOccurrences(of: ".", with: "")
-        accessibilityLabel = "\(data.title)" + "\(rowValue)" + "pesos".localized
+        setAccessibility(data)
     }
 
     private func render() {
@@ -325,6 +323,24 @@ private extension PXOneTapSummaryRowView {
         PXLayout.centerVertically(view: imageView, to: titleLabel).isActive = true
         if let titleLabel = titleLabel {
             PXLayout.put(view: imageView, rightOf: titleLabel, withMargin: PXLayout.XXXS_MARGIN).isActive = true
+        }
+    }
+}
+
+// MARK: Accessibility
+private extension PXOneTapSummaryRowView {
+    func setAccessibility(_ data: PXOneTapSummaryRowData) {
+        let rowValue = data.value.replacingOccurrences(of: "$", with: "").replacingOccurrences(of: ".", with: "") + "pesos".localized
+        if verStackView == nil {
+            accessibilityLabel = "\(data.title)" + "\(rowValue)"
+        } else if let title = data.getDescriptionText() {
+                var accessibilityString = "\(title.string.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "").replacingOccurrences(of: ":", with: ""))"
+                if accessibilityString.contains("$") {
+                    accessibilityString = accessibilityString.replacingOccurrences(of: "$", with: "") + "pesos".localized
+                }
+                accessibilityLabel = accessibilityString + rowValue
+            } else {
+                accessibilityLabel = "\(data.title)" + "\(rowValue)"
         }
     }
 }
