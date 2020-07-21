@@ -36,7 +36,7 @@ class PXOneTapSummaryRowData: Equatable {
     }
 }
 
-// MARK: PXOverview
+// MARK: PXDiscountOverview
 extension PXOneTapSummaryRowData {
     func rowHasBrief() -> Bool {
         guard let brief = discountOverview?.brief, !brief.isEmpty else { return false }
