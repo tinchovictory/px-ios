@@ -109,7 +109,7 @@ class PXOneTapSummaryRowView: UIView {
                         iconContainer?.addSubview(icon)
                         if let iconContainer = iconContainer {
                             NSLayoutConstraint.activate([
-                                icon.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor, constant: 3),
+                                icon.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor, constant: 7),
                                 icon.bottomAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 1),
                                 icon.heightAnchor.constraint(equalToConstant: 16),
                                 icon.widthAnchor.constraint(equalToConstant: 16)
@@ -242,7 +242,7 @@ private extension PXOneTapSummaryRowView {
                 let iconContainer = UIView()
                 iconContainer.addSubview(icon)
                 NSLayoutConstraint.activate([
-                    icon.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor, constant: 3),
+                    icon.leadingAnchor.constraint(equalTo: iconContainer.leadingAnchor, constant: 7),
                     icon.bottomAnchor.constraint(equalTo: iconContainer.bottomAnchor, constant: 1),
                     icon.heightAnchor.constraint(equalToConstant: 16),
                     icon.widthAnchor.constraint(equalToConstant: 16)
@@ -281,7 +281,7 @@ private extension PXOneTapSummaryRowView {
         NSLayoutConstraint.activate([
             brief.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             brief.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            brief.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 2)
+            brief.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 4)
         ])
     }
 
