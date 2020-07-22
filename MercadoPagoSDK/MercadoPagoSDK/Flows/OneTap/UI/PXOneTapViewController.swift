@@ -435,9 +435,9 @@ extension PXOneTapViewController {
     private func openKyCDeeplinkWithoutCallback(_ target: String) {
         let index = target.firstIndex(of: "&")
         if let index = index {
-            var deepLink = String(target[..<index])
-            deepLink.append("&skip_success=true")
-            PXDeepLinkManager.open(deepLink)
+            var deeplink = target
+            deeplink.append(contentsOf: "&skip_success=true")
+            PXDeepLinkManager.open(deeplink)
         }
     }
 }
