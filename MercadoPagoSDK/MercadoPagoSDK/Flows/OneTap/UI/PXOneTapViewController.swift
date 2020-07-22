@@ -351,7 +351,7 @@ extension PXOneTapViewController {
         let defaultAction = isSplit ? splitDefaultAction : nonSplitDefaultAction
 
         guard let action = action else {
-            return PXAction(label: defaultTitle, action: defaultAction)
+            return nil
         }
 
         guard let target = action.target else {
@@ -431,7 +431,8 @@ extension PXOneTapViewController {
     private func openKyCDeeplinkWithoutCallback(_ target: String) {
         let index = target.firstIndex(of: "&")
         if let index = index {
-            let deepLink = String(target[..<index])
+            var deepLink = String(target[..<index])
+            deepLink.append("&skip_success=true")
             PXDeepLinkManager.open(deepLink)
         }
     }

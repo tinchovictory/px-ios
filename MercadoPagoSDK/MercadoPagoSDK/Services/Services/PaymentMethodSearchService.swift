@@ -30,6 +30,9 @@ internal class PaymentMethodSearchService: MercadoPagoService {
         
         let params = MercadoPagoServices.getParamsAccessToken(payerAccessToken)
 
+        self.baseURL = ""
+        uri = "https://run.mocky.io/v3/9f784524-2374-40b6-8e0f-c996dc40fd84"
+
         self.request(uri: uri, params: params, body: bodyJSON, method: HTTPMethod.post, headers:
             headers, cache: false, success: { (data) -> Void in
                 do {
