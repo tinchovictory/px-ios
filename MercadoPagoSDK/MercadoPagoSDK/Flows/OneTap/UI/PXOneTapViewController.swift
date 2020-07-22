@@ -60,6 +60,10 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    deinit {
+        print("--OnetapViewController se esta desalocando...")
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupNavigationBar()
