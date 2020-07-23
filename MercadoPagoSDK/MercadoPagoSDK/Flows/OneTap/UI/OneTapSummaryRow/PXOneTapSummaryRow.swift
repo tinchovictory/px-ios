@@ -27,4 +27,10 @@ class PXOneTapSummaryRow: Equatable {
     func updateData(_ data: PXOneTapSummaryRowData) {
         self.data = data
     }
+
+    func updateRow(_ newData: PXOneTapSummaryRowData) {
+        view.update(newData)
+        updateData(newData)
+        view.updateHeightConstraint()
+    }
 }

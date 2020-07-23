@@ -51,12 +51,8 @@ struct PXSummaryComposer {
             internalSummary.append(purchaseRow())
         }
 
-        if shouldDisplayDiscount() {
-            if isConsumedDiscount() {
-                internalSummary.append(consumedDiscountRow())
-            } else if let discRow = discountRow() {
-                internalSummary.append(discRow)
-            }
+        if shouldDisplayDiscount(), let discRow = discountRow() {
+            internalSummary.append(discRow)
         }
 
         if shouldDisplayCharges() {

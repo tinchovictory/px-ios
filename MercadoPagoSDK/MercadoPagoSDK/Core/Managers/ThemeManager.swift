@@ -132,6 +132,14 @@ extension ThemeManager {
         return #colorLiteral(red: 0, green: 0.6509803922, blue: 0.3137254902, alpha: 1)
     }
 
+    func discountBriefColorML() -> UIColor {
+        return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0.45)
+    }
+
+    func discountBriefColorMP() -> UIColor {
+        return #colorLiteral(red: 237, green: 237, blue: 237, alpha: 0.8)
+    }
+
     func disabledCardGray() -> UIColor {
         return #colorLiteral(red: 0.2862745098, green: 0.2862745098, blue: 0.2862745098, alpha: 1)
     }

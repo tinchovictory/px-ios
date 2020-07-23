@@ -7,7 +7,8 @@
 
 import Foundation
 
-public class PXText: Codable {
+public class PXText: Codable, Equatable {
+
     let message: String?
     let backgroundColor: String?
     let textColor: String?
@@ -27,6 +28,10 @@ public class PXText: Codable {
         self.backgroundColor = backgroundColor
         self.textColor = textColor
         self.weight = weight
+    }
+
+    public static func == (lhs: PXText, rhs: PXText) -> Bool {
+        return lhs.message == rhs.message && lhs.backgroundColor == rhs.backgroundColor && lhs.textColor == rhs.textColor && lhs.weight == rhs.weight && lhs.defaultTextColor == rhs.defaultTextColor && lhs.defaultBackgroundColor == rhs.defaultBackgroundColor
     }
 
     func setDefaultBackgroundColor(_ color: UIColor) {
@@ -80,6 +85,8 @@ public class PXText: Codable {
             attributes[.font] = UIFont.ml_semiboldSystemFont(ofSize: fontSize)
         case "light":
             attributes[.font] = UIFont.ml_lightSystemFont(ofSize: fontSize)
+        case "bold":
+            attributes[.font] = UIFont.ml_boldSystemFont(ofSize: fontSize)
         default:
             attributes[.font] = UIFont.ml_regularSystemFont(ofSize: fontSize)
         }

@@ -9,20 +9,6 @@ import Foundation
 
 extension PXSummaryComposer {
     // MARK: business
-    func isConsumedDiscount() -> Bool {
-        if let discountData = getDiscountData() {
-            return !discountData.discountConfiguration.getDiscountConfiguration().isAvailable
-        }
-        return false
-    }
-
-    func getConsumedDiscountReason() -> String? {
-        guard let discountData = getDiscountData() else {
-            return nil
-        }
-        return discountData.discountConfiguration.getDiscountConfiguration().reason?.summary?.message
-    }
-
     func shouldDisplayChargeHelpIcon() -> Bool {
         return shouldDisplayChargesHelp
     }
@@ -32,6 +18,10 @@ extension PXSummaryComposer {
             return discountData.discountConfiguration.getDiscountConfiguration().discount
         }
         return nil
+    }
+
+    func getDiscountOverview() -> PXDiscountOverview? {
+        return getDiscountData()?.discountConfiguration.getDiscountOverview()
     }
 
     func shouldDisplayCharges() -> Bool {
@@ -69,6 +59,10 @@ extension PXSummaryComposer {
 
     func discountColor() -> UIColor {
         return isDefaultStatusBarStyle ? ThemeManager.shared.noTaxAndDiscountLabelTintColor() : ThemeManager.shared.whiteColor()
+    }
+
+    func discountBriefColor() -> UIColor {
+        return isDefaultStatusBarStyle ? ThemeManager.shared.discountBriefColorML() : ThemeManager.shared.discountBriefColorMP()
     }
 
     func helpIcon(color: UIColor, alpha: CGFloat = 1) -> UIImage? {

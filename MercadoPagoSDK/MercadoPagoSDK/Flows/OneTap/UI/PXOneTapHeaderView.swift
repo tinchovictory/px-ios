@@ -73,6 +73,9 @@ private extension PXOneTapHeaderView {
 
     func shouldShowHorizontally(model: PXOneTapHeaderViewModel) -> Bool {
         if UIDevice.isLargeOrExtraLargeDevice() {
+            if UIDevice.isLargeDevice(), model.splitConfiguration != nil, model.data.first(where: { $0.type == PXOneTapSummaryRowView.RowType.discount }) != nil {
+                return true
+            }
             //an extra large device will always be able to accomodate al view in vertical mode
             return false
         }
@@ -111,6 +114,7 @@ private extension PXOneTapHeaderView {
 
         layoutIfNeeded()
 
+        summaryView?.updateSplitMoney(newModel.splitConfiguration != nil)
         summaryView?.update(newModel.data)
 
         if shouldAnimateSplitPaymentView {
@@ -154,7 +158,7 @@ private extension PXOneTapHeaderView {
         removeMargins()
         backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
 
-        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self)
+        let summaryView = PXOneTapSummaryView(data: model.data, delegate: self, splitMoney: model.splitConfiguration != nil)
         self.summaryView = summaryView
 
         addSubview(summaryView)
@@ -228,5 +232,9 @@ extension PXOneTapHeaderView: PXOneTapSummaryProtocol {
 extension PXOneTapHeaderView {
     func getMerchantView() -> PXOneTapHeaderMerchantView? {
         return merchantView
+    }
+
+    func updateConstraintsIfNecessary() {
+        summaryView?.updateRowsConstraintsIfNecessary()
     }
 }

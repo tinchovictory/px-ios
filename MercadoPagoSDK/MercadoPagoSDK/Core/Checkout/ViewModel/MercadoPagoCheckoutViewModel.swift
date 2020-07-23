@@ -181,7 +181,8 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
         let discount = discountConfiguration.getDiscountConfiguration().discount
         let consumedDiscount = !discountConfiguration.getDiscountConfiguration().isAvailable
-        self.paymentData.setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount)
+        let discountDescription = discountConfiguration.getDiscountConfiguration().discountDescription
+        self.paymentData.setDiscount(discount, withCampaign: campaign, consumedDiscount: consumedDiscount, discountDescription: discountDescription)
     }
 
     func clearDiscount() {

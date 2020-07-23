@@ -91,6 +91,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         installmentRow.addChevronBackgroundViewGradient()
+        headerView?.updateConstraintsIfNecessary()
     }
 
     @objc func willEnterForeground() {
@@ -498,23 +499,18 @@ extension PXOneTapViewController: PXOneTapHeaderProtocol {
     }
 
     func didTapDiscount() {
-        var discountReason: PXDiscountReason?
-
+        var discountDescription: PXDiscountDescription?
         if let discountConfiguration = viewModel.amountHelper.paymentConfigurationService.getDiscountConfigurationForPaymentMethodOrDefault(selectedCard?.cardId),
-            let reason = discountConfiguration.getDiscountConfiguration().reason {
-            discountReason = reason
+            let description = discountConfiguration.getDiscountConfiguration().discountDescription {
+            discountDescription = description
         }
 
-        let discountViewController = PXDiscountDetailViewController(amountHelper: viewModel.amountHelper, discountReason: discountReason)
-
-        if let discount = viewModel.amountHelper.discount {
-            PXComponentFactory.Modal.show(viewController: discountViewController, title: discount.getDiscountDescription()) {
+        if let discountDescription = discountDescription {
+            let discountViewController = PXDiscountDetailViewController(amountHelper: viewModel.amountHelper, discountDescription: PXDiscountDescriptionViewModel(discountDescription))
+            if viewModel.amountHelper.discount != nil {
+                PXComponentFactory.Modal.show(viewController: discountViewController, title: nil) {
                 self.setupNavigationBar()
-            }
-        } else if viewModel.amountHelper.consumedDiscount {
-            let modalTitle = discountReason?.title?.message ?? "modal_title_consumed_discount".localized
-            PXComponentFactory.Modal.show(viewController: discountViewController, title: modalTitle) {
-                self.setupNavigationBar()
+                }
             }
         }
     }

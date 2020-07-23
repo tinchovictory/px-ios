@@ -19,13 +19,6 @@ extension PXSummaryComposer {
         return row
     }
 
-    func consumedDiscountRow() -> PXOneTapSummaryRowData {
-        let rowTitle = getConsumedDiscountReason() ?? "total_row_consumed_discount".localized
-        let helperImage = helpIcon(color: summaryColor())
-        let row = PXOneTapSummaryRowData(title: rowTitle, value: "", highlightedColor: summaryColor(), alpha: textTransparency, isTotal: false, image: helperImage, type: .discount)
-        return row
-    }
-
     func discountRow() -> PXOneTapSummaryRowData? {
         guard let discount = getDiscount() else {
             printError("Discount is required to add the discount row")
@@ -40,7 +33,9 @@ extension PXSummaryComposer {
             alpha: textTransparency,
             isTotal: false,
             image: helperImage,
-            type: .discount)
+            type: .discount,
+            discountOverview: getDiscountOverview(),
+            briefColor: discountBriefColor())
         return row
     }
 
