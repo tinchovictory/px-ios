@@ -10,7 +10,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NewSecurityCodeViewController" customModule="MercadoPagoSDK" customModuleProvider="target">
             <connections>
-                <outlet property="cardContainerTopConstraint" destination="FiM-gR-C8m" id="2bi-ax-95Q"/>
                 <outlet property="cardContainerView" destination="CWr-vh-SBJ" id="JBy-Kr-7sp"/>
                 <outlet property="view" destination="iN0-l3-epB" id="4na-3x-xpB"/>
             </connections>
@@ -31,7 +30,7 @@
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="CWr-vh-SBJ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="90" id="7Xh-6Z-3rI"/>
-                <constraint firstItem="CWr-vh-SBJ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="306" id="FiM-gR-C8m"/>
+                <constraint firstItem="CWr-vh-SBJ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="306" placeholder="YES" id="FiM-gR-C8m"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="CWr-vh-SBJ" secondAttribute="trailing" constant="90" id="Q2g-CU-IPW"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
