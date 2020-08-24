@@ -9,6 +9,7 @@
 import UIKit
 import MLCardForm
 import MLUI
+import MLBusinessComponents
 
 final class PXOneTapViewController: PXComponentContainerViewController {
 
@@ -300,9 +301,12 @@ extension PXOneTapViewController {
             let vc = PXOfflineMethodsViewController(viewModel: offlineViewModel, callbackConfirm: callbackConfirm, callbackUpdatePaymentOption: callbackUpdatePaymentOption, finishButtonAnimation: finishButtonAnimation) { [weak self] in
                     self?.navigationController?.popViewController(animated: false)
             }
-
-            vc.modalPresentationStyle = .formSheet
-            self.present(vc, animated: true, completion: nil)
+            
+            let sheet = PXOfflineMethodsSheetViewController(viewController: vc,
+                                                            offlineViewModel: offlineViewModel,
+                                                            whiteViewHeight: PXCardSliderSizeManager.getWhiteViewHeight(viewController: self))
+            
+            self.present(sheet, animated: true, completion: nil)
         }
     }
 

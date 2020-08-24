@@ -11,6 +11,7 @@ target 'MercadoPagoSDKExamplesObjectiveC' do
   # UI Meli Lib
     pod 'MLUI', '~> 5.0'
     pod 'MercadoPagoSDK', :path => '../'
+    pod 'MLBusinessComponents', :path => '../../mlbusiness-components-ios'
 
   #target 'MercadoPagoSDKExamplesObjectiveCTests' do
    # inherit! :search_paths

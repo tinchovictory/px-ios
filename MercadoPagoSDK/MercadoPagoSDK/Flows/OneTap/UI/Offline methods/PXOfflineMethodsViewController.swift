@@ -7,6 +7,10 @@
 
 import Foundation
 
+protocol PXOfflineMethodsViewControllerDelegate: class {
+    func didEnableUI(enabled: Bool)
+}
+
 final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
 
     let viewModel: PXOfflineMethodsViewModel
@@ -17,13 +21,12 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
     let timeOutPayButton: TimeInterval
 
     let tableView = UITableView(frame: .zero, style: .grouped)
-    var totalLabelConstraint: NSLayoutConstraint?
-    let totalViewHeight: CGFloat = 54
-    let totalViewMargin: CGFloat = PXLayout.S_MARGIN
     var loadingButtonComponent: PXAnimatedButton?
     var inactivityView: UIView?
     var inactivityViewAnimationConstraint: NSLayoutConstraint?
 
+    weak var delegate: PXOfflineMethodsViewControllerDelegate?
+    
     var userDidScroll = false
 
     init(viewModel: PXOfflineMethodsViewModel, callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), finishButtonAnimation: @escaping (() -> Void), callbackFinishCheckout: @escaping (() -> Void)) {
@@ -50,22 +53,13 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        animateTotalLabel()
+        sheetViewController?.scrollView = tableView
         trackScreen(path: TrackingPaths.Screens.OneTap.getOfflineMethodsPath(), properties: viewModel.getScreenTrackingProperties())
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         trackAbortEvent()
-    }
-
-    func animateTotalLabel() {
-        view.layoutIfNeeded()
-        let animator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1) { [weak self] in
-            self?.totalLabelConstraint?.constant = self?.totalViewMargin ?? PXLayout.S_MARGIN
-            self?.view.layoutIfNeeded()
-        }
-        animator.startAnimation()
     }
 
     func getTopInset() -> CGFloat {
@@ -77,18 +71,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
     }
 
     func render() {
-        view.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
-
-        let totalView = renderTotalView()
-        view.addSubview(totalView)
-
-        //Total view layout
-        NSLayoutConstraint.activate([
-            totalView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            totalView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            totalView.topAnchor.constraint(equalTo: view.topAnchor, constant: getTopInset()),
-            totalView.heightAnchor.constraint(equalToConstant: totalViewHeight)
-        ])
+        view.backgroundColor = ThemeManager.shared.whiteColor()
 
         let footerView = getFooterView()
         view.addSubview(footerView)
@@ -112,7 +95,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: totalView.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: footerView.topAnchor)
         ])
         tableView.reloadData()
@@ -120,49 +103,6 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         //Inactivity View - rendered but hidden
         renderInactivityView(text: viewModel.getTitleForLastSection())
         view.bringSubviewToFront(footerView)
-    }
-
-    func renderTotalView() -> UIView {
-        let totalView = UIView()
-        totalView.translatesAutoresizingMaskIntoConstraints = false
-        totalView.backgroundColor = ThemeManager.shared.navigationBar().backgroundColor
-
-        let totalLabel = UILabel()
-        totalLabel.translatesAutoresizingMaskIntoConstraints = false
-        totalLabel.attributedText = viewModel.getTotalTitle().getAttributedString(fontSize: PXLayout.M_FONT, textColor: ThemeManager.shared.navigationBar().getTintColor())
-        totalLabel.textAlignment = .right
-
-        totalView.addSubview(totalLabel)
-
-        NSLayoutConstraint.activate([
-            totalLabel.leadingAnchor.constraint(equalTo: totalView.leadingAnchor, constant: totalViewMargin),
-            totalLabel.trailingAnchor.constraint(equalTo: totalView.trailingAnchor, constant: -totalViewMargin),
-            totalLabel.heightAnchor.constraint(equalToConstant: totalViewHeight - (totalViewMargin*2))
-        ])
-
-        totalLabelConstraint = totalLabel.topAnchor.constraint(equalTo: totalView.topAnchor, constant: totalViewMargin + totalViewHeight)
-        totalLabelConstraint?.isActive = true
-
-        //Close button
-        let closeButton = UIButton()
-        let closeImage = ResourceManager.shared.getImage("result-close-button")?.imageWithOverlayTint(tintColor: ThemeManager.shared.navigationBar().getTintColor())
-        closeButton.setImage(closeImage, for: .normal)
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
-        closeButton.add(for: .touchUpInside) { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            PXFeedbackGenerator.mediumImpactFeedback()
-        }
-
-        totalView.addSubview(closeButton)
-
-        NSLayoutConstraint.activate([
-            closeButton.leadingAnchor.constraint(equalTo: totalView.leadingAnchor),
-            closeButton.heightAnchor.constraint(equalToConstant: totalViewHeight),
-            closeButton.widthAnchor.constraint(equalToConstant: totalViewHeight),
-            closeButton.centerYAnchor.constraint(equalTo: totalView.centerYAnchor)
-        ])
-
-        return totalView
     }
 
     private func getBottomPayButtonMargin() -> CGFloat {
@@ -374,7 +314,8 @@ extension PXOfflineMethodsViewController: UITableViewDelegate, UITableViewDataSo
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.S_MARGIN),
             label.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: PXLayout.S_MARGIN),
-            label.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -PXLayout.XS_MARGIN)
+            label.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            label.topAnchor.constraint(equalTo: view.topAnchor)
         ])
 
         return view
@@ -492,6 +433,7 @@ extension PXOfflineMethodsViewController: PXAnimatedButtonDelegate {
     }
 
     func isUIEnabled(_ enabled: Bool) {
+        delegate?.didEnableUI(enabled: enabled)
         tableView.isScrollEnabled = enabled
         view.isUserInteractionEnabled = enabled
         loadingButtonComponent?.isUserInteractionEnabled = enabled
