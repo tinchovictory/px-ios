@@ -33,7 +33,7 @@ class PXOfflineMethodsSheetViewController: SheetViewController {
         super.viewDidDisappear(animated)
         
         if animated {
-            UIView.animate(withDuration: 0.2) {
+            UIView.animate(withDuration: 0.1) {
                 self.totalView?.alpha = 0.0
             }
         }
