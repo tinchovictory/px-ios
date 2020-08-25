@@ -407,6 +407,26 @@ extension PXOneTapViewModel {
         }
         return false
     }
+    
+    func shouldAutoDisplayOfflinePaymentMethods() -> Bool {
+        guard let offlineMethods = getOfflineMethods() else { return false }
+        
+        let offlinePaymentMethods = offlineMethods.paymentTypes
+            .flatMap { $0.paymentMethods }
+            .map { $0.id }
+        
+        let atLeastOneOfflineMethod = offlineMethods.paymentTypes
+            .flatMap { $0.paymentMethods }
+            .filter { $0.status.enabled }
+            .count > 0
+        
+        let noOnlinePaymentMethods = paymentMethods
+            .filter { !offlinePaymentMethods.contains($0.id) } // remove all payment methods that are offline
+            .filter { $0.status == "active" } // remove all inactive payment methods
+            .count == 0
+        
+        return atLeastOneOfflineMethod && noOnlinePaymentMethods
+    }
 }
 
 // MARK: Privates.

@@ -12,13 +12,13 @@ internal class PXAnimatedButton: UIButton {
     weak var animationDelegate: PXAnimatedButtonDelegate?
     var progressView: ProgressView?
     var status: Status = .normal
+    private(set) var animatedView: UIView?
 
     let normalText: String
     let loadingText: String
     let retryText: String
 
     private var buttonColor: UIColor?
-    private var animatedView: UIView?
 
     init(normalText: String, loadingText: String, retryText: String) {
         self.normalText = normalText
@@ -31,6 +31,10 @@ internal class PXAnimatedButton: UIButton {
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    internal func anchorView() -> UIView? {
+        return self.superview
     }
 
     enum Status {
@@ -55,24 +59,34 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         status = .expanding
 
         progressView?.doComplete(completion: { [weak self] _ in
-            guard let self = self else { return }
-            self.animatedView = UIView(frame: self.frame)
-            guard let animatedView = self.animatedView else { return }
+            guard let self = self,
+                let anchorView = self.anchorView() else { return }
+            
+            let animatedViewOriginInAnchorViewCoordinates = self.convert(CGPoint.zero, to: anchorView)
+            let animatedViewFrameInAnchorViewCoordinates = CGRect(origin: animatedViewOriginInAnchorViewCoordinates, size: self.frame.size)
+            
+            let animatedView = UIView(frame: animatedViewFrameInAnchorViewCoordinates)
             animatedView.backgroundColor = self.backgroundColor
             animatedView.layer.cornerRadius = self.layer.cornerRadius
             animatedView.isAccessibilityElement = true
-            self.superview?.addSubview(animatedView)
+            
+            anchorView.addSubview(animatedView)
+            
+            self.animatedView = animatedView
             self.alpha = 0
 
-            let toCircleFrame = CGRect(x: self.frame.midX - self.frame.height / 2, y: self.frame.minY, width: self.frame.height, height: self.frame.height)
+            let toCircleFrame = CGRect(x: animatedViewFrameInAnchorViewCoordinates.midX - animatedViewFrameInAnchorViewCoordinates.height / 2,
+                                       y: animatedViewFrameInAnchorViewCoordinates.minY,
+                                       width: animatedViewFrameInAnchorViewCoordinates.height,
+                                       height: animatedViewFrameInAnchorViewCoordinates.height)
 
             let transitionAnimator = UIViewPropertyAnimator(duration: 0.5, dampingRatio: 1, animations: {
                 animatedView.frame = toCircleFrame
                 animatedView.layer.cornerRadius = toCircleFrame.height / 2
             })
 
-            transitionAnimator.addCompletion({ [weak self] (_) in
-                self?.explosion(color: color, newFrame: toCircleFrame, image: image)
+            transitionAnimator.addCompletion({ _ in
+                self.explosion(color: color, newFrame: toCircleFrame, image: image)
             })
 
             transitionAnimator.startAnimation()

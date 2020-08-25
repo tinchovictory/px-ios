@@ -22,6 +22,7 @@ final class PXOfflineMethodsViewModel: PXReviewViewModel {
         self.payerCompliance = payerCompliance
         self.displayInfo = displayInfo
         super.init(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfig, userLogged: userLogged, escProtocol: nil)
+        autoSelectPaymentMethodIfNeeded()
     }
 
     func getTotalTitle() -> PXText {
@@ -116,6 +117,12 @@ private extension PXOfflineMethodsViewModel {
             filteredPaymentMethods.removeAll()
         }
         return filteredOfflinePaymentTypes
+    }
+    
+    private func autoSelectPaymentMethodIfNeeded() {
+        let allPaymentMethods = paymentTypes.flatMap { $0.paymentMethods }
+        guard paymentTypes.count == 1, allPaymentMethods.count == 1 else { return }
+        selectedIndexPath = IndexPath(row: 0, section: 0)
     }
 }
 

@@ -21,7 +21,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
     let timeOutPayButton: TimeInterval
 
     let tableView = UITableView(frame: .zero, style: .grouped)
-    var loadingButtonComponent: PXAnimatedButton?
+    var loadingButtonComponent: PXWindowedAnimatedButton?
     var inactivityView: UIView?
     var inactivityViewAnimationConstraint: NSLayoutConstraint?
 
@@ -49,6 +49,8 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showInactivityViewIfNecessary()
         }
+        
+        autoSelectPaymentMethodIfNeeded()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -104,6 +106,26 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         renderInactivityView(text: viewModel.getTitleForLastSection())
         view.bringSubviewToFront(footerView)
     }
+    
+    private func autoSelectPaymentMethodIfNeeded() {
+        guard let indexPath = viewModel.selectedIndexPath else { return }
+        selectPaymentMethodAtIndexPath(indexPath)
+    }
+    
+    private func selectPaymentMethodAtIndexPath(_ indexPath: IndexPath) {
+        viewModel.selectedIndexPath = indexPath
+        PXFeedbackGenerator.selectionFeedback()
+
+        if viewModel.selectedIndexPath != nil {
+            loadingButtonComponent?.setEnabled()
+        } else {
+            loadingButtonComponent?.setDisabled()
+        }
+
+        if let selectedPaymentOption = viewModel.getSelectedOfflineMethod() {
+            callbackUpdatePaymentOption(selectedPaymentOption)
+        }
+    }
 
     private func getBottomPayButtonMargin() -> CGFloat {
         let safeAreaBottomHeight = PXLayout.getSafeAreaBottomInset()
@@ -143,7 +165,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
             }
         }
 
-        let loadingButtonComponent = PXAnimatedButton(normalText: "Pagar".localized, loadingText: "Procesando tu pago".localized, retryText: "Reintentar".localized)
+        let loadingButtonComponent = PXWindowedAnimatedButton(normalText: "Pagar".localized, loadingText: "Procesando tu pago".localized, retryText: "Reintentar".localized)
         self.loadingButtonComponent = loadingButtonComponent
         loadingButtonComponent.animationDelegate = self
         loadingButtonComponent.layer.cornerRadius = 4
@@ -338,19 +360,8 @@ extension PXOfflineMethodsViewController: UITableViewDelegate, UITableViewDataSo
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        viewModel.selectedIndexPath = indexPath
+        selectPaymentMethodAtIndexPath(indexPath)
         tableView.reloadData()
-        PXFeedbackGenerator.selectionFeedback()
-
-        if viewModel.selectedIndexPath != nil {
-            loadingButtonComponent?.setEnabled()
-        } else {
-            loadingButtonComponent?.setDisabled()
-        }
-
-        if let selectedPaymentOption = viewModel.getSelectedOfflineMethod() {
-            callbackUpdatePaymentOption(selectedPaymentOption)
-        }
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -375,7 +386,9 @@ extension PXOfflineMethodsViewController: PXAnimatedButtonDelegate {
     }
 
     func didFinishAnimation() {
-        self.dismiss(animated: true, completion: nil)
+        self.dismiss(animated: true, completion: { [weak self] in
+            self?.loadingButtonComponent?.animatedView?.removeFromSuperview()
+        })
         self.finishButtonAnimation()
     }
 

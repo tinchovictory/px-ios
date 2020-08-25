@@ -109,7 +109,6 @@ class PXOfflineMethodsSheetViewController: SheetViewController {
     private static func getConfiguration() -> SheetConfiguration {
         var configuration = SheetConfiguration.default
         configuration.backgroundAlpha = 0.0
-        configuration.tapEmptySpaceToDismiss = false
         configuration.handle.height = 0.0
         return configuration
     }
@@ -130,6 +129,6 @@ extension PXOfflineMethodsSheetViewController: SheetViewControllerDelegate {
 
 extension PXOfflineMethodsSheetViewController: PXOfflineMethodsViewControllerDelegate {
     func didEnableUI(enabled: Bool) {
-        totalView?.isUserInteractionEnabled = enabled
+        view.isUserInteractionEnabled = enabled
     }
 }
