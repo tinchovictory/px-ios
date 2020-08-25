@@ -120,8 +120,7 @@ private extension PXOfflineMethodsViewModel {
     }
     
     private func autoSelectPaymentMethodIfNeeded() {
-        let allPaymentMethods = paymentTypes.flatMap { $0.paymentMethods }
-        guard paymentTypes.count == 1, allPaymentMethods.count == 1 else { return }
+        guard (paymentTypes.flatMap { $0.paymentMethods }.count) > 0 else { return }
         selectedIndexPath = IndexPath(row: 0, section: 0)
     }
 }

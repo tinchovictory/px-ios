@@ -409,23 +409,9 @@ extension PXOneTapViewModel {
     }
     
     func shouldAutoDisplayOfflinePaymentMethods() -> Bool {
-        guard let offlineMethods = getOfflineMethods() else { return false }
-        
-        let offlinePaymentMethods = offlineMethods.paymentTypes
-            .flatMap { $0.paymentMethods }
-            .map { $0.id }
-        
-        let atLeastOneOfflineMethod = offlineMethods.paymentTypes
-            .flatMap { $0.paymentMethods }
-            .filter { $0.status.enabled }
-            .count > 0
-        
-        let noOnlinePaymentMethods = paymentMethods
-            .filter { !offlinePaymentMethods.contains($0.id) } // remove all payment methods that are offline
-            .filter { $0.status == "active" } // remove all inactive payment methods
-            .count == 0
-        
-        return atLeastOneOfflineMethod && noOnlinePaymentMethods
+        guard let enabledOneTapCards = (expressData?.filter { $0.status.enabled }) else { return false }
+        let enabledPureOfflineCards = enabledOneTapCards.filter { ($0.offlineMethods != nil) && ($0.newCard == nil) }
+        return enabledOneTapCards.count == enabledPureOfflineCards.count
     }
 }
 
@@ -514,15 +500,9 @@ extension PXOneTapViewModel {
     }
 
     func getOfflineMethods() -> PXOfflineMethods? {
-        guard let expressData = expressData else {
-            return nil
-        }
-        for node in expressData {
-            if let offlineMethods = node.offlineMethods {
-                return offlineMethods
-            }
-        }
-        return nil
+        return expressData?
+            .compactMap { $0.offlineMethods }
+            .first
     }
 }
 
