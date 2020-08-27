@@ -33,12 +33,12 @@ final class PXOneTapViewModel: PXReviewViewModel {
     // Current flow.
     weak var currentFlow: OneTapFlow?
 
-    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, escProtocol: MercadoPagoESC?, currentFlow: OneTapFlow?, payerPaymentMethods: [PXCustomOptionSearchItem], experiments: [PXExperiment]?) {
+    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, disabledOption: PXDisabledOption? = nil, currentFlow: OneTapFlow?, payerPaymentMethods: [PXCustomOptionSearchItem], experiments: [PXExperiment]?) {
         self.disabledOption = disabledOption
         self.currentFlow = currentFlow
         self.payerPaymentMethods = payerPaymentMethods
         self.experimentsViewModel = PXExperimentsViewModel(experiments)
-        super.init(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfig, userLogged: userLogged, escProtocol: escProtocol)
+        super.init(amountHelper: amountHelper, paymentOptionSelected: paymentOptionSelected, advancedConfig: advancedConfig, userLogged: userLogged)
     }
 
     override func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
@@ -92,7 +92,7 @@ extension PXOneTapViewModel {
                 let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, "", AccountMoneyCard(), cardData, [PXPayerCost](), nil, accountMoney.getId(), false, amountConfiguration: amountConfiguration, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits, payerPaymentMethod: getPayerPaymentMethod(targetNode.paymentTypeId, nil), behaviours: targetNode.behaviours, displayInfo: targetNode.displayInfo)
 
                 viewModelCard.setAccountMoney(accountMoneyBalance: accountMoney.availableBalance)
-                let attributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
+                let attributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: UIFont.ml_regularSystemFont(ofSize: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
                 viewModelCard.displayMessage = NSAttributedString(string: accountMoney.sliderTitle ?? "", attributes: attributes)
                 sliderModel.append(viewModelCard)
             } else if let targetCardData = targetNode.oneTapCard {
@@ -168,7 +168,7 @@ extension PXOneTapViewModel {
                 let cardData = PXCardDataFactory().create(cardName: "", cardNumber: "", cardCode: "", cardExpiration: "")
                 let creditsViewModel = PXCreditsViewModel(consumerCredits)
 
-                let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: targetNode.status.isDisabled()), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, "", true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits, payerPaymentMethod: getPayerPaymentMethod(targetNode.paymentTypeId, nil), behaviours: targetNode.behaviours, displayInfo: targetNode.displayInfo)
+                let viewModelCard = PXCardSliderViewModel(paymentMethodId, targetNode.paymentTypeId, "", ConsumerCreditsCard(creditsViewModel, isDisabled: targetNode.status.isDisabled()), cardData, amountConfiguration.payerCosts ?? [], amountConfiguration.selectedPayerCost, PXPaymentTypes.CONSUMER_CREDITS.rawValue, true, amountConfiguration: amountConfiguration, creditsViewModel: creditsViewModel, status: statusConfig, bottomMessage: chargeRuleMessage, benefits: benefits, payerPaymentMethod: getPayerPaymentMethod(targetNode.paymentTypeId, nil), behaviours: targetNode.behaviours, displayInfo: targetNode.displayInfo)
 
                 sliderModel.append(viewModelCard)
             }
@@ -430,14 +430,9 @@ extension PXOneTapViewModel {
             }
 
             // Third attr
-            if let cftDisplayStr = payerCostData.getCFT(separator: ":") {
-                if (payerCostData.hasCFTValue() && (payerCostData.installments != 1)) || isDigitalCurrency {
-                    let thirdAttributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getFont(size: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.greyColor()]
-                    let thirdText = " \(cftDisplayStr)"
-                    let thirdAttributedString = NSAttributedString(string: thirdText, attributes: thirdAttributes)
-                    text.append(thirdAttributedString)
-                }
-
+            if let interestRate = payerCostData.interestRate,
+                let thirdAttributedString = interestRate.getAttributedString(fontSize: installmentsRowMessageFontSize) {
+                text.appendWithSpace(thirdAttributedString)
             }
         }
         return text
@@ -476,7 +471,7 @@ extension PXOneTapViewModel {
 
     func getSplitMessageForDebit(amountToPay: Double) -> NSAttributedString {
         var amount: String = ""
-        let attributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: Utils.getSemiBoldFont(size: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.boldLabelTintColor()]
+        let attributes: [NSAttributedString.Key: AnyObject] = [NSAttributedString.Key.font: UIFont.ml_regularSystemFont(ofSize: installmentsRowMessageFontSize), NSAttributedString.Key.foregroundColor: ThemeManager.shared.boldLabelTintColor()]
 
         amount = Utils.getAmountFormated(amount: amountToPay, forCurrency: SiteManager.shared.getCurrency())
         return NSAttributedString(string: amount, attributes: attributes)

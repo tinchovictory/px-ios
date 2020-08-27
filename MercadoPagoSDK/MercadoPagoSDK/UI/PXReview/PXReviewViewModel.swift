@@ -13,31 +13,25 @@ class PXReviewViewModel: NSObject {
     static let ERROR_DELTA = 0.001
     public static var CUSTOMER_ID = ""
 
-    private weak var escProtocol: MercadoPagoESC?
     internal var amountHelper: PXAmountHelper
     var paymentOptionSelected: PaymentMethodOption?
     var advancedConfiguration: PXAdvancedConfiguration
     var userLogged: Bool
 
-    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool, escProtocol: MercadoPagoESC?) {
+    public init(amountHelper: PXAmountHelper, paymentOptionSelected: PaymentMethodOption?, advancedConfig: PXAdvancedConfiguration, userLogged: Bool) {
         PXReviewViewModel.CUSTOMER_ID = ""
         self.amountHelper = amountHelper
         self.paymentOptionSelected = paymentOptionSelected
         self.advancedConfiguration = advancedConfig
         self.userLogged = userLogged
-        self.escProtocol = escProtocol
     }
 
     func shouldValidateWithBiometric(withCardId: String? = nil) -> Bool {
         // Validation is mandatory for payment methods != (credit or debit card).
         if !isPaymentMethodDebitOrCredit() { return true }
 
-        // If escProtocol implementation is null, ESC is not supported.
-        // We should´t validate with Biometric.
-        guard let escImplementation = escProtocol else { return false }
-
-        if escImplementation.hasESCEnable() {
-            let savedCardIds = escImplementation.getSavedCardIds()
+        if PXConfiguratorManager.escProtocol.hasESCEnable() {
+            let savedCardIds = PXConfiguratorManager.escProtocol.getSavedCardIds(config: PXConfiguratorManager.escConfig)
             // If we found cardId in ESC, we should validate with biometric.
             if let targetCardId = withCardId {
                 return savedCardIds.contains(targetCardId)
@@ -116,7 +110,11 @@ extension PXReviewViewModel {
     }
 
     func hasPayerCostAddionalInfo() -> Bool {
-        return self.amountHelper.getPaymentData().hasPayerCost() && self.amountHelper.getPaymentData().getPayerCost()!.hasCFTValue() && self.amountHelper.getPaymentData().paymentMethod!.isCreditCard
+        if amountHelper.getPaymentData().getPayerCost()?.interestRate?.message != nil,
+            let paymentMethod = amountHelper.getPaymentData().paymentMethod, paymentMethod.isCreditCard {
+            return true
+        }
+        return false
     }
 
     func hasConfirmAdditionalInfo() -> Bool {

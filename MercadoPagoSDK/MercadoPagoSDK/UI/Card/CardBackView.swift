@@ -25,8 +25,8 @@ import UIKit
     }
 
     func loadViewFromNib() {
-        let bundle = Bundle(for: type(of: self))
-        let nib = UINib(nibName: "CardBackView", bundle: bundle)
+        let bundle = ResourceManager.shared.getBundle()
+        let nib = UINib(nibName: "CardBackView", bundle: ResourceManager.shared.getBundle())
         if let view = nib.instantiate(withOwner: self, options: nil)[0] as? UIView {
             view.frame = bounds
             view.autoresizingMask = [.flexibleWidth, .flexibleHeight]

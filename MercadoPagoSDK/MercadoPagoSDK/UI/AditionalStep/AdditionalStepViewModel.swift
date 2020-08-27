@@ -11,8 +11,6 @@ import UIKit
 
 internal class AdditionalStepViewModel {
 
-    var bundle: Bundle? = ResourceManager.shared.getBundle()
-
     var screenTitle: String
 
     var email: String?
