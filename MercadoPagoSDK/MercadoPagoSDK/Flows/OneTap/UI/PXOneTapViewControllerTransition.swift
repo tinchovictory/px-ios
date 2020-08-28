@@ -22,10 +22,108 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         } else if let fromVC = transitionContext.viewController(forKey: .from) as? MLCardFormViewController,
             let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
             animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
-        } else {
+        } else if let fromVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
+            let toVC = transitionContext.viewController(forKey: .to) as? NewSecurityCodeViewController {
+            animateFromOneTapToSecurityCodeVC(transitionContext: transitionContext, oneTapVC: fromVC, securityCodeVC: toVC)
+        } else if let fromVC = transitionContext.viewController(forKey: .from) as? NewSecurityCodeViewController,
+            let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
+//            animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
+        }
+        else {
             transitionContext.completeTransition(false)
         }
     }
+
+    func animateFromOneTapToSecurityCodeVC(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, securityCodeVC: UIViewController) {
+            guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
+                let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: false) else {
+                    transitionContext.completeTransition(false)
+                    return
+            }
+
+            let containerView = transitionContext.containerView
+            let fixedFrames = buildFrames(oneTapVC: oneTapVC, containerView: containerView)
+
+            headerSnapshot.frame = fixedFrames.headerFrame
+            footerSnapshot.frame = fixedFrames.footerFrame
+
+            let navigationSnapshot = oneTapVC.view.resizableSnapshotView(from: fixedFrames.navigationFrame, afterScreenUpdates: false, withCapInsets: .zero)
+            // topView is a view containing a snapshot of the navigationbar and a snapshot of the headerView
+            let topView = buildTopView(containerView: containerView, navigationSnapshot: navigationSnapshot, headerSnapshot: headerSnapshot, footerSnapshot: footerSnapshot)
+            // addTopViewOverlay adds a blue placeholder view to hide topView elements
+            // This view will show initially translucent and will become opaque to cover the headerView area
+    //        addTopViewOverlay(topView: topView, backgroundColor: oneTapVC.view.backgroundColor)
+
+            oneTapVC.view.removeFromSuperview()
+            containerView.addSubview(securityCodeVC.view)
+            containerView.addSubview(topView)
+    //        containerView.addSubview(footerSnapshot)
+
+            let prueba = UIView()
+            prueba.translatesAutoresizingMaskIntoConstraints = false
+            prueba.backgroundColor = .red
+
+            guard let cell = oneTapVC.slider.pagerView.cellForItem(at: oneTapVC.slider.getSelectedIndex()) as? PXCardSliderPagerCell else {
+                transitionContext.completeTransition(false)
+                return
+            }
+
+            guard let cardSnapshot = cell.containerView.snapshotView(afterScreenUpdates: true) else { return }
+            guard let cvvVC = securityCodeVC as? NewSecurityCodeViewController else {
+                transitionContext.completeTransition(false)
+                return
+            }
+
+            let cvvCardContainer = cvvVC.cardContainerView
+            cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
+            cardSnapshot.frame.origin.y = (footerSnapshot.frame.size.height - cardSnapshot.frame.size.height) / 2 + headerSnapshot.frame.size.height + 64
+
+            containerView.addSubview(cardSnapshot)
+
+            topView.addSubview(buildTopViewOverlayColor(color: oneTapVC.view.backgroundColor, topView: topView))
+
+            var pxAnimator = PXAnimator(duration: 0.8, dampingRatio: 2)
+            pxAnimator.addAnimation(animation: {
+                topView.frame = topView.frame.offsetBy(dx: 0, dy: -fixedFrames.headerFrame.size.height)
+    //            footerSnapshot.frame = footerSnapshot.frame.offsetBy(dx: 0, dy: footerSnapshot.frame.size.height)
+
+                cvvCardContainer.layoutIfNeeded()
+                //*** ultimo que estoy probando
+                cvvVC.titleLabel.layoutIfNeeded()
+    //            cvvCardContainer.transform = CGAffineTransform.identity.scaledBy(x: 0.7, y: 0.7)
+    //            cvvCardContainer.frame.origin.x = (footerSnapshot.frame.size.width - cvvCardContainer.frame.size.width) / 2
+    //            cvvCardContainer.frame.origin.y = UIApplication.shared.statusBarFrame.size.height + (cvvVC.navigationController?.navigationBar.frame.height ?? 0.0) + cvvVC.titleLabel.intrinsicContentSize.height //+ 31
+    //            cvvCardContainer.frame.origin.y = headerSnapshot.frame.origin.y
+    //            cvvCardContainer.frame.origin.y = UIApplication.shared.statusBarFrame.size.height + (cvvVC.navigationController?.navigationBar.frame.height ?? 0.0) + cvvVC.titleLabel.frame.size.height + 24
+    //            cvvCardContainer.frame.origin.y = 200
+    //            cvvVC.titleLabel.layoutIfNeeded()
+    //            cvvCardContainer.frame.origin.y = cvvVC.titleLabel.frame.origin.y
+                //***
+
+//                cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.7, y: 0.7)
+                cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
+                cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2 //+ 30 // dsp sacar el 25
+                cardSnapshot.frame.origin.y = UIApplication.shared.statusBarFrame.size.height +
+                    (cvvVC.navigationController?.navigationBar.frame.height ?? 0.0) + cvvVC.titleLabel.intrinsicContentSize.height + 36 // 36 es la bottom constraint que puse en newsecurity //+ 31
+//                topView.alpha = 0
+            })
+
+            pxAnimator.addCompletion(completion: {
+                topView.removeFromSuperview()
+    //            footerSnapshot.removeFromSuperview()
+                cardSnapshot.alpha = 0
+                cardSnapshot.removeFromSuperview()
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            })
+
+            pxAnimator.animate()
+    }
+
+
+
+
+
+
 
     private func animateFromOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {
         guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
@@ -68,6 +166,14 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
 
         pxAnimator.animate()
     }
+
+
+
+
+
+
+
+
 
     private func animateToOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {
         guard let toVCSnapshot = oneTapVC.view.snapshotView(afterScreenUpdates: true),

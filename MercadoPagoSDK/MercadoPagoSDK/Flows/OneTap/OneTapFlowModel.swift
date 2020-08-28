@@ -113,7 +113,11 @@ internal extension OneTapFlowModel {
         }
 
         let reason = SecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason)
-        return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
+        let cardSliderViewModel = pxOneTapViewModel?.getCardSliderViewModel().first(where: { $0.cardId == paymentOptionSelected?.getId() })
+        let cardUI = cardSliderViewModel?.cardUI
+        let cardData = cardSliderViewModel?.cardData
+
+        return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason, cardUI: cardUI, cardData: cardData)
     }
 
     func oneTapViewModel() -> PXOneTapViewModel {
