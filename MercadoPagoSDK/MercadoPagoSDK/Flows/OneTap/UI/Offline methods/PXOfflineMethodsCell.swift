@@ -58,6 +58,7 @@ final class PXOfflineMethodsCell: UITableViewCell {
             let subtitleLabel = UILabel()
             subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
             subtitleLabel.attributedText = subtitle.getAttributedString(fontSize: PXLayout.XXS_FONT)
+            subtitleLabel.numberOfLines = 2
             labelsContainerView.addArrangedSubview(subtitleLabel)
         }
 
@@ -65,8 +66,7 @@ final class PXOfflineMethodsCell: UITableViewCell {
         NSLayoutConstraint.activate([
             labelsContainerView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: PXLayout.XS_MARGIN),
             labelsContainerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -PXLayout.XXS_MARGIN),
-            labelsContainerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            labelsContainerView.heightAnchor.constraint(equalToConstant: 40)
+            labelsContainerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
 
