@@ -103,7 +103,7 @@ class PXOfflineMethodsSheetViewController: SheetViewController {
     }
     
     private static func topBarHeight() -> CGFloat {
-        return 44.0 + PXLayout.getSafeAreaTopInset()
+        return PXLayout.NAV_BAR_HEIGHT + PXLayout.getSafeAreaTopInset()
     }
     
     private static func getConfiguration() -> SheetConfiguration {

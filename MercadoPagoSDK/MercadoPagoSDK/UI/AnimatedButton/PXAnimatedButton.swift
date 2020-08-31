@@ -85,8 +85,8 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
                 animatedView.layer.cornerRadius = toCircleFrame.height / 2
             })
 
-            transitionAnimator.addCompletion({ _ in
-                self.explosion(color: color, newFrame: toCircleFrame, image: image)
+            transitionAnimator.addCompletion({ [weak self] _ in
+                self?.explosion(color: color, newFrame: toCircleFrame, image: image)
             })
 
             transitionAnimator.startAnimation()
