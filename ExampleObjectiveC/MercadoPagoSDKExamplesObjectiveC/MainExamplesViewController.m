@@ -18,7 +18,7 @@
 }
 
 - (IBAction)checkoutFlow:(id)sender {
-
+    
     //CHECKOUT PREFERENCE
     [self setCheckoutPref];
     [self setCheckoutPrefAdditionalInfo];
@@ -41,6 +41,8 @@
 
     //  Argentina
     [self.checkoutBuilder setPrivateKeyWithKey:@"APP_USR-7092-091314-cc8f836a12b9bf78b16e77e4409ed873-470735636"];
+    
+    // self.checkoutBuilder = [self moneyInMLBCheckoutBuilder];
 
     PXTrackingConfiguration *trackingConfig = [[PXTrackingConfiguration alloc] initWithTrackListener: self flowName:@"instore" flowDetails:nil sessionId:@"3783874"];
     [self.checkoutBuilder setTrackingConfigurationWithConfig: trackingConfig];
@@ -59,6 +61,16 @@
 
     //LAZY INIT
     [mpCheckout startWithLazyInitProtocol:self];
+}
+    
+- (MercadoPagoCheckoutBuilder*)moneyInMLBCheckoutBuilder {
+    MercadoPagoCheckoutBuilder* checkoutBuilder = [[MercadoPagoCheckoutBuilder alloc] initWithPublicKey:@"APP_USR-4c86acfb-467a-4d0f-8506-b8f13756d153"
+                                                                                           preferenceId:@"500229512-8dc69e3c-1494-4d93-8743-1d32e01cae71"
+                                                                                   paymentConfiguration:[self getPaymentConfiguration]];
+    
+    [checkoutBuilder setPrivateKeyWithKey:@"APP_USR-1311377052931992-072817-7dd4b6e44e92add08adefd312fba4490-500229512"];
+    
+    return checkoutBuilder;
 }
 
 -(PXAdvancedConfiguration *)getAdvancedConfiguration {

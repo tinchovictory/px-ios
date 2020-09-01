@@ -9,6 +9,7 @@
 import UIKit
 import MLCardForm
 import MLUI
+import MLBusinessComponents
 
 final class PXOneTapViewController: PXComponentContainerViewController {
 
@@ -39,6 +40,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
     var currentModalDismissTrackingProperties: [String: Any]?
     let timeOutPayButton: TimeInterval
 
+    var shouldPromptForOfflineMethods = true
     var cardSliderMarginConstraint: NSLayoutConstraint?
     private var navigationBarTapGesture: UITapGestureRecognizer?
     var installmentRow = PXOneTapInstallmentInfoView()
@@ -84,6 +86,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         super.viewDidAppear(animated)
         navigationController?.delegate = self
         slider.showBottomMessageIfNeeded(index: 0, targetIndex: 0)
+        setupAutoDisplayOfflinePaymentMethods()
         UIAccessibility.post(notification: .layoutChanged, argument: headerView?.getMerchantView()?.getMerchantTitleLabel())
         trackScreen(path: TrackingPaths.Screens.OneTap.getOneTapPath(), properties: viewModel.getOneTapScreenProperties())
     }
@@ -115,6 +118,13 @@ final class PXOneTapViewController: PXComponentContainerViewController {
         if let navigationController = navigationController,
             let cardFormViewController = navigationController.viewControllers.first(where: { $0 is MLCardFormViewController }) as? MLCardFormViewController {
             cardFormViewController.dismissLoadingAndPop()
+        }
+    }
+    
+    func setupAutoDisplayOfflinePaymentMethods() {
+        if viewModel.shouldAutoDisplayOfflinePaymentMethods() && shouldPromptForOfflineMethods {
+            shouldPromptForOfflineMethods = false
+            shouldAddNewOfflineMethod()
         }
     }
 }
@@ -300,9 +310,12 @@ extension PXOneTapViewController {
             let vc = PXOfflineMethodsViewController(viewModel: offlineViewModel, callbackConfirm: callbackConfirm, callbackUpdatePaymentOption: callbackUpdatePaymentOption, finishButtonAnimation: finishButtonAnimation) { [weak self] in
                     self?.navigationController?.popViewController(animated: false)
             }
-
-            vc.modalPresentationStyle = .formSheet
-            self.present(vc, animated: true, completion: nil)
+            
+            let sheet = PXOfflineMethodsSheetViewController(viewController: vc,
+                                                            offlineViewModel: offlineViewModel,
+                                                            whiteViewHeight: PXCardSliderSizeManager.getWhiteViewHeight(viewController: self))
+            
+            self.present(sheet, animated: true, completion: nil)
         }
     }
 
@@ -553,7 +566,7 @@ extension PXOneTapViewController: PXCardSliderProtocol {
         if let newPaymentMethod = viewModel.getPaymentMethod(targetId: newPaymentMethodId) {
             currentPaymentData.payerCost = newPayerCost
             currentPaymentData.paymentMethod = newPaymentMethod
-            currentPaymentData.issuer = PXIssuer(id: targetModel.issuerId, name: nil)
+            currentPaymentData.issuer = targetModel.payerPaymentMethod?.issuer ?? PXIssuer(id: targetModel.issuerId, name: nil)
             callbackUpdatePaymentOption(targetModel)
             loadingButtonComponent?.setEnabled()
         } else {

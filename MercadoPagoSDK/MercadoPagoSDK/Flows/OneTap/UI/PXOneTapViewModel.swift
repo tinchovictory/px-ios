@@ -407,6 +407,12 @@ extension PXOneTapViewModel {
         }
         return false
     }
+    
+    func shouldAutoDisplayOfflinePaymentMethods() -> Bool {
+        guard let enabledOneTapCards = (expressData?.filter { $0.status.enabled }) else { return false }
+        let enabledPureOfflineCards = enabledOneTapCards.filter { ($0.offlineMethods != nil) && ($0.newCard == nil) }
+        return enabledOneTapCards.count == enabledPureOfflineCards.count
+    }
 }
 
 // MARK: Privates.
@@ -494,15 +500,9 @@ extension PXOneTapViewModel {
     }
 
     func getOfflineMethods() -> PXOfflineMethods? {
-        guard let expressData = expressData else {
-            return nil
-        }
-        for node in expressData {
-            if let offlineMethods = node.offlineMethods {
-                return offlineMethods
-            }
-        }
-        return nil
+        return expressData?
+            .compactMap { $0.offlineMethods }
+            .first
     }
 }
 

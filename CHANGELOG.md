@@ -1,4 +1,20 @@
-# v4.35.3 
+# v4.35.6 
+🚀Private Release - 4.35.6 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix issuer
+
+# v4.35.5
+🚀Private Release - 4.35.5 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix bundle selection
+
+# v4.35.4
+🚀Private Release - 4.35.4 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix discounts bug
+- Fix bundle for V4
+
+# v4.35.3
 🚀Private Release - 4.35.3 🚀
 MercadoPagoSDKV4 - Private Version
 - Create resources bundle
