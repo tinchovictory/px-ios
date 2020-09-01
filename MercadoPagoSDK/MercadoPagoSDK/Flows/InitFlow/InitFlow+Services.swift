@@ -43,15 +43,15 @@ extension InitFlow {
         /// Hack para corregir un issue cuando hay un descuento para un medio de pago particular
         /// El nodo coupons no trae el valor de generalCoupon y cuando usa MercadoPagoCheckoutViewModel.getPaymentOptionConfigurations
         /// se rompe todo al no encontrar el payer_costs correspondiente al coupon
-        let generalCoupon = search.generalCoupon
-        if !generalCoupon.isEmpty,
-            !search.coupons.keys.contains(generalCoupon) {
-            search.coupons[generalCoupon] = PXDiscountConfiguration(isAvailable: true)
-        }
-        if search.selectedDiscountConfiguration == nil,
-            let selectedDiscountConfiguration = search.coupons[search.generalCoupon] {
-            search.selectedDiscountConfiguration = selectedDiscountConfiguration
-        }
+//        let generalCoupon = search.generalCoupon
+//        if !generalCoupon.isEmpty,
+//            !search.coupons.keys.contains(generalCoupon) {
+//            search.coupons[generalCoupon] = PXDiscountConfiguration(isAvailable: true)
+//        }
+//        if search.selectedDiscountConfiguration == nil,
+//            let selectedDiscountConfiguration = search.coupons[search.generalCoupon] {
+//            search.selectedDiscountConfiguration = selectedDiscountConfiguration
+//        }
         /// Fin del hack
 
         initFlowModel.updateInitModel(paymentMethodsResponse: search)
