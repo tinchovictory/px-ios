@@ -56,26 +56,26 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         topView.addSubview(buildTopViewOverlayColor(color: oneTapVC.view.backgroundColor, topView: topView))
         containerView.addSubview(securityCodeVC.view)
         containerView.addSubview(topView)
-        containerView.addSubview(cardSnapshot)
+        if securityCodeVC.viewModel.shouldShowCard() { containerView.addSubview(cardSnapshot) }
 
         cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
         cardSnapshot.frame.origin.y = (footerSnapshot.frame.size.height - cardSnapshot.frame.size.height) / 2 + headerSnapshot.frame.size.height + PXLayout.XL_MARGIN + PXLayout.M_MARGIN
 
-        var pxAnimator = PXAnimator(duration: 0.8, dampingRatio: 1)
-        pxAnimator.addAnimation(animation: {
+        var animator = PXAnimator(duration: 0.8, dampingRatio: 1)
+        animator.addAnimation(animation: {
             topView.frame = topView.frame.offsetBy(dx: 0, dy: -fixedFrames.headerFrame.size.height)
             cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
             cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
             cardSnapshot.frame.origin.y = securityCodeVC.getStatusAndNavBarHeight() + securityCodeVC.titleLabel.intrinsicContentSize.height + PXLayout.L_MARGIN + PXLayout.XXXS_MARGIN
         })
 
-        pxAnimator.addCompletion(completion: {
+        animator.addCompletion(completion: {
             oneTapVC.view.removeFromSuperview()
             topView.removeFromSuperview()
             cardSnapshot.removeFromSuperview()
             transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         })
-        pxAnimator.animate()
+        animator.animate()
     }
 
     private func animateFromOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {
