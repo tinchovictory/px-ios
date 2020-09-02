@@ -179,7 +179,7 @@ private extension PXSecurityCodeViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.text = "Ingresa el código de seguridad"
         titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: 20)
+        titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.M_FONT)
         titleLabel.numberOfLines = 2
         titleLabel.textColor = .black
         view.addSubview(titleLabel)
@@ -197,7 +197,7 @@ private extension PXSecurityCodeViewController {
         textFieldTitle.alpha = 0
         textFieldTitle.text = "Código de seguridad"
         textFieldTitle.textAlignment = .center
-        textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: 16)
+        textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
         textFieldTitle.textColor = .black
         textFieldTitle.numberOfLines = 2
         view.addSubview(textFieldTitle)
@@ -272,8 +272,7 @@ private extension PXSecurityCodeViewController {
 
     func setCardContainerViewConstraints() {
         view.layoutIfNeeded()
-        let statusAndNavBarHeight = (UIApplication.shared.statusBarFrame.size.height + (self.navigationController?.navigationBar.frame.height ?? 0.0))
-        let cardContainerViewBottomConstraint = cardContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(UIScreen.main.bounds.height - statusAndNavBarHeight - self.titleLabel.intrinsicContentSize.height - cardContainerView.frame.size.height - 36))
+        let cardContainerViewBottomConstraint = cardContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - cardContainerView.frame.size.height - 36))
         cardContainerViewBottomConstraint.isActive = true
         cardContainerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -44 : -40).scaledBy(x: 0.6, y: 0.6)
         //        cardContainerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -32 : -30).scaledBy(x: 0.7, y: 0.7)
@@ -282,8 +281,7 @@ private extension PXSecurityCodeViewController {
     func setupAnimations() {
         var animator = PXAnimator(duration: 0.8, dampingRatio: 0.8)
         animator.addAnimation(animation: {
-            let statusAndNavBarHeight = (UIApplication.shared.statusBarFrame.size.height + (self.navigationController?.navigationBar.frame.height ?? 0.0))
-            self.titleLabelBottomConstraint.constant = -(UIScreen.main.bounds.height - statusAndNavBarHeight - self.titleLabel.intrinsicContentSize.height)
+            self.titleLabelBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height)
             self.view.layoutIfNeeded()
         }, delay: 0)
         animator.animate()
@@ -302,5 +300,9 @@ private extension PXSecurityCodeViewController {
         }
         cardContainerView.alpha = 1
         cardDrawer?.showSecurityCode()
+    }
+
+    func getStatusAndNavBarHeight() -> CGFloat {
+        return UIApplication.shared.statusBarFrame.size.height + (navigationController?.navigationBar.frame.height ?? 0.0)
     }
 }
