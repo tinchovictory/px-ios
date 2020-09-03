@@ -117,7 +117,9 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
 
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
-        loadingButtonComponent?.showErrorSnackBar()
+        loadingButtonComponent?.showErrorSnackBar { [weak self] in
+            self?.navigationController?.popViewController(animated: false)
+        }
         enableUI(true)
     }
 }
