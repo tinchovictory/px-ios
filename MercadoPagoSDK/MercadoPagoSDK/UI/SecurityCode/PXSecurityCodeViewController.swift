@@ -169,8 +169,8 @@ private extension PXSecurityCodeViewController {
 
     func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.text = "Ingresa el código de seguridad"
-        titleLabel.textAlignment = .center
+        titleLabel.text = viewModel.isVirtualCard() ? viewModel.getVirtualCardTitle() : "Ingresa el código de seguridad"
+        titleLabel.textAlignment = .left
         titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
         titleLabel.numberOfLines = 2
         titleLabel.textColor = UIColor.black.withAlphaComponent(0.8)
@@ -187,7 +187,7 @@ private extension PXSecurityCodeViewController {
     func setupSubtitle() {
         guard !viewModel.shouldShowCard() else { return }
         subtitle.translatesAutoresizingMaskIntoConstraints = false
-        subtitle.text = "Buscalo en el Home Banking o la app de CAIXA."
+        subtitle.text = viewModel.getVirtualCardSubtitle()
         subtitle.textAlignment = .left
         subtitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
         subtitle.numberOfLines = 2
@@ -195,8 +195,8 @@ private extension PXSecurityCodeViewController {
         view.addSubview(subtitle)
 
         NSLayoutConstraint.activate([
-            subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.S_MARGIN),
-            subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.S_MARGIN)
+            subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.SM_MARGIN),
+            subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.SM_MARGIN)
         ])
         subtitleBottomConstraint = subtitle.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -UIScreen.main.bounds.height)
         subtitleBottomConstraint.isActive = true
@@ -219,7 +219,7 @@ private extension PXSecurityCodeViewController {
         textFieldTitle.alpha = 0
         textFieldTitle.text = "Código de seguridad"
         textFieldTitle.textAlignment = .center
-        textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
+        textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XXS_FONT)
         textFieldTitle.textColor = UIColor.black.withAlphaComponent(0.8)
         textFieldTitle.numberOfLines = 2
         view.addSubview(textFieldTitle)
@@ -231,7 +231,7 @@ private extension PXSecurityCodeViewController {
         if viewModel.shouldShowCard() {
             textFieldTitleTopConstraint = textFieldTitle.topAnchor.constraint(equalTo: cardContainerView.bottomAnchor, constant: PXLayout.M_MARGIN + 2)
         } else {
-            textFieldTitleTopConstraint = textFieldTitle.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: 30)
+            textFieldTitleTopConstraint = textFieldTitle.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: !UIDevice.isSmallDevice() ? 90 : 50)
         }
         textFieldTitleTopConstraint.isActive = true
     }
@@ -245,8 +245,8 @@ private extension PXSecurityCodeViewController {
         view.addSubview(textField)
         NSLayoutConstraint.activate([
             textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textField.topAnchor.constraint(equalTo: textFieldTitle.bottomAnchor, constant: PXLayout.SM_MARGIN),
-            textField.heightAnchor.constraint(equalToConstant: 50),
+            textField.topAnchor.constraint(equalTo: textFieldTitle.bottomAnchor, constant: PXLayout.XS_MARGIN),
+            textField.heightAnchor.constraint(equalToConstant: 40),
             textField.widthAnchor.constraint(equalToConstant: 150)
         ])
         textField.alpha = 0
@@ -309,7 +309,7 @@ private extension PXSecurityCodeViewController {
         var animator = PXAnimator(duration: 0.8, dampingRatio: 0.8)
         animator.addAnimation(animation: {
             self.titleLabelBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height)
-            self.subtitleBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - (self.subtitle.intrinsicContentSize.height) - PXLayout.S_MARGIN)
+            self.subtitleBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - (self.subtitle.intrinsicContentSize.height) - 18)
             self.view.layoutIfNeeded()
         }, delay: 0)
         animator.animate()
@@ -324,7 +324,7 @@ private extension PXSecurityCodeViewController {
                     self.textFieldTitle.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -82 : -80)
                     self.textField.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -82 : -80)
                 } else {
-                    self.textFieldTitleTopConstraint.constant = 8
+                    self.textFieldTitleTopConstraint.constant = !UIDevice.isSmallDevice() ? 60 : 24
                 }
                 self.view.layoutIfNeeded()
             }, delay: 0)
