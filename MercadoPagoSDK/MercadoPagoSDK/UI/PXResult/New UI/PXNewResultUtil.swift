@@ -140,19 +140,26 @@ extension PXNewResultUtil {
     }
 
     //PAYMENT METHOD DATA
-    class func getDataForPaymentMethodView(paymentData: PXPaymentData, amountHelper: PXAmountHelper) -> PXNewCustomViewData? {
+    class func getDataForPaymentMethodView(paymentData: PXPaymentData, amountHelper: PXAmountHelper, paymentMethodsImageURLs: [String: String]?) -> PXNewCustomViewData? {
         guard let paymentMethod = paymentData.paymentMethod else {
             return nil
         }
 
-        let image = getPaymentMethodIcon(paymentMethod: paymentMethod)
+        let image = ResourceManager.shared.getImage("PaymentGeneric")
         let currency = SiteManager.shared.getCurrency()
+
+        var iconURL: String?
+        if let paymentMethodsImageURLs = paymentMethodsImageURLs,
+            !paymentMethodsImageURLs.isEmpty,
+            paymentMethodsImageURLs.keys.contains(paymentMethod.id) {
+            iconURL = paymentMethodsImageURLs[paymentMethod.id]
+        }
 
         let firstString: NSAttributedString = getPMFirstString(currency: currency, paymentData: paymentData, amountHelper: amountHelper)
         let secondString: NSAttributedString? = getPMSecondString(paymentData: paymentData)
         let thirdString: NSAttributedString? = getPMThirdString(paymentData: paymentData)
 
-        let data = PXNewCustomViewData(firstString: firstString, secondString: secondString, thirdString: thirdString, icon: image, iconURL: nil, action: nil, color: .white)
+        let data = PXNewCustomViewData(firstString: firstString, secondString: secondString, thirdString: thirdString, icon: image, iconURL: iconURL, action: nil, color: .white)
         return data
     }
 
