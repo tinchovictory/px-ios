@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MLCardForm
 
 internal class MercadoPagoServices: NSObject {
 
@@ -16,13 +17,19 @@ internal class MercadoPagoServices: NSObject {
     private var branchId: String?
     private var baseURL: String! = PXServicesURLConfigs.MP_API_BASE_URL
     private var gatewayBaseURL: String!
-
+    var reachability: Reachability?
+    var hasInternet: Bool = true
     private var language: String = NSLocale.preferredLanguages[0]
 
     init(publicKey: String, privateKey: String? = nil) {
         self.publicKey = publicKey
         self.privateKey = privateKey
         super.init()
+        addReachabilityObserver()
+    }
+
+    deinit {
+        removeReachabilityObserver()
     }
 
     func update(processingModes: [String]? , branchId: String? = nil) {
