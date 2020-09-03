@@ -107,9 +107,11 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
     }
 
     func expandAnimationInProgress() {
+        textField.resignFirstResponder()
     }
 
     func didFinishAnimation() {
+        loadingButtonComponent?.animatedView?.removeFromSuperview()
         finishButtonAnimation()
     }
 
@@ -275,7 +277,7 @@ private extension PXSecurityCodeViewController {
     }
 
     func setupLoadingButton() {
-        loadingButtonComponent = PXAnimatedButton(normalText: "Pagar".localized, loadingText: "Procesando tu pago".localized, retryText: "Reintentar".localized)
+        loadingButtonComponent = PXWindowedAnimatedButton(normalText: "Pagar".localized, loadingText: "Procesando tu pago".localized, retryText: "Reintentar".localized)
         loadingButtonComponent?.translatesAutoresizingMaskIntoConstraints = false
         loadingButtonComponent?.animationDelegate = self
         loadingButtonComponent?.layer.cornerRadius = 4
