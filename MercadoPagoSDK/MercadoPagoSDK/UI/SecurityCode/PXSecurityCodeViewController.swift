@@ -27,12 +27,13 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
     var textFieldTitleTopConstraint = NSLayoutConstraint()
 
     // MARK: Callbacks
-    var finishButtonAnimation: (() -> Void)
+    let finishButtonAnimation: () -> Void
+    let collectSecurityCodeCallback: (String?) -> Void
 
-    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimation: @escaping (() -> Void), collectSecurityCodeCallback: @escaping ((PXCardInformationForm, String?) -> Void)) {
+    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimation: @escaping () -> Void, collectSecurityCodeCallback: @escaping (String?) -> Void) {
         self.viewModel = viewModel
         self.finishButtonAnimation = finishButtonAnimation
-        self.viewModel.callback = collectSecurityCodeCallback
+        self.collectSecurityCodeCallback = collectSecurityCodeCallback
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -76,7 +77,7 @@ extension PXSecurityCodeViewController {
         subscribeLoadingButtonToNotifications()
         loadingButtonComponent?.startLoading(timeOut: 15)
         textField.becomeFirstResponder()
-        viewModel.executeCallback(secCode: textField.text)
+        collectSecurityCodeCallback(textField.text)
     }
 
     func subscribeLoadingButtonToNotifications() {
