@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import MLUI
 
 internal class PXAnimatedButton: UIButton {
     weak var animationDelegate: PXAnimatedButtonDelegate?
@@ -17,6 +18,7 @@ internal class PXAnimatedButton: UIButton {
     let normalText: String
     let loadingText: String
     let retryText: String
+    var snackbar: MLSnackbar?
 
     private var buttonColor: UIColor?
 
@@ -135,6 +137,17 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         progressView?.doReset()
     }
 
+    func showErrorSnackBar(action: @escaping () -> Void) {
+        status = .normal
+        resetButton()
+        isUserInteractionEnabled = false
+
+        snackbar = MLSnackbar.show(withTitle: "Intenta en otro momento.", actionTitle: "VOLVER", actionBlock: action, type: MLSnackbarType.error(), duration: .long, dismiss: { _ in
+            self.animationDelegate?.shakeDidFinish()
+            self.isUserInteractionEnabled = true
+        })
+    }
+
     func showErrorToast() {
         self.status = .normal
         self.resetButton()
@@ -199,6 +212,10 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         UIView.animate(withDuration: duration) { [weak self] in
             self?.alpha = 0
         }
+    }
+
+    func dismissSnackbar() {
+        snackbar?.dismiss()
     }
 }
 
