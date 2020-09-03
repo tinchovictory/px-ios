@@ -69,15 +69,19 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
 extension PXSecurityCodeViewController {
     private func confirmPayment() {
-        enableUI(false)
         doPayment()
     }
 
     private func doPayment() {
-        subscribeLoadingButtonToNotifications()
-        loadingButtonComponent?.startLoading(timeOut: 15)
-        textField.becomeFirstResponder()
-        collectSecurityCodeCallback(textField.text)
+        if viewModel.internetProtocol?.hasInternetConnection() ?? true {
+            enableUI(false)
+            subscribeLoadingButtonToNotifications()
+            loadingButtonComponent?.startLoading(timeOut: 15)
+            textField.becomeFirstResponder()
+            collectSecurityCodeCallback(textField.text)
+        } else {
+            loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.long, action: nil)
+        }
     }
 
     func subscribeLoadingButtonToNotifications() {
@@ -117,7 +121,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
 
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
-        loadingButtonComponent?.showErrorSnackBar { [weak self] in
+        loadingButtonComponent?.showErrorSnackBar(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
             self?.navigationController?.popViewController(animated: false)
         }
         enableUI(true)

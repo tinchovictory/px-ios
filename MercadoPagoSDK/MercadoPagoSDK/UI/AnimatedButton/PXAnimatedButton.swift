@@ -137,12 +137,12 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         progressView?.doReset()
     }
 
-    func showErrorSnackBar(action: @escaping () -> Void) {
+    func showErrorSnackBar(title: String, actionTitle: String?, type: MLSnackbarType, duration: MLSnackbarDuration, action: (() -> Void)?) {
         status = .normal
         resetButton()
         isUserInteractionEnabled = false
 
-        snackbar = MLSnackbar.show(withTitle: "Intenta en otro momento.", actionTitle: "VOLVER", actionBlock: action, type: MLSnackbarType.error(), duration: .long, dismiss: { _ in
+        snackbar = MLSnackbar.show(withTitle: title, actionTitle: actionTitle, actionBlock: action, type: type, duration: duration, dismiss: { _ in
             self.animationDelegate?.shakeDidFinish()
             self.isUserInteractionEnabled = true
         })
