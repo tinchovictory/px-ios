@@ -64,6 +64,7 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
         super.viewWillDisappear(animated)
         removeKeyboardNotifications()
         loadingButtonComponent?.dismissSnackbar()
+        setupNavBarStyle(style: .black)
     }
 }
 
@@ -126,6 +127,10 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
         }
         enableUI(true)
     }
+
+    func resetButton() {
+        progressButtonAnimationTimeOut()
+    }
 }
 
 // MARK: Keyboard Notifications
@@ -162,7 +167,7 @@ private extension PXSecurityCodeViewController {
 private extension PXSecurityCodeViewController {
     func renderViews() {
         setupControllerView()
-        setNavBarBackgroundColor(color: .white)
+        setupNavBar()
         setupTitle()
         setupSubtitle()
         setupCardContainerView()
@@ -174,6 +179,16 @@ private extension PXSecurityCodeViewController {
 
     func setupControllerView() {
         view.backgroundColor = .white
+    }
+
+    func setupNavBar() {
+        setNavBarBackgroundColor(color: .white)
+        setupNavBarStyle(style: .default)
+        setNavBarTextColor(color: .black)
+    }
+
+    func setupNavBarStyle(style: UIBarStyle) {
+        navigationController?.navigationBar.barStyle = style
     }
 
     func setupTitle() {
@@ -262,6 +277,7 @@ private extension PXSecurityCodeViewController {
     }
 
     func setupCardDrawer() {
+        guard viewModel.shouldShowCard() else { return }
         if let cardUI = viewModel.cardUI, let cardData = viewModel.cardData {
             cardDrawer = MLCardDrawerController(cardUI, cardData)
             if let cardDrawer = cardDrawer {

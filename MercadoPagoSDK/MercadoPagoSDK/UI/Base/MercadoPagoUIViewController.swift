@@ -222,12 +222,16 @@ internal class MercadoPagoUIViewController: UIViewController, UIGestureRecognize
         }
     }
 
+    func setNavBarTextColor(color: UIColor) {
+        navBarTextColor = color
+    }
+
     func getNavigationBarTitle() -> String {
         return ""
     }
 
     func setNavBarBackgroundColor(color: UIColor) {
-        self.navBarBackgroundColor = color
+        navBarBackgroundColor = color
     }
 
     deinit {
