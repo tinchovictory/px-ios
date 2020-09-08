@@ -157,8 +157,6 @@ extension MercadoPagoCheckout {
             self.getIdentificationTypes()
         case .SERVICE_GET_PAYER_COSTS:
             self.getPayerCostsConfiguration()
-        case .SCREEN_REVIEW_AND_CONFIRM:
-            self.showReviewAndConfirmScreen()
         case .SCREEN_SECURITY_CODE:
             self.showSecurityCodeScreen()
         case .SERVICE_POST_PAYMENT:

@@ -21,7 +21,7 @@ internal class PXNavigationHandler: NSObject {
     init(navigationController: UINavigationController) {
         self.navigationController = navigationController
         if self.navigationController.viewControllers.count > 0 {
-            let newNavigationStack = self.navigationController.viewControllers.filter {!($0 is MercadoPagoUIViewController) || $0 is PXReviewViewController
+            let newNavigationStack = self.navigationController.viewControllers.filter {!($0 is MercadoPagoUIViewController)
             }
             viewControllerBase = newNavigationStack.last
         }

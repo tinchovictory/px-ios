@@ -21,39 +21,6 @@ extension MercadoPagoCheckout {
         viewModel.pxNavigationHandler.pushViewController(viewController: vc, animated: true)
     }
 
-    func showReviewAndConfirmScreen() {
-        let paymentFlow = viewModel.createPaymentFlow(paymentErrorHandler: self)
-        let timeOut = paymentFlow.getPaymentTimeOut()
-        let shouldShowAnimatedPayButton = !paymentFlow.needToShowPaymentPluginScreen()
-
-        let reviewVC = PXReviewViewController(viewModel: viewModel.reviewConfirmViewModel(), timeOutPayButton: timeOut, shouldAnimatePayButton: shouldShowAnimatedPayButton, callbackPaymentData: { [weak self] (paymentData: PXPaymentData) in
-            guard let self = self else { return }
-
-            self.viewModel.updateCheckoutModel(paymentData: paymentData)
-            self.executeNextStep()
-        }, callbackConfirm: { [weak self] (paymentData: PXPaymentData) in
-            guard let self = self else { return }
-
-            self.viewModel.updateCheckoutModel(paymentData: paymentData)
-            self.executeNextStep()
-        }, finishButtonAnimation: { //[weak self] in
-            self.executeNextStep()
-        }, changePayerInformation: { [weak self] (paymentData: PXPaymentData) in
-            guard let self = self else { return }
-
-            self.viewModel.updateCheckoutModel(paymentData: paymentData)
-            self.executeNextStep()
-        })
-
-        if let changePaymentMethodAction = viewModel.lifecycleProtocol?.changePaymentMethodTapped?() {
-            reviewVC.changePaymentMethodCallback = changePaymentMethodAction
-        } else {
-            reviewVC.changePaymentMethodCallback = nil
-        }
-
-        viewModel.pxNavigationHandler.pushViewController(viewController: reviewVC, animated: true)
-    }
-
     func showSecurityCodeScreen() {
         let securityCodeVc = SecurityCodeViewController(viewModel: viewModel.getSecurityCodeViewModel(), collectSecurityCodeCallback: { [weak self] _, securityCode in
             self?.getTokenizationService().createCardToken(securityCode: securityCode)

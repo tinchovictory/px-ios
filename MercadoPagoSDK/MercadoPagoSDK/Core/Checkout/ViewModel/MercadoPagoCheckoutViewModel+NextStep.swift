@@ -173,34 +173,6 @@ extension MercadoPagoCheckoutViewModel {
         return (newCard || savedCardWithESC)
     }
 
-    func needReviewAndConfirm() -> Bool {
-        guard self.paymentOptionSelected != nil else {
-            return false
-        }
-
-        if readyToPay {
-            return false
-        }
-
-        if paymentResult != nil {
-            return false
-        }
-
-        if self.isCheckoutComplete() {
-            return false
-        }
-
-        if self.initWithPaymentData && paymentData.isComplete() {
-            initWithPaymentData = false
-            return true
-        }
-
-        if paymentData.isComplete() {
-            return true
-        }
-        return false
-    }
-
     func needOneTapFlow() -> Bool {
         guard let search = self.search else {
             return false

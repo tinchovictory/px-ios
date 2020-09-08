@@ -17,7 +17,6 @@ internal enum CheckoutStep: String {
     case SERVICE_CREATE_CARD_TOKEN
     case SERVICE_GET_PAYER_COSTS
     case SCREEN_PAYER_INFO_FLOW
-    case SCREEN_REVIEW_AND_CONFIRM
     case SERVICE_POST_PAYMENT
     case SERVICE_GET_REMEDY
     case SCREEN_PAYMENT_RESULT
@@ -270,11 +269,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
     }
 
-    func reviewConfirmViewModel() -> PXReviewViewModel {
-        disableChangePaymentMethodIfNeed()
-        return PXReviewViewModel(amountHelper: self.amountHelper, paymentOptionSelected: self.paymentOptionSelected!, advancedConfig: advancedConfig, userLogged: !String.isNullOrEmpty(privateKey))
-    }
-
     func resultViewModel() -> PXResultViewModel {
         guard let paymentResult = paymentResult else {
             fatalError("paymentResult is nil")
@@ -462,9 +456,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needToCreatePayment() || shouldSkipReviewAndConfirm() {
             readyToPay = false
             return .SERVICE_POST_PAYMENT
-        }
-        if needReviewAndConfirm() {
-            return .SCREEN_REVIEW_AND_CONFIRM
         }
         if needToGetIdentificationTypes() {
             return .SERVICE_GET_IDENTIFICATION_TYPES

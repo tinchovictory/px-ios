@@ -26,7 +26,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
     var inactivityViewAnimationConstraint: NSLayoutConstraint?
 
     weak var delegate: PXOfflineMethodsViewControllerDelegate?
-    
+
     var userDidScroll = false
 
     init(viewModel: PXOfflineMethodsViewModel, callbackConfirm: @escaping ((PXPaymentData, Bool) -> Void), callbackUpdatePaymentOption: @escaping ((PaymentMethodOption) -> Void), finishButtonAnimation: @escaping (() -> Void), callbackFinishCheckout: @escaping (() -> Void)) {
@@ -49,7 +49,7 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showInactivityViewIfNecessary()
         }
-        
+
         autoSelectPaymentMethodIfNeeded()
     }
 
@@ -106,12 +106,12 @@ final class PXOfflineMethodsViewController: MercadoPagoUIViewController {
         renderInactivityView(text: viewModel.getTitleForLastSection())
         view.bringSubviewToFront(footerView)
     }
-    
+
     private func autoSelectPaymentMethodIfNeeded() {
         guard let indexPath = viewModel.selectedIndexPath else { return }
         selectPaymentMethodAtIndexPath(indexPath)
     }
-    
+
     private func selectPaymentMethodAtIndexPath(_ indexPath: IndexPath) {
         viewModel.selectedIndexPath = indexPath
         PXFeedbackGenerator.selectionFeedback()
