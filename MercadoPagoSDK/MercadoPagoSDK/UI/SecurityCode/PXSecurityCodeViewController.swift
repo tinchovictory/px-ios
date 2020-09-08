@@ -19,6 +19,7 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
     let textField = UITextField()
     var loadingButtonComponent: PXAnimatedButton?
     var cardDrawer: MLCardDrawerController?
+    var internetErrorAttempts: Int = 0
 
     // MARK: Constraints
     var loadingButtonBottomConstraint = NSLayoutConstraint()
@@ -81,7 +82,13 @@ extension PXSecurityCodeViewController {
             textField.becomeFirstResponder()
             collectSecurityCodeCallback(viewModel.cardInfo, textField.text)
         } else {
-            loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.long, action: nil)
+            internetErrorAttempts += 1
+            if internetErrorAttempts < 3 {
+                loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.long, action: nil)
+            } else {
+                progressButtonAnimationTimeOut()
+            }
+
         }
     }
 
