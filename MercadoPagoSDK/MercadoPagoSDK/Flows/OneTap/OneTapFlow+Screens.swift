@@ -73,7 +73,7 @@ extension OneTapFlow {
 
         let securityCodeVc = PXSecurityCodeViewController(viewModel: model.savedCardSecurityCodeViewModel(), finishButtonAnimation: finishButtonAnimation, collectSecurityCodeCallback: collectSecurityCodeCallback)
 
-        pxNavigationHandler.navigationController.pushViewController(securityCodeVc, animated: true)
+        pxNavigationHandler.pushViewController(viewController: securityCodeVc, animated: true)
     }
 
     func showKyCScreen() {
