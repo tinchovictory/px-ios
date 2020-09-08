@@ -23,8 +23,6 @@ class AddCardFlowModel: NSObject, PXFlowModel {
         case start
         case getPaymentMethods
         case getIdentificationTypes
-        case openCardForm
-        case openIdentificationTypes
         case createToken
         case associateTokenWithUser
         case showCongrats
@@ -44,19 +42,7 @@ class AddCardFlowModel: NSObject, PXFlowModel {
         case .getPaymentMethods:
             currentStep = .getIdentificationTypes
         case .getIdentificationTypes:
-            currentStep = .openCardForm
-        case .openCardForm:
-            if let selectedPaymentMethod = self.selectedPaymentMethod, let identificationTypes = self.identificationTypes, !identificationTypes.isEmpty, selectedPaymentMethod.isIdentificationTypeRequired || selectedPaymentMethod.isIdentificationRequired {
-                currentStep = .openIdentificationTypes
-            } else {
-                currentStep = .createToken
-            }
-        case .openIdentificationTypes:
-            if let idType = self.cardToken?.cardholder?.identification?.type, !idType.isEmpty {
-                currentStep = .createToken
-            } else {
-                currentStep = .openIdentificationTypes
-            }
+            break
         case .createToken:
             currentStep = .associateTokenWithUser
         case .associateTokenWithUser:
@@ -70,9 +56,6 @@ class AddCardFlowModel: NSObject, PXFlowModel {
     }
 
     func reset() {
-        if self.currentStep.rawValue > AddCardFlowModel.Steps.openCardForm.rawValue {
-            self.currentStep = .openCardForm
-        }
         self.cardToken = nil
         self.selectedPaymentMethod = nil
         self.tokenizedCard = nil

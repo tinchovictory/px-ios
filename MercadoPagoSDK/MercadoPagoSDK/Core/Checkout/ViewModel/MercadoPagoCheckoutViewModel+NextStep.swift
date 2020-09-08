@@ -85,34 +85,6 @@ extension MercadoPagoCheckoutViewModel {
         return false
     }
 
-    func needGetEntityTypes() -> Bool {
-        guard self.paymentOptionSelected != nil else {
-            return false
-        }
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-        if paymentData.payer?.entityType == nil && pm.isEntityTypeRequired {
-            return true
-        }
-        return false
-    }
-
-    func needGetFinancialInstitutions() -> Bool {
-        guard self.paymentOptionSelected != nil else {
-            return false
-        }
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-
-        if paymentData.transactionDetails?.financialInstitution == nil && !Array.isNullOrEmpty(pm.financialInstitutions) {
-           return true
-        }
-
-        return false
-    }
-
     func needGetIssuers() -> Bool {
         guard let selectedType = self.paymentOptionSelected else {
             return false
@@ -141,37 +113,11 @@ extension MercadoPagoCheckoutViewModel {
         return false
     }
 
-    func needIssuerSelectionScreen() -> Bool {
-        guard let selectedType = self.paymentOptionSelected else {
-            return false
-        }
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-        if selectedType.isCustomerPaymentMethod() {
-            return false
-        }
-        if !paymentData.hasIssuer() && pm.isCard && !Array.isNullOrEmpty(issuers) {
-            return true
-        }
-        return false
-    }
-
     func needChosePayerCost() -> Bool {
         guard let pm = self.paymentData.getPaymentMethod() else {
             return false
         }
         if pm.isCard && !paymentData.hasPayerCost() && payerCosts == nil {
-            return true
-        }
-        return false
-    }
-
-    func needPayerCostSelectionScreen() -> Bool {
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-        if (pm.isCard || pm.isDigitalCurrency) && !paymentData.hasPayerCost() && payerCosts != nil {
             return true
         }
         return false

@@ -76,10 +76,6 @@ public class AddCardFlow: NSObject, PXFlow {
             self.getPaymentMethods()
         case .getIdentificationTypes:
             self.getIdentificationTypes()
-        case .openCardForm:
-            self.openCardForm()
-        case .openIdentificationTypes:
-            self.openIdentificationTypesScreen()
         case .createToken:
             self.createCardToken()
         case .associateTokenWithUser:
@@ -148,35 +144,6 @@ public class AddCardFlow: NSObject, PXFlow {
                 }
             }
         })
-    }
-
-    private func openCardForm() {
-        guard let paymentMethods = self.model.paymentMethods else {
-            return
-        }
-        let cardFormViewModel = CardFormViewModel(paymentMethods: paymentMethods, guessedPaymentMethods: nil, customerCard: nil, token: nil, mercadoPagoServices: nil, bankDealsEnabled: false)
-        let cardFormViewController = CardFormViewController(cardFormManager: cardFormViewModel, callback: { [weak self] (paymentMethods, cardToken) in
-            guard let self = self else { return }
-            self.model.cardToken = cardToken
-            self.model.selectedPaymentMethod = paymentMethods.first
-            self.executeNextStep()
-        })
-        self.navigationHandler.pushViewController(cleanCompletedCheckouts: false, targetVC: cardFormViewController, animated: true)
-    }
-
-    private func openIdentificationTypesScreen() {
-        guard let identificationTypes = self.model.supportedIdentificationTypes() else {
-            self.showErrorScreen()
-            return
-        }
-        let identificationViewController = IdentificationViewController(identificationTypes: identificationTypes, paymentMethod: model.selectedPaymentMethod, callback: { [weak self] (identification) in
-            guard let self = self else { return }
-            self.model.cardToken?.cardholder?.identification = identification
-            self.executeNextStep()
-            }, errorExitCallback: { [weak self] in
-                self?.showErrorScreen()
-        })
-        self.navigationHandler.pushViewController(cleanCompletedCheckouts: false, targetVC: identificationViewController, animated: true)
     }
 
     private func createCardToken() {
@@ -265,13 +232,6 @@ public class AddCardFlow: NSObject, PXFlow {
 
     private func reset() {
         PXNotificationManager.Post.cardFormReset()
-        if let cardForm = self.navigationHandler.navigationController.viewControllers.filter({ $0 is CardFormViewController }).first {
-            self.navigationHandler.navigationController.popToViewController(cardForm, animated: true)
-            self.model.reset()
-        } else {
-            self.delegate?.addCardFlowFailed(shouldRestart: true)
-            ThemeManager.shared.applyAppNavBarStyle(navigationController: self.navigationHandler.navigationController)
-        }
         self.navigationHandler.navigationController.setNavigationBarHidden(false, animated: true)
     }
 

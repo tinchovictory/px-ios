@@ -131,12 +131,7 @@ internal class PXNavigationHandler: NSObject {
     }
 
     func backToFirstPaymentVaultViewController() {
-        let mercadoPagoPaymentVaultViewController = self.navigationController.viewControllers.filter { $0.isKind(of: MercadoPagoUIViewController.self) && $0.isKind(of: PaymentVaultViewController.self) }
-        if !mercadoPagoPaymentVaultViewController.isEmpty {
-            self.navigationController.popToViewController(mercadoPagoPaymentVaultViewController[0], animated: true)
-        } else {
-            navigationController.popViewController(animated: true)
-        }
+        navigationController.popViewController(animated: true)
     }
 
     internal func removeRootLoading() {

@@ -124,7 +124,7 @@ internal class AdditionalStepViewModel {
     }
 
     func getBankInterestWarningCellHeight() -> CGFloat {
-        return BankInsterestTableViewCell.cellHeight
+        return 0
     }
 
     func isTitleCellFor(indexPath: IndexPath) -> Bool {
@@ -168,35 +168,6 @@ internal class AdditionalStepViewModel {
         }
         return false
     }
-}
-
-internal class IssuerAdditionalStepViewModel: AdditionalStepViewModel {
-
-    let cardViewRect = CGRect(x: 0, y: 0, width: 100, height: 30)
-
-    init(amountHelper: PXAmountHelper, token: PXCardInformationForm?, paymentMethod: PXPaymentMethod, dataSource: [Cellable], mercadoPagoServices: MercadoPagoServices, advancedConfiguration: PXAdvancedConfiguration) {
-        super.init(amountHelper: amountHelper, screenTitle: "¿Quién emitió tu tarjeta?".localized, cardSectionVisible: true, cardSectionView: CardFrontView(frame: self.cardViewRect), totalRowVisible: false, token: token, paymentMethods: [paymentMethod], dataSource: dataSource, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfiguration)
-    }
-
-    override func getScreenProperties() -> [String: Any] {
-        var properties: [String: Any] = [:]
-        properties["payment_method_id"] = paymentMethods.first?.getPaymentIdForTracking()
-        properties["payment_method_type"] = paymentMethods.first?.getPaymentTypeForTracking()
-        var dic: [Any] = []
-        for issuerObj in dataSource {
-            if let issuer = issuerObj as? PXIssuer {
-                dic.append(issuer.getIssuerForTracking())
-            }
-        }
-        properties["available_banks"] = dic
-
-        return properties
-    }
-
-    override func getScreenPath() -> String {
-        return TrackingPaths.Screens.getIssuersPath()
-    }
-
 }
 
 internal class PayerCostAdditionalStepViewModel: AdditionalStepViewModel {
@@ -243,21 +214,4 @@ internal class PayerCostAdditionalStepViewModel: AdditionalStepViewModel {
         return TrackingPaths.Screens.getInstallmentsPath()
     }
 
-}
-
-internal class FinancialInstitutionViewModel: AdditionalStepViewModel {
-
-    init(amountHelper: PXAmountHelper, token: PXCardInformationForm?, paymentMethod: PXPaymentMethod, dataSource: [Cellable], mercadoPagoServices: MercadoPagoServices, advancedConfiguration: PXAdvancedConfiguration) {
-        super.init(amountHelper: amountHelper, screenTitle: "¿Cuál es tu banco?".localized, cardSectionVisible: false, cardSectionView: nil, totalRowVisible: false, token: token, paymentMethods: [paymentMethod], dataSource: dataSource, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfiguration)
-    }
-}
-
-internal class EntityTypeViewModel: AdditionalStepViewModel {
-    override var maxFontSize: CGFloat { return 21 }
-
-    let cardViewRect = CGRect(x: 0, y: 0, width: 100, height: 30)
-
-    init(amountHelper: PXAmountHelper, token: PXCardInformationForm?, paymentMethod: PXPaymentMethod, dataSource: [Cellable], mercadoPagoServices: MercadoPagoServices, advancedConfiguration: PXAdvancedConfiguration) {
-        super.init(amountHelper: amountHelper, screenTitle: "¿Cuál es el tipo de persona?".localized, cardSectionVisible: true, cardSectionView: IdentificationCardView(frame: self.cardViewRect), totalRowVisible: false, token: token, paymentMethods: [paymentMethod], dataSource: dataSource, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfiguration)
-    }
 }

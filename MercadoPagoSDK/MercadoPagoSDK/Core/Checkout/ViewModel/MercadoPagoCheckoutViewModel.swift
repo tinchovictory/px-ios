@@ -12,18 +12,11 @@ internal enum CheckoutStep: String {
     case START
     case ACTION_FINISH
     case SERVICE_GET_IDENTIFICATION_TYPES
-    case SCREEN_PAYMENT_METHOD_SELECTION
-    case SCREEN_CARD_FORM
     case SCREEN_SECURITY_CODE
     case SERVICE_GET_ISSUERS
-    case SCREEN_ISSUERS
     case SERVICE_CREATE_CARD_TOKEN
-    case SCREEN_IDENTIFICATION
-    case SCREEN_ENTITY_TYPE
-    case SCREEN_FINANCIAL_INSTITUTIONS
     case SERVICE_GET_PAYER_COSTS
     case SCREEN_PAYER_INFO_FLOW
-    case SCREEN_PAYER_COST
     case SCREEN_REVIEW_AND_CONFIRM
     case SERVICE_POST_PAYMENT
     case SERVICE_GET_REMEDY
@@ -246,33 +239,19 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     }
 
     public func entityTypeViewModel() -> AdditionalStepViewModel {
-        return EntityTypeViewModel(amountHelper: self.amountHelper, token: self.cardToken, paymentMethod: self.paymentData.getPaymentMethod()!, dataSource: self.entityTypes!, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
+        return AdditionalStepViewModel(amountHelper: amountHelper, screenTitle: "", cardSectionVisible: false, totalRowVisible: false, token: cardToken, paymentMethods: [paymentData.getPaymentMethod()!], dataSource: entityTypes!, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
     }
 
     public func financialInstitutionViewModel() -> AdditionalStepViewModel {
-        return FinancialInstitutionViewModel(amountHelper: self.amountHelper, token: self.cardToken, paymentMethod: self.paymentData.getPaymentMethod()!, dataSource: self.financialInstitutions!, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
+        return entityTypeViewModel()
     }
 
     public func issuerViewModel() -> AdditionalStepViewModel {
-        guard let paymentMethod = self.paymentData.getPaymentMethod() else {
-            fatalError("Cannot find payment method")
-        }
-
-        return IssuerAdditionalStepViewModel(amountHelper: self.amountHelper, token: self.cardToken, paymentMethod: paymentMethod, dataSource: self.issuers!, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
+        return entityTypeViewModel()
     }
 
     public func payerCostViewModel() -> AdditionalStepViewModel {
-        guard let paymentMethod = self.paymentData.getPaymentMethod() else {
-            fatalError("Cannot find payment method")
-        }
-        var cardInformation: PXCardInformationForm? = self.cardToken
-        if cardInformation == nil {
-            if let token = paymentOptionSelected as? PXCardInformationForm {
-                cardInformation = token
-            }
-        }
-
-        return PayerCostAdditionalStepViewModel(amountHelper: self.amountHelper, token: cardInformation, paymentMethod: paymentMethod, dataSource: payerCosts!, email: self.checkoutPreference.payer.email, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
+        return entityTypeViewModel()
     }
 
     public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> SecurityCodeViewModel {
@@ -467,9 +446,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needOneTapFlow() {
             return .FLOW_ONE_TAP
         }
-        if !isPaymentTypeSelected() {
-            return .SCREEN_PAYMENT_METHOD_SELECTION
-        }
         if shouldShowHook(hookStep: .BEFORE_PAYMENT_METHOD_CONFIG) {
             return .SCREEN_HOOK_BEFORE_PAYMENT_METHOD_CONFIG
         }
@@ -490,17 +466,11 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needReviewAndConfirm() {
             return .SCREEN_REVIEW_AND_CONFIRM
         }
-        if needCompleteCard() {
-            return .SCREEN_CARD_FORM
-        }
         if needToGetIdentificationTypes() {
             return .SERVICE_GET_IDENTIFICATION_TYPES
         }
         if needToGetPayerInfo() {
             return .SCREEN_PAYER_INFO_FLOW
-        }
-        if needGetIdentification() {
-            return .SCREEN_IDENTIFICATION
         }
         if needSecurityCode() {
             return .SCREEN_SECURITY_CODE
@@ -508,23 +478,11 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needCreateToken() {
             return .SERVICE_CREATE_CARD_TOKEN
         }
-        if needGetEntityTypes() {
-            return .SCREEN_ENTITY_TYPE
-        }
-        if needGetFinancialInstitutions() {
-            return .SCREEN_FINANCIAL_INSTITUTIONS
-        }
         if needGetIssuers() {
             return .SERVICE_GET_ISSUERS
         }
-        if needIssuerSelectionScreen() {
-            return .SCREEN_ISSUERS
-        }
         if needChosePayerCost() {
             return .SERVICE_GET_PAYER_COSTS
-        }
-        if needPayerCostSelectionScreen() {
-            return .SCREEN_PAYER_COST
         }
         return .ACTION_FINISH
     }
