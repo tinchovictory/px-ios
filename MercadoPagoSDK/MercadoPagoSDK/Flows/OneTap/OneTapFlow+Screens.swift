@@ -66,8 +66,8 @@ extension OneTapFlow {
             self?.executeNextStep()
         }
 
-        let collectSecurityCodeCallback: (String?) -> Void = {
-            [weak self] securityCode in
+        let collectSecurityCodeCallback: (PXCardInformationForm, String?) -> Void = {
+            [weak self] (_, securityCode) in
             self?.getTokenizationService().createCardToken(securityCode: securityCode)
         }
 

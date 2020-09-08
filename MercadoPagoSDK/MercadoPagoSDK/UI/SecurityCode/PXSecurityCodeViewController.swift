@@ -28,9 +28,9 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     // MARK: Callbacks
     let finishButtonAnimation: () -> Void
-    let collectSecurityCodeCallback: (String?) -> Void
+    let collectSecurityCodeCallback: (PXCardInformationForm, String?) -> Void
 
-    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimation: @escaping () -> Void, collectSecurityCodeCallback: @escaping (String?) -> Void) {
+    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimation: @escaping () -> Void, collectSecurityCodeCallback: @escaping (PXCardInformationForm, String?) -> Void) {
         self.viewModel = viewModel
         self.finishButtonAnimation = finishButtonAnimation
         self.collectSecurityCodeCallback = collectSecurityCodeCallback
@@ -79,7 +79,7 @@ extension PXSecurityCodeViewController {
             subscribeLoadingButtonToNotifications()
             loadingButtonComponent?.startLoading(timeOut: 15)
             textField.becomeFirstResponder()
-            collectSecurityCodeCallback(textField.text)
+            collectSecurityCodeCallback(viewModel.cardInfo, textField.text)
         } else {
             loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.long, action: nil)
         }
