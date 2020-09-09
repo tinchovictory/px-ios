@@ -8,15 +8,7 @@
 import Foundation
 
 /// :nodoc:
-extension PXPaymentMethod: Cellable {
-    var objectType: ObjectTypes {
-        get {
-            return ObjectTypes.paymentMethod
-        }
-        set {
-            self.objectType = ObjectTypes.paymentMethod
-        }
-    }
+extension PXPaymentMethod {
 
     internal var isIssuerRequired: Bool {
         return isAdditionalInfoNeeded("issuer_id")

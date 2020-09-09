@@ -237,22 +237,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         return PaymentVaultViewModel(amountHelper: self.amountHelper, paymentMethodOptions: self.paymentMethodOptions!, customerPaymentOptions: customerOptions, paymentMethods: search?.availablePaymentMethods ?? [], groupName: groupName, isRoot: rootVC, email: self.checkoutPreference.payer.email, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig, disabledOption: disabledOption)
     }
 
-    public func entityTypeViewModel() -> AdditionalStepViewModel {
-        return AdditionalStepViewModel(amountHelper: amountHelper, screenTitle: "", cardSectionVisible: false, totalRowVisible: false, token: cardToken, paymentMethods: [paymentData.getPaymentMethod()!], dataSource: entityTypes!, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
-    }
-
-    public func financialInstitutionViewModel() -> AdditionalStepViewModel {
-        return entityTypeViewModel()
-    }
-
-    public func issuerViewModel() -> AdditionalStepViewModel {
-        return entityTypeViewModel()
-    }
-
-    public func payerCostViewModel() -> AdditionalStepViewModel {
-        return entityTypeViewModel()
-    }
-
     public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> SecurityCodeViewModel {
         let cardInformation: PXCardInformationForm
         if let paymentOptionSelected = paymentOptionSelected as? PXCardInformationForm {

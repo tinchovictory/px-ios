@@ -26,6 +26,5 @@ internal class ApiUtil {
         case GET_PAYMENT_METHODS
         case GET_IDENTIFICATION_TYPES
         case GET_INSTRUCTIONS
-        case ASSOCIATE_TOKEN
     }
 }

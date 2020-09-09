@@ -322,11 +322,6 @@ extension PXReviewViewModel {
         return PXSummaryComponent(props: props)
     }
 
-    func buildTitleComponent() -> PXReviewTitleComponent {
-        let props = PXReviewTitleComponentProps(titleColor: ThemeManager.shared.getTitleColorForReviewConfirmNavigation(), backgroundColor: ThemeManager.shared.highlightBackgroundColor())
-        return PXReviewTitleComponent(props: props)
-    }
-
     func buildPayerComponent() -> PXPayerComponent? {
 
         if let payer = self.amountHelper.getPaymentData().payer,

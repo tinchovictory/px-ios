@@ -7,16 +7,7 @@
 
 import Foundation
 
-extension PXIssuer: Cellable {
-    var objectType: ObjectTypes {
-        get {
-            return ObjectTypes.issuer
-        }
-        set {
-            self.objectType = ObjectTypes.issuer
-        }
-    }
-
+extension PXIssuer {
     func getIssuerForTracking() -> [String: Any] {
         var issuerDic: [String: Any] = [:]
         issuerDic["id"] = id
