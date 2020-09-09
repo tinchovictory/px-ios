@@ -120,7 +120,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
             cardFormViewController.dismissLoadingAndPop()
         }
     }
-    
+
     func setupAutoDisplayOfflinePaymentMethods() {
         if viewModel.shouldAutoDisplayOfflinePaymentMethods() && shouldPromptForOfflineMethods {
             shouldPromptForOfflineMethods = false

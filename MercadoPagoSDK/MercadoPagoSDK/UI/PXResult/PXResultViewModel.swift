@@ -376,7 +376,7 @@ extension PXResultViewModel: PXNewResultViewModelInterface {
     func getCustomOrder() -> Bool? {
         return pointsAndDiscounts?.customOrder
     }
-    
+
     func getPaymentMethodsImageURLs() -> [String: String]? {
         return pointsAndDiscounts?.paymentMethodsImages
     }

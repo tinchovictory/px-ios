@@ -133,7 +133,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
 
         PXConfiguratorManager.escConfig = PXESCConfig.createConfig()
-        
+
         // Create Init Flow
         createInitFlow()
     }

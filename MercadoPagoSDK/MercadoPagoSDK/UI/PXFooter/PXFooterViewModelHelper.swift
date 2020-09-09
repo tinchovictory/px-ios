@@ -12,7 +12,7 @@ import UIKit
 internal extension PXResultViewModel {
 
     typealias Action = (() -> Void)?
-    
+
     func getActionButton() -> PXAction? {
         return getAction(label: getButtonLabel(), action: getButtonAction())
     }
@@ -20,7 +20,7 @@ internal extension PXResultViewModel {
     func getActionLink() -> PXAction? {
         return getAction(label: getLinkLabel(), action: getLinkAction())
     }
-    
+
     private func getAction(label: String?, action: Action) -> PXAction? {
         guard let label = label, let action = action else {
             return nil
