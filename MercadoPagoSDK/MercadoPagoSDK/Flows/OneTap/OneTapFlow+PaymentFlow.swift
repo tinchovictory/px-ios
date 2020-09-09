@@ -40,22 +40,20 @@ extension OneTapFlow: PXPaymentResultHandlerProtocol {
         let lastViewController = pxNavigationHandler.navigationController.viewControllers.last
         if let oneTapViewController = lastViewController as? PXOneTapViewController {
             oneTapViewController.resetButton(error: error)
-        } else if lastViewController is SecurityCodeViewController,
-            let oneTapViewController = pxNavigationHandler.navigationController.viewControllers.filter({$0 is PXOneTapViewController}).first as? PXOneTapViewController {
-            pxNavigationHandler.navigationController.popToViewController(oneTapViewController, animated: true)
+        } else if let securityCodeVC = lastViewController as? PXSecurityCodeViewController {
             if pxNavigationHandler.isLoadingPresented() {
                 pxNavigationHandler.dismissLoading(animated: true, finishCallback: { [weak self] in
-                    self?.resetButtonAndCleanToken(oneTapViewController: oneTapViewController, error: error)
+                    self?.resetButtonAndCleanToken(securityCodeVC: securityCodeVC, error: error)
                 })
                 return
             }
-            resetButtonAndCleanToken(oneTapViewController: oneTapViewController, error: error)
+            resetButtonAndCleanToken(securityCodeVC: securityCodeVC, error: error)
         }
     }
 
-    private func resetButtonAndCleanToken(oneTapViewController: PXOneTapViewController, error: MPSDKError) {
+    private func resetButtonAndCleanToken(securityCodeVC: PXSecurityCodeViewController, error: MPSDKError) {
         model.paymentData.cleanToken()
-        oneTapViewController.resetButton(error: error)
+        securityCodeVC.resetButton()
     }
 
     func finishPaymentFlow(paymentResult: PaymentResult, instructionsInfo: PXInstructions?, pointsAndDiscounts: PXPointsAndDiscounts?) {
@@ -80,6 +78,8 @@ extension OneTapFlow: PXPaymentErrorHandlerProtocol {
             PXConfiguratorManager.escProtocol.deleteESC(config: PXConfiguratorManager.escConfig, token: token, reason: reason, detail: nil)
         }
         model.paymentData.cleanToken()
-        executeNextStep()
+        if !(pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController) {
+            executeNextStep()
+        }
     }
 }
