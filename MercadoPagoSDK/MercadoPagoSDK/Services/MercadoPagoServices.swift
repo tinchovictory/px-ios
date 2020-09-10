@@ -126,7 +126,7 @@ internal class MercadoPagoServices: NSObject {
                         token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
-                        let apiException = try PXApiException.fromJSON(data: data)
+                        let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                         failure(PXError(domain: ApiDomain.GET_TOKEN, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: tokenDic as? [String: Any], apiException: apiException))
                     }
                 }
@@ -147,7 +147,7 @@ internal class MercadoPagoServices: NSObject {
                         token = try JSONDecoder().decode(PXToken.self, from: data) as PXToken
                         callback(token)
                     } else {
-                        let apiException = try PXApiException.fromJSON(data: data)
+                        let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                         failure(PXError(domain: ApiDomain.CLONE_TOKEN, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: tokenDic as? [String: Any], apiException: apiException))
                     }
                 }
@@ -198,10 +198,10 @@ internal class MercadoPagoServices: NSObject {
 
             if let error = jsonResult as? NSDictionary {
                 if (error["status"]! as? Int) == 404 {
-                    let apiException = try PXApiException.fromJSON(data: data)
+                    let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                     failure(PXError(domain: ApiDomain.GET_IDENTIFICATION_TYPES, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: error as? [String: Any], apiException: apiException))
                 } else if error["error"] != nil {
-                    let apiException = try PXApiException.fromJSON(data: data)
+                    let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                     failure(PXError(domain: ApiDomain.GET_IDENTIFICATION_TYPES, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: error as? [String: Any], apiException: apiException))
                 }
             } else {
@@ -229,7 +229,7 @@ internal class MercadoPagoServices: NSObject {
 
                 if let errorDic = jsonResponse as? NSDictionary {
                     if errorDic["error"] != nil {
-                        let apiException = try PXApiException.fromJSON(data: data)
+                        let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                         failure(PXError(domain: ApiDomain.GET_ISSUERS, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: errorDic as? [String: Any], apiException: apiException))
                     }
                 } else {

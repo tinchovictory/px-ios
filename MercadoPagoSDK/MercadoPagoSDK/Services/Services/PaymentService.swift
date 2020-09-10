@@ -37,7 +37,7 @@ internal class PaymentService: MercadoPagoService {
 
                 if let errorDic = jsonResult as? NSDictionary {
                     if errorDic["error"] != nil {
-                        let apiException = try PXApiException.fromJSON(data: data)
+                        let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
                         failure(PXError(domain: ApiDomain.GET_SUMMARY_AMOUNT, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: errorDic["error"] as? String ?? "Unknowed Error"], apiException: apiException))
 
                     } else {

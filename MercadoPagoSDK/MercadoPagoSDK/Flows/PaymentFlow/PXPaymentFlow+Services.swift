@@ -57,8 +57,6 @@ internal extension PXPaymentFlow {
                 self?.paymentErrorHandler?.escError(reason: .INVALID_FINGERPRINT)
             } else if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_PAYMENT_WITH_ESC.rawValue) {
                 self?.paymentErrorHandler?.escError(reason: .ESC_CAP)
-            } else if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_PAYMENT_IDENTIFICATION_NUMBER.rawValue) {
-                self?.paymentErrorHandler?.identificationError?()
             } else {
                 self?.showError(error: mpError)
             }
