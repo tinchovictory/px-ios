@@ -275,7 +275,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         return PayerCostAdditionalStepViewModel(amountHelper: self.amountHelper, token: cardInformation, paymentMethod: paymentMethod, dataSource: payerCosts!, email: self.checkoutPreference.payer.email, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
     }
 
-    public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> SecurityCodeViewModel {
+    public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> PXSecurityCodeViewModel {
         let cardInformation: PXCardInformationForm
         if let paymentOptionSelected = paymentOptionSelected as? PXCardInformationForm {
             cardInformation = paymentOptionSelected
@@ -287,8 +287,11 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         guard let paymentMethod = paymentData.paymentMethod else {
             fatalError("Don't have paymentData to open Security View Controller")
         }
-        let reason = SecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, isCallForAuth: isCallForAuth)
-        return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
+
+        let reason = PXSecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, isCallForAuth: isCallForAuth)
+        let cardSliderViewModel = onetapFlow?.model.pxOneTapViewModel?.getCardSliderViewModel().first(where: { $0.cardId == paymentOptionSelected?.getId() })
+
+        return PXSecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason, cardUI: cardSliderViewModel?.cardUI, cardData: cardSliderViewModel?.cardData, internetProtocol: mercadoPagoServices)
     }
 
     func reviewConfirmViewModel() -> PXReviewViewModel {
@@ -737,8 +740,10 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     }
 
     func errorInputs(error: MPSDKError, errorCallback: (() -> Void)?) {
-        MercadoPagoCheckoutViewModel.error = error
-        self.errorCallback = errorCallback
+        if !(pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController) {
+            MercadoPagoCheckoutViewModel.error = error
+            self.errorCallback = errorCallback
+        }
     }
 
     func populateCheckoutStore() {
