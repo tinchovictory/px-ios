@@ -147,8 +147,6 @@ extension MercadoPagoCheckout {
         switch self.viewModel.nextStep() {
         case .START :
             self.initialize()
-        case .SCREEN_PAYER_INFO_FLOW:
-            self.showPayerInfoFlow()
         case .SERVICE_GET_ISSUERS:
             self.getIssuers()
         case .SERVICE_CREATE_CARD_TOKEN:

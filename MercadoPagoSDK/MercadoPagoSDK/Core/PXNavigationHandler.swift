@@ -142,7 +142,7 @@ internal class PXNavigationHandler: NSObject {
     }
 
     func cleanCompletedCheckoutsFromNavigationStack() {
-        let resultViewControllers = navigationController.viewControllers.filter { $0 is PXResultViewController || $0 is PXNewResultViewController }
+        let resultViewControllers = navigationController.viewControllers.filter { $0 is PXNewResultViewController }
         if let lastResultViewController = resultViewControllers.last {
             let index = self.navigationController.viewControllers.index(of: lastResultViewController)
             var  validViewControllers = self.navigationController.viewControllers.filter { (!$0.isKind(of: MercadoPagoUIViewController.self)) || self.navigationController.viewControllers.index(of: $0)! > index! || $0 == self.navigationController.viewControllers.last }

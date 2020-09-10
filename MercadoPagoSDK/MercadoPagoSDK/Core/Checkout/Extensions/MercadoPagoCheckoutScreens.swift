@@ -10,17 +10,6 @@ import Foundation
 
 extension MercadoPagoCheckout {
 
-    func showPayerInfoFlow() {
-        let payerInfoViewModel = self.viewModel.payerInfoFlow()
-        let vc = PayerInfoViewController(viewModel: payerInfoViewModel) { [weak self] (payer) in
-            guard let self = self else { return }
-
-            self.viewModel.updateCheckoutModel(payer: payer)
-            self.executeNextStep()
-        }
-        viewModel.pxNavigationHandler.pushViewController(viewController: vc, animated: true)
-    }
-
     func showSecurityCodeScreen() {
         let securityCodeVc = SecurityCodeViewController(viewModel: viewModel.getSecurityCodeViewModel(), collectSecurityCodeCallback: { [weak self] _, securityCode in
             self?.getTokenizationService().createCardToken(securityCode: securityCode)

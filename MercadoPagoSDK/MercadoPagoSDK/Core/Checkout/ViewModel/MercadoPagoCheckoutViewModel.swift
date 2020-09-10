@@ -16,7 +16,6 @@ internal enum CheckoutStep: String {
     case SERVICE_GET_ISSUERS
     case SERVICE_CREATE_CARD_TOKEN
     case SERVICE_GET_PAYER_COSTS
-    case SCREEN_PAYER_INFO_FLOW
     case SERVICE_POST_PAYMENT
     case SERVICE_GET_REMEDY
     case SCREEN_PAYMENT_RESULT
@@ -196,11 +195,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
             return []
         }
         return paymentMethods
-    }
-
-    func payerInfoFlow() -> PayerInfoViewModel {
-        let viewModel = PayerInfoViewModel(identificationTypes: self.identificationTypes!, payer: self.paymentData.payer!, amountHelper: amountHelper)
-        return viewModel
     }
 
     // Returns list with all cards ids with esc
@@ -439,9 +433,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
         if needToGetIdentificationTypes() {
             return .SERVICE_GET_IDENTIFICATION_TYPES
-        }
-        if needToGetPayerInfo() {
-            return .SCREEN_PAYER_INFO_FLOW
         }
         if needSecurityCode() {
             return .SCREEN_SECURITY_CODE
@@ -825,16 +816,6 @@ extension MercadoPagoCheckoutViewModel {
 extension MercadoPagoCheckoutViewModel {
     func getAdvancedConfiguration() -> PXAdvancedConfiguration {
         return advancedConfig
-    }
-
-    private func disableChangePaymentMethodIfNeed() {
-        if let pmSearch = search, let firsPm = pmSearch.availablePaymentMethods.first {
-            if pmSearch.getPaymentOptionsCount() == 1 && !firsPm.isCard {
-                 advancedConfig.reviewConfirmConfiguration.disableChangeMethodOption()
-            }
-        } else {
-            advancedConfig.reviewConfirmConfiguration.disableChangeMethodOption()
-        }
     }
 }
 
