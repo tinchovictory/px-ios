@@ -80,16 +80,6 @@ extension MercadoPagoCheckoutViewModel {
         return false
     }
 
-    func needChosePayerCost() -> Bool {
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-        if pm.isCard && !paymentData.hasPayerCost() && payerCosts == nil {
-            return true
-        }
-        return false
-    }
-
     func needSecurityCode() -> Bool {
         guard let pmSelected = self.paymentOptionSelected else {
             return false

@@ -152,8 +152,6 @@ extension MercadoPagoCheckout {
             self.initialize()
         case .SERVICE_CREATE_CARD_TOKEN:
             self.getTokenizationService().createCardToken()
-        case .SERVICE_GET_PAYER_COSTS:
-            self.getPayerCostsConfiguration()
         case .SCREEN_SECURITY_CODE:
             self.showSecurityCodeScreen()
         case .SERVICE_POST_PAYMENT:
