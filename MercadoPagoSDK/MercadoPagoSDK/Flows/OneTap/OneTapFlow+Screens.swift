@@ -57,22 +57,12 @@ extension OneTapFlow {
     }
 
     func showSecurityCodeScreen() {
-//        let securityCodeVc = SecurityCodeViewController(viewModel: model.savedCardSecurityCodeViewModel(), collectSecurityCodeCallback: { [weak self] (_, securityCode) in
-//            self?.getTokenizationService().createCardToken(securityCode: securityCode)
-//        })
-
-        let finishButtonAnimation: () -> Void = {
-            [weak self] in
-            self?.executeNextStep()
-        }
-
-        let collectSecurityCodeCallback: (PXCardInformationForm, String?) -> Void = {
-            [weak self] (_, securityCode) in
-            self?.getTokenizationService().createCardToken(securityCode: securityCode)
-        }
-
-        let securityCodeVc = PXSecurityCodeViewController(viewModel: model.savedCardSecurityCodeViewModel(), finishButtonAnimation: finishButtonAnimation, collectSecurityCodeCallback: collectSecurityCodeCallback)
-
+        let securityCodeVc = PXSecurityCodeViewController(viewModel: model.savedCardSecurityCodeViewModel(),
+            finishButtonAnimationCallback: { [weak self] in
+                self?.executeNextStep()
+            }, collectSecurityCodeCallback: { [weak self] _, securityCode in
+                self?.getTokenizationService().createCardToken(securityCode: securityCode)
+        })
         pxNavigationHandler.pushViewController(viewController: securityCodeVc, animated: true)
     }
 

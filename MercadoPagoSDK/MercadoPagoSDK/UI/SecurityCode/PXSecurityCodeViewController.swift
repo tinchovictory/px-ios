@@ -28,12 +28,12 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
     var textFieldTitleTopConstraint = NSLayoutConstraint()
 
     // MARK: Callbacks
-    let finishButtonAnimation: () -> Void
+    let finishButtonAnimationCallback: () -> Void
     let collectSecurityCodeCallback: (PXCardInformationForm, String?) -> Void
 
-    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimation: @escaping () -> Void, collectSecurityCodeCallback: @escaping (PXCardInformationForm, String?) -> Void) {
+    init(viewModel: PXSecurityCodeViewModel, finishButtonAnimationCallback: @escaping () -> Void, collectSecurityCodeCallback: @escaping (PXCardInformationForm, String?) -> Void) {
         self.viewModel = viewModel
-        self.finishButtonAnimation = finishButtonAnimation
+        self.finishButtonAnimationCallback = finishButtonAnimationCallback
         self.collectSecurityCodeCallback = collectSecurityCodeCallback
         super.init(nibName: nil, bundle: nil)
     }
@@ -124,7 +124,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
     }
 
     func didFinishAnimation() {
-        finishButtonAnimation()
+        finishButtonAnimationCallback()
     }
 
     func progressButtonAnimationTimeOut() {
