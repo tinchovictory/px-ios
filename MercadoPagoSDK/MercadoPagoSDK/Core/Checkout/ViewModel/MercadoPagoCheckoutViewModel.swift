@@ -20,16 +20,11 @@ internal enum CheckoutStep: String {
     case SERVICE_GET_REMEDY
     case SCREEN_PAYMENT_RESULT
     case SCREEN_ERROR
-    case SCREEN_HOOK_BEFORE_PAYMENT_METHOD_CONFIG
-    case SCREEN_HOOK_AFTER_PAYMENT_METHOD_CONFIG
-    case SCREEN_HOOK_BEFORE_PAYMENT
     case SCREEN_PAYMENT_METHOD_PLUGIN_CONFIG
     case FLOW_ONE_TAP
 }
 
 internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
-    var hookService: HookService = HookService()
-
     private var advancedConfig: PXAdvancedConfiguration = PXAdvancedConfiguration()
     internal var trackingConfig: PXTrackingConfiguration?
 
@@ -414,18 +409,9 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needOneTapFlow() {
             return .FLOW_ONE_TAP
         }
-        if shouldShowHook(hookStep: .BEFORE_PAYMENT_METHOD_CONFIG) {
-            return .SCREEN_HOOK_BEFORE_PAYMENT_METHOD_CONFIG
-        }
         if needToShowPaymentMethodConfigPlugin() {
             willShowPaymentMethodConfigPlugin()
             return .SCREEN_PAYMENT_METHOD_PLUGIN_CONFIG
-        }
-        if shouldShowHook(hookStep: .AFTER_PAYMENT_METHOD_CONFIG) {
-            return .SCREEN_HOOK_AFTER_PAYMENT_METHOD_CONFIG
-        }
-        if shouldShowHook(hookStep: .BEFORE_PAYMENT) {
-            return .SCREEN_HOOK_BEFORE_PAYMENT
         }
         if needToCreatePayment() || shouldSkipReviewAndConfirm() {
             readyToPay = false
@@ -706,7 +692,6 @@ extension MercadoPagoCheckoutViewModel {
 
     func resetInFormationOnNewPaymentMethodOptionSelected() {
         resetInformation()
-        hookService.resetHooksToShow()
     }
 
     func resetInformation() {
@@ -764,7 +749,6 @@ extension MercadoPagoCheckoutViewModel {
 
     func prepareForClone() {
         self.cleanPaymentResult()
-        self.wentBackFrom(hook: .BEFORE_PAYMENT)
     }
 
     func prepareForNewSelection() {
@@ -775,7 +759,6 @@ extension MercadoPagoCheckoutViewModel {
         self.resetGroupSelection()
         self.applyDefaultDiscountOrClear()
         self.rootVC = true
-        hookService.resetHooksToShow()
     }
 
     func prepareForInvalidPaymentWithESC(reason: PXESCDeleteReason) {
