@@ -67,6 +67,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     var disabledOption: PXDisabledOption?
     var businessResult: PXBusinessResult?
     open var payerCosts: [PXPayerCost]?
+    @available(*, deprecated, message: "No longer used")
     open var issuers: [PXIssuer]?
     open var entityTypes: [EntityType]?
     open var financialInstitutions: [PXFinancialInstitution]?
@@ -262,7 +263,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     //SEARCH_PAYMENT_METHODS
     public func updateCheckoutModel(paymentMethods: [PXPaymentMethod], cardToken: PXCardToken?) {
         self.cleanPayerCostSearch()
-        self.cleanIssuerSearch()
         self.cleanRemedy()
         self.paymentData.updatePaymentDataWith(paymentMethod: paymentMethods[0])
         self.cardToken = cardToken
@@ -286,11 +286,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
     }
 
-    public func updateCheckoutModel(issuer: PXIssuer) {
-        self.cleanPayerCostSearch()
-        self.paymentData.updatePaymentDataWith(issuer: issuer)
-    }
-
     public func updateCheckoutModel(payer: PXPayer) {
         self.paymentData.updatePaymentDataWith(payer: payer)
     }
@@ -304,7 +299,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         self.paymentData.cleanIssuer()
         self.paymentData.cleanPayerCost()
         self.cleanPayerCostSearch()
-        self.cleanIssuerSearch()
 
         if paymentData.hasPaymentMethod() && paymentData.getPaymentMethod()!.isCard {
             self.cardToken!.cardholder!.identification = identification
@@ -682,7 +676,6 @@ extension MercadoPagoCheckoutViewModel {
         self.entityTypes = nil
         self.financialInstitutions = nil
         cleanPayerCostSearch()
-        cleanIssuerSearch()
         resetPaymentMethodConfigPlugin()
     }
 
@@ -706,10 +699,6 @@ extension MercadoPagoCheckoutViewModel {
 
     func cleanPayerCostSearch() {
         self.payerCosts = nil
-    }
-
-    func cleanIssuerSearch() {
-        self.issuers = nil
     }
 
     func cleanRemedy() {
