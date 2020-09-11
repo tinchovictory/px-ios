@@ -79,6 +79,10 @@ extension PXCardSlider: FSPagerViewDataSource {
         return FSPagerViewCell()
     }
 
+    func getSelectedCell() -> PXCardSliderPagerCell? {
+        return pagerView.cellForItem(at: getSelectedIndex()) as? PXCardSliderPagerCell
+    }
+
     func showBottomMessageIfNeeded(index: Int, targetIndex: Int) {
         if let currentCell = pagerView.cellForItem(at: index) as? PXCardSliderPagerCell {
             currentCell.showBottomMessageView(index == targetIndex)

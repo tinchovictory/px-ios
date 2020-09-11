@@ -37,7 +37,7 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
     private func animateFromOneTapToSecurityCodeVC(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, securityCodeVC: PXSecurityCodeViewController) {
         guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
             let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: false),
-            let cell = oneTapVC.slider.pagerView.cellForItem(at: oneTapVC.slider.getSelectedIndex()) as? PXCardSliderPagerCell,
+            let cell = oneTapVC.slider.getSelectedCell(),
             let cardSnapshot = cell.containerView.snapshotView(afterScreenUpdates: true) else {
                 transitionContext.completeTransition(false)
                 return
