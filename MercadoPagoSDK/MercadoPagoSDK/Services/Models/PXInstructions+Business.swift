@@ -9,14 +9,6 @@ import Foundation
 
 /// :nodoc:
 extension PXInstructions {
-    open func hasSecundaryInformation() -> Bool {
-        if instructions.isEmpty {
-            return false
-        } else {
-            return !String.isNullOrEmpty(instructions.first?.subtitle)
-        }
-    }
-
     open func hasSubtitle() -> Bool {
         if instructions.isEmpty {
             return false
