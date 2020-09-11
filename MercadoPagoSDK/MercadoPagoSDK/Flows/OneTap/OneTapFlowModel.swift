@@ -103,7 +103,7 @@ final internal class OneTapFlowModel: PXFlowModel {
 
 // MARK: Create view model
 internal extension OneTapFlowModel {
-    func savedCardSecurityCodeViewModel() -> SecurityCodeViewModel {
+    func savedCardSecurityCodeViewModel() -> PXSecurityCodeViewModel {
         guard let cardInformation = self.paymentOptionSelected as? PXCardInformation else {
             fatalError("Cannot convert payment option selected to CardInformation")
         }
@@ -112,12 +112,10 @@ internal extension OneTapFlowModel {
             fatalError("Don't have paymentData to open Security View Controller")
         }
 
-        let reason = SecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason)
+        let reason = PXSecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason)
         let cardSliderViewModel = pxOneTapViewModel?.getCardSliderViewModel().first(where: { $0.cardId == paymentOptionSelected?.getId() })
-        let cardUI = cardSliderViewModel?.cardUI
-        let cardData = cardSliderViewModel?.cardData
 
-        return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason, cardUI: cardUI, cardData: cardData)
+        return PXSecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason, cardUI: cardSliderViewModel?.cardUI, cardData: cardSliderViewModel?.cardData, internetProtocol: mercadoPagoServices)
     }
 
     func oneTapViewModel() -> PXOneTapViewModel {

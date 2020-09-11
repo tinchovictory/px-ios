@@ -840,7 +840,7 @@ extension PXOneTapViewController: MLCardFormLifeCycleDelegate {
 
 extension PXOneTapViewController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if fromVC is MLCardFormViewController || toVC is MLCardFormViewController {
+        if fromVC is MLCardFormViewController || toVC is MLCardFormViewController || toVC is PXSecurityCodeViewController {
             return PXOneTapViewControllerTransition()
         }
         return nil
