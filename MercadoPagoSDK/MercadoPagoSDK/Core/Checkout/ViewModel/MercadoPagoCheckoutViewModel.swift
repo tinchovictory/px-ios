@@ -11,7 +11,6 @@ import UIKit
 internal enum CheckoutStep: String {
     case START
     case ACTION_FINISH
-    case SERVICE_GET_IDENTIFICATION_TYPES
     case SCREEN_SECURITY_CODE
     case SERVICE_CREATE_CARD_TOKEN
     case SERVICE_GET_PAYER_COSTS
@@ -55,7 +54,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
 
     var rootPaymentMethodOptions: [PaymentMethodOption]?
     var customPaymentOptions: [CustomerPaymentMethod]?
-    var identificationTypes: [PXIdentificationType]?
     var remedy: PXRemedy?
 
     var search: PXInitDTO?
@@ -265,7 +263,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     public func updateCheckoutModel(paymentMethods: [PXPaymentMethod], cardToken: PXCardToken?) {
         self.cleanPayerCostSearch()
         self.cleanIssuerSearch()
-        self.cleanIdentificationTypesSearch()
         self.cleanRemedy()
         self.paymentData.updatePaymentDataWith(paymentMethod: paymentMethods[0])
         self.cardToken = cardToken
@@ -298,16 +295,8 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         self.paymentData.updatePaymentDataWith(payer: payer)
     }
 
-    public func updateCheckoutModel(identificationTypes: [PXIdentificationType]) {
-        self.identificationTypes = identificationTypes
-    }
-
     public func updateCheckoutModel(remedy: PXRemedy) {
         self.remedy = remedy
-    }
-
-    public func cardFlowSupportedIdentificationTypes() -> [PXIdentificationType]? {
-        return nil
     }
 
     public func updateCheckoutModel(identification: PXIdentification) {
@@ -415,9 +404,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         if needToCreatePayment() || shouldSkipReviewAndConfirm() {
             readyToPay = false
             return .SERVICE_POST_PAYMENT
-        }
-        if needToGetIdentificationTypes() {
-            return .SERVICE_GET_IDENTIFICATION_TYPES
         }
         if needSecurityCode() {
             return .SCREEN_SECURITY_CODE
@@ -697,7 +683,6 @@ extension MercadoPagoCheckoutViewModel {
         self.financialInstitutions = nil
         cleanPayerCostSearch()
         cleanIssuerSearch()
-        cleanIdentificationTypesSearch()
         resetPaymentMethodConfigPlugin()
     }
 
@@ -725,10 +710,6 @@ extension MercadoPagoCheckoutViewModel {
 
     func cleanIssuerSearch() {
         self.issuers = nil
-    }
-
-    func cleanIdentificationTypesSearch() {
-        self.identificationTypes = nil
     }
 
     func cleanRemedy() {

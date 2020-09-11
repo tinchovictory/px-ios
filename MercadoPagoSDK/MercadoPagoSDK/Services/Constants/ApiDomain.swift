@@ -12,7 +12,6 @@ internal struct ApiDomain {
     static let CREATE_PAYMENT = "\(BASE_DOMAIN)CustomService.createPayment"
     static let GET_TOKEN = "\(BASE_DOMAIN)GatewayService.getToken"
     static let CLONE_TOKEN = "\(BASE_DOMAIN)GatewayService.cloneToken"
-    static let GET_IDENTIFICATION_TYPES = "\(BASE_DOMAIN)IdentificationService.getIdentificationTypes"
     static let GET_INSTRUCTIONS = "\(BASE_DOMAIN)InstructionsService.getInstructions"
     static let GET_PAYMENT_METHODS = "\(BASE_DOMAIN)PaymentMethodSearchService.getPaymentMethods"
     static let GET_SUMMARY_AMOUNT = "\(BASE_DOMAIN)PaymentService.getSummaryAmount"
