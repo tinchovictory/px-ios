@@ -13,7 +13,7 @@ extension PXInstructions {
         if instructions.isEmpty {
             return false
         } else {
-            return instructions[0].hasSecondaryInformation()
+            return !String.isNullOrEmpty(instructions.first?.subtitle)
         }
     }
 
@@ -21,7 +21,7 @@ extension PXInstructions {
         if instructions.isEmpty {
             return false
         } else {
-            return instructions[0].hasSubtitle()
+            return !Array.isNullOrEmpty(instructions.first?.secondaryInfo)
         }
     }
 
