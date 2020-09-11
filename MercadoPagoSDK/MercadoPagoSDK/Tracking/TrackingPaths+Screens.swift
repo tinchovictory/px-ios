@@ -33,11 +33,6 @@ extension TrackingPaths {
             return TrackingPaths.pxTrack + addPaymentMethod + "/promotions/terms_and_conditions"
         }
 
-        // Issuers Paths
-        static func getIssuersPath() -> String {
-            return TrackingPaths.pxTrack + payments + "/card_issuer"
-        }
-
         // Installments Paths
         static func getInstallmentsPath() -> String {
             return TrackingPaths.pxTrack + payments + "/installments"

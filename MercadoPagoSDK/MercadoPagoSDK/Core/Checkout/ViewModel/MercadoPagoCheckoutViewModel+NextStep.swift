@@ -78,22 +78,6 @@ extension MercadoPagoCheckoutViewModel {
         return false
     }
 
-    func needGetIssuers() -> Bool {
-        guard let selectedType = self.paymentOptionSelected else {
-            return false
-        }
-        guard let pm = self.paymentData.getPaymentMethod() else {
-            return false
-        }
-        if selectedType.isCustomerPaymentMethod() {
-            return false
-        }
-        if !paymentData.hasIssuer() && pm.isCard && Array.isNullOrEmpty(issuers) {
-            return true
-        }
-        return false
-    }
-
     func needGetRemedy() -> Bool {
         if let paymentResult = paymentResult,
             let paymentId = paymentResult.paymentId,

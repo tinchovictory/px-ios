@@ -150,8 +150,6 @@ extension MercadoPagoCheckout {
         switch self.viewModel.nextStep() {
         case .START :
             self.initialize()
-        case .SERVICE_GET_ISSUERS:
-            self.getIssuers()
         case .SERVICE_CREATE_CARD_TOKEN:
             self.getTokenizationService().createCardToken()
         case .SERVICE_GET_IDENTIFICATION_TYPES:

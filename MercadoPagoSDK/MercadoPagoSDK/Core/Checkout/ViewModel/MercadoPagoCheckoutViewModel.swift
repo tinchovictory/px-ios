@@ -13,7 +13,6 @@ internal enum CheckoutStep: String {
     case ACTION_FINISH
     case SERVICE_GET_IDENTIFICATION_TYPES
     case SCREEN_SECURITY_CODE
-    case SERVICE_GET_ISSUERS
     case SERVICE_CREATE_CARD_TOKEN
     case SERVICE_GET_PAYER_COSTS
     case SERVICE_POST_PAYMENT
@@ -425,9 +424,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
         if needCreateToken() {
             return .SERVICE_CREATE_CARD_TOKEN
-        }
-        if needGetIssuers() {
-            return .SERVICE_GET_ISSUERS
         }
         if needChosePayerCost() {
             return .SERVICE_GET_PAYER_COSTS

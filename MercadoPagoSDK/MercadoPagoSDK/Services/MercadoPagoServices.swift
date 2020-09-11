@@ -220,29 +220,6 @@ internal class MercadoPagoServices: NSObject {
         service.getSummaryAmount(bin: bin, amount: amount, issuerId: issuerId, payment_method_id: paymentMethodId, payment_type_id: payment_type_id, differential_pricing_id: differentialPricingId, siteId: siteId, marketplace: marketplace, discountParamsConfiguration: discountParamsConfiguration, payer: payer, defaultInstallments: defaultInstallments, charges: charges, maxInstallments: maxInstallments, success: callback, failure: failure)
     }
 
-    func getIssuers(paymentMethodId: String, bin: String? = nil, callback: @escaping ([PXIssuer]) -> Void, failure: @escaping ((_ error: PXError) -> Void)) {
-        let service: PaymentService = PaymentService(baseURL: baseURL, merchantPublicKey: publicKey, payerAccessToken: privateKey, processingModes: processingModes, branchId: branchId)
-        service.getIssuers(payment_method_id: paymentMethodId, bin: bin, success: {(data: Data) -> Void in
-            do {
-
-                let jsonResponse = try JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments)
-
-                if let errorDic = jsonResponse as? NSDictionary {
-                    if errorDic["error"] != nil {
-                        let apiException = try JSONDecoder().decode(PXApiException.self, from: data) as PXApiException
-                        failure(PXError(domain: ApiDomain.GET_ISSUERS, code: ErrorTypes.API_EXCEPTION_ERROR, userInfo: errorDic as? [String: Any], apiException: apiException))
-                    }
-                } else {
-                    var issuers : [PXIssuer] = [PXIssuer]()
-                    issuers = try PXIssuer.fromJSON(data: data)
-                    callback(issuers)
-                }
-            } catch {
-                failure(PXError(domain: ApiDomain.GET_ISSUERS, code: ErrorTypes.API_UNKNOWN_ERROR, userInfo: [NSLocalizedDescriptionKey: "Hubo un error", NSLocalizedFailureReasonErrorKey: "No se ha podido obtener los bancos"]))
-            }
-        }, failure: failure)
-    }
-
     //SETS
     func setBaseURL(_ baseURL: String) {
         self.baseURL = baseURL
