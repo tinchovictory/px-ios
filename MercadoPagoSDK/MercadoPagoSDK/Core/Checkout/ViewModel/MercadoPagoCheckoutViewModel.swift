@@ -313,7 +313,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     }
 
     public func cardFlowSupportedIdentificationTypes() -> [PXIdentificationType]? {
-        return IdentificationTypeValidator().filterSupported(identificationTypes: self.identificationTypes)
+        return nil
     }
 
     public func updateCheckoutModel(identification: PXIdentification) {
@@ -730,17 +730,8 @@ extension MercadoPagoCheckoutViewModel {
 
     func isPayerSetted() -> Bool {
         if let payerData = self.paymentData.getPayer(),
-            let payerIdentification = payerData.identification,
-            let type = payerIdentification.type,
-            let boletoType = BoletoType(rawValue: type) {
-            //cpf type requires first name and last name to be a valid payer
-            let cpfCase = payerData.firstName != nil && payerData.lastName != nil && boletoType == .cpf
-            //cnpj type requires legal name to be a valid payer
-            let cnpjCase = payerData.legalName != nil && boletoType == .cnpj
-            let validDetail = cpfCase || cnpjCase
-            // identification value is required for both scenarios
-            let validIdentification = payerIdentification.number != nil
-            let validPayer = validDetail && validIdentification
+            let payerIdentification = payerData.identification {
+            let validPayer = payerIdentification.number != nil
             return validPayer
         }
 
