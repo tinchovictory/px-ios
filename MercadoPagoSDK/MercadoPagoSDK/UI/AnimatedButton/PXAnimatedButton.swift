@@ -142,7 +142,8 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         resetButton()
         isUserInteractionEnabled = false
 
-        snackbar = MLSnackbar.show(withTitle: title, actionTitle: actionTitle, actionBlock: action, type: type, duration: duration, dismiss: { _ in
+        snackbar = MLSnackbar.show(withTitle: title, actionTitle: actionTitle, actionBlock: action, type: type, duration: duration, dismiss: { [weak self] _ in
+            guard let self = self else { return }
             self.animationDelegate?.shakeDidFinish()
             self.isUserInteractionEnabled = true
         })
