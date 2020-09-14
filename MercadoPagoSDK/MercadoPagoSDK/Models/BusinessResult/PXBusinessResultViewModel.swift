@@ -32,7 +32,7 @@ class PXBusinessResultViewModel: NSObject {
         guard let firstPaymentId = businessResult.getReceiptIdList()?.first else { return businessResult.getReceiptId() }
         return firstPaymentId
     }
-    
+
     func headerCloseAction() -> (() -> Void) {
         let action = {  [weak self] in
             guard let self = self else { return }
@@ -79,8 +79,8 @@ class PXBusinessResultViewModel: NSObject {
 
         return PXErrorComponent(props: props)
     }
-    
-    func errorBodyView() -> UIView?  {
+
+    func errorBodyView() -> UIView? {
         if let errorComponent = getErrorComponent() {
             return errorComponent.render()
         }
@@ -95,7 +95,7 @@ class PXBusinessResultViewModel: NSObject {
         }
         return nil
     }
-    
+
     func creditsExpectationView() -> UIView? {
         guard paymentData.paymentMethod?.id == "consumer_credits" else { return nil}
         if let resultInfo = amountHelper.getPaymentData().getPaymentMethod()?.creditsDisplayInfo?.resultInfo,
@@ -106,17 +106,22 @@ class PXBusinessResultViewModel: NSObject {
         }
         return nil
     }
-    
+
     private func getCongratsType() -> PXCongratsType {
         switch businessResult.getBusinessStatus() {
-            case .APPROVED: return PXCongratsType.approved
-            case .REJECTED: return PXCongratsType.rejected
-            case .IN_PROGRESS: return PXCongratsType.inProgress
-            case .PENDING: return PXCongratsType.pending
-            default: return PXCongratsType.pending
+        case .APPROVED:
+            return PXCongratsType.approved
+        case .REJECTED:
+            return PXCongratsType.rejected
+        case .IN_PROGRESS:
+            return PXCongratsType.inProgress
+        case .PENDING:
+            return PXCongratsType.pending
+        default:
+            return PXCongratsType.pending
         }
     }
-    
+
     private func paymentMethodShouldBeShown() -> Bool {
         return businessResult.isApproved()
     }
@@ -124,43 +129,43 @@ class PXBusinessResultViewModel: NSObject {
     func getPaymentMethodsImageURLs() -> [String: String]? {
         return pointsAndDiscounts?.paymentMethodsImages
     }
-    
+
     private func getLinkAction() -> PXAction? {
         return businessResult.getSecondaryAction() != nil ? businessResult.getSecondaryAction() : PXCloseLinkAction()
     }
-    
+
     internal func getRedirectUrl() -> URL? {
         return getUrl(backUrls: amountHelper.preference.redirectUrls, appendLanding: true)
     }
-    
+
     private func shouldAutoReturn() -> Bool {
         guard let autoReturn = amountHelper.preference.autoReturn,
             let fieldId = PXNewResultUtil.PXAutoReturnTypes(rawValue: autoReturn),
             getBackUrl() != nil else {
                 return false
         }
-        
+
         let status = businessResult.getBusinessStatus()
         switch status {
-            case .APPROVED:
-                return fieldId == .APPROVED
-            default:
-                return fieldId == .ALL
+        case .APPROVED:
+            return fieldId == .APPROVED
+        default:
+            return fieldId == .ALL
         }
     }
-    
+
     private func getUrl(backUrls: PXBackUrls?, appendLanding: Bool = false) -> URL? {
         var urlString: String?
         let status = businessResult.getBusinessStatus()
         switch status {
-            case .APPROVED:
-                urlString = backUrls?.success
-            case .PENDING:
-                urlString = backUrls?.pending
-            case .REJECTED:
-                urlString = backUrls?.failure
-            default:
-                return nil
+        case .APPROVED:
+            urlString = backUrls?.success
+        case .PENDING:
+            urlString = backUrls?.pending
+        case .REJECTED:
+            urlString = backUrls?.failure
+        default:
+            return nil
         }
         if let urlString = urlString,
             !urlString.isEmpty {
@@ -182,29 +187,28 @@ extension PXBusinessResultViewModel {
     func toPaymentCongrats() -> PXPaymentCongrats {
         let paymentCongratsData = PXPaymentCongrats()
             .withCongratsType(getCongratsType())
-        
+
         paymentCongratsData.withHeader(title: getAttributedTitle().string, imageURL: businessResult.getImageUrl(), closeAction: headerCloseAction())
             .withHeaderColor(primaryResultColor())
             .withHeaderImage(getHeaderDefaultIcon())
             .withHeaderBadgeImage(getBadgeImage())
-        
+
         // Receipt
         paymentCongratsData.withReceipt(shouldShowReceipt: businessResult.mustShowReceipt(), receiptId: businessResult.getReceiptId(), action: pointsAndDiscounts?.viewReceiptAction)
-        
+
         // Points & Discounts
         paymentCongratsData.withLoyalty(pointsAndDiscounts?.points)
             .withDiscounts(pointsAndDiscounts?.discounts)
             .withCrossSelling(pointsAndDiscounts?.crossSelling)
             .withCustomSorting(pointsAndDiscounts?.customOrder)
             .withExpenseSplit(pointsAndDiscounts?.expenseSplit)
-        
+
         // Payment Info
         if let paymentMethodTypeId = paymentData.paymentMethod?.paymentTypeId,
             let paymentType = PXPaymentTypes(rawValue: paymentMethodTypeId) {
             paymentCongratsData.withPaymentMethodInfo(assemblePaymentMethodInfo(paymentData: paymentData, amountHelper: amountHelper, currency: SiteManager.shared.getCurrency(), paymentMethodType: paymentType))
         }
-        
-        
+
         // Split PaymentInfo
         if amountHelper.isSplitPayment,
             let splitPaymentData = amountHelper.splitAccountMoney,
@@ -212,20 +216,20 @@ extension PXBusinessResultViewModel {
             let splitPaymentType = PXPaymentTypes(rawValue: splitPaymentMethodTypeId) {
             paymentCongratsData.withSplitPaymentInfo(assemblePaymentMethodInfo(paymentData: splitPaymentData, amountHelper: amountHelper, currency: SiteManager.shared.getCurrency(), paymentMethodType: splitPaymentType))
         }
-        
+
         paymentCongratsData.shouldShowPaymentMethod(paymentMethodShouldBeShown())
             .withStatementDescription(businessResult.getStatementDescription())
-        
+
         // Actions
         paymentCongratsData.withFooterMainAction(businessResult.getMainAction()).withFooterSecondaryAction(getLinkAction())
-        
+
         // Views
         paymentCongratsData.withTopView(businessResult.getTopCustomView())
             .withImportantView(businessResult.getImportantCustomView())
             .withBottomView(businessResult.getBottomCustomView())
             .withCreditsExpectationView(creditsExpectationView())
             .withErrorBodyView(errorBodyView())
-        
+
         // Tracking
         paymentCongratsData.withTrackingProperties(getTrackingProperties())
             .withFlowBehaviorResult(getFlowBehaviourResult())
@@ -236,7 +240,7 @@ extension PXBusinessResultViewModel {
             .shouldAutoReturn(shouldAutoReturn())
         return paymentCongratsData
     }
-    
+
     private func assemblePaymentMethodInfo(paymentData: PXPaymentData, amountHelper: PXAmountHelper, currency: PXCurrency, paymentMethodType: PXPaymentTypes/*, paymentMethodId: String*/) -> PXCongratsPaymentInfo {
         var paidAmount = ""
         if let transactionAmountWithDiscount = paymentData.getTransactionAmountWithDiscount() {
@@ -244,21 +248,21 @@ extension PXBusinessResultViewModel {
         } else {
             paidAmount = Utils.getAmountFormated(amount: amountHelper.amountToPay, forCurrency: currency)
         }
-        
+
         let lastFourDigits = paymentData.token?.lastFourDigits
         let transactionAmount = Utils.getAmountFormated(amount: paymentData.transactionAmount?.doubleValue ?? 0.0, forCurrency: currency)
         let installmentRate = paymentData.payerCost?.installmentRate
         let installmentsCount = paymentData.payerCost?.installments ?? 0
         let installmentAmount = Utils.getAmountFormated(amount: paymentData.payerCost?.installmentAmount ?? 0.0, forCurrency: currency)
-        let installmentsTotalAmount = Utils.getAmountFormated(amount:  paymentData.payerCost?.totalAmount ?? 0.0, forCurrency: currency)
+        let installmentsTotalAmount = Utils.getAmountFormated(amount: paymentData.payerCost?.totalAmount ?? 0.0, forCurrency: currency)
         let paymentMethodExtraInfo = paymentData.paymentMethod?.creditsDisplayInfo?.description?.message
         let discountName = paymentData.discount?.name
-        
-        var iconURL: String? = nil
+
+        var iconURL: String?
         if let paymentMethod = paymentData.paymentMethod, let paymentMethodsImageURLs = getPaymentMethodsImageURLs(), !paymentMethodsImageURLs.isEmpty {
             iconURL = PXNewResultUtil.getPaymentMethodIconURL(for: paymentMethod.id, using: paymentMethodsImageURLs)
         }
-        
+
         return PXCongratsPaymentInfo(paidAmount: paidAmount,
                                      rawAmount: transactionAmount,
                                      paymentMethodName: paymentData.paymentMethod?.name,
