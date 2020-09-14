@@ -19,7 +19,7 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
     let textField = UITextField()
     var loadingButtonComponent: PXAnimatedButton?
     var cardDrawer: MLCardDrawerController?
-    var internetErrorAttempts: Int = 0
+    var attemptsWithInternetError: Int = 0
 
     // MARK: Constraints
     var loadingButtonBottomConstraint = NSLayoutConstraint()
@@ -82,13 +82,13 @@ extension PXSecurityCodeViewController {
             textField.becomeFirstResponder()
             collectSecurityCodeCallback(viewModel.cardInfo, textField.text)
         } else {
-            internetErrorAttempts += 1
-            if internetErrorAttempts < 3 {
-                loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.long, action: nil)
+            attemptsWithInternetError += 1
+            if attemptsWithInternetError < 4 {
+                // TODO: Modificar texto con lo que defina el equipo de Contenidos
+                loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
             } else {
                 progressButtonAnimationTimeOut()
             }
-
         }
     }
 
@@ -129,6 +129,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
 
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
         loadingButtonComponent?.showErrorSnackBar(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
             self?.navigationController?.popViewController(animated: false)
         }
@@ -163,7 +164,7 @@ private extension PXSecurityCodeViewController {
                     self.loadingButtonComponent?.alpha = 1
                     self.loadingButtonBottomConstraint.constant = -keyboardViewEndFrame.height - PXLayout.S_MARGIN
                     self.view.layoutIfNeeded()
-                }, delay: 0)
+                })
                 animator.animate()
             }
         }
@@ -179,8 +180,10 @@ private extension PXSecurityCodeViewController {
         setupSubtitle()
         setupCardContainerView()
         setupCardDrawer()
+        // TODO: Remove when Andes texfield is done
         setupTextFieldTitle()
         setupTextField()
+        //
         setupLoadingButton()
     }
 
@@ -200,6 +203,7 @@ private extension PXSecurityCodeViewController {
 
     func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
         titleLabel.text = viewModel.isVirtualCard() ? viewModel.getVirtualCardTitle() : "Ingresa el código de seguridad"
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
@@ -218,7 +222,8 @@ private extension PXSecurityCodeViewController {
     func setupSubtitle() {
         guard !viewModel.shouldShowCard() else { return }
         subtitle.translatesAutoresizingMaskIntoConstraints = false
-        subtitle.text = viewModel.getVirtualCardSubtitle()
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
+        subtitle.text = viewModel.isVirtualCard() ? viewModel.getVirtualCardSubtitle() : "Busca los dígitos en el dorso de tu tarjeta."
         subtitle.textAlignment = .left
         subtitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
         subtitle.numberOfLines = 2
@@ -245,9 +250,11 @@ private extension PXSecurityCodeViewController {
         ])
     }
 
+    // TODO: Remove when Andes texfield is done
     func setupTextFieldTitle() {
         textFieldTitle.translatesAutoresizingMaskIntoConstraints = false
         textFieldTitle.alpha = 0
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
         textFieldTitle.text = "Código de seguridad"
         textFieldTitle.textAlignment = .center
         textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XXS_FONT)
@@ -273,6 +280,7 @@ private extension PXSecurityCodeViewController {
         textField.keyboardAppearance = .light
         textField.keyboardType = .numberPad
         textField.backgroundColor = .lightGray
+        textField.delegate = self
         view.addSubview(textField)
         NSLayoutConstraint.activate([
             textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -282,6 +290,7 @@ private extension PXSecurityCodeViewController {
         ])
         textField.alpha = 0
     }
+    //
 
     func setupCardDrawer() {
         guard viewModel.shouldShowCard() else { return }
@@ -326,6 +335,7 @@ private extension PXSecurityCodeViewController {
             loadingButtonBottomConstraint = loadingButtonComponent.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             loadingButtonBottomConstraint.isActive = true
         }
+        loadingButtonComponent?.setDisabled()
         loadingButtonComponent?.alpha = 0
     }
 
@@ -343,7 +353,7 @@ private extension PXSecurityCodeViewController {
             self.titleLabelBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height)
             self.subtitleBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - (self.subtitle.intrinsicContentSize.height) - 18)
             self.view.layoutIfNeeded()
-        }, delay: 0)
+        })
         animator.animate()
 
         var animator2 = PXAnimator(duration: 0.8, dampingRatio: 0.8)
@@ -359,7 +369,7 @@ private extension PXSecurityCodeViewController {
                     self.textFieldTitleTopConstraint.constant = !UIDevice.isSmallDevice() ? 60 : 24
                 }
                 self.view.layoutIfNeeded()
-            }, delay: 0)
+            })
 
             animator2.animate()
         }
@@ -372,5 +382,22 @@ private extension PXSecurityCodeViewController {
 extension PXSecurityCodeViewController {
     func getStatusAndNavBarHeight() -> CGFloat {
         return UIApplication.shared.statusBarFrame.size.height + (navigationController?.navigationBar.frame.height ?? 0.0)
+    }
+}
+
+// TODO: Remove when Andes texfield is done
+extension PXSecurityCodeViewController: UITextFieldDelegate {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        textField.text?.isEmpty ?? true ? loadingButtonComponent?.setDisabled() : loadingButtonComponent?.setEnabled()
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        // attempt to read the range they are trying to change, or exit if we can't
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        // add their new text to the existing text
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+//        return updatedText.count <= viewModel.cardUI!.securityCodePattern
+        return updatedText.count <= viewModel.getSecurityCodeLength()
     }
 }

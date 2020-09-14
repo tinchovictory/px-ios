@@ -52,6 +52,7 @@ extension OneTapFlow {
     func updateOneTapViewModel(cardId: String) {
         if let oneTapViewController = pxNavigationHandler.navigationController.viewControllers.first(where: { $0 is PXOneTapViewController }) as? PXOneTapViewController {
             let viewModel = model.oneTapViewModel()
+            model.pxOneTapViewModel = viewModel
             oneTapViewController.update(viewModel: viewModel, cardId: cardId)
         }
     }

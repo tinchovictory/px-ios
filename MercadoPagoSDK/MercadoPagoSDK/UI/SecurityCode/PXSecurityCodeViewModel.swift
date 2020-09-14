@@ -21,9 +21,9 @@ final class PXSecurityCodeViewModel {
         case NO_REASON = "no_reason"
     }
 
-    var paymentMethod: PXPaymentMethod
-    var cardInfo: PXCardInformationForm
-    var reason: Reason
+    let paymentMethod: PXPaymentMethod
+    let cardInfo: PXCardInformationForm
+    let reason: Reason
     let cardUI: CardUI?
     let cardData: CardData?
 
@@ -57,6 +57,10 @@ extension PXSecurityCodeViewModel {
     func getVirtualCardSubtitle() -> String? {
         return paymentMethod.creditsDisplayInfo?.cvvInfo?.message
     }
+
+    func getSecurityCodeLength() -> Int {
+        return paymentMethod.secCodeLenght(cardInfo.getCardBin())
+    }
 }
 
 // MARK: Static methods
@@ -87,7 +91,7 @@ extension PXSecurityCodeViewModel {
     }
 }
 
-// MARK: Tracking
+// MARK: Tracking // TODO: Esto es el código viejo, reemplazar cuando se defina el nuevo tracking
 extension PXSecurityCodeViewModel {
     func getScreenProperties() -> [String: Any] {
         var properties: [String: Any] = [:]
