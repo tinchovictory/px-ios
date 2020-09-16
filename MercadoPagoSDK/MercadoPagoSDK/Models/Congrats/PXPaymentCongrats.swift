@@ -125,17 +125,6 @@ extension PXPaymentCongrats {
     }
 
     /**
-     Defines how will be the sort of the component in the Congrats
-     - parameter customSorting: a boolean
-     - returns: this builder `PXPaymentCongrats`
-     */
-    @discardableResult
-    internal func withCustomSorting(_ customSorting: Bool?) -> PXPaymentCongrats {
-        self.hasCustomSorting = customSorting ?? false
-        return self
-    }
-
-    /**
      This is used in paymentResult on checkout Process, define
      - parameter view: some UIView
      - returns: this builder `PXPaymentCongrats`
@@ -306,6 +295,17 @@ extension PXPaymentCongrats {
         return self
     }
 
+    /**
+     Defines how will be the sort of the component in the Congrats
+     - parameter customSorting: a boolean
+     - returns: this builder `PXPaymentCongrats`
+     */
+    @discardableResult
+    public func withCustomSorting(_ customSorting: Bool?) -> PXPaymentCongrats {
+        self.hasCustomSorting = customSorting ?? false
+        return self
+    }
+    
     /**
      Top button configuration.
      - parameter label: button display text
