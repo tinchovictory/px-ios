@@ -91,29 +91,42 @@ extension PXSecurityCodeViewModel {
     }
 }
 
-// MARK: Tracking // TODO: Esto es el código viejo, reemplazar cuando se defina el nuevo tracking
+// MARK: Tracking
 extension PXSecurityCodeViewModel {
     func getScreenProperties() -> [String: Any] {
         var properties: [String: Any] = [:]
         properties["payment_method_id"] = paymentMethod.getPaymentIdForTracking()
-        if let token = cardInfo as? PXCardInformation {
-            properties["card_id"] =  token.getCardId()
+        properties["payment_method_type"] = paymentMethod.getPaymentTypeForTracking()
+        if let cardInfo = cardInfo as? PXCardInformation {
+            properties["card_id"] =  cardInfo.getCardId()
+            properties["issuer_id"] = cardInfo.getIssuer()?.id
         }
+        properties["bin"] = cardInfo.getCardBin()
         properties["reason"] = reason.rawValue
         return properties
     }
 
-    func getInvalidUserInputErrorProperties(message: String) -> [String: Any] {
+    func getNoConnectionProperties() -> [String: Any] {
         var properties: [String: Any] = [:]
-        properties["path"] = TrackingPaths.Screens.getSecurityCodePath(paymentTypeId: paymentMethod.paymentTypeId)
-        properties["style"] = Tracking.Style.customComponent
-        properties["id"] = Tracking.Error.Id.invalidCVV
-        properties["message"] = message
-        properties["attributable_to"] = Tracking.Error.Atrributable.user
-        var extraDic: [String: Any] = [:]
-        extraDic["payment_method_type"] = paymentMethod.getPaymentTypeForTracking()
-        extraDic["payment_method_id"] = paymentMethod.getPaymentIdForTracking()
-        properties["extra_info"] = extraDic
+        properties["path"] = "/px_checkout/no_connection"
+        properties["style"] = "snackbar"
+        properties["id"] = "no_connection"
+        return properties
+    }
+
+    func getFrictionProperties(path: String, id: String) -> [String: Any] {
+        var properties: [String: Any] = [:]
+        properties["path"] = path
+        properties["style"] = "snackbar"
+        properties["id"] = id
+        var extraInfo: [String: Any] = [:]
+        extraInfo["payment_method_type"] = paymentMethod.getPaymentTypeForTracking()
+        extraInfo["payment_method_id"] = paymentMethod.getPaymentIdForTracking()
+        if let cardInfo = cardInfo as? PXCardInformation {
+            extraInfo["card_id"] = cardInfo.getCardId()
+            extraInfo["issuer_id"] = cardInfo.getIssuer()?.id
+        }
+        properties["extra_info"] = extraInfo
         return properties
     }
 }

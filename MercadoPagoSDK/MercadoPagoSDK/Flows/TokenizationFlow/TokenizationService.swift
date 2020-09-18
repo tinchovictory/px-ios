@@ -70,12 +70,13 @@ internal class TokenizationService {
         }
         pxNavigationHandler.presentLoading()
 
-        mercadoPagoServices.createToken(cardToken: cardToken, callback: { (token) in
-            self.resultHandler?.finishFlow(token: token, shouldResetESC: false)
+        mercadoPagoServices.createToken(cardToken: cardToken, callback: { [weak self] (token) in
+            self?.resultHandler?.finishFlow(token: token, shouldResetESC: false)
 
-        }, failure: { (error) in
+        }, failure: { [weak self] (error) in
+            guard let self = self else { return }
+            self.trackTokenApiError()
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
-
             if error.apiException?.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_IDENTIFICATION_NUMBER.rawValue) == true {
                 self.resultHandler?.finishInvalidIdentificationNumber()
             } else {
@@ -95,15 +96,16 @@ internal class TokenizationService {
 
         let saveCardToken = PXSavedCardToken(card: cardInformation, securityCode: securityCode, securityCodeRequired: true)
 
-        mercadoPagoServices.createToken(savedCardToken: saveCardToken, callback: { (token) in
+        mercadoPagoServices.createToken(savedCardToken: saveCardToken, callback: { [weak self] (token) in
 
             if token.lastFourDigits.isEmpty {
                 token.lastFourDigits = cardInformation.getCardLastForDigits()
             }
-            self.resultHandler?.finishFlow(token: token, shouldResetESC: true)
-        }, failure: { (error) in
+            self?.resultHandler?.finishFlow(token: token, shouldResetESC: true)
+        }, failure: { [weak self] (error) in
+            guard let self = self else { return }
+            self.trackTokenApiError()
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
-
             self.resultHandler?.finishWithError(error: error, securityCode: securityCode)
         })
     }
@@ -113,10 +115,10 @@ internal class TokenizationService {
             self.pxNavigationHandler.presentLoading()
         }
 
-        mercadoPagoServices.createToken(savedESCCardToken: savedESCCardToken, callback: { (token) in
+        mercadoPagoServices.createToken(savedESCCardToken: savedESCCardToken, callback: { [weak self] (token) in
 
             if token.lastFourDigits.isEmpty {
-                let cardInformation = self.paymentOptionSelected as? PXCardInformation
+                let cardInformation = self?.paymentOptionSelected as? PXCardInformation
                 token.lastFourDigits = cardInformation?.getCardLastForDigits() ?? ""
             }
 
@@ -124,8 +126,10 @@ internal class TokenizationService {
             if let securityCode = savedESCCardToken.securityCode, securityCode.isNotEmpty {
                 shouldResetESC = true
             }
-            self.resultHandler?.finishFlow(token: token, shouldResetESC: shouldResetESC)
-        }, failure: { (error) in
+            self?.resultHandler?.finishFlow(token: token, shouldResetESC: shouldResetESC)
+        }, failure: { [weak self] (error) in
+            guard let self = self else { return }
+            self.trackTokenApiError()
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
             self.trackInvalidESC(error: error, cardId: savedESCCardToken.cardId, esc_length: savedESCCardToken.esc?.count)
             PXConfiguratorManager.escProtocol.deleteESC(config: PXConfiguratorManager.escConfig, cardId: savedESCCardToken.cardId, reason: .UNEXPECTED_TOKENIZATION_ERROR, detail: error.toJSONString())
@@ -135,9 +139,11 @@ internal class TokenizationService {
 
     private func cloneCardToken(token: PXToken, securityCode: String) {
         pxNavigationHandler.presentLoading()
-        mercadoPagoServices.cloneToken(tokenId: token.id, securityCode: securityCode, callback: { (token) in
-            self.resultHandler?.finishFlow(token: token, shouldResetESC: true)
-        }, failure: { (error) in
+        mercadoPagoServices.cloneToken(tokenId: token.id, securityCode: securityCode, callback: { [weak self] (token) in
+            self?.resultHandler?.finishFlow(token: token, shouldResetESC: true)
+        }, failure: { [weak self] (error) in
+            guard let self = self else { return }
+            self.trackTokenApiError()
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
             self.resultHandler?.finishWithError(error: error, securityCode: securityCode)
         })
@@ -145,5 +151,15 @@ internal class TokenizationService {
 
     func resetESCCap(cardId: String, onCompletion: @escaping () -> Void) {
         mercadoPagoServices.resetESCCap(cardId: cardId, onCompletion: onCompletion)
+    }
+}
+
+// MARK: Tracking
+private extension TokenizationService {
+    func trackTokenApiError() {
+        let lastVC = self.pxNavigationHandler.navigationController.viewControllers.last
+        if let securityCodeVC = lastVC as? PXSecurityCodeViewController {
+            securityCodeVC.trackEvent(path: TrackingPaths.Events.getErrorPath(), properties: securityCodeVC.viewModel.getFrictionProperties(path: TrackingPaths.Events.SecurityCode.getTokenFrictionPath(), id: "token_api_error"))
+        }
     }
 }

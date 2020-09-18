@@ -140,13 +140,13 @@ internal class MercadoPagoUIViewController: UIViewController, UIGestureRecognize
                     callbackBackAction()
                 }
 
-                trackAbortEvent()
+                trackAbort()
                 PXNotificationManager.Post.attemptToClose()
                 return
             }
         }
         if treatBackAsAbort {
-            trackAbortEvent()
+            trackAbort()
         } else {
             trackBackEvent()
         }
@@ -219,6 +219,14 @@ internal class MercadoPagoUIViewController: UIViewController, UIGestureRecognize
             if self.hideNavBarCallback != nil {
                 hideNavBarCallback!()
             }
+        }
+    }
+
+    private func trackAbort() {
+        if let securityCodeVC = self as? PXSecurityCodeViewController {
+            trackAbortEvent(properties: securityCodeVC.viewModel.getScreenProperties())
+        } else {
+            trackAbortEvent()
         }
     }
 

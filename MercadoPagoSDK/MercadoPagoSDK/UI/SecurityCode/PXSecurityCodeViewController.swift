@@ -9,7 +9,7 @@ import Foundation
 import MLUI
 import MLCardDrawer
 
-class PXSecurityCodeViewController: MercadoPagoUIViewController {
+final class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     let viewModel: PXSecurityCodeViewModel
     let cardContainerView = UIView()
@@ -44,6 +44,7 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        trackScreenView()
         renderViews()
     }
 
@@ -69,12 +70,14 @@ class PXSecurityCodeViewController: MercadoPagoUIViewController {
     }
 }
 
-extension PXSecurityCodeViewController {
-    private func confirmPayment() {
+// MARK: Privates
+private extension PXSecurityCodeViewController {
+    func confirmPayment() {
+        trackEvent(path: TrackingPaths.Events.SecurityCode.getConfirmPath(), properties: viewModel.getScreenProperties())
         doPayment()
     }
 
-    private func doPayment() {
+    func doPayment() {
         if viewModel.internetProtocol?.hasInternetConnection() ?? true {
             enableUI(false)
             subscribeLoadingButtonToNotifications()
@@ -82,6 +85,7 @@ extension PXSecurityCodeViewController {
             textField.becomeFirstResponder()
             collectSecurityCodeCallback(viewModel.cardInfo, textField.text)
         } else {
+            trackEvent(path: TrackingPaths.Events.getErrorPath(), properties: viewModel.getNoConnectionProperties())
             attemptsWithInternetError += 1
             if attemptsWithInternetError < 4 {
                 // TODO: Modificar texto con lo que defina el equipo de Contenidos
@@ -108,6 +112,7 @@ extension PXSecurityCodeViewController {
     }
 }
 
+// MARK: PXAnimatedButtonDelegate
 extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
     func shakeDidFinish() {
         displayBackButton()
@@ -131,7 +136,9 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
         loadingButtonComponent?.resetButton()
         // TODO: Modificar texto con lo que defina el equipo de Contenidos
         loadingButtonComponent?.showErrorSnackBar(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
-            self?.navigationController?.popViewController(animated: false)
+            guard let self = self else { return }
+            self.trackAbortEvent(properties: self.viewModel.getScreenProperties())
+            self.navigationController?.popViewController(animated: false)
         }
         enableUI(true)
     }
@@ -399,5 +406,13 @@ extension PXSecurityCodeViewController: UITextFieldDelegate {
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
 //        return updatedText.count <= viewModel.cardUI!.securityCodePattern
         return updatedText.count <= viewModel.getSecurityCodeLength()
+    }
+}
+
+// MARK: Tracking
+private extension PXSecurityCodeViewController {
+    func trackScreenView() {
+        let screenPath = TrackingPaths.Screens.getSecurityCodePath(paymentTypeId: viewModel.paymentMethod.paymentTypeId)
+        trackScreen(path: screenPath, properties: viewModel.getScreenProperties(), treatBackAsAbort: true)
     }
 }

@@ -38,29 +38,31 @@ internal extension PXPaymentFlow {
         headers[MercadoPagoService.HeaderField.idempotencyKey.rawValue] =  model.generateIdempotecyKey()
         headers[MercadoPagoService.HeaderField.security.rawValue] = PXCheckoutStore.sharedInstance.getSecurityType()
 
-        model.mercadoPagoServices.createPayment(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_PAYMENTS_URI, paymentDataJSON: paymentBody, query: nil, headers: headers, callback: { (payment) in
-            self.handlePayment(payment: payment)
+        model.mercadoPagoServices.createPayment(url: PXServicesURLConfigs.MP_API_BASE_URL, uri: PXServicesURLConfigs.MP_PAYMENTS_URI, paymentDataJSON: paymentBody, query: nil, headers: headers, callback: { [weak self] (payment) in
+            self?.handlePayment(payment: payment)
 
         }, failure: { [weak self] (error) in
 
+            guard let self = self else { return }
+            self.trackPaymentsApiError()
             let mpError = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_PAYMENT.rawValue)
 
             guard let apiException = mpError.apiException else {
-                self?.showError(error: mpError)
+                self.showError(error: mpError)
                 return
             }
 
             // ESC Errors
             if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_ESC.rawValue) {
-                self?.paymentErrorHandler?.escError(reason: .INVALID_ESC)
+                self.paymentErrorHandler?.escError(reason: .INVALID_ESC)
             } else if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_FINGERPRINT.rawValue) {
-                self?.paymentErrorHandler?.escError(reason: .INVALID_FINGERPRINT)
+                self.paymentErrorHandler?.escError(reason: .INVALID_FINGERPRINT)
             } else if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_PAYMENT_WITH_ESC.rawValue) {
-                self?.paymentErrorHandler?.escError(reason: .ESC_CAP)
+                self.paymentErrorHandler?.escError(reason: .ESC_CAP)
             } else if apiException.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_PAYMENT_IDENTIFICATION_NUMBER.rawValue) {
-                self?.paymentErrorHandler?.identificationError?()
+                self.paymentErrorHandler?.identificationError?()
             } else {
-                self?.showError(error: mpError)
+                self.showError(error: mpError)
             }
         })
     }
@@ -135,5 +137,15 @@ internal extension PXPaymentFlow {
                 self?.showError(error: mpError)
 
         })
+    }
+}
+
+// MARK: Tracking
+private extension PXPaymentFlow {
+    func trackPaymentsApiError() {
+        let lastVC = self.pxNavigationHandler.navigationController.viewControllers.last
+        if let securityCodeVC = lastVC as? PXSecurityCodeViewController {
+            securityCodeVC.trackEvent(path: TrackingPaths.Events.getErrorPath(), properties: securityCodeVC.viewModel.getFrictionProperties(path: TrackingPaths.Events.SecurityCode.getPaymentsFrictionPath(), id: "payments_api_error"))
+        }
     }
 }
