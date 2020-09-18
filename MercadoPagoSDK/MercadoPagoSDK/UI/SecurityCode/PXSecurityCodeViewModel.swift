@@ -24,13 +24,13 @@ final class PXSecurityCodeViewModel {
     let paymentMethod: PXPaymentMethod
     let cardInfo: PXCardInformationForm
     let reason: Reason
-    let cardUI: CardUI?
-    let cardData: CardData?
+    let cardUI: CardUI
+    let cardData: CardData
 
     // MARK: Protocols
     weak var internetProtocol: InternetConnectionProtocol?
 
-    public init(paymentMethod: PXPaymentMethod, cardInfo: PXCardInformationForm, reason: Reason, cardUI: CardUI?, cardData: CardData?, internetProtocol: InternetConnectionProtocol) {
+    public init(paymentMethod: PXPaymentMethod, cardInfo: PXCardInformationForm, reason: Reason, cardUI: CardUI, cardData: CardData, internetProtocol: InternetConnectionProtocol) {
         self.paymentMethod = paymentMethod
         self.cardInfo = cardInfo
         self.reason = reason

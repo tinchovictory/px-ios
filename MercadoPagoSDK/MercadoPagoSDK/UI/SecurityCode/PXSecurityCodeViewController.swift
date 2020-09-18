@@ -301,8 +301,7 @@ private extension PXSecurityCodeViewController {
 
     func setupCardDrawer() {
         guard viewModel.shouldShowCard() else { return }
-        if let cardUI = viewModel.cardUI, let cardData = viewModel.cardData {
-            cardDrawer = MLCardDrawerController(cardUI, cardData)
+        cardDrawer = MLCardDrawerController(viewModel.cardUI, viewModel.cardData)
             if let cardDrawer = cardDrawer {
                 cardDrawer.view.backgroundColor = .clear
                 let cardView = cardDrawer.getCardView()
@@ -318,7 +317,6 @@ private extension PXSecurityCodeViewController {
                 ])
                 cardContainerView.clipsToBounds = true
             }
-        }
     }
 
     func setupLoadingButton() {
