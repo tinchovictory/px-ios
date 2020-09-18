@@ -70,11 +70,10 @@ internal class TokenizationService {
         }
         pxNavigationHandler.presentLoading()
 
-        mercadoPagoServices.createToken(cardToken: cardToken, callback: { [weak self] (token) in
-            self?.resultHandler?.finishFlow(token: token, shouldResetESC: false)
+        mercadoPagoServices.createToken(cardToken: cardToken, callback: { (token) in
+            self.resultHandler?.finishFlow(token: token, shouldResetESC: false)
 
-        }, failure: { [weak self] (error) in
-            guard let self = self else { return }
+        }, failure: { (error) in
             self.trackTokenApiError()
             let error = MPSDKError.convertFrom(error, requestOrigin: ApiUtil.RequestOrigin.CREATE_TOKEN.rawValue)
             if error.apiException?.containsCause(code: ApiUtil.ErrorCauseCodes.INVALID_IDENTIFICATION_NUMBER.rawValue) == true {
