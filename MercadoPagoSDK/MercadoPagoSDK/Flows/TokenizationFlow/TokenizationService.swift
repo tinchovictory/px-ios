@@ -153,8 +153,7 @@ internal class TokenizationService {
 // MARK: Tracking
 private extension TokenizationService {
     func trackTokenApiError() {
-        let lastVC = self.pxNavigationHandler.navigationController.viewControllers.last
-        if let securityCodeVC = lastVC as? PXSecurityCodeViewController {
+        if let securityCodeVC = pxNavigationHandler.navigationController.viewControllers.last as? PXSecurityCodeViewController {
             securityCodeVC.trackEvent(path: TrackingPaths.Events.getErrorPath(), properties: securityCodeVC.viewModel.getFrictionProperties(path: TrackingPaths.Events.SecurityCode.getTokenFrictionPath(), id: "token_api_error"))
         }
     }
