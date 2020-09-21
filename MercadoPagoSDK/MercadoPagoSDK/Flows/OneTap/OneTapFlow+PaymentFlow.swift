@@ -79,8 +79,6 @@ extension OneTapFlow: PXPaymentErrorHandlerProtocol {
             PXConfiguratorManager.escProtocol.deleteESC(config: PXConfiguratorManager.escConfig, token: token, reason: reason, detail: nil)
         }
         model.paymentData.cleanToken()
-        if !(pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController) {
-            executeNextStep()
-        }
+        executeNextStep()
     }
 }

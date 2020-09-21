@@ -47,10 +47,7 @@ extension OneTapFlow: TokenizationServiceResultHandler {
     }
 
     func getTokenizationService() -> TokenizationService {
-        var needToShowLoading = model.needToShowLoading()
-        if pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController {
-            needToShowLoading = false
-        }
+        let needToShowLoading = isPXSecurityCodeViewControllerLastVC() ? false : model.needToShowLoading()
         return TokenizationService(paymentOptionSelected: model.paymentOptionSelected, cardToken: nil, pxNavigationHandler: pxNavigationHandler, needToShowLoading: needToShowLoading, mercadoPagoServices: model.mercadoPagoServices, gatewayFlowResultHandler: self)
     }
 }
