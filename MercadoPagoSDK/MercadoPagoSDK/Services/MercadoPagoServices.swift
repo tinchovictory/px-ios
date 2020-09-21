@@ -7,6 +7,7 @@
 //
 
 import Foundation
+// Se importa MLCardForm para reutilizar la clase de Reachability
 import MLCardForm
 
 internal class MercadoPagoServices: NSObject {
