@@ -145,6 +145,7 @@ extension MercadoPagoCheckout {
     }
 
     func showSecurityCodeScreen() {
+        guard !viewModel.isPXSecurityCodeViewControllerLastVC() else { return }
         let securityCodeVC = PXSecurityCodeViewController(viewModel: viewModel.getSecurityCodeViewModel(),
             finishButtonAnimationCallback: { [weak self] in
                 self?.executeNextStep()
@@ -155,6 +156,7 @@ extension MercadoPagoCheckout {
     }
 
     func collectSecurityCodeForRetry() {
+        guard !viewModel.isPXSecurityCodeViewControllerLastVC() else { return }
         let securityCodeViewModel = viewModel.getSecurityCodeViewModel(isCallForAuth: true)
 
         let securityCodeVC = PXSecurityCodeViewController(viewModel: securityCodeViewModel, finishButtonAnimationCallback: { [weak self] in

@@ -742,10 +742,8 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
     }
 
     func errorInputs(error: MPSDKError, errorCallback: (() -> Void)?) {
-        if !(pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController) {
-            MercadoPagoCheckoutViewModel.error = error
-            self.errorCallback = errorCallback
-        }
+        MercadoPagoCheckoutViewModel.error = error
+        self.errorCallback = errorCallback
     }
 
     func populateCheckoutStore() {
@@ -872,6 +870,10 @@ extension MercadoPagoCheckoutViewModel {
         self.applyDefaultDiscountOrClear()
         self.rootVC = true
         hookService.resetHooksToShow()
+    }
+
+    func isPXSecurityCodeViewControllerLastVC() -> Bool {
+        return pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController
     }
 
     func prepareForInvalidPaymentWithESC(reason: PXESCDeleteReason) {

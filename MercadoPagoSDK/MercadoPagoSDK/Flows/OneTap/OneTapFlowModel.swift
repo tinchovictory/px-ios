@@ -264,11 +264,7 @@ internal extension OneTapFlowModel {
         return false
     }
 
-    func needToShowLoading(_ navigationHandler: PXNavigationHandler? = nil) -> Bool {
-        if navigationHandler?.navigationController.viewControllers.last is PXSecurityCodeViewController {
-            return false
-        }
-
+    func needToShowLoading() -> Bool {
         guard let paymentMethod = paymentData.getPaymentMethod() else {
             return true
         }

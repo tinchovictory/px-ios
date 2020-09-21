@@ -18,7 +18,7 @@ extension MercadoPagoCheckout: PXPaymentResultHandlerProtocol {
             } else if let newResultViewController = lastViewController as? PXNewResultViewController {
                 newResultViewController.progressButtonAnimationTimeOut()
             } else if let securityCodeVC = lastViewController as? PXSecurityCodeViewController {
-                resetButtonAndCleanToken(securityCodeVC: securityCodeVC, error: error)
+                resetButtonAndCleanToken(securityCodeVC: securityCodeVC)
             }
         }
     }
@@ -48,7 +48,7 @@ extension MercadoPagoCheckout: PXPaymentResultHandlerProtocol {
         }
     }
 
-    private func resetButtonAndCleanToken(securityCodeVC: PXSecurityCodeViewController, error: MPSDKError) {
+    func resetButtonAndCleanToken(securityCodeVC: PXSecurityCodeViewController) {
         viewModel.paymentData.cleanToken()
         securityCodeVC.resetButton()
     }
