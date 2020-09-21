@@ -1,4 +1,14 @@
-# v4.35.8 
+# v4.36.0
+🚀Private Release - 4.36.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Tracking path distinto cuando se instancia Congrats desde afuera.
+
+# v4.35.9
+🚀Private Release - 4.35.9 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats desacopladas del checkout
+
+# v4.35.8
 🚀Private Release - 4.35.8 🚀
 MercadoPagoSDKV4 - Private Version
 - Fix onetap finishPaymentFlow when cvv is required
