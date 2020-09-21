@@ -289,7 +289,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         }
 
         let reason = PXSecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, isCallForAuth: isCallForAuth)
-        let cardSliderViewModel = onetapFlow?.model.pxOneTapViewModel?.getCardSliderViewModel().first(where: { $0.cardId == paymentOptionSelected?.getId() })
+        let cardSliderViewModel = onetapFlow?.model.pxOneTapViewModel?.getCardSliderViewModel(cardId: paymentOptionSelected?.getId())
         let cardUI = cardSliderViewModel?.cardUI ?? TemplateCard()
         let cardData = cardSliderViewModel?.cardData ?? PXCardDataFactory()
 

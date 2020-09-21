@@ -113,7 +113,7 @@ internal extension OneTapFlowModel {
         }
 
         let reason = PXSecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason)
-        let cardSliderViewModel = pxOneTapViewModel?.getCardSliderViewModel().first(where: { $0.cardId == paymentOptionSelected?.getId() })
+        let cardSliderViewModel = pxOneTapViewModel?.getCardSliderViewModel(cardId: paymentOptionSelected?.getId())
         let cardUI = cardSliderViewModel?.cardUI ?? TemplateCard()
         let cardData = cardSliderViewModel?.cardData ?? PXCardDataFactory()
 
