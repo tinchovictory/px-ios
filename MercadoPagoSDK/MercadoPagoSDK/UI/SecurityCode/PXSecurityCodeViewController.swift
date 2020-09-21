@@ -89,7 +89,7 @@ private extension PXSecurityCodeViewController {
             attemptsWithInternetError += 1
             if attemptsWithInternetError < 4 {
                 // TODO: Modificar texto con lo que defina el equipo de Contenidos
-                loadingButtonComponent?.showErrorSnackBar(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
+                loadingButtonComponent?.showErrorToast(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
             } else {
                 progressButtonAnimationTimeOut()
             }
@@ -135,7 +135,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
         // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        loadingButtonComponent?.showErrorSnackBar(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
+        loadingButtonComponent?.showErrorToast(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
             guard let self = self else { return }
             self.trackAbortEvent(properties: self.viewModel.getScreenProperties())
             self.navigationController?.popViewController(animated: false)

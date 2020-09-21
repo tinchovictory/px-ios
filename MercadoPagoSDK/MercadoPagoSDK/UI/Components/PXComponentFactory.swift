@@ -59,6 +59,12 @@ struct PXComponentFactory {
             }
         }
 
+        static func showSnackbar(title: String, actionTitle: String?, type: MLSnackbarType, duration: MLSnackbarDuration, action: (() -> Void)?, dismissBlock: @escaping (() -> Void)) -> MLSnackbar {
+            MLSnackbar.show(withTitle: title, actionTitle: actionTitle, actionBlock: action, type: type, duration: duration, dismiss: { (_) in
+                dismissBlock()
+            })
+        }
+
         static func showPersistentMessage(message: String) {
             MLSnackbar.show(withTitle: message, type: .default(), duration: .indefinitely)
         }

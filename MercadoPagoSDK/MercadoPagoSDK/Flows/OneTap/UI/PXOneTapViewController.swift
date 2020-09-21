@@ -794,7 +794,7 @@ extension PXOneTapViewController: PXAnimatedButtonDelegate {
     }
 
     func progressButtonAnimationTimeOut() {
-        loadingButtonComponent?.showErrorToast()
+        loadingButtonComponent?.showErrorToast(title: "review_and_confirm_toast_error".localized, actionTitle: nil, type: MLSnackbarType.error(), duration: .short, action: nil)
     }
 }
 

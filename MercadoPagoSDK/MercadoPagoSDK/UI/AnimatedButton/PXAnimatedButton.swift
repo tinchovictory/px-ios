@@ -137,26 +137,24 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         progressView?.doReset()
     }
 
-    func showErrorSnackBar(title: String, actionTitle: String?, type: MLSnackbarType, duration: MLSnackbarDuration, action: (() -> Void)?) {
+    func showErrorToast(title: String, actionTitle: String?, type: MLSnackbarType, duration: MLSnackbarDuration, action: (() -> Void)?) {
         status = .normal
         resetButton()
         isUserInteractionEnabled = false
-
-        snackbar = MLSnackbar.show(withTitle: title, actionTitle: actionTitle, actionBlock: action, type: type, duration: duration, dismiss: { [weak self] _ in
-            guard let self = self else { return }
-            self.animationDelegate?.shakeDidFinish()
-            self.isUserInteractionEnabled = true
-        })
+        if action == nil {
+            PXComponentFactory.SnackBar.showShortDurationMessage(message: title) {
+                self.completeSnackbarDismiss()
+            }
+        } else {
+            snackbar = PXComponentFactory.SnackBar.showSnackbar(title: title, actionTitle: actionTitle, type: type, duration: duration, action: action) {
+                self.completeSnackbarDismiss()
+            }
+        }
     }
 
-    func showErrorToast() {
-        self.status = .normal
-        self.resetButton()
-        self.isUserInteractionEnabled = false
-        PXComponentFactory.SnackBar.showShortDurationMessage(message: "review_and_confirm_toast_error".localized) {
-            self.animationDelegate?.shakeDidFinish()
-            self.isUserInteractionEnabled = true
-        }
+    func completeSnackbarDismiss() {
+        animationDelegate?.shakeDidFinish()
+        isUserInteractionEnabled = true
     }
 
     // MARK: Uncomment for Shake button
