@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MLUI
 
 class PXReviewViewController: PXComponentContainerViewController {
 
@@ -464,9 +465,9 @@ extension PXReviewViewController: PXAnimatedButtonDelegate {
         loadingButtonComponent?.resetButton()
         loadingFloatingButtonComponent?.resetButton()
         if isConfirmButtonVisible() {
-            loadingButtonComponent?.showErrorToast()
+            loadingButtonComponent?.showErrorToast(title: "review_and_confirm_toast_error".localized, actionTitle: nil, type: MLSnackbarType.error(), duration: .short, action: nil)
         } else {
-            loadingFloatingButtonComponent?.showErrorToast()
+            loadingFloatingButtonComponent?.showErrorToast(title: "review_and_confirm_toast_error".localized, actionTitle: nil, type: MLSnackbarType.error(), duration: .short, action: nil)
         }
 // MARK: Uncomment for Shake button
 //        loadingFloatingButtonComponent?.shake()

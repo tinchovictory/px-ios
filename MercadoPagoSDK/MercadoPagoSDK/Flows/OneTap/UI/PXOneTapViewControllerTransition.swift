@@ -22,9 +22,60 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         } else if let fromVC = transitionContext.viewController(forKey: .from) as? MLCardFormViewController,
             let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
             animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
-        } else {
+        } else if let fromVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
+            let toVC = transitionContext.viewController(forKey: .to) as? PXSecurityCodeViewController {
+            animateFromOneTapToSecurityCodeVC(transitionContext: transitionContext, oneTapVC: fromVC, securityCodeVC: toVC)
+        } else if let fromVC = transitionContext.viewController(forKey: .from) as? PXSecurityCodeViewController,
+            let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
+//            animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
+        }
+        else {
             transitionContext.completeTransition(false)
         }
+    }
+
+    private func animateFromOneTapToSecurityCodeVC(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, securityCodeVC: PXSecurityCodeViewController) {
+        guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
+            let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: false),
+            let cell = oneTapVC.slider.getSelectedCell(),
+            let cardSnapshot = cell.containerView.snapshotView(afterScreenUpdates: true) else {
+                transitionContext.completeTransition(false)
+                return
+        }
+
+        let containerView = transitionContext.containerView
+
+        let fixedFrames = buildFrames(oneTapVC: oneTapVC, containerView: containerView)
+        headerSnapshot.frame = fixedFrames.headerFrame
+        footerSnapshot.frame = fixedFrames.footerFrame
+
+        let navigationSnapshot = oneTapVC.view.resizableSnapshotView(from: fixedFrames.navigationFrame, afterScreenUpdates: false, withCapInsets: .zero)
+        // topView is a view containing a snapshot of the navigationbar and a snapshot of the headerView
+        let topView = buildTopView(containerView: containerView, navigationSnapshot: navigationSnapshot, headerSnapshot: headerSnapshot, footerSnapshot: footerSnapshot)
+
+        topView.addSubview(buildTopViewOverlayColor(color: oneTapVC.view.backgroundColor, topView: topView))
+        containerView.addSubview(securityCodeVC.view)
+        containerView.addSubview(topView)
+        if securityCodeVC.viewModel.shouldShowCard() { containerView.addSubview(cardSnapshot) }
+
+        cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
+        cardSnapshot.frame.origin.y = (footerSnapshot.frame.size.height - cardSnapshot.frame.size.height) / 2 + headerSnapshot.frame.size.height + PXLayout.XL_MARGIN + PXLayout.M_MARGIN
+
+        var animator = PXAnimator(duration: 0.8, dampingRatio: 1)
+        animator.addAnimation(animation: {
+            topView.frame = topView.frame.offsetBy(dx: 0, dy: -fixedFrames.headerFrame.size.height)
+            cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
+            cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
+            cardSnapshot.frame.origin.y = securityCodeVC.getStatusAndNavBarHeight() + securityCodeVC.titleLabel.intrinsicContentSize.height + PXLayout.L_MARGIN + PXLayout.XXXS_MARGIN
+        })
+
+        animator.addCompletion(completion: {
+            oneTapVC.view.removeFromSuperview()
+            topView.removeFromSuperview()
+            cardSnapshot.removeFromSuperview()
+            transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+        })
+        animator.animate()
     }
 
     private func animateFromOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {

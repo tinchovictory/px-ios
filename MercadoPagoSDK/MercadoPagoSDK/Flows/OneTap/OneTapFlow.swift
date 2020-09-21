@@ -102,6 +102,10 @@ final class OneTapFlow: NSObject, PXFlow {
         model.readyToPay = true
         return model.nextStep() == .screenSecurityCode
     }
+
+    func isPXSecurityCodeViewControllerLastVC() -> Bool {
+        return pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController
+    }
 }
 
 extension OneTapFlow {

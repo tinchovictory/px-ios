@@ -275,7 +275,7 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         return PayerCostAdditionalStepViewModel(amountHelper: self.amountHelper, token: cardInformation, paymentMethod: paymentMethod, dataSource: payerCosts!, email: self.checkoutPreference.payer.email, mercadoPagoServices: mercadoPagoServices, advancedConfiguration: advancedConfig)
     }
 
-    public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> SecurityCodeViewModel {
+    public func getSecurityCodeViewModel(isCallForAuth: Bool = false) -> PXSecurityCodeViewModel {
         let cardInformation: PXCardInformationForm
         if let paymentOptionSelected = paymentOptionSelected as? PXCardInformationForm {
             cardInformation = paymentOptionSelected
@@ -287,8 +287,13 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
         guard let paymentMethod = paymentData.paymentMethod else {
             fatalError("Don't have paymentData to open Security View Controller")
         }
-        let reason = SecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, isCallForAuth: isCallForAuth)
-        return SecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason)
+
+        let reason = PXSecurityCodeViewModel.getSecurityCodeReason(invalidESCReason: invalidESCReason, isCallForAuth: isCallForAuth)
+        let cardSliderViewModel = onetapFlow?.model.pxOneTapViewModel?.getCardSliderViewModel(cardId: paymentOptionSelected?.getId())
+        let cardUI = cardSliderViewModel?.cardUI ?? TemplateCard()
+        let cardData = cardSliderViewModel?.cardData ?? PXCardDataFactory()
+
+        return PXSecurityCodeViewModel(paymentMethod: paymentMethod, cardInfo: cardInformation, reason: reason, cardUI: cardUI, cardData: cardData, internetProtocol: mercadoPagoServices)
     }
 
     func reviewConfirmViewModel() -> PXReviewViewModel {
@@ -865,6 +870,10 @@ extension MercadoPagoCheckoutViewModel {
         self.applyDefaultDiscountOrClear()
         self.rootVC = true
         hookService.resetHooksToShow()
+    }
+
+    func isPXSecurityCodeViewControllerLastVC() -> Bool {
+        return pxNavigationHandler.navigationController.viewControllers.last is PXSecurityCodeViewController
     }
 
     func prepareForInvalidPaymentWithESC(reason: PXESCDeleteReason) {

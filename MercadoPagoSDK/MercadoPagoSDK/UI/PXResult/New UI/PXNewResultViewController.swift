@@ -8,6 +8,7 @@
 import UIKit
 import MLBusinessComponents
 import AndesUI
+import MLUI
 
 class PXNewResultViewController: MercadoPagoUIViewController {
 
@@ -661,7 +662,7 @@ extension PXNewResultViewController: PXAnimatedButtonDelegate {
 
     func progressButtonAnimationTimeOut() {
         if let button = getRemedyViewAnimatedButton() {
-            button.showErrorToast()
+            button.showErrorToast(title: "review_and_confirm_toast_error".localized, actionTitle: nil, type: MLSnackbarType.error(), duration: .short, action: nil)
         }
     }
 }

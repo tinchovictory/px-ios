@@ -794,7 +794,7 @@ extension PXOneTapViewController: PXAnimatedButtonDelegate {
     }
 
     func progressButtonAnimationTimeOut() {
-        loadingButtonComponent?.showErrorToast()
+        loadingButtonComponent?.showErrorToast(title: "review_and_confirm_toast_error".localized, actionTitle: nil, type: MLSnackbarType.error(), duration: .short, action: nil)
     }
 }
 
@@ -840,7 +840,7 @@ extension PXOneTapViewController: MLCardFormLifeCycleDelegate {
 
 extension PXOneTapViewController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if fromVC is MLCardFormViewController || toVC is MLCardFormViewController {
+        if fromVC is MLCardFormViewController || toVC is MLCardFormViewController || toVC is PXSecurityCodeViewController {
             return PXOneTapViewControllerTransition()
         }
         return nil

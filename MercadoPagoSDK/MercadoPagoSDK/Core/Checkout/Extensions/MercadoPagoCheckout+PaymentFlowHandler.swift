@@ -12,11 +12,13 @@ extension MercadoPagoCheckout: PXPaymentResultHandlerProtocol {
 
     func finishPaymentFlow(error: MPSDKError) {
         let lastViewController = viewModel.pxNavigationHandler.navigationController.viewControllers.last
-        if lastViewController is PXReviewViewController || lastViewController is PXNewResultViewController {
+        if lastViewController is PXReviewViewController || lastViewController is PXNewResultViewController || lastViewController is PXSecurityCodeViewController {
             if let reviewViewController = lastViewController as? PXReviewViewController {
                 reviewViewController.resetButton()
             } else if let newResultViewController = lastViewController as? PXNewResultViewController {
                 newResultViewController.progressButtonAnimationTimeOut()
+            } else if let securityCodeVC = lastViewController as? PXSecurityCodeViewController {
+                resetButtonAndCleanToken(securityCodeVC: securityCodeVC)
             }
         }
     }
@@ -46,9 +48,14 @@ extension MercadoPagoCheckout: PXPaymentResultHandlerProtocol {
         }
     }
 
+    func resetButtonAndCleanToken(securityCodeVC: PXSecurityCodeViewController) {
+        viewModel.paymentData.cleanToken()
+        securityCodeVC.resetButton()
+    }
+
     private func shouldCallAnimateButton() -> Bool {
         let lastViewController = viewModel.pxNavigationHandler.navigationController.viewControllers.last
-        if lastViewController is PXReviewViewController || lastViewController is PXNewResultViewController {
+        if lastViewController is PXReviewViewController || lastViewController is PXNewResultViewController || lastViewController is PXSecurityCodeViewController {
             return true
         }
         return false
