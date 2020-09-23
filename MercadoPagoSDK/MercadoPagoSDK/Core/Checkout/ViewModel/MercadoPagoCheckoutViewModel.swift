@@ -130,18 +130,12 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
             self.advancedConfig = advancedConfig
         }
         self.trackingConfig = trackingConfig
-
-        //let branchId = checkoutPreference.branchId
         mercadoPagoServices = MercadoPagoServices(publicKey: publicKey, privateKey: privateKey)
-
         super.init()
-
-        if !isPreferenceLoaded() {
+        if String.isNullOrEmpty(checkoutPreference.id), checkoutPreference.payer != nil {
             paymentData.updatePaymentDataWith(payer: checkoutPreference.getPayer())
         }
-
         PXConfiguratorManager.escConfig = PXESCConfig.createConfig()
-        
         // Create Init Flow
         createInitFlow()
     }
@@ -747,10 +741,6 @@ internal class MercadoPagoCheckoutViewModel: NSObject, NSCopying {
             PXCheckoutStore.sharedInstance.paymentDatas.append(splitAccountMoney)
         }
         PXCheckoutStore.sharedInstance.checkoutPreference = self.checkoutPreference
-    }
-
-    func isPreferenceLoaded() -> Bool {
-        return !String.isNullOrEmpty(self.checkoutPreference.id)
     }
 
     func getResult() -> PXResult? {
