@@ -9,6 +9,7 @@ import Foundation
 import MLCardForm
 
 class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransitioning {
+    internal typealias PXOneTapViewControllerFrames = (navigationFrame: CGRect, headerFrame: CGRect, footerFrame: CGRect)
 
     //make this zero for now and see if it matters when it comes time to make it interactive
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
@@ -16,26 +17,27 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-        if let fromVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
-            let toVC = transitionContext.viewController(forKey: .to) as? MLCardFormViewController {
-            animateFromOneTap(transitionContext: transitionContext, oneTapVC: fromVC, addCardVC: toVC)
-        } else if let fromVC = transitionContext.viewController(forKey: .from) as? MLCardFormViewController,
-            let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
-            animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
-        } else if let fromVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
-            let toVC = transitionContext.viewController(forKey: .to) as? PXSecurityCodeViewController {
-            animateFromOneTapToSecurityCodeVC(transitionContext: transitionContext, oneTapVC: fromVC, securityCodeVC: toVC)
-        } else if let fromVC = transitionContext.viewController(forKey: .from) as? PXSecurityCodeViewController,
-            let toVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController {
-//            animateToOneTap(transitionContext: transitionContext, oneTapVC: toVC, addCardVC: fromVC)
-        }
-        else {
+        let fromVC = transitionContext.viewController(forKey: .from)
+        let toVC = transitionContext.viewController(forKey: .to)
+        if fromVC is PXOneTapViewController { // Animations from OneTap
+            if toVC is MLCardFormViewController {
+                animateFromOneTapToCardForm(transitionContext: transitionContext)
+            } else if toVC is PXSecurityCodeViewController {
+                animateFromOneTapToSecurityCode(transitionContext: transitionContext)
+            }
+        } else if toVC is PXOneTapViewController { // Animations to OneTap
+            if fromVC is MLCardFormViewController {
+                animateFromCardFormToOneTap(transitionContext: transitionContext)
+            }
+        } else {
             transitionContext.completeTransition(false)
         }
     }
 
-    private func animateFromOneTapToSecurityCodeVC(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, securityCodeVC: PXSecurityCodeViewController) {
-        guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
+    private func animateFromOneTapToSecurityCode(transitionContext: UIViewControllerContextTransitioning) {
+        guard let oneTapVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
+            let securityCodeVC = transitionContext.viewController(forKey: .to) as? PXSecurityCodeViewController,
+            let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
             let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: false),
             let cell = oneTapVC.slider.getSelectedCell(),
             let cardSnapshot = cell.containerView.snapshotView(afterScreenUpdates: true) else {
@@ -78,8 +80,10 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         animator.animate()
     }
 
-    private func animateFromOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {
-        guard let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
+    private func animateFromOneTapToCardForm(transitionContext: UIViewControllerContextTransitioning) {
+        guard let oneTapVC = transitionContext.viewController(forKey: .from) as? PXOneTapViewController,
+            let addCardVC = transitionContext.viewController(forKey: .to) as? MLCardFormViewController,
+            let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: false),
             let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: false) else {
                 transitionContext.completeTransition(false)
                 return
@@ -120,8 +124,10 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         pxAnimator.animate()
     }
 
-    private func animateToOneTap(transitionContext: UIViewControllerContextTransitioning, oneTapVC: PXOneTapViewController, addCardVC: UIViewController) {
-        guard let toVCSnapshot = oneTapVC.view.snapshotView(afterScreenUpdates: true),
+    private func animateFromCardFormToOneTap(transitionContext: UIViewControllerContextTransitioning) {
+        guard let addCardVC = transitionContext.viewController(forKey: .from) as? MLCardFormViewController,
+            let oneTapVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController,
+            let toVCSnapshot = oneTapVC.view.snapshotView(afterScreenUpdates: true),
             let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: true),
             let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: true) else {
                 transitionContext.completeTransition(false)
@@ -185,7 +191,10 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
 
         pxAnimator.animate()
     }
+}
 
+// Helpers
+extension PXOneTapViewControllerTransition {
     private func buildTopView(containerView: UIView, navigationSnapshot: UIView?, headerSnapshot: UIView, footerSnapshot: UIView) -> UIView {
         var topFrame = containerView.frame
         topFrame.size.height -= footerSnapshot.frame.size.height
@@ -208,7 +217,7 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         topView.addSubview(topViewOverlay)
     }
 
-    private func buildFrames(oneTapVC: PXOneTapViewController, containerView: UIView) -> (navigationFrame: CGRect, headerFrame: CGRect, footerFrame: CGRect) {
+    private func buildFrames(oneTapVC: PXOneTapViewController, containerView: UIView) -> PXOneTapViewControllerFrames {
         // Fix frame sizes and position
         var headerFrame = oneTapVC.headerView?.frame ?? CGRect.zero
         var footerFrame = oneTapVC.whiteView?.frame ?? CGRect.zero
