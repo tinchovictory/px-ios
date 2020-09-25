@@ -120,7 +120,7 @@ final class PXOneTapViewController: PXComponentContainerViewController {
             cardFormViewController.dismissLoadingAndPop()
         }
     }
-    
+
     func setupAutoDisplayOfflinePaymentMethods() {
         if viewModel.shouldAutoDisplayOfflinePaymentMethods() && shouldPromptForOfflineMethods {
             shouldPromptForOfflineMethods = false
@@ -310,11 +310,11 @@ extension PXOneTapViewController {
             let vc = PXOfflineMethodsViewController(viewModel: offlineViewModel, callbackConfirm: callbackConfirm, callbackUpdatePaymentOption: callbackUpdatePaymentOption, finishButtonAnimation: finishButtonAnimation) { [weak self] in
                     self?.navigationController?.popViewController(animated: false)
             }
-            
+
             let sheet = PXOfflineMethodsSheetViewController(viewController: vc,
                                                             offlineViewModel: offlineViewModel,
                                                             whiteViewHeight: PXCardSliderSizeManager.getWhiteViewHeight(viewController: self))
-            
+
             self.present(sheet, animated: true, completion: nil)
         }
     }
@@ -840,7 +840,8 @@ extension PXOneTapViewController: MLCardFormLifeCycleDelegate {
 
 extension PXOneTapViewController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationController.Operation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if fromVC is MLCardFormViewController || toVC is MLCardFormViewController || toVC is PXSecurityCodeViewController {
+        if [fromVC, toVC].filter({$0 is MLCardFormViewController || $0 is PXSecurityCodeViewController}).count > 0 {
+        //if fromVC is MLCardFormViewController || toVC is MLCardFormViewController || toVC is PXSecurityCodeViewController {
             return PXOneTapViewControllerTransition()
         }
         return nil

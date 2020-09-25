@@ -28,6 +28,8 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         } else if toVC is PXOneTapViewController { // Animations to OneTap
             if fromVC is MLCardFormViewController {
                 animateFromCardFormToOneTap(transitionContext: transitionContext)
+            } else if fromVC is PXSecurityCodeViewController {
+                animateFromSecurityCodeToOneTap(transitionContext: transitionContext)
             }
         } else {
             transitionContext.completeTransition(false)
@@ -191,6 +193,73 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
 
         pxAnimator.animate()
     }
+
+    private func animateFromSecurityCodeToOneTap(transitionContext: UIViewControllerContextTransitioning) {
+        guard let securityCodeVC = transitionContext.viewController(forKey: .from) as? PXSecurityCodeViewController,
+            let oneTapVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController,
+            let toVCSnapshot = oneTapVC.view.snapshotView(afterScreenUpdates: true),
+            let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: true),
+            let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: true) else {
+                transitionContext.completeTransition(false)
+                return
+        }
+
+        let containerView = transitionContext.containerView
+        let fixedFrames = buildFrames(oneTapVC: oneTapVC, containerView: containerView)
+
+        headerSnapshot.frame = fixedFrames.headerFrame
+        footerSnapshot.frame = fixedFrames.footerFrame
+
+        let navigationSnapshot = toVCSnapshot.resizableSnapshotView(from: fixedFrames.navigationFrame, afterScreenUpdates: true, withCapInsets: .zero)
+        // topView is a view containing a snapshot of the navigationbar and a snapshot of the headerView
+        let topView = buildTopView(containerView: containerView, navigationSnapshot: navigationSnapshot, headerSnapshot: headerSnapshot, footerSnapshot: footerSnapshot)
+        // backgroundView is a white placeholder background using the entire view area
+        let backgroundView = UIView(frame: containerView.frame)
+        backgroundView.backgroundColor = UIColor.white
+        // topViewBackground is a blue placeholder background to use as a temporary navigationbar and headerView background
+        // This view will show initially offset as the navigationbar and will expand to cover the headerView area
+        let topViewBackground = UIView(frame: topView.frame)
+        topViewBackground.backgroundColor = oneTapVC.view.backgroundColor
+        backgroundView.addSubview(topViewBackground)
+        backgroundView.addSubview(topView)
+        backgroundView.addSubview(footerSnapshot)
+
+        securityCodeVC.view.removeFromSuperview()
+        containerView.addSubview(oneTapVC.view)
+        oneTapVC.view.frame = containerView.bounds
+        containerView.addSubview(backgroundView)
+
+        topViewBackground.frame = topViewBackground.frame.offsetBy(dx: 0, dy: -fixedFrames.headerFrame.size.height)
+        topView.frame = topView.frame.offsetBy(dx: 0, dy: -fixedFrames.headerFrame.size.height)
+        topView.alpha = 0
+        footerSnapshot.frame = footerSnapshot.frame.offsetBy(dx: 0, dy: footerSnapshot.frame.size.height)
+        footerSnapshot.alpha = 0
+
+        var pxAnimator = PXAnimator(duration: 0.5, dampingRatio: 1.0)
+        pxAnimator.addAnimation(animation: {
+            topViewBackground.frame = topViewBackground.frame.offsetBy(dx: 0, dy: fixedFrames.headerFrame.size.height)
+            footerSnapshot.frame = footerSnapshot.frame.offsetBy(dx: 0, dy: -footerSnapshot.frame.size.height)
+            footerSnapshot.alpha = 1
+        })
+
+        pxAnimator.addCompletion(completion: {
+            var pxAnimator = PXAnimator(duration: 0.5, dampingRatio: 1.0)
+            pxAnimator.addAnimation(animation: {
+                topView.frame = topView.frame.offsetBy(dx: 0, dy: fixedFrames.headerFrame.size.height)
+                topView.alpha = 1
+            })
+
+            pxAnimator.addCompletion(completion: {
+                backgroundView.removeFromSuperview()
+
+                transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
+            })
+
+            pxAnimator.animate()
+        })
+
+        pxAnimator.animate()
+    }
 }
 
 // Helpers
@@ -217,7 +286,7 @@ extension PXOneTapViewControllerTransition {
         topView.addSubview(topViewOverlay)
     }
 
-    private func buildFrames(oneTapVC: PXOneTapViewController, containerView: UIView) -> PXOneTapViewControllerFrames {
+    private func buildFrames(oneTapVC: PXOneTapViewController, containerView: UIView) -> (navigationFrame: CGRect, headerFrame: CGRect, footerFrame: CGRect) {
         // Fix frame sizes and position
         var headerFrame = oneTapVC.headerView?.frame ?? CGRect.zero
         var footerFrame = oneTapVC.whiteView?.frame ?? CGRect.zero
