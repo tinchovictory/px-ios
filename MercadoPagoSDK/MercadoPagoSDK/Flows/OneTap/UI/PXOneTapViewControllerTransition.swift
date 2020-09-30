@@ -9,8 +9,6 @@ import Foundation
 import MLCardForm
 
 class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransitioning {
-    internal typealias PXOneTapViewControllerFrames = (navigationFrame: CGRect, headerFrame: CGRect, footerFrame: CGRect)
-
     //make this zero for now and see if it matters when it comes time to make it interactive
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 1.0
@@ -199,7 +197,9 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
             let oneTapVC = transitionContext.viewController(forKey: .to) as? PXOneTapViewController,
             let toVCSnapshot = oneTapVC.view.snapshotView(afterScreenUpdates: true),
             let headerSnapshot = oneTapVC.headerView?.snapshotView(afterScreenUpdates: true),
-            let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: true) else {
+            let footerSnapshot = oneTapVC.whiteView?.snapshotView(afterScreenUpdates: true),
+            let cell = oneTapVC.slider.getSelectedCell(),
+            let cardSnapshot = cell.containerView.snapshotView(afterScreenUpdates: true) else {
                 transitionContext.completeTransition(false)
                 return
         }
@@ -223,6 +223,23 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         backgroundView.addSubview(topViewBackground)
         backgroundView.addSubview(topView)
         backgroundView.addSubview(footerSnapshot)
+        if securityCodeVC.viewModel.shouldShowCard() {
+            backgroundView.addSubview(cardSnapshot)
+            let cardCellFrame = cell.containerView.frame
+            let cardCellOriginInWhiteView = cell.containerView.superview?.convert(cardCellFrame.origin, to: oneTapVC.whiteView) ?? CGPoint.zero
+            let offset = CGFloat(4)
+            let hideCardView = UIView(frame: CGRect(x: cardCellOriginInWhiteView.x - offset,
+                                                    y: cardCellOriginInWhiteView.y - offset,
+                                                    width: cardCellFrame.width + (offset * 2),
+                                                    height: cardCellFrame.height + (offset * 2)))
+            hideCardView.backgroundColor = oneTapVC.whiteView?.backgroundColor
+            footerSnapshot.addSubview(hideCardView)
+        }
+
+        cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
+        cardSnapshot.frame.origin = securityCodeVC.cardContainerView.frame.origin
+        var endOrigin = cell.superview?.convert(cell.frame.origin, to: nil) ?? CGPoint.zero
+        endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
 
         securityCodeVC.view.removeFromSuperview()
         containerView.addSubview(oneTapVC.view)
@@ -240,6 +257,9 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
             topViewBackground.frame = topViewBackground.frame.offsetBy(dx: 0, dy: fixedFrames.headerFrame.size.height)
             footerSnapshot.frame = footerSnapshot.frame.offsetBy(dx: 0, dy: -footerSnapshot.frame.size.height)
             footerSnapshot.alpha = 1
+
+            cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 1, y: 1)
+            cardSnapshot.frame.origin = endOrigin
         })
 
         pxAnimator.addCompletion(completion: {
