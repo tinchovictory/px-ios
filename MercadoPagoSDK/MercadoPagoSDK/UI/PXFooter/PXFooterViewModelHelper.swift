@@ -12,7 +12,7 @@ import UIKit
 internal extension PXResultViewModel {
 
     typealias Action = (() -> Void)?
-    
+
     func getActionButton() -> PXAction? {
         return getAction(label: getButtonLabel(), action: getButtonAction())
     }
@@ -20,7 +20,7 @@ internal extension PXResultViewModel {
     func getActionLink() -> PXAction? {
         return getAction(label: getLinkLabel(), action: getLinkAction())
     }
-    
+
     private func getAction(label: String?, action: Action) -> PXAction? {
         guard let label = label, let action = action else {
             return nil
@@ -78,7 +78,7 @@ internal extension PXResultViewModel {
             guard let self = self else { return }
             guard let callback = self.callback else { return }
             if self.paymentResult.isAccepted() {
-                 callback(PaymentResult.CongratsState.EXIT, nil)
+                callback(PaymentResult.CongratsState.EXIT, nil)
             } else if self.paymentResult.isError() {
                 if self.paymentResult.isHighRisk(), let deepLink = self.remedy?.highRisk?.deepLink {
                     callback(PaymentResult.CongratsState.DEEPLINK, deepLink)

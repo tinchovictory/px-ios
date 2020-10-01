@@ -34,7 +34,7 @@ internal class PXAnimatedButton: UIButton {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     internal func anchorView() -> UIView? {
         return self.superview
     }
@@ -63,17 +63,17 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         progressView?.doComplete(completion: { [weak self] _ in
             guard let self = self,
                 let anchorView = self.anchorView() else { return }
-            
+
             let animatedViewOriginInAnchorViewCoordinates = self.convert(CGPoint.zero, to: anchorView)
             let animatedViewFrameInAnchorViewCoordinates = CGRect(origin: animatedViewOriginInAnchorViewCoordinates, size: self.frame.size)
-            
+
             let animatedView = UIView(frame: animatedViewFrameInAnchorViewCoordinates)
             animatedView.backgroundColor = self.backgroundColor
             animatedView.layer.cornerRadius = self.layer.cornerRadius
             animatedView.isAccessibilityElement = true
-            
+
             anchorView.addSubview(animatedView)
-            
+
             self.animatedView = animatedView
             self.alpha = 0
 

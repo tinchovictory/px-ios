@@ -1,4 +1,25 @@
-# v4.35.7 
+# v4.36.1 
+🚀Private Release - 4.36.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix an issue with ObjC allowing to set a nil preference
+- Fix an issue with some payment methods trying to fetch instructions
+
+# v4.36.0
+🚀Private Release - 4.36.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Tracking path distinto cuando se instancia Congrats desde afuera.
+
+# v4.35.9
+🚀Private Release - 4.35.9 🚀
+MercadoPagoSDKV4 - Private Version
+- Congrats desacopladas del checkout
+
+# v4.35.8
+🚀Private Release - 4.35.8 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix onetap finishPaymentFlow when cvv is required
+
+# v4.35.7
 🚀Private Release - 4.35.7 🚀
 MercadoPagoSDKV4 - Private Version
 - MoneyIn MLB en Onetap
