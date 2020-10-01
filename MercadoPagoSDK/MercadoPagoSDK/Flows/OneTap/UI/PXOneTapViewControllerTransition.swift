@@ -237,7 +237,8 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         }
 
         cardSnapshot.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
-        cardSnapshot.frame.origin = securityCodeVC.cardContainerView.frame.origin
+        let startOrigin = securityCodeVC.cardContainerView.superview?.convert(securityCodeVC.cardContainerView.frame.origin, to: nil) ?? CGPoint.zero
+        cardSnapshot.frame.origin = startOrigin
         var endOrigin = cell.superview?.convert(cell.frame.origin, to: nil) ?? CGPoint.zero
         endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
 
