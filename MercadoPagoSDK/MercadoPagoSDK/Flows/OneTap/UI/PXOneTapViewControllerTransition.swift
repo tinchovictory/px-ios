@@ -60,8 +60,8 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         containerView.addSubview(topView)
         if securityCodeVC.viewModel.shouldShowCard() { containerView.addSubview(cardSnapshot) }
 
-        cardSnapshot.frame.origin.x = (footerSnapshot.frame.size.width - cardSnapshot.frame.size.width) / 2
-        cardSnapshot.frame.origin.y = (footerSnapshot.frame.size.height - cardSnapshot.frame.size.height) / 2 + headerSnapshot.frame.size.height + PXLayout.XL_MARGIN + PXLayout.M_MARGIN
+        let startOrigin = cell.superview?.convert(cell.frame.origin, to: nil) ?? CGPoint.zero
+        cardSnapshot.frame.origin = startOrigin
 
         var animator = PXAnimator(duration: 0.8, dampingRatio: 1)
         animator.addAnimation(animation: {
@@ -227,6 +227,7 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
             backgroundView.addSubview(cardSnapshot)
             let cardCellFrame = cell.containerView.frame
             let cardCellOriginInWhiteView = cell.containerView.superview?.convert(cardCellFrame.origin, to: oneTapVC.whiteView) ?? CGPoint.zero
+            // hideCardView is an empty view to hide the card in the whiteView, while the animated card comes down
             let offset = CGFloat(4)
             let hideCardView = UIView(frame: CGRect(x: cardCellOriginInWhiteView.x - offset,
                                                     y: cardCellOriginInWhiteView.y - offset,
@@ -240,7 +241,9 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         let startOrigin = securityCodeVC.cardContainerView.superview?.convert(securityCodeVC.cardContainerView.frame.origin, to: nil) ?? CGPoint.zero
         cardSnapshot.frame.origin = startOrigin
         var endOrigin = cell.superview?.convert(cell.frame.origin, to: nil) ?? CGPoint.zero
-        endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
+        if #available(iOS 14.0, *) {
+            endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
+        } 
 
         securityCodeVC.view.removeFromSuperview()
         containerView.addSubview(oneTapVC.view)
