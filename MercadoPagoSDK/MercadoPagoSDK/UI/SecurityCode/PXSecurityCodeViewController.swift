@@ -14,7 +14,7 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
     let viewModel: PXSecurityCodeViewModel
     let cardContainerView = UIView()
     let titleLabel = UILabel()
-    let subtitle = UILabel()
+    let subtitleLabel = UILabel()
     let textFieldTitle = UILabel()
     let textField = UITextField()
     var loadingButtonComponent: PXAnimatedButton?
@@ -23,9 +23,10 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     // MARK: Constraints
     var loadingButtonBottomConstraint = NSLayoutConstraint()
-    var titleLabelBottomConstraint = NSLayoutConstraint()
-    var subtitleBottomConstraint = NSLayoutConstraint()
-    var textFieldTitleTopConstraint = NSLayoutConstraint()
+    var titleLabelTopConstraint = NSLayoutConstraint()
+    var subtitleTopConstraint = NSLayoutConstraint()
+    var textFieldContainerTopConstraint = NSLayoutConstraint()
+    var textFieldContainerBottomConstraint = NSLayoutConstraint()
 
     // MARK: Callbacks
     let finishButtonAnimationCallback: () -> Void
@@ -36,6 +37,10 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
         self.finishButtonAnimationCallback = finishButtonAnimationCallback
         self.collectSecurityCodeCallback = collectSecurityCodeCallback
         super.init(nibName: nil, bundle: nil)
+        view.backgroundColor = .white
+        setNavBarBackgroundColor(color: .white)
+        setupNavBarStyle(style: .default)
+        setNavBarTextColor(color: .black)
     }
 
     required init?(coder: NSCoder) {
@@ -51,10 +56,6 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setupKeyboardNotifications()
-        setCardContainerViewConstraints()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            self?.textField.becomeFirstResponder()
-        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -66,7 +67,7 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
         super.viewWillDisappear(animated)
         removeKeyboardNotifications()
         loadingButtonComponent?.dismissSnackbar()
-        setupNavBarStyle(style: .black)
+        setupNavBarStyle(style: ThemeManager.shared.navigationControllerMemento?.navBarStyle ?? .black)
     }
 }
 
@@ -89,7 +90,7 @@ private extension PXSecurityCodeViewController {
             attemptsWithInternetError += 1
             if attemptsWithInternetError < 4 {
                 // TODO: Modificar texto con lo que defina el equipo de Contenidos
-                loadingButtonComponent?.showErrorToast(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.", actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
+                loadingButtonComponent?.showErrorToast(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.".localized, actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
             } else {
                 progressButtonAnimationTimeOut()
             }
@@ -135,7 +136,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
         // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        loadingButtonComponent?.showErrorToast(title: "Intenta en otro momento.", actionTitle: "VOLVER", type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
+        loadingButtonComponent?.showErrorToast(title: "Intenta en otro momento.".localized, actionTitle: "VOLVER".localized, type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
             guard let self = self else { return }
             self.trackAbortEvent(properties: self.viewModel.getScreenProperties())
             self.navigationController?.popViewController(animated: false)
@@ -165,15 +166,13 @@ private extension PXSecurityCodeViewController {
             let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
 
             var animator = PXAnimator(duration: 0.8, dampingRatio: 0.8)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            animator.addAnimation(animation: { [weak self] in
                 guard let self = self else { return }
-                animator.addAnimation(animation: {
-                    self.loadingButtonComponent?.alpha = 1
-                    self.loadingButtonBottomConstraint.constant = -keyboardViewEndFrame.height - PXLayout.S_MARGIN
-                    self.view.layoutIfNeeded()
-                })
-                animator.animate()
-            }
+                self.loadingButtonComponent?.alpha = 1
+                self.loadingButtonBottomConstraint.constant = -keyboardViewEndFrame.height - PXLayout.S_MARGIN
+                self.view.layoutIfNeeded()
+            })
+            animator.animate()
         }
     }
 }
@@ -181,27 +180,17 @@ private extension PXSecurityCodeViewController {
 // MARK: UI
 private extension PXSecurityCodeViewController {
     func renderViews() {
-        setupControllerView()
-        setupNavBar()
         setupTitle()
-        setupSubtitle()
-        setupCardContainerView()
-        setupCardDrawer()
+        if viewModel.shouldShowCard() {
+            setupCardContainerView()
+        } else {
+            setupSubtitle()
+        }
         // TODO: Remove when Andes texfield is done
-        setupTextFieldTitle()
         setupTextField()
         //
         setupLoadingButton()
-    }
-
-    func setupControllerView() {
-        view.backgroundColor = .white
-    }
-
-    func setupNavBar() {
-        setNavBarBackgroundColor(color: .white)
-        setupNavBarStyle(style: .default)
-        setNavBarTextColor(color: .black)
+        setupTextFieldAndButtonConstraints()
     }
 
     func setupNavBarStyle(style: UIBarStyle) {
@@ -210,113 +199,88 @@ private extension PXSecurityCodeViewController {
 
     func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        titleLabel.text = viewModel.isVirtualCard() ? viewModel.getVirtualCardTitle() : "Ingresa el código de seguridad"
+        titleLabel.text = viewModel.getTitle()
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
         titleLabel.numberOfLines = 2
         titleLabel.textColor = UIColor.black.withAlphaComponent(0.8)
+        titleLabel.alpha = 0
         view.addSubview(titleLabel)
 
+        titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: -300)
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.SM_MARGIN),
-            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.SM_MARGIN)
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.SM_MARGIN),
+            titleLabelTopConstraint
         ])
-        titleLabelBottomConstraint = titleLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -UIScreen.main.bounds.height)
-        titleLabelBottomConstraint.isActive = true
     }
 
     func setupSubtitle() {
         guard !viewModel.shouldShowCard() else { return }
-        subtitle.translatesAutoresizingMaskIntoConstraints = false
-        // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        subtitle.text = viewModel.isVirtualCard() ? viewModel.getVirtualCardSubtitle() : "Busca los dígitos en el dorso de tu tarjeta."
-        subtitle.textAlignment = .left
-        subtitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
-        subtitle.numberOfLines = 2
-        subtitle.textColor = UIColor.black.withAlphaComponent(0.8)
-        view.addSubview(subtitle)
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.text = viewModel.getSubtitle()
+        subtitleLabel.textAlignment = .left
+        subtitleLabel.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XS_FONT)
+        subtitleLabel.numberOfLines = 2
+        subtitleLabel.textColor = UIColor.black.withAlphaComponent(0.8)
+        subtitleLabel.alpha = 1
+        view.addSubview(subtitleLabel)
 
+        subtitleTopConstraint = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -300)
         NSLayoutConstraint.activate([
-            subtitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.SM_MARGIN),
-            subtitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.SM_MARGIN)
+            subtitleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.SM_MARGIN),
+            subtitleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.SM_MARGIN),
+            subtitleTopConstraint
         ])
-        subtitleBottomConstraint = subtitle.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -UIScreen.main.bounds.height)
-        subtitleBottomConstraint.isActive = true
+    }
+
+    private func getVerticalCardSpace() -> CGFloat {
+        let cardHeight = CardSizeManager.getHeightByGoldenAspectRatio(width: view.frame.size.width - 60)
+        let scaledCardHeight = cardHeight * 0.6
+        let verticalCardSpace = (cardHeight - scaledCardHeight) / 2
+        return verticalCardSpace
     }
 
     func setupCardContainerView() {
         guard viewModel.shouldShowCard() else { return }
         cardContainerView.translatesAutoresizingMaskIntoConstraints = false
         cardContainerView.alpha = 0
+        cardContainerView.layer.cornerRadius = 9
+        cardContainerView.clipsToBounds = true
+        cardContainerView.backgroundColor = .clear
         view.addSubview(cardContainerView)
         NSLayoutConstraint.activate([
             cardContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
             cardContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
-            cardContainerView.heightAnchor.constraint(equalTo: cardContainerView.widthAnchor, multiplier: PXCardSliderSizeManager.goldenRatio)
+            cardContainerView.heightAnchor.constraint(equalTo: cardContainerView.widthAnchor, multiplier: PXCardSliderSizeManager.goldenRatio),
+            cardContainerView.topAnchor.constraint(equalTo: view.topAnchor, constant: (titleLabel.intrinsicContentSize.height + PXLayout.L_MARGIN) - getVerticalCardSpace())
         ])
+        cardDrawer = MLCardDrawerController(viewModel.cardUI, viewModel.cardData)
+        cardDrawer?.setUp(inView: cardContainerView)
+        cardDrawer?.show()
+        cardContainerView.transform = CGAffineTransform.identity.scaledBy(x: 0.6, y: 0.6)
     }
 
     // TODO: Remove when Andes texfield is done
-    func setupTextFieldTitle() {
+    func setupTextField() {
         textFieldTitle.translatesAutoresizingMaskIntoConstraints = false
-        textFieldTitle.alpha = 0
         // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        textFieldTitle.text = "Código de seguridad"
+        textFieldTitle.text = "Código de seguridad".localized
         textFieldTitle.textAlignment = .center
         textFieldTitle.font = UIFont.ml_regularSystemFont(ofSize: PXLayout.XXS_FONT)
         textFieldTitle.textColor = UIColor.black.withAlphaComponent(0.8)
         textFieldTitle.numberOfLines = 2
+        textFieldTitle.alpha = 0
         view.addSubview(textFieldTitle)
-        NSLayoutConstraint.activate([
-            textFieldTitle.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.S_MARGIN),
-            textFieldTitle.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.S_MARGIN)
-        ])
 
-        if viewModel.shouldShowCard() {
-            textFieldTitleTopConstraint = textFieldTitle.topAnchor.constraint(equalTo: cardContainerView.bottomAnchor, constant: PXLayout.M_MARGIN + 2)
-        } else {
-            textFieldTitleTopConstraint = textFieldTitle.topAnchor.constraint(equalTo: subtitle.bottomAnchor, constant: !UIDevice.isSmallDevice() ? 90 : 50)
-        }
-        textFieldTitleTopConstraint.isActive = true
-    }
-
-    func setupTextField() {
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.autocorrectionType = UITextAutocorrectionType.no
         textField.keyboardAppearance = .light
         textField.keyboardType = .numberPad
         textField.backgroundColor = .lightGray
         textField.delegate = self
-        view.addSubview(textField)
-        NSLayoutConstraint.activate([
-            textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            textField.topAnchor.constraint(equalTo: textFieldTitle.bottomAnchor, constant: PXLayout.XS_MARGIN),
-            textField.heightAnchor.constraint(equalToConstant: 40),
-            textField.widthAnchor.constraint(equalToConstant: 150)
-        ])
         textField.alpha = 0
-    }
-    //
-
-    func setupCardDrawer() {
-        guard viewModel.shouldShowCard() else { return }
-        cardDrawer = MLCardDrawerController(viewModel.cardUI, viewModel.cardData)
-            if let cardDrawer = cardDrawer {
-                cardDrawer.view.backgroundColor = .clear
-                let cardView = cardDrawer.getCardView()
-                cardView.translatesAutoresizingMaskIntoConstraints = false
-                cardView.frame = CGRect(origin: .zero, size: cardContainerView.frame.size)
-                cardContainerView.addSubview(cardView)
-                cardContainerView.layer.cornerRadius = 9
-                NSLayoutConstraint.activate([
-                    cardView.topAnchor.constraint(equalTo: cardContainerView.topAnchor),
-                    cardView.leadingAnchor.constraint(equalTo: cardContainerView.leadingAnchor),
-                    cardView.trailingAnchor.constraint(equalTo: cardContainerView.trailingAnchor),
-                    cardView.bottomAnchor.constraint(equalTo: cardContainerView.bottomAnchor)
-                ])
-                cardContainerView.clipsToBounds = true
-            }
+        view.addSubview(textField)
     }
 
     func setupLoadingButton() {
@@ -332,54 +296,90 @@ private extension PXSecurityCodeViewController {
         loadingButtonComponent?.accessibilityIdentifier = "pay_button"
         if let loadingButtonComponent = loadingButtonComponent {
             view.addSubview(loadingButtonComponent)
-            NSLayoutConstraint.activate([
-                loadingButtonComponent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
-                loadingButtonComponent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
-                loadingButtonComponent.heightAnchor.constraint(equalToConstant: 48)
-            ])
-            loadingButtonBottomConstraint = loadingButtonComponent.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            loadingButtonBottomConstraint.isActive = true
         }
         loadingButtonComponent?.setDisabled()
         loadingButtonComponent?.alpha = 0
     }
 
-    func setCardContainerViewConstraints() {
-        guard viewModel.shouldShowCard() else { return }
-        view.layoutIfNeeded()
-        let cardContainerViewBottomConstraint = cardContainerView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - cardContainerView.frame.size.height - 36))
-        cardContainerViewBottomConstraint.isActive = true
-        cardContainerView.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -44 : -40).scaledBy(x: 0.6, y: 0.6)
+    func setupTextFieldAndButtonConstraints() {
+        // Build container and constraints
+        let container = UILayoutGuide()
+        container.identifier = "containerLayoutGuide"
+        view.addLayoutGuide(container)
+        let topSpacer = UILayoutGuide()
+        topSpacer.identifier = "topSpacerLayoutGuide"
+        view.addLayoutGuide(topSpacer)
+        let bottomSpacer = UILayoutGuide()
+        bottomSpacer.identifier = "bottomSpacerLayoutGuide"
+        view.addLayoutGuide(bottomSpacer)
+
+        textFieldContainerTopConstraint = container.topAnchor.constraint(equalTo: viewModel.shouldShowCard() ? cardContainerView.bottomAnchor : subtitleLabel.bottomAnchor, constant: 300)
+        textFieldContainerBottomConstraint = container.bottomAnchor.constraint(equalTo: loadingButtonComponent?.topAnchor ?? view.bottomAnchor, constant: 300)
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            textFieldContainerTopConstraint,
+            textFieldContainerBottomConstraint,
+            topSpacer.topAnchor.constraint(equalTo: container.topAnchor),
+            topSpacer.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            topSpacer.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            topSpacer.bottomAnchor.constraint(equalTo: textFieldTitle.topAnchor),
+
+            textFieldTitle.heightAnchor.constraint(equalToConstant: 22),
+            textFieldTitle.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: PXLayout.S_MARGIN),
+            textFieldTitle.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -PXLayout.S_MARGIN),
+
+            textField.topAnchor.constraint(equalTo: textFieldTitle.bottomAnchor, constant: PXLayout.XXS_MARGIN),
+            textField.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            textField.heightAnchor.constraint(equalToConstant: 40),
+            textField.widthAnchor.constraint(equalToConstant: 150),
+
+            bottomSpacer.topAnchor.constraint(equalTo: textField.bottomAnchor),
+            bottomSpacer.heightAnchor.constraint(equalTo: topSpacer.heightAnchor),
+            bottomSpacer.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            bottomSpacer.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            bottomSpacer.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+        if let loadingButtonComponent = loadingButtonComponent {
+            loadingButtonBottomConstraint = loadingButtonComponent.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -PXLayout.S_MARGIN)
+            NSLayoutConstraint.activate([
+                loadingButtonComponent.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: PXLayout.M_MARGIN),
+                loadingButtonComponent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -PXLayout.M_MARGIN),
+                loadingButtonComponent.heightAnchor.constraint(equalToConstant: 48),
+                loadingButtonBottomConstraint
+            ])
+        }
     }
 
     func setupAnimations() {
+        if viewModel.shouldShowCard() {
+            cardContainerView.alpha = 1
+            cardDrawer?.showSecurityCode()
+        }
+        textField.becomeFirstResponder()
         var animator = PXAnimator(duration: 0.8, dampingRatio: 0.8)
-        animator.addAnimation(animation: {
-            self.titleLabelBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height)
-            self.subtitleBottomConstraint.constant = -(UIScreen.main.bounds.height - self.getStatusAndNavBarHeight() - self.titleLabel.intrinsicContentSize.height - (self.subtitle.intrinsicContentSize.height) - 18)
+        animator.addAnimation(animation: { [weak self] in
+            guard let self = self else { return }
+            self.titleLabelTopConstraint.constant = 0
+            self.titleLabel.alpha = 1
             self.view.layoutIfNeeded()
         })
-        animator.animate()
-
-        var animator2 = PXAnimator(duration: 0.8, dampingRatio: 0.8)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            guard let self = self else { return }
-            animator2.addAnimation(animation: {
+        animator.addCompletion {
+            var animator = PXAnimator(duration: 0.8, dampingRatio: 0.8)
+            animator.addAnimation(animation: { [weak self] in
+                guard let self = self else { return }
+                self.subtitleTopConstraint.constant = PXLayout.XXS_MARGIN
+                self.subtitleLabel.alpha = 1
                 self.textFieldTitle.alpha = 1
                 self.textField.alpha = 1
-                if self.viewModel.shouldShowCard() {
-                    self.textFieldTitle.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -82 : -80)
-                    self.textField.transform = CGAffineTransform.identity.translatedBy(x: 0, y: UIDevice.isExtraLargeDevice() ? -82 : -80)
-                } else {
-                    self.textFieldTitleTopConstraint.constant = !UIDevice.isSmallDevice() ? 60 : 24
-                }
+                self.textFieldContainerTopConstraint.constant = self.viewModel.shouldShowCard() ? -self.getVerticalCardSpace() : 0
+                self.textFieldContainerBottomConstraint.constant = 0
                 self.view.layoutIfNeeded()
             })
 
-            animator2.animate()
+            animator.animate()
         }
-        cardContainerView.alpha = 1
-        cardDrawer?.showSecurityCode()
+        animator.animate()
     }
 }
 

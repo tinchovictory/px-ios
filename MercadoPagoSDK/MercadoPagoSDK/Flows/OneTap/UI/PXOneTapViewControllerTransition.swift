@@ -57,6 +57,7 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
 
         topView.addSubview(buildTopViewOverlayColor(color: oneTapVC.view.backgroundColor, topView: topView))
         containerView.addSubview(securityCodeVC.view)
+        securityCodeVC.view.frame = transitionContext.finalFrame(for: securityCodeVC)
         containerView.addSubview(topView)
         if securityCodeVC.viewModel.shouldShowCard() { containerView.addSubview(cardSnapshot) }
 

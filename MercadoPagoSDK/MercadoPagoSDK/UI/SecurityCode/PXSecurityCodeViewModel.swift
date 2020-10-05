@@ -50,12 +50,14 @@ extension PXSecurityCodeViewModel {
         paymentMethod.creditsDisplayInfo?.cvvInfo != nil
     }
 
-    func getVirtualCardTitle() -> String? {
-        return paymentMethod.creditsDisplayInfo?.cvvInfo?.title
+    func getTitle() -> String? {
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
+        return isVirtualCard() ? paymentMethod.creditsDisplayInfo?.cvvInfo?.title : "Ingresa el código de seguridad".localized
     }
 
-    func getVirtualCardSubtitle() -> String? {
-        return paymentMethod.creditsDisplayInfo?.cvvInfo?.message
+    func getSubtitle() -> String? {
+        // TODO: Modificar texto con lo que defina el equipo de Contenidos
+        return isVirtualCard() ? paymentMethod.creditsDisplayInfo?.cvvInfo?.message : "Busca los dígitos en el dorso de tu tarjeta.".localized
     }
 
     func getSecurityCodeLength() -> Int {
