@@ -142,7 +142,7 @@ extension PXAnimatedButton: ProgressViewDelegate, CAAnimationDelegate {
         resetButton()
         isUserInteractionEnabled = false
         if action == nil {
-            PXComponentFactory.SnackBar.showShortDurationMessage(message: title) {
+            PXComponentFactory.SnackBar.showShortDurationMessage(message: title, type: type) {
                 self.completeSnackbarDismiss()
             }
         } else {
