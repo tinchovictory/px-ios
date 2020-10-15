@@ -183,9 +183,8 @@ class PXNewResultViewController: MercadoPagoUIViewController {
                     data.view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -data.horizontalMargin)
                 ])
             }
-            if let resultViewModel = viewModel as? PXResultViewModel,
-                resultViewModel.remedy?.cvv != nil || resultViewModel.remedy?.suggestedPaymentMethod != nil,
-                contentView.subviews.last is PXRemedyView {
+            if let remedyView = contentView.subviews.last as? PXRemedyView,
+               remedyView.shouldShowButton() {
                 PXLayout.pinLastSubviewToBottom(view: contentView)
             } else {
                 PXLayout.pinLastSubviewToBottom(view: contentView, relation: .lessThanOrEqual)
@@ -616,7 +615,7 @@ extension PXNewResultViewController {
         let creditsExpectationView = viewModel.getCreditsExpectationView()
         return PXNewCustomView(data: paymentData, bottomView: creditsExpectationView)
     }
-    
+
     //SPLIT PAYMENT METHOD
     func buildSplitPaymentMethodView() -> UIView? {
         guard let paymentData = viewModel.getSplitPaymentViewData() else { return nil }
