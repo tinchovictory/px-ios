@@ -7,6 +7,7 @@
 
 import Foundation
 import MLCardDrawer
+import AndesUI
 
 final class PXSecurityCodeViewModel {
 
@@ -51,17 +52,37 @@ extension PXSecurityCodeViewModel {
     }
 
     func getTitle() -> String? {
-        // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        return isVirtualCard() ? paymentMethod.creditsDisplayInfo?.cvvInfo?.title : "Ingresa el código de seguridad".localized
+        return isVirtualCard() ? paymentMethod.creditsDisplayInfo?.cvvInfo?.title : "px_security_code_screen_title".localized
     }
 
     func getSubtitle() -> String? {
-        // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        return isVirtualCard() ? paymentMethod.creditsDisplayInfo?.cvvInfo?.message : "Busca los dígitos en el dorso de tu tarjeta.".localized
+        if isVirtualCard() {
+            return paymentMethod.creditsDisplayInfo?.cvvInfo?.message
+        } else {
+            let text = cardUI.securityCodeLocation == .back ? "px_security_code_subtitle_back".localized : "px_security_code_subtitle_front".localized
+            return text.replacingOccurrences(of: "{0}", with: "\(getSecurityCodeLength())")
+        }
     }
 
     func getSecurityCodeLength() -> Int {
         return paymentMethod.secCodeLenght(cardInfo.getCardBin())
+    }
+
+    func getAndesTextFieldCodeLabel() -> String {
+        return isVirtualCard() ? "px_dynamic_security_code".localized : "Código de seguridad".localized
+    }
+
+    func getAndesTextFieldCodeStyle() -> AndesTextFieldCodeStyle {
+        let andesTextFieldCodeStyle: AndesTextFieldCodeStyle
+        switch getSecurityCodeLength() {
+        case 4:
+            andesTextFieldCodeStyle = .FOURSOME
+        case 6:
+            andesTextFieldCodeStyle = .THREE_BY_THREE
+        default:
+            andesTextFieldCodeStyle = .THREESOME
+        }
+        return andesTextFieldCodeStyle
     }
 }
 

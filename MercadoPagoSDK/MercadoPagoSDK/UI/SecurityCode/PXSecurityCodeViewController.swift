@@ -90,8 +90,7 @@ private extension PXSecurityCodeViewController {
             trackEvent(path: TrackingPaths.Events.getErrorPath(), properties: viewModel.getNoConnectionProperties())
             attemptsWithInternetError += 1
             if attemptsWithInternetError < 4 {
-                // TODO: Modificar texto con lo que defina el equipo de Contenidos
-                loadingButtonComponent?.showErrorToast(title: "Hubo un error de conexión. Por favor, intenta pagar en otro momento.".localized, actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
+                loadingButtonComponent?.showErrorToast(title: "px_connectivity_neutral_error".localized, actionTitle: nil, type: MLSnackbarType.default(), duration: MLSnackbarDuration.short, action: nil)
             } else {
                 progressButtonAnimationTimeOut()
             }
@@ -139,8 +138,7 @@ extension PXSecurityCodeViewController: PXAnimatedButtonDelegate {
 
     func progressButtonAnimationTimeOut() {
         loadingButtonComponent?.resetButton()
-        // TODO: Modificar texto con lo que defina el equipo de Contenidos
-        loadingButtonComponent?.showErrorToast(title: "Intenta en otro momento.".localized, actionTitle: "VOLVER".localized, type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
+        loadingButtonComponent?.showErrorToast(title: "px_connectivity_error".localized, actionTitle: "px_snackbar_error_action".localized, type: MLSnackbarType.error(), duration: MLSnackbarDuration.long) { [weak self] in
             guard let self = self else { return }
             self.trackAbortEvent(properties: self.viewModel.getScreenProperties())
             self.navigationController?.popViewController(animated: false)
@@ -257,7 +255,7 @@ private extension PXSecurityCodeViewController {
     }
 
     func setupAndesTextFieldCode() {
-        andesTextFieldCode = AndesTextFieldCode(label: "Código de seguridad", helpLabel: nil, style: getAndesTextFieldCodeStyle(), state: .IDLE)
+        andesTextFieldCode = AndesTextFieldCode(label: viewModel.getAndesTextFieldCodeLabel(), helpLabel: nil, style: viewModel.getAndesTextFieldCodeStyle(), state: .IDLE)
         andesTextFieldCode.delegate = self
         andesTextFieldCode.alpha = 0
         view.addSubview(andesTextFieldCode)
@@ -339,19 +337,6 @@ private extension PXSecurityCodeViewController {
             animator.animate()
         }
         animator.animate()
-    }
-
-    func getAndesTextFieldCodeStyle() -> AndesTextFieldCodeStyle {
-        let andesTextFieldCodeStyle: AndesTextFieldCodeStyle
-        switch viewModel.getSecurityCodeLength() {
-        case 4:
-            andesTextFieldCodeStyle = .FOURSOME
-        case 6:
-            andesTextFieldCodeStyle = .THREE_BY_THREE
-        default:
-            andesTextFieldCodeStyle = .THREESOME
-        }
-        return andesTextFieldCodeStyle
     }
 }
 
