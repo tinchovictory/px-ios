@@ -69,7 +69,7 @@ extension PXSecurityCodeViewModel {
     }
 
     func getAndesTextFieldCodeLabel() -> String {
-        return isVirtualCard() ? "px_dynamic_security_code".localized : "Código de seguridad".localized
+        return isVirtualCard() ? "px_dynamic_security_code".localized : "security_code".localized
     }
 
     func getAndesTextFieldCodeStyle() -> AndesTextFieldCodeStyle {
