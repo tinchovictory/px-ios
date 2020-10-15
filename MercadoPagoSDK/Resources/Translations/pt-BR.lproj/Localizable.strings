@@ -165,3 +165,5 @@
 "px_connectivity_neutral_error" = "Ocorreu um erro de conexão. Por favor, tente pagar novamente.";
 "px_connectivity_error" = "Não há conexão. Por favor, tente pagar mais tarde.";
 "px_snackbar_error_action" = "Voltar";
+"px_security_code_subtitle_front" = "Os {0} dígitos estão na parte da frente do seu cartão.";
+"px_security_code_subtitle_back" = "Os {0} dígitos estão no verso do seu cartão.";
