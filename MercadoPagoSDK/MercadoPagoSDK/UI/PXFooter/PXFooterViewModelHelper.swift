@@ -12,7 +12,7 @@ import UIKit
 internal extension PXResultViewModel {
 
     typealias Action = (() -> Void)?
-    
+
     func getActionButton() -> PXAction? {
         return getAction(label: getButtonLabel(), action: getButtonAction())
     }
@@ -20,7 +20,7 @@ internal extension PXResultViewModel {
     func getActionLink() -> PXAction? {
         return getAction(label: getLinkLabel(), action: getLinkAction())
     }
-    
+
     private func getAction(label: String?, action: Action) -> PXAction? {
         guard let label = label, let action = action else {
             return nil
@@ -75,7 +75,7 @@ internal extension PXResultViewModel {
 
     private func getButtonAction() -> Action {
         return { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else { return }
             guard let callback = self.callback else { return }
             if self.paymentResult.isAccepted() {
                 callback(PaymentResult.CongratsState.EXIT, nil)
@@ -89,12 +89,12 @@ internal extension PXResultViewModel {
                 callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
             } else if self.paymentResult.isWarning() {
                 switch self.paymentResult.statusDetail {
-                    case PXRejectedStatusDetail.CALL_FOR_AUTH.rawValue:
-                        callback(PaymentResult.CongratsState.CALL_FOR_AUTH, nil)
-                    case PXRejectedStatusDetail.CARD_DISABLE.rawValue:
-                        callback(PaymentResult.CongratsState.RETRY, nil)
-                    default:
-                        callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
+                case PXRejectedStatusDetail.CALL_FOR_AUTH.rawValue:
+                    callback(PaymentResult.CongratsState.CALL_FOR_AUTH, nil)
+                case PXRejectedStatusDetail.CARD_DISABLE.rawValue:
+                    callback(PaymentResult.CongratsState.RETRY, nil)
+                default:
+                    callback(PaymentResult.CongratsState.SELECT_OTHER, nil)
                 }
             }
         }

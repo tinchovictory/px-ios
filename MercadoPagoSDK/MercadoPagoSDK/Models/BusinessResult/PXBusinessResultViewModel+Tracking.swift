@@ -118,7 +118,7 @@ extension PXBusinessResultViewModel: PXViewModelTrackingDataProtocol {
             return .PENDING
         }
     }
-    
+
     func getTrackingProperties() -> [String: Any] {
        var properties: [String: Any] = amountHelper.getPaymentData().getPaymentDataForTracking()
        properties["style"] = "custom"

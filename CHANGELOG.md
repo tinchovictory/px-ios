@@ -1,4 +1,21 @@
-# v4.35.9 
+# v4.36.2
+🚀Private Release - 4.36.2 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix button location an view constraints
+- Add whitespace in discount label
+
+# v4.36.1
+🚀Private Release - 4.36.1 🚀
+MercadoPagoSDKV4 - Private Version
+- Fix an issue with ObjC allowing to set a nil preference
+- Fix an issue with some payment methods trying to fetch instructions
+
+# v4.36.0
+🚀Private Release - 4.36.0 🚀
+MercadoPagoSDKV4 - Private Version
+- Tracking path distinto cuando se instancia Congrats desde afuera.
+
+# v4.35.9
 🚀Private Release - 4.35.9 🚀
 MercadoPagoSDKV4 - Private Version
 - Congrats desacopladas del checkout
