@@ -243,9 +243,7 @@ class PXOneTapViewControllerTransition: NSObject, UIViewControllerAnimatedTransi
         let startOrigin = securityCodeVC.cardContainerView.superview?.convert(securityCodeVC.cardContainerView.frame.origin, to: nil) ?? CGPoint.zero
         cardSnapshot.frame.origin = startOrigin
         var endOrigin = cell.superview?.convert(cell.frame.origin, to: nil) ?? CGPoint.zero
-        if #available(iOS 14.0, *) {
-            endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
-        } 
+        endOrigin.y -= navigationSnapshot?.frame.size.height ?? 0
 
         securityCodeVC.view.removeFromSuperview()
         containerView.addSubview(oneTapVC.view)
