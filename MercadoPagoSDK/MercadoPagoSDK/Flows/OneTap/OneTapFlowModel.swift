@@ -218,7 +218,8 @@ internal extension OneTapFlowModel {
 
         if isCustomerCard && !paymentData.hasToken() && hasInstallmentsIfNeeded {
             if let customOptionSearchItem = search.payerPaymentMethods.first(where: { $0.id == paymentOptionSelectedId}) {
-                if hasSavedESC() {
+                // For mds we dont want the esc feature
+                if hasSavedESC(), false {
                     if customOptionSearchItem.escStatus == PXESCStatus.REJECTED.rawValue {
                         invalidESCReason = .ESC_CAP
                         return true
