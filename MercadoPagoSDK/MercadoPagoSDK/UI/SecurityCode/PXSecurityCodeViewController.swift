@@ -194,6 +194,7 @@ private extension PXSecurityCodeViewController {
 
     func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.backgroundColor = .white
         titleLabel.text = viewModel.getTitle()
         titleLabel.textAlignment = .left
         titleLabel.font = UIFont.ml_semiboldSystemFont(ofSize: PXLayout.XL_FONT)
@@ -218,7 +219,7 @@ private extension PXSecurityCodeViewController {
         subtitleLabel.numberOfLines = 2
         subtitleLabel.textColor = UIColor.black.withAlphaComponent(0.8)
         subtitleLabel.alpha = 1
-        view.addSubview(subtitleLabel)
+        view.insertSubview(subtitleLabel, belowSubview: titleLabel)
 
         subtitleTopConstraint = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -300)
         NSLayoutConstraint.activate([
