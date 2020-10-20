@@ -34,4 +34,6 @@ Pod::Spec.new do |s|
     #test_spec.frameworks = 'XCTest'
   #end
 
+  s.pod_target_xcconfig = `xcodebuild -version` =~ /Xcode 12./ ? { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' } : { }
+
 end
