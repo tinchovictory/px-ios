@@ -40,8 +40,7 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = .white
         setNavBarBackgroundColor(color: .white)
-        setupNavBarStyle(style: .default)
-        setNavBarTextColor(color: .black)
+        setNavBarTextColor(color: .red)
     }
 
     required init?(coder: NSCoder) {
@@ -56,6 +55,7 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        UIApplication.shared.statusBarStyle = .default
         setupKeyboardNotifications()
     }
 
@@ -66,9 +66,9 @@ final class PXSecurityCodeViewController: MercadoPagoUIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        UIApplication.shared.statusBarStyle = ThemeManager.shared.statusBarStyle()
         removeKeyboardNotifications()
         loadingButtonComponent?.dismissSnackbar()
-        setupNavBarStyle(style: ThemeManager.shared.navigationControllerMemento?.navBarStyle ?? .black)
     }
 }
 
@@ -186,10 +186,6 @@ private extension PXSecurityCodeViewController {
         setupAndesTextFieldCode()
         setupLoadingButton()
         setupTextFieldAndButtonConstraints()
-    }
-
-    func setupNavBarStyle(style: UIBarStyle) {
-        navigationController?.navigationBar.barStyle = style
     }
 
     func setupTitle() {
